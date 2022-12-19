@@ -36,6 +36,7 @@ import com.cws.esolutions.web.enums.ResetRequestType;
 public final class UserChangeRequest implements Serializable
 {
     private int count = 0;
+    private String guid = null;
     private String resetKey = null;
     private String username = null;
     private String telNumber = null;
@@ -107,6 +108,19 @@ public final class UserChangeRequest implements Serializable
         }
 
         this.username = value;
+    }
+
+    public final void setGuid(final String value)
+    {
+        final String methodName = UserChangeRequest.CNAME + "#setGuid(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.guid = value;
     }
 
     public final void setCurrentPassword(final String value)
@@ -297,6 +311,19 @@ public final class UserChangeRequest implements Serializable
         }
 
         return this.resetType;
+    }
+
+    public final String getGuid()
+    {
+        final String methodName = UserChangeRequest.CNAME + "#getGuid()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.guid);
+        }
+
+        return this.guid;
     }
 
     public final String getUsername()

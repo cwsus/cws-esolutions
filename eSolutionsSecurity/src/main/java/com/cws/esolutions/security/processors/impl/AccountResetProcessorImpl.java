@@ -27,24 +27,23 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Arrays;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.security.KeyPair;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.enums.SecurityUserRole;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
@@ -93,7 +92,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 DEBUGGER.debug("List<String[]>: {}", userList);
             }
 
-            if ((userList == null) || (userList.size() == 0))
+            if ((Objects.isNull(userList)) || (userList.size() == 0))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
@@ -192,7 +191,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 DEBUGGER.debug("List<Object>: {}", securityData);
             }
 
-            if ((securityData == null) || (securityData.isEmpty()))
+            if ((Objects.isNull(securityData)) || (securityData.isEmpty()))
             {
             	ERROR_RECORDER.error("No user information was returned. Cannot continue.");
 
@@ -347,10 +346,19 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     	DEBUGGER.debug("authObject: {}", authObject);
                     }
 
+                    if (Objects.isNull(authObject))
+                    {
+                    	ERROR_RECORDER.error("Attempted to load user account but got no response data");
+
+                    	response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                    	return response;
+                    }
+
                     if ((Integer) authObject.get(7) >= secConfig.getMaxAttempts())
                     {
                         // user locked
-                    	response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    	response.setRequestStatus(SecurityRequestStatus.DISABLED);
 
                         return response;
                     }
@@ -459,9 +467,9 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#resetUserPassword(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#insertResetRequest(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
-    public AccountResetResponse resetUserPassword(final AccountResetRequest request) throws AccountResetException
+    public AccountResetResponse insertResetRequest(final AccountResetRequest request) throws AccountResetException
     {
         final String methodName = AccountResetProcessorImpl.CNAME + "#resetUserPassword(final AccountResetRequest request) throws AccountResetException";
 
@@ -513,14 +521,23 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     if ((userData != null) && (!(userData.isEmpty())))
                     {
                         UserAccount responseAccount = new UserAccount();
-                        responseAccount.setGuid((String) userData.get(0));
-                        responseAccount.setUsername((String) userData.get(1));
-                        responseAccount.setGivenName((String) userData.get(6));
-                        responseAccount.setSurname((String) userData.get(7));
-                        responseAccount.setDisplayName((String) userData.get(8));
-                        responseAccount.setEmailAddr((String) userData.get(9));
-                        responseAccount.setPagerNumber((String) userData.get(10));
-                        responseAccount.setTelephoneNumber((String) userData.get(11));
+                        responseAccount.setGuid((String) userData.get(0)); // CN
+                        responseAccount.setUsername((String) userData.get(1)); // UID
+                        responseAccount.setGivenName((String) userData.get(2)); // GIVENNAME
+                        responseAccount.setSurname((String) userData.get(3)); // sn
+                        responseAccount.setDisplayName((String) userData.get(4)); // displayName
+                        responseAccount.setEmailAddr((String) userData.get(5)); // email
+                        responseAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(6))); //cwsrole
+                        responseAccount.setFailedCount((int) userData.get(7)); // cwsfailedpwdcount            
+                        responseAccount.setLastLogin((Timestamp) userData.get(8)); // cwslastlogin
+                        responseAccount.setExpiryDate((Timestamp) userData.get(9)); // cwsexpirydate
+                        responseAccount.setSuspended((boolean) userData.get(10)); // cwsissuspended
+                        responseAccount.setOlrSetup((boolean) userData.get(11)); // cwsisolrsetup
+                        responseAccount.setOlrLocked((boolean) userData.get(12)); // cwsisolrlocked
+                        responseAccount.setAccepted((boolean) userData.get(13)); // cwsistcaccepted
+                        responseAccount.setUserKeys((KeyPair) userData.get(14)); // cwspublickey
+                        responseAccount.setTelephoneNumber((String) userData.get(15)); // telephoneNumber
+                        responseAccount.setPagerNumber((String) userData.get(16)); // pager
 
                         if (DEBUG)
                         {
@@ -641,6 +658,11 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             // the request id should be in here, so lets make sure it exists
             List<Object> resetData = userSec.getResetData(request.getResetRequestId());
 
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("resetData: {}", resetData);
+            }
+
             final String commonName = (String) resetData.get(0);
             final Date resetTimestamp = (Date) resetData.get(1);
 
@@ -671,13 +693,23 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             UserAccount userAccount = new UserAccount();
-            userAccount.setStatus(LoginStatus.RESET);
-            userAccount.setGuid((String) userList.get(0));
-            userAccount.setUsername((String) userList.get(1));
-            userAccount.setSurname((String) userList.get(5));
-            userAccount.setGivenName((String) userList.get(6));
-            userAccount.setDisplayName((String) userList.get(7));
-            userAccount.setEmailAddr((String) userList.get(8));
+            userAccount.setGuid((String) userList.get(0)); // CN
+            userAccount.setUsername((String) userList.get(1)); // UID
+            userAccount.setGivenName((String) userList.get(2)); // GIVENNAME
+            userAccount.setSurname((String) userList.get(3)); // sn
+            userAccount.setDisplayName((String) userList.get(4)); // displayName
+            userAccount.setEmailAddr((String) userList.get(5)); // email
+            userAccount.setUserRole(SecurityUserRole.valueOf((String) userList.get(6))); //cwsrole
+            userAccount.setFailedCount((int) userList.get(7)); // cwsfailedpwdcount            
+            userAccount.setLastLogin((Timestamp) userList.get(8)); // cwslastlogin
+            userAccount.setExpiryDate((Timestamp) userList.get(9)); // cwsexpirydate
+            userAccount.setSuspended((boolean) userList.get(10)); // cwsissuspended
+            userAccount.setOlrSetup((boolean) userList.get(11)); // cwsisolrsetup
+            userAccount.setOlrLocked((boolean) userList.get(12)); // cwsisolrlocked
+            userAccount.setAccepted((boolean) userList.get(13)); // cwsistcaccepted
+            userAccount.setUserKeys((KeyPair) userList.get(14)); // cwspublickey
+            userAccount.setTelephoneNumber((String) userList.get(15)); // telephoneNumber
+            userAccount.setPagerNumber((String) userList.get(16)); // pager
 
             if (DEBUG)
             {
@@ -716,6 +748,163 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountResetException(sqx.getMessage(), sqx);
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#resetUserPassword(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
+    public AccountResetResponse insertResetData(final AccountResetRequest request) throws AccountResetException
+    {
+        final String methodName = AccountResetProcessorImpl.CNAME + "#resetUserPassword(final AccountResetRequest request) throws AccountResetException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountResetRequest: {}", request);
+        }
+
+        AccountResetResponse response = new AccountResetResponse();
+
+        final Calendar calendar = Calendar.getInstance();
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
+
+        calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Calendar: {}", calendar);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
+        try
+        {
+            String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
+            String smsReset = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
+
+            
+            if (StringUtils.isNotEmpty(resetId))
+            {
+                boolean isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, ((secConfig.getSmsResetEnabled()) ? smsReset : null));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    // load the user account for the email response
+                    List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserData: {}", userData);
+                    }
+
+                    if ((userData != null) && (!(userData.isEmpty())))
+                    {
+                        UserAccount responseAccount = new UserAccount();
+                        responseAccount.setGuid((String) userData.get(0)); // CN
+                        responseAccount.setUsername((String) userData.get(1)); // UID
+                        responseAccount.setGivenName((String) userData.get(2)); // GIVENNAME
+                        responseAccount.setSurname((String) userData.get(3)); // sn
+                        responseAccount.setDisplayName((String) userData.get(4)); // displayName
+                        responseAccount.setEmailAddr((String) userData.get(5)); // email
+                        responseAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(6))); //cwsrole
+                        responseAccount.setFailedCount((int) userData.get(7)); // cwsfailedpwdcount            
+                        responseAccount.setLastLogin((Timestamp) userData.get(8)); // cwslastlogin
+                        responseAccount.setExpiryDate((Timestamp) userData.get(9)); // cwsexpirydate
+                        responseAccount.setSuspended((boolean) userData.get(10)); // cwsissuspended
+                        responseAccount.setOlrSetup((boolean) userData.get(11)); // cwsisolrsetup
+                        responseAccount.setOlrLocked((boolean) userData.get(12)); // cwsisolrlocked
+                        responseAccount.setAccepted((boolean) userData.get(13)); // cwsistcaccepted
+                        responseAccount.setUserKeys((KeyPair) userData.get(14)); // cwspublickey
+                        responseAccount.setTelephoneNumber((String) userData.get(15)); // telephoneNumber
+                        responseAccount.setPagerNumber((String) userData.get(16)); // pager
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", responseAccount);
+                        }
+
+                        response.setResetId(resetId);
+                        response.setSmsCode(((secConfig.getSmsResetEnabled()) ? smsReset : null));
+                        response.setUserAccount(responseAccount);
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    }
+                    else
+                    {
+                        ERROR_RECORDER.error("Failed to locate user account in authentication repository. Cannot continue.");
+
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    }
+                }
+                else
+                {
+                    ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
+
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                }
+            }
+            else
+            {
+                ERROR_RECORDER.error("Unable to generate a unique identifier. Cannot continue.");
+
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountResetException(sqx.getMessage(), sqx);
+        }
+        catch (final UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountResetException(umx.getMessage(), umx);
+        }
+        finally
+        {
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.RESETPASS);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (final AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;

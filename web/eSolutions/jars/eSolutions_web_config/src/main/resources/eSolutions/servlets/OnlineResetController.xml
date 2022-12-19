@@ -36,6 +36,7 @@
         <property name="submitAnswersPage" value=".online-reset/jsp/html/en/OnlineReset_QuestionResponse" />
         <property name="submitUsernamePage" value=".online-reset/jsp/html/en/OnlineReset_SubmitUsername" />
         <property name="submitEmailAddrPage" value=".online-reset/jsp/html/en/OnlineReset_ForgotUsername" />
+        <property name="submitNewPasswordPage" value=".online-reset/jsp/html/en/OnlineReset_ChangePassword" />
         <property name="forgotUsernameEmail" ref="forgotUsernameEmail" />
         <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
     </bean>

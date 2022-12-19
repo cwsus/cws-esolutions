@@ -31,7 +31,7 @@
         <property name="serviceId" value="AEB46994-57B4-4E92-90AA-A4046F60B830" />
         <property name="serviceName" value="userAdmin" />
         <property name="recordsPerPage" value="20" />
-        <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
+        <property name="adminResetEmail" ref="adminResetEmail" />
         <property name="resetURL" value="/ui/olr/forgot-password/" />
         <property name="viewUserPage" value=".user-management/jsp/html/en/UserManagement_ViewUser" />
         <property name="viewAuditPage" value=".user-management/jsp/html/en/UserManagement_UserAudit" />

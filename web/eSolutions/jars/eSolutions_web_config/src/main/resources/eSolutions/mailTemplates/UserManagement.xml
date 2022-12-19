@@ -31,7 +31,7 @@
         </property>
     </bean>
 
-    <bean id="forgotPasswordEmail" class="org.springframework.mail.SimpleMailMessage">
+    <bean id="adminResetEmail" class="org.springframework.mail.SimpleMailMessage">
         <property name="from">
             <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
         </property>

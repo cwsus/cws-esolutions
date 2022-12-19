@@ -48,7 +48,6 @@ public final class AccountChangeProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
-    private static AuthenticationData userSecurity = new AuthenticationData();
     private static final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
     @BeforeAll public void setUp()
@@ -59,10 +58,8 @@ public final class AccountChangeProcessorImplTest
             hostInfo.setHostName("junit");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-            userAccount.setUsername("junit");
-
-            userSecurity.setPassword("junit");
+            userAccount.setGuid("21860175-baba-40ce-9923-b516a271fa96");
+            userAccount.setUsername("junit-runner");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
@@ -76,6 +73,9 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void enableOtpAuth()
     {
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setUsername("junit");
+
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
@@ -83,7 +83,7 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
         request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(AccountChangeProcessorImplTest.userSecurity);
+        request.setUserSecurity(authData);
 
         try
         {
@@ -99,6 +99,9 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void disableOtpAuth()
     {
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setUsername("junit");
+
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
@@ -106,7 +109,7 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
         request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(AccountChangeProcessorImplTest.userSecurity);
+        request.setUserSecurity(authData);
 
         try
         {
@@ -122,6 +125,9 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserEmail()
     {
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setUsername("junit");
+
         AccountChangeProcessorImplTest.userAccount.setEmailAddr("test@test.com");
 
         AccountChangeRequest request = new AccountChangeRequest();
@@ -131,7 +137,7 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
         request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(AccountChangeProcessorImplTest.userSecurity);
+        request.setUserSecurity(authData);
 
         try
         {
@@ -147,11 +153,13 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserSecurity()
     {
-        AccountChangeProcessorImplTest.userSecurity.setPassword("Ariana21*");
-        AccountChangeProcessorImplTest.userSecurity.setSecQuestionOne(RandomStringUtils.randomAlphanumeric(64));
-        AccountChangeProcessorImplTest.userSecurity.setSecQuestionTwo(RandomStringUtils.randomAlphanumeric(64));
-        AccountChangeProcessorImplTest.userSecurity.setSecAnswerOne(RandomStringUtils.randomAlphanumeric(64));
-        AccountChangeProcessorImplTest.userSecurity.setSecAnswerTwo(RandomStringUtils.randomAlphanumeric(64));
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setUsername("junit");
+        authData.setPassword("Ariana21*");
+        authData.setSecQuestionOne(RandomStringUtils.randomAlphanumeric(64));
+        authData.setSecQuestionTwo(RandomStringUtils.randomAlphanumeric(64));
+        authData.setSecAnswerOne(RandomStringUtils.randomAlphanumeric(64));
+        authData.setSecAnswerTwo(RandomStringUtils.randomAlphanumeric(64));
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -160,7 +168,7 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
         request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(AccountChangeProcessorImplTest.userSecurity);
+        request.setUserSecurity(authData);
 
         try
         {
@@ -176,6 +184,9 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserContact()
     {
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setUsername("junit");
+
         AccountChangeProcessorImplTest.userAccount.setPagerNumber("555-555-1212");
         AccountChangeProcessorImplTest.userAccount.setTelephoneNumber("555-555-1213");
 
@@ -186,7 +197,7 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
         request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(AccountChangeProcessorImplTest.userSecurity);
+        request.setUserSecurity(authData);
 
         try
         {
@@ -202,6 +213,9 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserKeys()
     {
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setUsername("junit");
+
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
@@ -209,7 +223,7 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
         request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(AccountChangeProcessorImplTest.userSecurity);
+        request.setUserSecurity(authData);
 
         try
         {
@@ -226,7 +240,10 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserPassword()
     {
-        AccountChangeProcessorImplTest.userSecurity.setNewPassword("Hailey27*");
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setNewPassword("Hailey27*");
+    	authData.setUsername("junit-runner");
+    	authData.setPassword("naB8QUXNTWFA7MCpFYvT");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -235,7 +252,7 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
         request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(AccountChangeProcessorImplTest.userSecurity);
+        request.setUserSecurity(authData);
 
         try
         {
@@ -245,6 +262,7 @@ public final class AccountChangeProcessorImplTest
         }
         catch (final AccountChangeException acx)
         {
+        	acx.printStackTrace();
         	Assertions.fail(acx.getMessage());
         }
     }

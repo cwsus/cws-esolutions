@@ -50,6 +50,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
+import com.cws.esolutions.web.model.UserChangeRequest;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -58,9 +59,14 @@ import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
+import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
+import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
+import com.cws.esolutions.security.processors.impl.AccountChangeProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
+import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
+import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -77,6 +83,7 @@ public class OnlineResetController
     private String submitEmailAddrPage = null;
     private String messageRequestFailure = null;
     private String messageNoAccountFound = null;
+    private String submitNewPasswordPage = null;
     private String messageAccountDisabled = null;
     private String messageRequestComplete = null;
     private OnlineResetValidator validator = null;
@@ -85,7 +92,6 @@ public class OnlineResetController
     private SimpleMailMessage forgotUsernameEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
 
-    private static final String RESET_KEY_ID = "resetKey";
     private static final String CNAME = OnlineResetController.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
@@ -206,6 +212,19 @@ public class OnlineResetController
         }
 
         this.submitEmailAddrPage = value;
+    }
+
+    public final void setSubmitNewPasswordPage(final String value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setSubmitNewPasswordPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.submitNewPasswordPage = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)
@@ -465,6 +484,12 @@ public class OnlineResetController
             resetReq.setHostInfo(reqInfo);
             resetReq.setApplicationId(this.appConfig.getApplicationId());
             resetReq.setApplicationName(this.appConfig.getApplicationName());
+            resetReq.setResetRequestId(resetId);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("AccountResetRequest: {}", resetReq);
+            }
 
             AccountResetResponse resetRes = processor.verifyResetRequest(resetReq);
 
@@ -493,10 +518,11 @@ public class OnlineResetController
                 else
                 {
                     // add in the session id
-                    hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                	model.addAttribute("resetGuid", resetRes.getUserAccount().getGuid());
+                	model.addAttribute("resetUsername", resetRes.getUserAccount().getUsername());
+                	model.addAttribute(Constants.COMMAND, new UserChangeRequest());
 
-                    model.addAttribute(OnlineResetController.RESET_KEY_ID, resetId);
-                    return this.appConfig.getLogonRedirect();
+                    return this.submitNewPasswordPage;
                 }
             }
             else
@@ -1137,7 +1163,7 @@ public class OnlineResetController
 	                    DEBUGGER.debug("AccountResetRequest: {}", resetReq);
 	                }
 
-	                AccountResetResponse resetRes = processor.resetUserPassword(resetReq);
+	                AccountResetResponse resetRes = processor.insertResetRequest(resetReq);
 
 	                if (DEBUG)
 	                {
@@ -1176,7 +1202,6 @@ public class OnlineResetController
 
 		                    StringBuilder targetURL = new StringBuilder()
 		                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-		                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
 		                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
 
 		                    if (DEBUG)
@@ -1187,13 +1212,13 @@ public class OnlineResetController
 		                    try
 		                    {
 		                    	SimpleMailMessage emailMessage = this.forgotPasswordEmail;
-		                    	emailMessage.setTo(userAccount.getEmailAddr());
-		                    	emailMessage.setText(String.format(this.forgotPasswordEmail.getText(),
-		                    			userAccount.getGivenName(),
-		                                new Date(System.currentTimeMillis()),
-		                                reqInfo.getHostName(),
-		                                targetURL.toString(),
-		                                8, 128));
+		                    	emailMessage.setTo(responseAccount.getEmailAddr());
+		                    	emailMessage.setText(String.format(
+		                    			this.forgotPasswordEmail.getText(),
+		                    				responseAccount.getGivenName(),
+		                    				new Date(System.currentTimeMillis()),
+		                    				reqInfo.getHostName(),
+		                    				targetURL.toString()));
 
 		                    	if (DEBUG)
 		                    	{
@@ -1215,7 +1240,7 @@ public class OnlineResetController
 		                        try
 		                        {
 		                        	SimpleMailMessage emailMessage = new SimpleMailMessage();
-		                        	emailMessage.setTo(userAccount.getPagerNumber());
+		                        	emailMessage.setTo(responseAccount.getPagerNumber());
 		                        	emailMessage.setText(resetRes.getSmsCode());
 
 		                        	if (DEBUG)
@@ -1265,6 +1290,187 @@ public class OnlineResetController
         catch (final AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
+
+            responsePage = this.appConfig.getErrorResponsePage();
+        }
+        finally
+        {
+            // invalidate the session at this point
+            hSession.removeAttribute(Constants.USER_ACCOUNT);
+            hSession.invalidate();
+
+            hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
+            hRequest.getSession().invalidate();
+        }
+
+        return responsePage;
+    }
+
+    @RequestMapping(value = "forgot-password/change-password", method = RequestMethod.POST)
+    public final String submitPasswordChange(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)
+    {
+        final String methodName = OnlineResetController.CNAME + "#submitSecurityResponse(@ModelAttribute(\"request\") final UserChangeRequest request, final BindingResult bindResult, final Model model)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountChangeData: {}", request);
+        }
+
+        String responsePage = null;
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+        this.validator.validate(request, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
+            model.addAttribute(Constants.COMMAND, request);
+
+            responsePage = this.submitAnswersPage;
+        }
+
+        try
+        {
+            // ensure authenticated access
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            UserAccount userAccount = new UserAccount();
+            userAccount.setGuid(request.getGuid());
+            userAccount.setUsername(request.getUsername());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", userAccount);
+            }
+
+            AuthenticationData userSecurity = new AuthenticationData();
+            userSecurity.setNewPassword(request.getConfirmPassword());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
+            }
+
+            AccountChangeRequest changeReq = new AccountChangeRequest();
+            changeReq.setApplicationId(this.appConfig.getApplicationId());
+            changeReq.setApplicationName(this.appConfig.getApplicationName());
+            changeReq.setHostInfo(reqInfo);
+            changeReq.setIsReset(true);
+            changeReq.setUserAccount(userAccount);
+            changeReq.setUserSecurity(userSecurity);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountChangeRequest: {}", changeReq);
+            }
+
+            AccountChangeResponse resResponse = processor.changeUserPassword(changeReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountChangeResponse: {}", resResponse);
+            }
+
+            switch (resResponse.getRequestStatus())
+            {
+                case DISABLED:
+                    model.addAttribute(Constants.ERROR_RESPONSE, this.messageAccountDisabled);
+                    model.addAttribute(Constants.COMMAND, request);
+
+                    responsePage = this.submitAnswersPage;
+
+                    break;
+                case FAILURE:
+                    model.addAttribute(Constants.ERROR_RESPONSE, this.messageRequestFailure);
+                    model.addAttribute(Constants.COMMAND, request);
+
+                    responsePage = this.submitAnswersPage;
+
+                    break;
+                case SUCCESS:
+                    // at this point the user password has been changed and we can complete a login
+                	UserAccount account = resResponse.getUserAccount();
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: {}", account);
+                	}
+
+                	responsePage = this.appConfig.getHomePage();
+
+                    break;
+                case UNAUTHORIZED:
+                    responsePage = this.appConfig.getUnauthorizedPage();
+
+                    break;
+                default:
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.messageRequestFailure);
+
+                    responsePage = this.appConfig.getErrorResponsePage();
+
+                    break;
+            }
+        }
+        catch (final AccountChangeException acx)
+        {
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
             responsePage = this.appConfig.getErrorResponsePage();
         }

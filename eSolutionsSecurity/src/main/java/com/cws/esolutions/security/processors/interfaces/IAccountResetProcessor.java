@@ -124,5 +124,5 @@ public interface IAccountResetProcessor
      * response information regarding the request status
      * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
      */
-    AccountResetResponse resetUserPassword(final AccountResetRequest request) throws AccountResetException;
+    AccountResetResponse insertResetRequest(final AccountResetRequest request) throws AccountResetException;
 }

@@ -153,7 +153,7 @@ public class AccountResetProcessorImplTest
 
         try
         {
-            AccountResetResponse response = processor.resetUserPassword(request);
+            AccountResetResponse response = processor.insertResetRequest(request);
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }

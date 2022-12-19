@@ -1467,7 +1467,7 @@ public class SQLUserManager implements UserManager
             // then make sure the new password doesnt match the existing password
             stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?) }");
             stmt.setString(1, userId);
-            stmt.setString(3, newPass);
+            stmt.setString(2, newPass);
 
             if (DEBUG)
             {

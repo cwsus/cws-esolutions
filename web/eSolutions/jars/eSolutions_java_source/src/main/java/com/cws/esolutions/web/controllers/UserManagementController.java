@@ -90,11 +90,11 @@ public class UserManagementController
     private String messageRoleChangeSuccess = null;
     private ApplicationServiceBean appConfig = null;
     private String messageAccountLockSuccess = null;
+    private SimpleMailMessage adminResetEmail = null;
     private String messageAccountResetSuccess = null;
     private String messageAccountUnlockSuccess = null;
     private String messageAccountSuspendSuccess = null;
     private String messageAccountUnsuspendSuccess = null;
-    private SimpleMailMessage forgotPasswordEmail = null;
 
     private static final String CNAME = UserManagementController.class.getName();
     private static final String ADD_USER_REDIRECT = "redirect:/ui/user-management/add-user";
@@ -324,9 +324,9 @@ public class UserManagementController
         this.resetURL = value;
     }
 
-    public final void setForgotPasswordEmail(final SimpleMailMessage value)
+    public final void setAdminResetEmail(final SimpleMailMessage value)
     {
-        final String methodName = UserManagementController.CNAME + "#setForgotPasswordEmail(final SimpleMailMessage value)";
+        final String methodName = UserManagementController.CNAME + "#setAdminResetEmail(final SimpleMailMessage value)";
 
         if (DEBUG)
         {
@@ -334,7 +334,7 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.forgotPasswordEmail = value;
+        this.adminResetEmail = value;
     }
 
     public final void setMessageAddUserSuccess(final String value)
@@ -1792,10 +1792,10 @@ public class UserManagementController
                     try
                     {
                     	SimpleMailMessage emailMessage = new SimpleMailMessage();
-                    	emailMessage.setTo(this.forgotPasswordEmail.getTo());
-                    	emailMessage.setSubject(this.forgotPasswordEmail.getSubject());
+                    	emailMessage.setTo(this.adminResetEmail.getTo());
+                    	emailMessage.setSubject(this.adminResetEmail.getSubject());
                     	emailMessage.setFrom(this.appConfig.getEmailAddress());
-                    	emailMessage.setText(String.format(this.forgotPasswordEmail.getText(),
+                    	emailMessage.setText(String.format(this.adminResetEmail.getText(),
                                 account.getGivenName(),
                                 new Date(System.currentTimeMillis()),
                                 reqInfo.getHostName(),
@@ -2370,10 +2370,10 @@ public class UserManagementController
                     try
                     {
                     	SimpleMailMessage emailMessage = new SimpleMailMessage();
-                    	emailMessage.setTo(this.forgotPasswordEmail.getTo());
-                    	emailMessage.setSubject(this.forgotPasswordEmail.getSubject());
+                    	emailMessage.setTo(this.adminResetEmail.getTo());
+                    	emailMessage.setSubject(this.adminResetEmail.getSubject());
                     	emailMessage.setFrom(this.appConfig.getEmailAddress());
-                    	emailMessage.setText(String.format(this.forgotPasswordEmail.getText(),
+                    	emailMessage.setText(String.format(this.adminResetEmail.getText(),
                                 newUser.getGivenName(),
                                 new Date(System.currentTimeMillis()),
                                 reqInfo.getHostName(),
