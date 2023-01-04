@@ -223,6 +223,7 @@
             <url-pattern>*.jsp</url-pattern>
             <http-method-omission>GET</http-method-omission>
             <http-method-omission>POST</http-method-omission>
+            <http-method-omission>HEAD</http-method-omission>
         </web-resource-collection>
         <web-resource-collection>
             <web-resource-name>Secure URLs</web-resource-name>
@@ -230,6 +231,7 @@
             <url-pattern>/*</url-pattern>
             <http-method-omission>GET</http-method-omission>
             <http-method-omission>POST</http-method-omission>
+            <http-method-omission>HEAD</http-method-omission>
         </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>

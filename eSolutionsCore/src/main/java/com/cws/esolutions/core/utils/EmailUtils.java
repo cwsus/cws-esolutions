@@ -32,6 +32,7 @@ import javax.mail.Store;
 import javax.mail.Flags;
 import java.util.HashMap;
 import javax.mail.Folder;
+import java.util.Objects;
 import java.util.Calendar;
 import javax.mail.Session;
 import javax.mail.Message;
@@ -166,11 +167,11 @@ public final class EmailUtils
                     DEBUGGER.debug("InitialContext: {}", initContext);
                 }
 
-                if (initContext != null)
+                if (!(Objects.isNull(initContext)))
                 {
                     mailSession = (Session) initContext.lookup(mailConfig.getDataSourceName());
 
-                    if (mailSession == null)
+                    if (Objects.isNull(mailSession))
                     {
                     	throw new MessagingException("Failed to obtain a mail session from the container.");
                     }
@@ -247,7 +248,7 @@ public final class EmailUtils
             // handing it here.
             if (message.getMessageTo().size() != 0)
             {
-                for (String to : message.getMessageTo())
+                for (final String to : message.getMessageTo())
                 {
                     if (DEBUG)
                     {

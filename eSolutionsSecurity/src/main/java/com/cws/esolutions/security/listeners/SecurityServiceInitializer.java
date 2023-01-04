@@ -28,6 +28,7 @@ package com.cws.esolutions.security.listeners;
 import java.net.URL;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Objects;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.io.FileInputStream;
@@ -78,7 +79,7 @@ public class SecurityServiceInitializer
         {
             xmlURL = classLoader.getResource(serviceConfig);
 
-            if (xmlURL == null)
+            if (Objects.isNull(xmlURL))
             {
                 // try loading from the filesystem
                 xmlURL = FileUtils.getFile(serviceConfig).toURI().toURL();

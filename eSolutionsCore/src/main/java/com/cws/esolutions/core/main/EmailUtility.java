@@ -44,7 +44,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.CommandLineParser;
 
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;

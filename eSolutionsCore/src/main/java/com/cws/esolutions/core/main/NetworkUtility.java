@@ -40,15 +40,11 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.CommandLineParser;
 
-import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.utils.NetworkUtils;
-import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.exception.CoreServicesException;
-import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -63,8 +59,6 @@ public final class NetworkUtility
     private static Options options = null;
 
     private static final String CNAME = NetworkUtility.class.getName();
-    private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
-    private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     private static final String CORE_LOG_CONFIG = System.getProperty("user.home") + "/etc/eSolutionsCore/logging/logging.xml";
     private static final String CORE_SVC_CONFIG = System.getProperty("user.home") + "/etc/eSolutionsCore/config/ServiceConfig.xml";
     private static final String SEC_LOG_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/logging/logging.xml";
@@ -202,9 +196,6 @@ public final class NetworkUtility
 
             SecurityServiceInitializer.initializeService(securityConfiguration, securityLogging, false);
             CoreServicesInitializer.initializeService(coreConfiguration, coreLogging, false, true);
-
-            final CoreConfigurationData coreConfigData = NetworkUtility.appBean.getConfigData();
-            final SecurityConfigurationData secConfigData = NetworkUtility.secBean.getConfigData();
 
             if (commandLine.hasOption("ssh"))
             {

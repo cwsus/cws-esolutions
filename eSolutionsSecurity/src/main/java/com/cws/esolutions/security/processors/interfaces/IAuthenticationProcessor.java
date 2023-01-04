@@ -56,8 +56,6 @@ import com.cws.esolutions.security.dao.reference.factory.UserSecurityInformation
  */
 public interface IAuthenticationProcessor
 {
-    static final String ATTRIBUTE_UID = "uid";
-    static final String ATTRIBUTE_GUID = "cn";
     static final String CNAME = IAuthenticationProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();

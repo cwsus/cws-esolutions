@@ -145,6 +145,7 @@ public class DatacenterValidator implements Validator
         {
         	errors.reject(this.messageNameNotLongEnough);
         }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageNameRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", this.messageDescriptionRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messageStatusRequired);

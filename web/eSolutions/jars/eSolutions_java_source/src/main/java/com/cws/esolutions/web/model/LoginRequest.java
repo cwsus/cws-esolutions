@@ -26,17 +26,17 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.core.CoreServicesConstants;
 /**
  * @author khuntly
  * @version 1.0
  */
 public class LoginRequest implements Serializable
 {
+	private String otpValue = null;
     private String loginUser = null;
     private String loginPass = null;
-    private String otpValue = null;
 
     private static final String CNAME = LoginRequest.class.getName();
     private static final long serialVersionUID = -7043606830867233708L;

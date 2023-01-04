@@ -46,7 +46,7 @@ public class AuthenticationProcessorImplTest
 {
     private static RequestHostInfo hostInfo = null;
 
-    private static final IAuthenticationProcessor agentAuth = (IAuthenticationProcessor) new AuthenticationProcessorImpl();
+    private static final IAuthenticationProcessor processor = (IAuthenticationProcessor) new AuthenticationProcessorImpl();
 
     @BeforeAll public void setUp()
     {
@@ -82,7 +82,7 @@ public class AuthenticationProcessorImplTest
 
         try
         {
-            AuthenticationResponse response = agentAuth.processAgentLogon(request);
+            AuthenticationResponse response = processor.processAgentLogon(request);
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
@@ -111,7 +111,7 @@ public class AuthenticationProcessorImplTest
 
         try
         {
-            AuthenticationResponse response = agentAuth.processOtpLogon(request);
+            AuthenticationResponse response = processor.processOtpLogon(request);
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }

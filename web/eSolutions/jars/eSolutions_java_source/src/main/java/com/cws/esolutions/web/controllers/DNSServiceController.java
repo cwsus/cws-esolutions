@@ -279,7 +279,7 @@ public class DNSServiceController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IDNSServiceRequestProcessor dnsProcessor = new DNSServiceRequestProcessorImpl();
+        final IDNSServiceRequestProcessor processor = (IDNSServiceRequestProcessor) new DNSServiceRequestProcessorImpl();
 
         if (DEBUG)
         {
@@ -365,7 +365,7 @@ public class DNSServiceController
                 DEBUGGER.debug("DNSServiceRequest: {}", dnsRequest);
             }
 
-            DNSServiceResponse response = dnsProcessor.performLookup(dnsRequest);
+            DNSServiceResponse response = processor.performLookup(dnsRequest);
 
             if (DEBUG)
             {
