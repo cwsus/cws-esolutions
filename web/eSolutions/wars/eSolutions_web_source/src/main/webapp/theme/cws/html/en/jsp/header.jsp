@@ -138,17 +138,17 @@
     				<div id="topnav">
     					<ul>
         					<li><a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.homepage' />">
-        						<spring:message code='theme.navbar.homepage' /></a></li></a></li>
+        						<spring:message code='theme.navbar.homepage' /></a></li>
         					<li><a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='theme.navbar.application-mgmt' />">
-                                    <spring:message code='theme.navbar.application-mgmt' /></a></li>
+                                <spring:message code='theme.navbar.application-mgmt' /></a></li>
         					<li><a href="${pageContext.request.contextPath}/ui/dns-service/default" title="<spring:message code='theme.navbar.dns-services' />">
-                                    <spring:message code='theme.navbar.dns-services' /></a></li>
+                                <spring:message code='theme.navbar.dns-services' /></a></li>
         					<li><a href="${pageContext.request.contextPath}/ui/service-management/default" title="<spring:message code='theme.navbar.service-mgmt' />">
-                                    <spring:message code='theme.navbar.service-mgmt' /></a></li>
+                                <spring:message code='theme.navbar.service-mgmt' /></a></li>
                             <li><a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='theme.navbar.system-mgmt' />">
-                                    <spring:message code='theme.navbar.system-mgmt' /></a></li>
+                                <spring:message code='theme.navbar.system-mgmt' /></a></li>
 							<li><a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="<spring:message code='theme.navbar.messaging' />">
-                                    <spring:message code='theme.navbar.messaging' /></a></li>
+                                <spring:message code='theme.navbar.messaging' /></a></li>
                             <li>
                                 <a href="${pageContext.request.contextPath}/ui/common/contact" title="<spring:message code='theme.contact.us' />">
                                     <spring:message code='theme.contact.us' /></a>

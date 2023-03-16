@@ -26,6 +26,9 @@ package com.cws.esolutions.security.dao.reference.factory;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import org.apache.logging.log4j.Logger;
+
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -69,7 +72,7 @@ public class UserSecurityInformationDAOFactory
         {
             try
             {
-            	userSecDAO = (IUserSecurityInformationDAO) Class.forName(className).newInstance();
+            	userSecDAO = (IUserSecurityInformationDAO) Class.forName(className).getDeclaredConstructor().newInstance();
 
                 if (DEBUG)
                 {
@@ -96,6 +99,14 @@ public class UserSecurityInformationDAOFactory
             {
                 ERROR_RECORDER.error(sx.getMessage(), sx);
             }
+            catch (InvocationTargetException itx)
+            {
+            	ERROR_RECORDER.error(itx.getMessage(), itx);
+			}
+            catch (NoSuchMethodException nsmx)
+            {
+            	ERROR_RECORDER.error(nsmx.getMessage(), nsmx);
+			}
         }
 
         return userSecDAO;

@@ -24,35 +24,49 @@ typeset CATALINA_OPTS="";
 ##
 ## Java specifics
 ##
-typeset JAVA_HOME="/usr/java/latest";
-typeset JRE_HOME="/usr/java/latest/jre";
+typeset JAVA_HOME="/usr/java/jdk-19";
+typeset JRE_HOME="/usr/java/latest";
+
+##
+## GC
+##
+typeset GC_OPTIONS="-XX:+UseG1GC -Xgcpolicy:gencon -verbose:gc -Xverbosegclog:${SERVER_LOG_ROOT}/verbosegc.%Y%m%d.%H%M%S.%pid.txt,20,10000 -XX:+UseGCOverheadLimit -XX:-UseParallelGC";
+typeset GC_OPTIONS="${GC_OPTIONS} -XX:-PrintClassHistogram -Xloggc:${LOG_ROOT}/logs/gclog -XX:-PrintConcurrentLocks -XX:-PrintGC -XX:-PrintGCDetails -XX:+ScavengeBeforeFullGC";
+
+##
+## LDAP
+##
+typeset LDAP_OPTIONS="-Dcom.sun.jndi.ldap.connect.pool.maxsize=200 -Dcom.sun.jndi.ldap.connect.pool.prefsize=200 -Dcom.sun.jndi.ldap.connect.pool.timeout=3000";
+
+##
+## Newrelic
+##
+typeset NEWRELIC_OPTIONS="-javaagent:/opt/newrelic/newrelic.jar";
+
+##
+## Network config
+##
+typeset NETWORK_OPTIONS="-Djava.net.preferIPv4Stack=true -Dsun.net.inetaddr.ttl=600";
 
 ##
 ## JMX
 ##
-typeset JMX_OPTIONS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${JMXREMOTE_PORT}";
-typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=true";
-typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.password.file=${CATALINA_HOME}/conf/jmxremote.password";
+typeset JMX_OPTIONS="-Dcom.sun.management.jmxremote.local.only=false -Djava.rmi.server.hostname=$(/usr/bin/env hostname -f) -Dcom.sun.management.jmxremote.local.only=false -Djavax.management.builder.initial= -Dcom.sun.management.jmxremote=true";
+typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=${JMXREMOTE_PORT} -Dcom.sun.management.jmxremote.rmi.port=${JMXREMOTE_PORT} -Dcom.sun.management.jmxremote.authenticate=true";
+typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.access.file=/home/appsrv/etc/jmxremote.access -Dcom.sun.management.jmxremote.password.file=/home/appsrv/etc/jmxremote.password";
 
 typeset DEBUG_OPTS="-Djava.security.debug=all -Djavax.net.debug=all";
 
 ##
 ## Java options
 ##
-typeset JAVA_OPTS="-server -verbose:gc -verbose:jni -Xrs -Xms512m -Xmx512m -Xshare:classes -XX:+ScavengeBeforeFullGC";
-typeset JAVA_OPTS="${JAVA_OPTS} -XX:-UseConcMarkSweepGC -XX:+UseGCOverheadLimit -XX:-UseParallelGC -XX:-PrintClassHistogram";
-typeset JAVA_OPTS="${JAVA_OPTS} -XX:-PrintConcurrentLocks -XX:-PrintGC -XX:-PrintGCDetails -XX:-PrintGCTimeStamps";
-typeset JAVA_OPTS="${JAVA_OPTS} -XX:-UseParallelOldGC -XX:+AggressiveOpts -XX:+UseLargePages -XX:+UseStringCache";
-typeset JAVA_OPTS="${JAVA_OPTS} -XX:+UseCompressedStrings -XX:+OptimizeStringConcat -XX:ErrorFile=${LOG_ROOT}/hs_err_pid.log";
-typeset JAVA_OPTS="${JAVA_OPTS} -XX:HeapDumpPath=${LOG_ROOT}/java_pid.hprof -XX:-HeapDumpOnOutOfMemoryError";
-typeset JAVA_OPTS="${JAVA_OPTS} -Xloggc:${LOG_ROOT}/gclog -XX:-UseGCLogFileRotation -XX:NumberOfGClogFiles=1";
-typeset JAVA_OPTS="${JAVA_OPTS} -XX:+AlwaysPreTouch";
+typeset JAVA_OPTS="-verbose:jni -Xms4096m -Xmx4096m -Xshareclasses:none -Dfile.encoding=utf-8 -Djava.awt.headless=true";
+typeset JAVA_OPTS="-Xjit:iprofilerMemoryConsumptionLimit=67108864 -Xcodecache20m";
+typeset JAVA_OPTS="${JAVA_OPTS} -Xdump:stack:events=allocation,filter=#10m -Dsun.reflect.inflationThreshold=0 -Djava.security.egd=file:/dev/./urandom -Dlog4j2.formatMsgNoLookups=true -Xlp";
+typeset JAVA_OPTS="${JAVA_OPTS} -DESOLUTIONS_LOG_ROOT=${CATALINA_HOME}/logs -Djava.io.tmpdir=${CATALINA_HOME}/current/tmp -XX:ErrorFile=${LOG_ROOT}/hs_err_pid.log -XX:HeapDumpPath=${LOG_ROOT}/java_pid.hprof";
+typeset JAVA_OPTS="${JAVA_OPTS} -XX:-HeapDumpOnOutOfMemoryError -XX:+UseLargePages";
+typeset JAVA_OPTS="${JAVA_OPTS} ${GC_OPTIONS} ${LDAP_OPTIONS} ${NEWRELIC_OPTIONS} ${NETWORK_OPTIONS} ${JMX_OPTIONS}";
 
-##
-## Java parameters
-##
-typeset JAVA_OPTS="${JAVA_OPTS} -DLOG_ROOT=${LOG_ROOT} -Dbuild.compiler.emacs=true -Dfile.encoding=utf-8";
-typeset JAVA_OPTS="${JAVA_OPTS} -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true";
 
 ##
 ## i guess theres a java tools options ??

@@ -34,7 +34,6 @@ import org.apache.logging.log4j.LogManager;
 import org.springframework.stereotype.Component;
 
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 /**

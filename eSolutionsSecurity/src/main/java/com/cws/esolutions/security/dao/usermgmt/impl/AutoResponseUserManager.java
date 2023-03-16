@@ -331,7 +331,6 @@ public class AutoResponseUserManager implements UserManager
         return true;
     }
 
-	@Override
 	public List<String[]> getUserByEmailAddress(final String searchData) throws UserManagementException
 	{
         final String methodName = AutoResponseUserManager.CNAME + "#getUserByEmailAddress(final String searchData) throws UserManagementException";
@@ -347,7 +346,6 @@ public class AutoResponseUserManager implements UserManager
         return results;
 	}
 
-	@Override
 	public String getUserByUsername(String searchData) throws UserManagementException
 	{
         final String methodName = AutoResponseUserManager.CNAME + "#getUserByUsername(final String searchData) throws UserManagementException";

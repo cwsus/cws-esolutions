@@ -6,7 +6,7 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.1.8</version>
+    <version>5.2.9</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
@@ -29,10 +29,14 @@
         <log4j.version>2.19.0</log4j.version>
         <mail.version>2.1.0</mail.version>
         <activation.version>1.1.1</activation.version>
-        <jaxb-api.version>2.3.1</jaxb-api.version>
-        <jaxb-runtime.version>4.0.1</jaxb-runtime.version>
+        <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
+        <org.glassfish.jaxb.version>4.0.2</org.glassfish.jaxb.version>
+        <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
         <mysql.version>8.0.31</mysql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>19</maven.compiler.release>
+        <maven.compiler.source>19</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
     </properties>
 
     <licenses>
@@ -235,9 +239,23 @@
         </dependency>
         <!-- JAXB -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb-api.version}</version>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jakarta.xml.bind.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${org.glassfish.jaxb.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jakarta.xml.bind.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -253,7 +271,7 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
             <type>jar</type>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -281,13 +299,6 @@
                         <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
-                        <source>1.8</source> <!-- fuck -->
-                        <target>1.8</target>
-                        <compilerArgs>
-                            <arg>-g</arg>
-                            <arg>-Xlint:all</arg>
-                            <arg>-deprecation</arg>
-                        </compilerArgs>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -357,6 +368,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
+                    <version>3.3.2</version>
                     <configuration>
                         <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                         <archive>
@@ -605,11 +617,6 @@
                                 <showDeprecation>true</showDeprecation>
                                 <showWarnings>true</showWarnings>
                                 <verbose>true</verbose>
-                                <compilerArgs>
-                                    <arg>-g</arg>
-                                    <arg>-Xlint:all</arg>
-                                    <arg>-deprecation</arg>
-                                </compilerArgs>
                             </configuration>
                         </plugin>
                         <plugin>

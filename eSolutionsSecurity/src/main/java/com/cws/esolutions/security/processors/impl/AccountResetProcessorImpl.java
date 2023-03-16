@@ -371,13 +371,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     resAccount.setDisplayName((String) authObject.get(4)); // displayName
                     resAccount.setEmailAddr((String) authObject.get(5)); // email
                     resAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(6))); //cwsrole
-                    resAccount.setFailedCount((int) authObject.get(7)); // cwsfailedpwdcount            
+                    resAccount.setFailedCount(Integer.parseInt(authObject.get(7).toString())); // cwsfailedpwdcount            
                     resAccount.setLastLogin((Timestamp) authObject.get(8)); // cwslastlogin
                     resAccount.setExpiryDate((Timestamp) authObject.get(9)); // cwsexpirydate
-                    resAccount.setSuspended((boolean) authObject.get(10)); // cwsissuspended
-                    resAccount.setOlrSetup((boolean) authObject.get(11)); // cwsisolrsetup
-                    resAccount.setOlrLocked((boolean) authObject.get(12)); // cwsisolrlocked
-                    resAccount.setAccepted((boolean) authObject.get(13)); // cwsistcaccepted
+                    resAccount.setSuspended(Boolean.valueOf(authObject.get(10).toString())); // cwsissuspended
+                    resAccount.setOlrSetup(Boolean.valueOf(authObject.get(11).toString())); // cwsisolrsetup
+                    resAccount.setOlrLocked(Boolean.valueOf(authObject.get(12).toString())); // cwsisolrlocked
+                    resAccount.setAccepted(Boolean.valueOf(authObject.get(13).toString())); // cwsistcaccepted
                     resAccount.setUserKeys((KeyPair) authObject.get(14)); // cwspublickey
                     resAccount.setTelephoneNumber((String) authObject.get(15)); // telephoneNumber
                     resAccount.setPagerNumber((String) authObject.get(16)); // pager
@@ -528,13 +528,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         responseAccount.setDisplayName((String) userData.get(4)); // displayName
                         responseAccount.setEmailAddr((String) userData.get(5)); // email
                         responseAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(6))); //cwsrole
-                        responseAccount.setFailedCount((int) userData.get(7)); // cwsfailedpwdcount            
+                        responseAccount.setFailedCount(Integer.parseInt(userData.get(7).toString())); // cwsfailedpwdcount            
                         responseAccount.setLastLogin((Timestamp) userData.get(8)); // cwslastlogin
                         responseAccount.setExpiryDate((Timestamp) userData.get(9)); // cwsexpirydate
-                        responseAccount.setSuspended((boolean) userData.get(10)); // cwsissuspended
-                        responseAccount.setOlrSetup((boolean) userData.get(11)); // cwsisolrsetup
-                        responseAccount.setOlrLocked((boolean) userData.get(12)); // cwsisolrlocked
-                        responseAccount.setAccepted((boolean) userData.get(13)); // cwsistcaccepted
+                        responseAccount.setSuspended(Boolean.valueOf(userData.get(10).toString())); // cwsissuspended
+                        responseAccount.setOlrSetup(Boolean.valueOf(userData.get(11).toString())); // cwsisolrsetup
+                        responseAccount.setOlrLocked(Boolean.valueOf(userData.get(12).toString())); // cwsisolrlocked
+                        responseAccount.setAccepted(Boolean.valueOf(userData.get(13).toString())); // cwsistcaccepted
                         responseAccount.setUserKeys((KeyPair) userData.get(14)); // cwspublickey
                         responseAccount.setTelephoneNumber((String) userData.get(15)); // telephoneNumber
                         responseAccount.setPagerNumber((String) userData.get(16)); // pager
@@ -700,13 +700,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             userAccount.setDisplayName((String) userList.get(4)); // displayName
             userAccount.setEmailAddr((String) userList.get(5)); // email
             userAccount.setUserRole(SecurityUserRole.valueOf((String) userList.get(6))); //cwsrole
-            userAccount.setFailedCount((int) userList.get(7)); // cwsfailedpwdcount            
+            userAccount.setFailedCount(Integer.parseInt(userList.get(7).toString())); // cwsfailedpwdcount            
             userAccount.setLastLogin((Timestamp) userList.get(8)); // cwslastlogin
             userAccount.setExpiryDate((Timestamp) userList.get(9)); // cwsexpirydate
-            userAccount.setSuspended((boolean) userList.get(10)); // cwsissuspended
-            userAccount.setOlrSetup((boolean) userList.get(11)); // cwsisolrsetup
-            userAccount.setOlrLocked((boolean) userList.get(12)); // cwsisolrlocked
-            userAccount.setAccepted((boolean) userList.get(13)); // cwsistcaccepted
+            userAccount.setSuspended(Boolean.valueOf(userList.get(10).toString())); // cwsissuspended
+            userAccount.setOlrSetup(Boolean.valueOf(userList.get(11).toString())); // cwsisolrsetup
+            userAccount.setOlrLocked(Boolean.valueOf(userList.get(12).toString())); // cwsisolrlocked
+            userAccount.setAccepted(Boolean.valueOf(userList.get(13).toString())); // cwsistcaccepted
             userAccount.setUserKeys((KeyPair) userList.get(14)); // cwspublickey
             userAccount.setTelephoneNumber((String) userList.get(15)); // telephoneNumber
             userAccount.setPagerNumber((String) userList.get(16)); // pager
@@ -816,13 +816,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         responseAccount.setDisplayName((String) userData.get(4)); // displayName
                         responseAccount.setEmailAddr((String) userData.get(5)); // email
                         responseAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(6))); //cwsrole
-                        responseAccount.setFailedCount((int) userData.get(7)); // cwsfailedpwdcount            
+                        responseAccount.setFailedCount(Integer.parseInt(userData.get(7).toString())); // cwsfailedpwdcount            
                         responseAccount.setLastLogin((Timestamp) userData.get(8)); // cwslastlogin
                         responseAccount.setExpiryDate((Timestamp) userData.get(9)); // cwsexpirydate
-                        responseAccount.setSuspended((boolean) userData.get(10)); // cwsissuspended
-                        responseAccount.setOlrSetup((boolean) userData.get(11)); // cwsisolrsetup
-                        responseAccount.setOlrLocked((boolean) userData.get(12)); // cwsisolrlocked
-                        responseAccount.setAccepted((boolean) userData.get(13)); // cwsistcaccepted
+                        responseAccount.setSuspended(Boolean.valueOf(userData.get(10).toString())); // cwsissuspended
+                        responseAccount.setOlrSetup(Boolean.valueOf(userData.get(11).toString())); // cwsisolrsetup
+                        responseAccount.setOlrLocked(Boolean.valueOf(userData.get(12).toString())); // cwsisolrlocked
+                        responseAccount.setAccepted(Boolean.valueOf(userData.get(13).toString())); // cwsistcaccepted
                         responseAccount.setUserKeys((KeyPair) userData.get(14)); // cwspublickey
                         responseAccount.setTelephoneNumber((String) userData.get(15)); // telephoneNumber
                         responseAccount.setPagerNumber((String) userData.get(16)); // pager

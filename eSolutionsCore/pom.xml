@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.1.8</version>
+        <version>5.2.9</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -144,14 +144,6 @@
             <version>${dnsjava.version}</version>
             <type>jar</type>
             <scope>compile</scope>
-            <!--
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-            -->
         </dependency>
     </dependencies>
 </project>

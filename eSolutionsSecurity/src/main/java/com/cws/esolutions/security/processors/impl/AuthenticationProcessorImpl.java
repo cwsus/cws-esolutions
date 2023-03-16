@@ -144,13 +144,13 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount.setDisplayName((String) authObject.get(4)); // displayName
             userAccount.setEmailAddr((String) authObject.get(5)); // email
             userAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(6))); //cwsrole
-            userAccount.setFailedCount((int) authObject.get(7)); // cwsfailedpwdcount            
+            userAccount.setFailedCount(Integer.parseInt(authObject.get(7).toString())); // cwsfailedpwdcount            
             userAccount.setLastLogin((Timestamp) authObject.get(8)); // cwslastlogin
             userAccount.setExpiryDate((Timestamp) authObject.get(9)); // cwsexpirydate
-            userAccount.setSuspended((boolean) authObject.get(10)); // cwsissuspended
-            userAccount.setOlrSetup((boolean) authObject.get(11)); // cwsisolrsetup
-            userAccount.setOlrLocked((boolean) authObject.get(12)); // cwsisolrlocked
-            userAccount.setAccepted((boolean) authObject.get(13)); // cwsistcaccepted
+            userAccount.setSuspended(Boolean.valueOf(authObject.get(10).toString())); // cwsissuspended
+            userAccount.setOlrSetup(Boolean.valueOf(authObject.get(11).toString())); // cwsisolrsetup
+            userAccount.setOlrLocked(Boolean.valueOf(authObject.get(12).toString())); // cwsisolrlocked
+            userAccount.setAccepted(Boolean.valueOf(authObject.get(13).toString())); // cwsistcaccepted
             userAccount.setUserKeys((KeyPair) authObject.get(14)); // cwspublickey
             userAccount.setTelephoneNumber((String) authObject.get(15)); // telephoneNumber
             userAccount.setPagerNumber((String) authObject.get(16)); // pager

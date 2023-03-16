@@ -199,7 +199,7 @@ public class SQLUserManager implements UserManager
             stmt.setString(5, (String) userAccount.get(4)); // displayname NVARCHAR(100),
             stmt.setString(6, (String) userAccount.get(5)); // email NVARCHAR(50),
             stmt.setString(7, (String) userAccount.get(6)); // cwsrole NVARCHAR(45),
-            stmt.setInt(8, (int) userAccount.get(7)); // cwsfailedpwdcount MEDIUMINT(9),
+            stmt.setInt(8, Integer.parseInt(userAccount.get(7).toString())); // cwsfailedpwdcount MEDIUMINT(9),
             stmt.setBoolean(9, (Boolean) userAccount.get(8)); // cwsissuspended BOOLEAN,
             stmt.setBoolean(10, (Boolean) userAccount.get(9)); // cwsisolrsetup BOOLEAN,
             stmt.setBoolean(11, (Boolean) userAccount.get(10)); // cwsisolrlocked BOOLEAN,

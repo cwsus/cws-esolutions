@@ -105,8 +105,8 @@ public class CheckEmailMessages implements Job
             String pass = (String) props.get("userPass");
             String salt = (String) props.get("salt");
             String secretAlgorithm = (String) props.get("secretAlgorithm");
-            int iterations = (int) props.get("iterations");
-            int keyBits = (int) props.get("keyBits");
+            int iterations = Integer.parseInt(props.get("iterations").toString());
+            int keyBits = Integer.parseInt(props.get("keyBits").toString());
             String algorithm = (String) props.get("algorithm");
             String instance = (String) props.get("instance");
             String encoding = (String) props.get("encoding");

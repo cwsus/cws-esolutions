@@ -26,6 +26,9 @@ package com.cws.esolutions.security.dao.userauth.factory;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import org.apache.logging.log4j.Logger;
+
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -69,7 +72,7 @@ public class AuthenticatorFactory
         {
             try
             {
-            	authenticator = (Authenticator) Class.forName(className).newInstance();
+            	authenticator = (Authenticator) Class.forName(className).getDeclaredConstructor().newInstance();
 
                 if (DEBUG)
                 {
@@ -96,6 +99,14 @@ public class AuthenticatorFactory
             {
                 ERROR_RECORDER.error(sx.getMessage(), sx);
             }
+            catch (InvocationTargetException itx)
+            {
+            	ERROR_RECORDER.error(itx.getMessage(), itx);
+			}
+            catch (NoSuchMethodException nsmx)
+            {
+            	ERROR_RECORDER.error(nsmx.getMessage(), nsmx);
+			}
         }
 
         return authenticator;
