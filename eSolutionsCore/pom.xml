@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.3.3</version>
+        <version>5.3.5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -20,9 +20,7 @@
 
     <properties>
 		<jakarta.servlet.version>6.0.0</jakarta.servlet.version>
-    	<javax.servlet.version>4.0.1</javax.servlet.version>
     	<dnsjava.version>3.5.2</dnsjava.version>
-        <quartz.version>2.3.2</quartz.version>
         <j2ssh.version>0.2.9</j2ssh.version>
         <virtualbox.version>4.2.8</virtualbox.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
@@ -79,20 +77,6 @@
             		<groupId>org.slf4j</groupId>
             		<artifactId>slf4j-api</artifactId>
             	</exclusion>
-            </exclusions>
-        </dependency>
-        <!-- quartz -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${quartz.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
         <!-- ssh -->

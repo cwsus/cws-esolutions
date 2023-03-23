@@ -28,23 +28,23 @@ package com.cws.esolutions.security.filters;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
-import javax.servlet.Filter;
 import java.util.Enumeration;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletRequest;
 import org.apache.logging.log4j.Logger;
-import javax.servlet.annotation.WebFilter;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
- * @see javax.servlet.Filter
+ * @see jakarta.servlet.Filter
  */
 @WebFilter(filterName = "SessionFixationFilter", urlPatterns = {"/*"})
 public class SessionFixationFilter implements Filter

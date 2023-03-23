@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.3.3</version>
+        <version>5.3.5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -23,7 +23,6 @@
 
     <properties>
 		<jakarta.servlet.version>6.0.0</jakarta.servlet.version>
-    	<javax.servlet.version>4.0.1</javax.servlet.version>
         <taglibs.version>1.2.5</taglibs.version>
         <jstl.version>3.0.0</jstl.version>
         <jsp-api.version>3.1.1</jsp-api.version>
@@ -118,7 +117,7 @@
             </dependency>
             <dependency>
                 <groupId>jakarta.servlet.jsp.jstl</groupId>
-                <artifactId>jakarta.servlet.jstl-api</artifactId>
+                <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
                 <version>${jstl.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
@@ -130,6 +129,13 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
+	        <dependency>
+	            <groupId>jakarta.servlet</groupId>
+	            <artifactId>jakarta.servlet-api</artifactId>
+			    <version>${jakarta.servlet.version}</version>
+			    <type>jar</type>
+			    <scope>provided</scope>
+			</dependency>
             <!-- spring -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -196,14 +202,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <!-- servlet api -->
-	        <dependency>
-	            <groupId>jakarta.servlet</groupId>
-	            <artifactId>jakarta.servlet-api</artifactId>
-			    <version>${jakarta.servlet.version}</version>
-			    <type>jar</type>
-			    <scope>provided</scope>
-			</dependency>
         </dependencies>
     </dependencyManagement>
 </project>

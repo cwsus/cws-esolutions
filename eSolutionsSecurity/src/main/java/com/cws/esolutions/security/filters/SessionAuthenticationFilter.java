@@ -27,32 +27,29 @@ package com.cws.esolutions.security.filters;
  */
 import java.util.Arrays;
 import java.io.IOException;
-import java.net.URLEncoder;
-import javax.servlet.Filter;
 import java.util.Enumeration;
+import jakarta.servlet.Filter;
 import java.util.ResourceBundle;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletRequest;
 import org.apache.logging.log4j.Logger;
-import javax.servlet.UnavailableException;
-import javax.servlet.annotation.WebFilter;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpSession;
 import java.util.MissingResourceException;
 import org.apache.logging.log4j.LogManager;
+import jakarta.servlet.UnavailableException;
+import jakarta.servlet.annotation.WebFilter;
 import org.apache.commons.lang3.StringUtils;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.annotation.WebInitParam;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.annotation.WebInitParam;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
- * @see javax.servlet.Filter
+ * @see jakarta.servlet.Filter
  */
 @WebFilter(filterName = "SessionAuthenticationFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "filter-config", value = "SecurityService/filters/SessionAuthenticationFilter"))
 public class SessionAuthenticationFilter implements Filter
@@ -68,7 +65,6 @@ public class SessionAuthenticationFilter implements Filter
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
     private static final String CNAME = SessionAuthenticationFilter.class.getName();
-    private static final SystemConfig systemConfig = SecurityServiceBean.getInstance().getConfigData().getSystemConfig();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -35,10 +35,10 @@ import jakarta.xml.bind.Unmarshaller;
 import javax.naming.InitialContext;
 import jakarta.xml.bind.JAXBException;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
 import org.apache.commons.lang3.StringUtils;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextListener;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -47,7 +47,7 @@ import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
- * @see javax.servlet.ServletContextListener
+ * @see jakarta.servlet.ServletContextListener
  */
 public class SecurityServiceListener implements ServletContextListener
 {
@@ -55,7 +55,7 @@ public class SecurityServiceListener implements ServletContextListener
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
     /**
-     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
+     * @see jakarta.servlet.ServletContextListener#contextInitialized(jakarta.servlet.ServletContextEvent)
      */
     public void contextInitialized(final ServletContextEvent sContextEvent)
     {
@@ -128,7 +128,7 @@ public class SecurityServiceListener implements ServletContextListener
     }
 
     /**
-     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
+     * @see jakarta.servlet.ServletContextListener#contextDestroyed(jakarta.servlet.ServletContextEvent)
      */
     public void contextDestroyed(final ServletContextEvent sContextEvent)
     {

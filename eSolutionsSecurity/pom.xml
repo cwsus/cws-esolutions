@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.3.3</version>
+        <version>5.3.5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,9 +22,7 @@
 
     <properties>
 		<jakarta.servlet.version>6.0.0</jakarta.servlet.version>
-    	<javax.servlet.version>4.0.1</javax.servlet.version>
     	<unboundid-ldapsdk.version>6.0.7</unboundid-ldapsdk.version>
-        <quartz.version>2.3.2</quartz.version>
         <qrgen.version>1.4</qrgen.version>
         <bouncycastle.version>1.72</bouncycastle.version>
         <commons-cli.version>1.5.0</commons-cli.version>
@@ -59,19 +57,6 @@
             <scope>test</scope>
 		</dependency>
         <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${quartz.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>net.glxn</groupId>
             <artifactId>qrgen</artifactId>
             <version>${qrgen.version}</version>
@@ -103,9 +88,9 @@
         </dependency>
         <!-- servlet api -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-		    <version>${javax.servlet.version}</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+		    <version>${jakarta.servlet.version}</version>
 		    <type>jar</type>
 		    <scope>provided</scope>
 		</dependency>

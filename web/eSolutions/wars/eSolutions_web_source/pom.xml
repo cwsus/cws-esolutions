@@ -34,18 +34,16 @@
         </dependency>
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
-            <artifactId>jakarta.servlet.jstl-api</artifactId>
-            <exclusions>
-            	<exclusion>
-            		<groupId>jakarta.servlet</groupId>
-            		<artifactId>jakarta.servlet-api</artifactId>
-            	</exclusion>
-            </exclusions>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet.jsp</groupId>
             <artifactId>jakarta.servlet.jsp-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+		</dependency>
         <!-- spring -->
         <dependency>
             <groupId>org.springframework</groupId>
