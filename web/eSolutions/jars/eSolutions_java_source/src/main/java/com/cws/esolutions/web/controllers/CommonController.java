@@ -28,12 +28,12 @@ package com.cws.esolutions.web.controllers;
  */
 import java.util.Enumeration;
 import org.springframework.ui.Model;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
+import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.mail.MailSender;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.mail.MailException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;

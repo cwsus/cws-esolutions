@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.2.9</version>
+        <version>5.3.3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,11 +22,12 @@
     </scm>
 
     <properties>
+		<jakarta.servlet.version>6.0.0</jakarta.servlet.version>
     	<javax.servlet.version>4.0.1</javax.servlet.version>
         <taglibs.version>1.2.5</taglibs.version>
-        <jstl.version>1.2</jstl.version>
-        <jsp-api.version>2.3.3</jsp-api.version>
-        <spring.version>5.3.24</spring.version>
+        <jstl.version>3.0.0</jstl.version>
+        <jsp-api.version>3.1.1</jsp-api.version>
+        <spring.version>6.0.7</spring.version>
         <eSolutionsCore.version>1.0-SNAPSHOT</eSolutionsCore.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -116,15 +117,15 @@
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>javax.servlet.jsp.jstl</groupId>
-                <artifactId>jstl-api</artifactId>
+                <groupId>jakarta.servlet.jsp.jstl</groupId>
+                <artifactId>jakarta.servlet.jstl-api</artifactId>
                 <version>${jstl.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>javax.servlet.jsp-api</artifactId>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
                 <version>${jsp-api.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
@@ -197,9 +198,9 @@
             </dependency>
             <!-- servlet api -->
 	        <dependency>
-	            <groupId>javax.servlet</groupId>
-	            <artifactId>javax.servlet-api</artifactId>
-			    <version>${javax.servlet.version}</version>
+	            <groupId>jakarta.servlet</groupId>
+	            <artifactId>jakarta.servlet-api</artifactId>
+			    <version>${jakarta.servlet.version}</version>
 			    <type>jar</type>
 			    <scope>provided</scope>
 			</dependency>

@@ -6,7 +6,7 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.2.9</version>
+    <version>5.3.3</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
@@ -33,6 +33,7 @@
         <org.glassfish.jaxb.version>4.0.2</org.glassfish.jaxb.version>
         <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
         <mysql.version>8.0.31</mysql.version>
+        <javax.mail.version>1.6.2</javax.mail.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>19</maven.compiler.release>
         <maven.compiler.source>19</maven.compiler.source>
@@ -131,7 +132,11 @@
             <exclusions>
                 <exclusion>
                     <groupId>javax.mail</groupId>
-                    <artifactId>mail</artifactId>
+                    <artifactId>javax.mail-api</artifactId>
+                </exclusion>
+                <exclusion>
+                	<groupId>com.sun.mail</groupId>
+                	<artifactId>javax.mail</artifactId>
                 </exclusion>
             </exclusions>
             <type>jar</type>
@@ -259,12 +264,19 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+	    <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+    		<version>${javax.mail.version}</version>
+    		<type>jar</type>
+    		<scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>${activation.version}</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>

@@ -28,10 +28,10 @@ package com.cws.esolutions.web.controllers;
  */
 import java.util.List;
 import java.util.Enumeration;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
+import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;

@@ -27,10 +27,10 @@ package com.cws.esolutions.web.controllers;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Enumeration;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
+import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestMethod;

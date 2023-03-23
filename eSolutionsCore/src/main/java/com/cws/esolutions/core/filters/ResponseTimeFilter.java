@@ -73,7 +73,9 @@ public class ResponseTimeFilter implements Filter
         try
         {
         	Context initContext = new InitialContext();
-        	environment = (String) initContext.lookup("environment");
+        	Context envContext = (Context) initContext.lookup(CoreServicesConstants.DS_CONTEXT);
+
+        	environment = (String) envContext.lookup("environment");
         }
         catch (final NamingException nx)
         {

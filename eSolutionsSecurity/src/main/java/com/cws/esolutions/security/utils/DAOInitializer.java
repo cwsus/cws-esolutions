@@ -331,8 +331,9 @@ public final class DAOInitializer
             else
             {
                 Context initContext = new InitialContext();
+                Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                bean.setAuthDataSource(initContext.lookup(secConfig.getAuthConfig()));            	
+                bean.setAuthDataSource(envContext.lookup(secConfig.getAuthConfig()));            	
             }
         }
         catch (final LDAPException lx)
@@ -404,8 +405,9 @@ public final class DAOInitializer
             else
             {
                 Context initContext = new InitialContext();
+                Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                bean.setAuditDataSource(initContext.lookup(secConfig.getAuditConfig()));            	
+                bean.setAuditDataSource(envContext.lookup(secConfig.getAuditConfig()));            	
             }
         }
         catch (final NamingException nx)

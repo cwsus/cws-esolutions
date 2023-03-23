@@ -30,10 +30,10 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Enumeration;
 import org.springframework.ui.Model;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
+import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -1309,7 +1309,7 @@ public class OnlineResetController
     @RequestMapping(value = "forgot-password/change-password", method = RequestMethod.POST)
     public final String submitPasswordChange(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = OnlineResetController.CNAME + "#submitSecurityResponse(@ModelAttribute(\"request\") final UserChangeRequest request, final BindingResult bindResult, final Model model)";
+        final String methodName = OnlineResetController.CNAME + "#submitPasswordChange(@ModelAttribute(\"request\") final AccountChangeData request, final BindingResult bindResult, final Model model)";
 
         if (DEBUG)
         {

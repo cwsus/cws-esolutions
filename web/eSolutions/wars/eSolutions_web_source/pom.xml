@@ -24,8 +24,8 @@
     <dependencies>
         <!-- Provided dependencies -->
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 		</dependency>
         <!-- tld's -->
         <dependency>
@@ -33,18 +33,18 @@
             <artifactId>taglibs-standard-impl</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet.jsp.jstl</groupId>
-            <artifactId>jstl-api</artifactId>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jstl-api</artifactId>
             <exclusions>
             	<exclusion>
-            		<groupId>javax.servlet</groupId>
-            		<artifactId>servlet-api</artifactId>
+            		<groupId>jakarta.servlet</groupId>
+            		<artifactId>jakarta.servlet-api</artifactId>
             	</exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
         </dependency>
         <!-- spring -->
         <dependency>

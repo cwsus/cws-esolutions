@@ -28,10 +28,10 @@ package com.cws.esolutions.web.controllers;
  */
 import java.util.Enumeration;
 import org.springframework.ui.Model;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
+import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,8 +49,8 @@ import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
-import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0

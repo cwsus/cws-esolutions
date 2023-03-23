@@ -33,7 +33,6 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * @author cws-khuntly
