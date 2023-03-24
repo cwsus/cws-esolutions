@@ -34,7 +34,6 @@ import org.apache.logging.log4j.LogManager;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /**
  * @author cws-khuntly
  * @version 1.0

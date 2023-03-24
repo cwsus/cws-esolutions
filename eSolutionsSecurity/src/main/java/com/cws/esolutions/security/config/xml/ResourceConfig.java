@@ -35,9 +35,7 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 
-
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.config.xml.DataSourceManager;
 /**
  * @author cws-khuntly
  * @version 1.0

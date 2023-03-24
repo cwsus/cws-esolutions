@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.utils.DAOInitializer;
 import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
@@ -92,11 +93,12 @@ public class SecurityServiceListener implements ServletContextListener
                     DAOInitializer.configureAndCreateAuditConnection(null, true, svcBean);
 
                     Context initContext = new InitialContext();
+                    Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
-                    	dsMap.put(mgr.getDsName(), (DataSource) initContext.lookup(mgr.getDataSource()));
+                    	dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
                     }
 
                     svcBean.setDataSources(dsMap);

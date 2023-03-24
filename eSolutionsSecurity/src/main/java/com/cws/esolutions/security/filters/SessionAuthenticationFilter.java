@@ -27,7 +27,6 @@ package com.cws.esolutions.security.filters;
  */
 import java.util.Arrays;
 import java.io.IOException;
-import java.net.URLEncoder;
 import javax.servlet.Filter;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
@@ -48,8 +47,6 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @see javax.servlet.Filter
@@ -68,7 +65,6 @@ public class SessionAuthenticationFilter implements Filter
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
     private static final String CNAME = SessionAuthenticationFilter.class.getName();
-    private static final SystemConfig systemConfig = SecurityServiceBean.getInstance().getConfigData().getSystemConfig();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

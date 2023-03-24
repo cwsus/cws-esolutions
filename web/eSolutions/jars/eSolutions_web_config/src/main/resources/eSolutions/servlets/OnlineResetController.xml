@@ -17,6 +17,13 @@
         <property name="messageEmailAddressRequired" value="error.email.required" />
         <property name="messageUsernameRequired" value="error.username.empty" />
     </bean>
+    <bean id="passwordResetValidator" class="com.cws.esolutions.web.validators.PasswordValidator">
+        <property name="messagePasswordMatch" value="error.passwords.match" />
+        <property name="messageNewPasswordRequired" value="error.new.password.required" />
+        <property name="messageConfirmPasswordRequired" value="error.confirm.password.required" />
+        <property name="messageCurrentPasswordRequired" value="error.current.password.required" />
+        <property name="messagePasswordFailedValidation" value="error.password.failed.validation" />
+    </bean>
 
     <bean id="onlineResetController" class="com.cws.esolutions.web.controllers.OnlineResetController">
         <property name="appConfig">
@@ -27,6 +34,9 @@
         </property>
         <property name="validator">
             <ref bean="onlineResetValidator" />
+        </property>
+        <property name="passwordValidator">
+            <ref bean="passwordResetValidator" />
         </property>
         <property name="resetURL" value="/ui/online-reset/forgot-password/" />
         <property name="messageRequestComplete" value="olr.request.complete" />

@@ -52,7 +52,6 @@ import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.unboundid.ldap.sdk.StartTLSPostConnectProcessor;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -331,8 +330,9 @@ public final class DAOInitializer
             else
             {
                 Context initContext = new InitialContext();
+                Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                bean.setAuthDataSource(initContext.lookup(secConfig.getAuthConfig()));            	
+                bean.setAuthDataSource(envContext.lookup(secConfig.getAuthConfig()));            	
             }
         }
         catch (final LDAPException lx)
@@ -404,8 +404,9 @@ public final class DAOInitializer
             else
             {
                 Context initContext = new InitialContext();
+                Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                bean.setAuditDataSource(initContext.lookup(secConfig.getAuditConfig()));            	
+                bean.setAuditDataSource(envContext.lookup(secConfig.getAuditConfig()));            	
             }
         }
         catch (final NamingException nx)

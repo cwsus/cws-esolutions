@@ -32,7 +32,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /**
  * @author khuntly

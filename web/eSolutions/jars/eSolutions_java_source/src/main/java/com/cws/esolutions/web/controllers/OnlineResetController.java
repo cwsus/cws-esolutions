@@ -52,6 +52,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.model.UserChangeRequest;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
+import com.cws.esolutions.web.validators.PasswordValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
@@ -88,6 +89,7 @@ public class OnlineResetController
     private String messageRequestComplete = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
+    private PasswordValidator passwordValidator = null;
 
     private SimpleMailMessage forgotUsernameEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
@@ -149,6 +151,7 @@ public class OnlineResetController
 
         this.messageAccountDisabled = value;
     }
+
     public final void setMessageRequestComplete(final String value)
     {
         final String methodName = OnlineResetController.CNAME + "#setMessageRequestComplete(final String value)";
@@ -251,6 +254,19 @@ public class OnlineResetController
         }
 
         this.validator = value;
+    }
+
+    public final void setPasswordValidator(final PasswordValidator value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setPasswordValidator(final OnlineResetValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.passwordValidator = value;
     }
 
     public final void setForgotUsernameEmail(final SimpleMailMessage value)
@@ -1193,13 +1209,6 @@ public class OnlineResetController
 		                        DEBUGGER.debug("UserAccount: {}", responseAccount);
 		                    }
 
-		                    String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-		                    if (DEBUG)
-		                    {
-		                        DEBUGGER.debug("Message ID: {}", emailId);
-		                    }
-
 		                    StringBuilder targetURL = new StringBuilder()
 		                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
 		                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
@@ -1365,7 +1374,7 @@ public class OnlineResetController
             }
         }
 
-        this.validator.validate(request, bindResult);
+        this.passwordValidator.validate(request, bindResult);
 
         if (bindResult.hasErrors())
         {

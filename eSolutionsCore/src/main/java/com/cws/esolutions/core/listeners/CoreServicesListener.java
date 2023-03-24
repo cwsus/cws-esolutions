@@ -30,16 +30,17 @@ import java.util.Map;
 import java.util.HashMap;
 import javax.naming.Context;
 import javax.sql.DataSource;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Unmarshaller;
 import javax.naming.InitialContext;
-import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.core.CoreServicesBean;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
@@ -89,11 +90,12 @@ public class CoreServicesListener implements ServletContextListener
 
                     // set up the resource connections
                     Context initContext = new InitialContext();
+                    Context envContext = (Context) initContext.lookup(CoreServicesConstants.DS_CONTEXT);
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
-                        dsMap.put(mgr.getDsName(), (DataSource) initContext.lookup(mgr.getDataSource()));
+                        dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
                     }
 
                     appBean.setDataSources(dsMap);

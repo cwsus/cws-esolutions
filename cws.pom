@@ -6,7 +6,7 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.2.9</version>
+    <version>5.2.10</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
@@ -27,7 +27,7 @@
         <commons-net.version>3.9.0</commons-net.version>
         <commons-digester.version>3.2</commons-digester.version>
         <log4j.version>2.19.0</log4j.version>
-        <mail.version>2.1.0</mail.version>
+        <mail.version>1.6.2</mail.version>
         <activation.version>1.1.1</activation.version>
         <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
         <org.glassfish.jaxb.version>4.0.2</org.glassfish.jaxb.version>
@@ -117,11 +117,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>jakarta.mail</groupId>
-            <artifactId>jakarta.mail-api</artifactId>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
             <version>${mail.version}</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <!-- Apache Commons -->
         <dependency>
@@ -264,14 +264,14 @@
             <artifactId>activation</artifactId>
             <version>${activation.version}</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
