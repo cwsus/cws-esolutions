@@ -694,7 +694,7 @@ public class OnlineResetController
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
             model.addAttribute(Constants.COMMAND, new AccountChangeData());
 
-            responsePage = this.submitUsernamePage;
+            return this.submitUsernamePage; 
         }
 
         try
@@ -877,7 +877,7 @@ public class OnlineResetController
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
             model.addAttribute(Constants.COMMAND, new AccountChangeData());
 
-            responsePage = this.submitUsernamePage;
+            return this.submitUsernamePage;
         }
 
         try
@@ -1095,7 +1095,7 @@ public class OnlineResetController
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
             model.addAttribute(Constants.COMMAND, request);
 
-            responsePage = this.submitAnswersPage;
+            return this.submitAnswersPage;
         }
 
         try
@@ -1360,7 +1360,7 @@ public class OnlineResetController
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
             model.addAttribute(Constants.COMMAND, request);
 
-            responsePage = this.submitAnswersPage;
+            return this.submitNewPasswordPage;
         }
 
         try
@@ -1375,13 +1375,22 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
+            UserAccount reqAccount = new UserAccount();
+            reqAccount.setGuid(request.getGuid());
+            reqAccount.setUsername(request.getUsername());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount reqAccount: {}", reqAccount);
+            }
+
             UserAccount userAccount = new UserAccount();
             userAccount.setGuid(request.getGuid());
             userAccount.setUsername(request.getUsername());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
+                DEBUGGER.debug("UserAccount userAccount: {}", userAccount);
             }
 
             AuthenticationData userSecurity = new AuthenticationData();
@@ -1399,6 +1408,7 @@ public class OnlineResetController
             changeReq.setIsReset(true);
             changeReq.setUserAccount(userAccount);
             changeReq.setUserSecurity(userSecurity);
+            changeReq.setRequestor(reqAccount);
 
             if (DEBUG)
             {
