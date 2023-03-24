@@ -37,7 +37,6 @@ import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
-import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 /**
  * API allowing service management functionality.
@@ -127,7 +126,7 @@ public interface IDatacenterManagementProcessor
      * containing the necessary information to process the request.
      * @return {@link com.cws.esolutions.core.processors.dto.DatacenterManagementResponse} containing
      * the response information for the given request
-     * @throws ServiceManagementException {@link com.cws.esolutions.core.processors.exception.DatacenterManagementException}
+     * @throws DatacenterManagementException {@link com.cws.esolutions.core.processors.exception.DatacenterManagementException}
      * if an exception occurs during processing
      */
     DatacenterManagementResponse getDatacenterData(final DatacenterManagementRequest request) throws DatacenterManagementException;

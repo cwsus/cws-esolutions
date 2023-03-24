@@ -6,19 +6,29 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.2.10</version>
+    <version>5.2.16</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
 
     <properties>
-        <junit.version>5.9.1</junit.version>
-        <assertj.version>3.23.1</assertj.version>
+        <!-- plugin versioning -->
+        <maven-ear-plugin.version>3.3.0</maven-ear-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+        <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
+        <maven-ear-plugin.version>3.3.0</maven-ear-plugin.version>
+        <maven-javadoc-plugin>3.5.0</maven-javadoc-plugin>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <!-- components -->
+        <junit.version>5.9.2</junit.version>
+        <assertj.version>3.24.2</assertj.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-collections.version>4.4</commons-collections.version>
         <commons-logging.version>1.2</commons-logging.version>
         <commons-httpclient.version>5.2.1</commons-httpclient.version>
-        <commons-fileupload.version>1.4</commons-fileupload.version>
         <commons-email.version>1.5</commons-email.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-pool.version>2.11.1</commons-pool.version>
@@ -26,12 +36,11 @@
         <commons-lang.version>3.12.0</commons-lang.version>
         <commons-net.version>3.9.0</commons-net.version>
         <commons-digester.version>3.2</commons-digester.version>
-        <log4j.version>2.19.0</log4j.version>
+        <log4j.version>2.20.0</log4j.version>
         <mail.version>1.6.2</mail.version>
         <activation.version>1.1.1</activation.version>
         <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
         <org.glassfish.jaxb.version>4.0.2</org.glassfish.jaxb.version>
-        <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
         <mysql.version>8.0.31</mysql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>19</maven.compiler.release>
@@ -69,41 +78,17 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>${cws.issues.url}</url>
+        <url>https://github.com/cwsus/esolutions/issues</url>
     </issueManagement>
 
-    <ciManagement>
-        <system>Jenkins</system>
-        <url>${cws.ci.url}</url>
-        <notifiers>
-            <notifier>
-                <type>mail</type>
-                <sendOnError>true</sendOnError>
-                <sendOnFailure>true</sendOnFailure>
-                <sendOnSuccess>true</sendOnSuccess>
-                <sendOnWarning>true</sendOnWarning>
-                <configuration>
-                    <address>kmhuntly@gmail.com</address>
-                </configuration>
-            </notifier>
-        </notifiers>
-    </ciManagement>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>snapshot</id>
-            <name>snapshot</name>
-            <url>${cws.maven.repository}/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-        <repository>
-            <id>release</id>
-            <name>release</name>
-            <url>${cws.maven.repository}/artifactory/libs-release-local</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-    </distributionManagement>
-
     <dependencies>
+        <!-- Test Libraries -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -112,8 +97,14 @@
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
+            <artifactId>junit-jupiter-params</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -132,19 +123,6 @@
                 <exclusion>
                     <groupId>javax.mail</groupId>
                     <artifactId>mail</artifactId>
-                </exclusion>
-            </exclusions>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>${commons-fileupload.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
                 </exclusion>
             </exclusions>
             <type>jar</type>
@@ -287,13 +265,9 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                </plugin>
-                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <optimize>true</optimize>
@@ -302,80 +276,100 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-clean-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                </plugin>
-                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-ear-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-install-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-invoker-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-ear-plugin.version}</version>
                     <configuration>
+                        <applicationName>${project.artifactId}</applicationName>
+                        <description>${project.description}</description>
+                        <displayName>${project.artifactId}</displayName>
+                        <generateModuleId>true</generateModuleId>
+                        <initializeInOrder>true</initializeInOrder>
                         <archive>
-                            <manifest>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            </manifest>
+                            <manifestEntries>
+                                <Project-Name>${project.name}</Project-Name>
+                                <Subproject-Name>${project.name}</Subproject-Name>
+                                <Specification-Title>${project.name}</Specification-Title>
+                                <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                                <Specification-Version>${project.version}</Specification-Version>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Build-Date>${maven.build.timestamp}</Build-Date>
+                                <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+                            </manifestEntries>
                         </archive>
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-jarsigner-plugin</artifactId>
-                </plugin>
-                <!--
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
                     <configuration>
-                        <quiet>true</quiet>
-                    </configuration>
-                </plugin>
-                -->
-                <plugin>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <configuration>
-                        <useReleaseProfile>true</useReleaseProfile>
-                        <goals>deploy</goals>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <configuration>
-                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <archive>
+                            <manifestEntries>
+                                <Project-Name>${project.name}</Project-Name>
+                                <Subproject-Name>${project.name}</Subproject-Name>
+                                <Specification-Title>${project.name}</Specification-Title>
+                                <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                                <Specification-Version>${project.version}</Specification-Version>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Build-Date>${maven.build.timestamp}</Build-Date>
+                                <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+                            </manifestEntries>
+                        </archive>
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                </plugin>
-                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Project-Name>${project.name}</Project-Name>
+                                <Subproject-Name>${project.name}</Subproject-Name>
+                                <Specification-Title>${project.name}</Specification-Title>
+                                <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                                <Specification-Version>${project.version}</Specification-Version>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Build-Date>${maven.build.timestamp}</Build-Date>
+                                <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                </plugin>
-                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.3.2</version>
+                    <version>${maven-war-plugin.version}</version>
                     <configuration>
                         <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                         <archive>
-                            <manifest>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            </manifest>
+                            <manifestEntries>
+                                <Project-Name>${project.name}</Project-Name>
+                                <Subproject-Name>${project.name}</Subproject-Name>
+                                <Specification-Title>${project.name}</Specification-Title>
+                                <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                                <Specification-Version>${project.version}</Specification-Version>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Build-Date>${maven.build.timestamp}</Build-Date>
+                                <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+                            </manifestEntries>
                         </archive>
                     </configuration>
                 </plugin>
@@ -384,313 +378,25 @@
 
         <plugins>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>prepare-package</id>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <target>
-                                <ant antfile="${basedir}/build.xml" />
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-                    <tarLongFileFormat>gnu</tarLongFileFormat>
-                    <descriptors>
-                        <descriptor>src/main/assembly/assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>release-assembly</id>
-                        <phase>post-package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
-                <configuration>
-                    <applicationName>${project.artifactId}</applicationName>
-                    <description>${project.description}</description>
-                    <displayName>${project.artifactId}</displayName>
-                    <generateModuleId>true</generateModuleId>
-                    <initializeInOrder>true</initializeInOrder>
-                    <archive>
-                        <manifestEntries>
-                            <Project-Name>${project.name}</Project-Name>
-                            <Subproject-Name>${project.name}</Subproject-Name>
-                            <Specification-Title>${project.name}</Specification-Title>
-                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                            <Specification-Version>${project.version}</Specification-Version>
-                            <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                            <Implementation-Version>${project.version}</Implementation-Version>
-                            <Build-Date>${maven.build.timestamp}</Build-Date>
-                            <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Project-Name>${project.name}</Project-Name>
-                            <Subproject-Name>${project.name}</Subproject-Name>
-                            <Specification-Title>${project.name}</Specification-Title>
-                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                            <Specification-Version>${project.version}</Specification-Version>
-                            <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                            <Implementation-Version>${project.version}</Implementation-Version>
-                            <Build-Date>${maven.build.timestamp}</Build-Date>
-                            <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <!-- commenting for now -->
-            <!--
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <generateProjectInfo>true</generateProjectInfo>
-                    <generateReports>true</generateReports>
-                    <generateSitemap>true</generateSitemap>
-                    <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-                    <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
-                    <relativizeDecorationLinks>true</relativizeDecorationLinks>
-                    <siteDirectory>src/main/site</siteDirectory>
-                    <validate>true</validate>
-                </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Project-Name>${project.name}</Project-Name>
-                            <Subproject-Name>${project.name}</Subproject-Name>
-                            <Specification-Title>${project.name}</Specification-Title>
-                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                            <Specification-Version>${project.version}</Specification-Version>
-                            <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                            <Implementation-Version>${project.version}</Implementation-Version>
-                            <Build-Date>${maven.build.timestamp}</Build-Date>
-                            <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                    <archive>
-                        <manifestEntries>
-                            <Project-Name>${project.name}</Project-Name>
-                            <Subproject-Name>${project.name}</Subproject-Name>
-                            <Specification-Title>${project.name}</Specification-Title>
-                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                            <Specification-Version>${project.version}</Specification-Version>
-                            <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                            <Implementation-Version>${project.version}</Implementation-Version>
-                            <Build-Date>${maven.build.timestamp}</Build-Date>
-                            <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <id>sunlink</id>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <failOnError>false</failOnError>
-                            <reportsDirectory>${project.build.directory}/sunlink/javadoc</reportsDirectory>
-                            <outputName>javadoc-sunlink-report</outputName>
-                            <links>
-                                <link>http://java.sun.com/j2se/1.7.0/docs/api/</link>
-                            </links>
-                            <additionalParam>-Xdoclint:none</additionalParam>
-                        </configuration>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <id>unit</id>
-                        <configuration>
-                            <reportsDirectory>${project.build.directory}/surefire-reports/unit</reportsDirectory>
-                            <outputName>surefire-report-unit</outputName>
-                        </configuration>
-                        <reports>
-                            <report>report</report>
-                        </reports>
-                    </reportSet>
-                    <reportSet>
-                        <id>perf</id>
-                        <configuration>
-                            <reportsDirectory>${project.build.directory}/surefire-reports/perf</reportsDirectory>
-                            <outputName>surefire-report-perf</outputName>
-                        </configuration>
-                        <reports>
-                            <report>report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
-
-    <profiles>
-        <profile>
-            <id>build</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.junit.jupiter</groupId>
-                    <artifactId>junit-jupiter-api</artifactId>
-                    <version>${junit.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-compiler-plugin</artifactId>
-                            <configuration>
-                                <encoding>${project.build.sourceEncoding}</encoding>
-                                <optimize>true</optimize>
-                                <showDeprecation>true</showDeprecation>
-                                <showWarnings>true</showWarnings>
-                                <verbose>true</verbose>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-jarsigner-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>signing</id>
-                                    <goals>
-                                        <goal>sign</goal>
-                                    </goals>
-                                    <phase>package</phase>
-                                    <inherited>true</inherited>
-                                    <configuration>
-                                        <archiveDirectory></archiveDirectory>
-                                        <includes>
-                                            <include>target/*.apk</include>
-                                        </includes>
-                                        <keystore>${keystore}</keystore>
-                                        <storepass>${storepass}</storepass>
-                                        <keypass>${keypass}</keypass>
-                                        <alias>${alias}</alias>
-                                        <arguments>
-                                            <argument>-sigalg</argument>
-                                            <argument>MD5withRSA</argument>
-                                            <argument>-digestalg</argument>
-                                            <argument>SHA1</argument>
-                                        </arguments>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-
-                <plugins>
-                    <plugin>
-                        <groupId>org.eclipse.m2e</groupId>
-                        <artifactId>lifecycle-mapping</artifactId>
-                        <version>1.0.0</version>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>cws-release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <updateReleaseInfo>true</updateReleaseInfo>
-                        </configuration>
-                    </plugin>
-                    <!-- We want to sign the artifact, the POM, and all attached artifacts -->
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <configuration>
-                            <passphrase>${gpg.passphrase}</passphrase>
-                            <useAgent>true</useAgent>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

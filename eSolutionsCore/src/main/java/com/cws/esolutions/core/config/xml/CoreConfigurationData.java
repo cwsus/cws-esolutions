@@ -49,7 +49,6 @@ public final class CoreConfigurationData implements Serializable
     private DNSConfig dnsConfig = null;
     private MailConfig mailConfig = null;
     private HTTPConfig httpConfig = null;
-    private AgentConfig agentConfig = null;
     private ProxyConfig proxyConfig = null;
     private ScriptConfig scriptConfig = null;
     private SystemConfig systemConfig = null;
@@ -192,19 +191,6 @@ public final class CoreConfigurationData implements Serializable
         }
 
         this.deploymentConfig = value;
-    }
-
-    public final void setAgentConfig(final AgentConfig value)
-    {
-        final String methodName = CoreConfigurationData.CNAME + "#setAgentConfig(final AgentConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.agentConfig = value;
     }
 
     public final void setMailConfig(final MailConfig value)
@@ -371,20 +357,6 @@ public final class CoreConfigurationData implements Serializable
         }
 
         return this.deploymentConfig;
-    }
-
-    @XmlElement(name = "agent-config")
-    public final AgentConfig getAgentConfig()
-    {
-        final String methodName = CoreConfigurationData.CNAME + "#getAgentConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.agentConfig);
-        }
-
-        return this.agentConfig;
     }
 
     @XmlElement(name = "mail-config")

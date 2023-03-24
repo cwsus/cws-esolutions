@@ -36,7 +36,6 @@ import org.apache.logging.log4j.LogManager;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -1241,30 +1240,6 @@ public class OnlineResetController
 		                        ERROR_RECORDER.error(mx.getMessage(), mx);
 
 		                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-		                    }
-
-		                    if (this.appConfig.getIsSmsEnabled())
-		                    {
-		                        // send an sms code
-		                        try
-		                        {
-		                        	SimpleMailMessage emailMessage = new SimpleMailMessage();
-		                        	emailMessage.setTo(responseAccount.getPagerNumber());
-		                        	emailMessage.setText(resetRes.getSmsCode());
-
-		                        	if (DEBUG)
-		                        	{
-		                        		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
-		                        	}
-
-		                        	mailSender.send(emailMessage);
-		                        }
-		                        catch (final MailException mx)
-		                        {
-		                            ERROR_RECORDER.error(mx.getMessage(), mx);
-
-		                            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-		                        }
 		                    }
 
 		                    model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageRequestComplete);

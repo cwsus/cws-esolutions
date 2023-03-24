@@ -313,7 +313,7 @@ public class AutoResponseUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.util.Long)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(String, String, int, Long)
      */
     public synchronized boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
     {
@@ -331,6 +331,9 @@ public class AutoResponseUserManager implements UserManager
         return true;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
+     */
 	public List<String[]> getUserByEmailAddress(final String searchData) throws UserManagementException
 	{
         final String methodName = AutoResponseUserManager.CNAME + "#getUserByEmailAddress(final String searchData) throws UserManagementException";
@@ -346,6 +349,9 @@ public class AutoResponseUserManager implements UserManager
         return results;
 	}
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByUsername(java.lang.String)
+     */
 	public String getUserByUsername(String searchData) throws UserManagementException
 	{
         final String methodName = AutoResponseUserManager.CNAME + "#getUserByUsername(final String searchData) throws UserManagementException";

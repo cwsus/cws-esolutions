@@ -34,7 +34,7 @@ public class MessagingServiceException extends CoreServicesException
     private static final long serialVersionUID = 2220106164551376760L;
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServiceException(java.lang.String)
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
      *
      * @param message - The message for the exception
      */
@@ -44,7 +44,7 @@ public class MessagingServiceException extends CoreServicesException
     }
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServiceException(java.lang.String)
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
      *
      * @param throwable - The throwable for the exception
      */
@@ -54,7 +54,7 @@ public class MessagingServiceException extends CoreServicesException
     }
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServiceException(java.lang.String)
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
      *
      * @param message - The message for the exception
      * @param throwable - The throwable for the exception

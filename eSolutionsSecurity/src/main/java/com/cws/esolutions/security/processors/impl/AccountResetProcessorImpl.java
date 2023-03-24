@@ -754,11 +754,11 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#resetUserPassword(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#insertResetData(AccountResetRequest)
      */
     public AccountResetResponse insertResetData(final AccountResetRequest request) throws AccountResetException
     {
-        final String methodName = AccountResetProcessorImpl.CNAME + "#resetUserPassword(final AccountResetRequest request) throws AccountResetException";
+        final String methodName = AccountResetProcessorImpl.CNAME + "#insertResetData(final AccountResetRequest request) throws AccountResetException";
 
         if (DEBUG)
         {

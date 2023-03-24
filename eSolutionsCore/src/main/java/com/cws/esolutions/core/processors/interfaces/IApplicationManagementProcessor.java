@@ -31,7 +31,6 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
@@ -53,7 +52,6 @@ import com.cws.esolutions.core.processors.exception.ApplicationManagementExcepti
 public interface IApplicationManagementProcessor
 {
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
-    static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final IServiceDataDAO serviceDao = (IServiceDataDAO) new ServiceDataDAOImpl();

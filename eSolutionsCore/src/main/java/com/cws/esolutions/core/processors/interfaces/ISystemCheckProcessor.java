@@ -30,7 +30,6 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
@@ -50,7 +49,6 @@ public interface ISystemCheckProcessor
 {
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final String CNAME = IServerManagementProcessor.class.getName();
-    static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();

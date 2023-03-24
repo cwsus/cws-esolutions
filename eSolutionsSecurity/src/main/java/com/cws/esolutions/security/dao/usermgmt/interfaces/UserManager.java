@@ -180,8 +180,7 @@ public interface UserManager
 
     /**
      * Returns a list of ALL user accounts stored in the authentication datastore. This is
-     * ONLY to be used with the reapers - currently, the {@link com.cws.esolutions.security.quartz.IdleAccountLocker}
-     * and {@link com.cws.esolutions.security.quartz.PasswordExpirationNotifier}.
+     * ONLY to be used with the reapers.
      *
      * <strong>THIS SHOULD NOT BE USED IN ANY OTHER CLASSES UNLESS ABSOLUTELY NECESSARY.</strong>
      *

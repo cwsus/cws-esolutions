@@ -32,25 +32,27 @@
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 --%>
-<div id="footer">
-	<div class="wrapper">
-		<c:if test="${not empty fn:trim(sessionScope.userAccount)}">
-			<spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}; ${sessionScope.userAccount.lastLogin}" argumentSeparator=";" /><br />
-			<a href="${pageContext.request.contextPath}/ui/auth/logout" title="<spring:message code='theme.navbar.logoff' />">
-			<spring:message code='theme.navbar.logoff' /></a> |
-			<a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
-			<spring:message code="theme.navbar.myaccount" /></a>
-		</c:if>
-		<br class="clear" />
-	</div>
-	
-	<div id="copyright">
-  		<div class="wrapper">
-            &copy; <spring:message code="theme.footer.copyright" />
-            <br class="clear" />
-            <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
-                title="<spring:message code="theme.contact.us" />" target="_blank"><spring:message code="theme.contact.us" /></a><br />
-		    <br class="clear" />
+		<div id="footer">
+			<div class="wrapper">
+				<c:if test="${not empty fn:trim(sessionScope.userAccount)}">
+					<spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}; ${sessionScope.userAccount.lastLogin}" argumentSeparator=";" /><br />
+					<a href="${pageContext.request.contextPath}/ui/auth/logout" title="<spring:message code='theme.navbar.logoff' />">
+					<spring:message code='theme.navbar.logoff' /></a> |
+					<a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
+					<spring:message code="theme.navbar.myaccount" /></a>
+				</c:if>
+				<br class="clear" />
+			</div>
+			
+			<div id="copyright">
+		  		<div class="wrapper">
+		            &copy; <spring:message code="theme.footer.copyright" />
+		            <br class="clear" />
+		            <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
+		                title="<spring:message code="theme.contact.us" />" target="_blank"><spring:message code="theme.contact.us" /></a><br />
+				    <br class="clear" />
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
+	</body>
+</html>

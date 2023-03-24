@@ -33,16 +33,32 @@ public class FileManagerException extends CoreServicesException
 {
     private static final long serialVersionUID = -2932676631264113045L;
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
+     *
+     * @param message - The message for the exception
+     */
     public FileManagerException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
+     *
+     * @param throwable - The throwable for the exception
+     */
     public FileManagerException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
+     *
+     * @param message - The message for the exception
+     * @param throwable - The throwable for the exception
+     */
     public FileManagerException(final String message, final Throwable throwable)
     {
         super(message, throwable);

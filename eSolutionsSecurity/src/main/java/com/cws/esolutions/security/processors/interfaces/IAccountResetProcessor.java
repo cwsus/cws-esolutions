@@ -124,4 +124,15 @@ public interface IAccountResetProcessor
      * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
      */
     AccountResetResponse insertResetRequest(final AccountResetRequest request) throws AccountResetException;
+
+    /**
+     * Inserts the reset information into the database.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
+     * response information regarding the request status
+     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
+     */
+    AccountResetResponse insertResetData(final AccountResetRequest request) throws AccountResetException;
 }
