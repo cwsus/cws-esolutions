@@ -22,7 +22,7 @@
 
     <!-- load the datasources -->
     <jee:jndi-lookup expected-type="javax.sql.DataSource" id="esolutionsDS" jndi-name="java:comp/env/jdbc/esolutions" />
-    <jee:jndi-lookup expected-type="javax.mail.Session" id="mailSession" jndi-name="java:comp/env/mail/MailSession" />
+    <jee:jndi-lookup expected-type="jakarta.mail.Session" id="mailSession" jndi-name="java:comp/env/mail/MailSession" />
     <jee:jndi-lookup expected-type="java.lang.String" id="isTestSystem" jndi-name="java:comp/env/isTestSystem" />
 
 	<!-- email -->

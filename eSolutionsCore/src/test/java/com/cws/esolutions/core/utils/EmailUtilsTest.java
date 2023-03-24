@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.FileInputStream;
 import org.junit.jupiter.api.Test;
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.io.FileNotFoundException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

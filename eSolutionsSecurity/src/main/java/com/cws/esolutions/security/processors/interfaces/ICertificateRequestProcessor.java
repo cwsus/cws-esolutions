@@ -35,7 +35,6 @@ import com.cws.esolutions.security.config.xml.CertificateConfig;
 import com.cws.esolutions.security.processors.dto.CertificateRequest;
 import com.cws.esolutions.security.processors.dto.CertificateResponse;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.dao.certmgmt.impl.CertificateManagerImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;

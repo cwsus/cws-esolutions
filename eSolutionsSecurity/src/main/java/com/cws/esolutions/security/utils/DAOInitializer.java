@@ -52,7 +52,6 @@ import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.unboundid.ldap.sdk.StartTLSPostConnectProcessor;
 import com.cws.esolutions.security.SecurityServiceConstants;

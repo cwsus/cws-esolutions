@@ -27,35 +27,35 @@ package com.cws.esolutions.core.utils;
  */
 import java.util.Map;
 import java.util.List;
-import javax.mail.Part;
-import javax.mail.Store;
-import javax.mail.Flags;
+import jakarta.mail.Part;
+import jakarta.mail.Store;
+import jakarta.mail.Flags;
 import java.util.HashMap;
-import javax.mail.Folder;
+import jakarta.mail.Folder;
 import java.util.Objects;
 import java.util.Calendar;
-import javax.mail.Session;
-import javax.mail.Message;
-import javax.mail.URLName;
-import javax.mail.Address;
+import jakarta.mail.Session;
+import jakarta.mail.Message;
+import jakarta.mail.URLName;
+import jakarta.mail.Address;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import javax.mail.BodyPart;
-import javax.mail.Transport;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Transport;
 import javax.naming.Context;
 import java.util.Properties;
-import javax.mail.Multipart;
+import jakarta.mail.Multipart;
 import java.io.FileInputStream;
-import javax.mail.Authenticator;
+import jakarta.mail.Authenticator;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import org.apache.logging.log4j.Logger;
-import javax.mail.internet.MimeMessage;
-import javax.mail.Message.RecipientType;
-import javax.mail.PasswordAuthentication;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.internet.InternetAddress;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 
@@ -133,7 +133,7 @@ public final class EmailUtils
      * @param mailConfig - The {@link com.cws.esolutions.core.config.xml.MailConfig} to utilize
      * @param message - The email message
      * @param isWeb - <code>true</code> if this came from a container, <code>false</code> otherwise
-     * @throws MessagingException {@link javax.mail.MessagingException} if an exception occurs sending the message
+     * @throws MessagingException {@link jakarta.mail.MessagingException} if an exception occurs sending the message
      */
     public static final synchronized void sendEmailMessage(final MailConfig mailConfig, final EmailMessage message, final boolean isWeb) throws MessagingException
     {
@@ -300,7 +300,7 @@ public final class EmailUtils
      * @param authRequired - <code>true</code> if authentication is required, <code>false</code> otherwise
      * @param authList - If authRequired is true, this must be populated with the auth info
      * @return List - The list of email messages in the mailstore
-     * @throws MessagingException {@link javax.mail.MessagingException} if an exception occurs during processing
+     * @throws MessagingException {@link jakarta.mail.MessagingException} if an exception occurs during processing
      */
     public static final synchronized List<EmailMessage> readEmailMessages(final Properties dataSource, final boolean authRequired, final List<String> authList) throws MessagingException
     {

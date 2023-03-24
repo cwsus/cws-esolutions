@@ -38,7 +38,6 @@ import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
