@@ -26,6 +26,7 @@ package com.cws.esolutions.web.controllers;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Objects;
 import java.util.Enumeration;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
@@ -51,8 +52,8 @@ import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.web.validators.SecurityResponseValidator;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
@@ -305,7 +306,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "default", method = RequestMethod.GET)
-    public final String showDefaultPage(final Model model)
+    public final ModelAndView showDefaultPage(final Model model)
     {
         final String methodName = UserAccountController.CNAME + "#showDefaultPage(final Model model)";
 
@@ -313,6 +314,8 @@ public class UserAccountController
         {
             DEBUGGER.debug(methodName);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -362,17 +365,26 @@ public class UserAccountController
         }
 
         // in here, we're going to get all the messages to display and such
-        return this.myAccountPage;
+        mView.setViewName(this.myAccountPage);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
     }
 
-    @RequestMapping(value = "password", method = RequestMethod.GET)
-    public final ModelAndView showPasswordChange()
+    @RequestMapping(value = "/password", method = RequestMethod.GET)
+    public final ModelAndView showPasswordChange(@ModelAttribute("request") final UserAccount userAccount, final Model model)
     {
-        final String methodName = UserAccountController.CNAME + "#showPasswordChange()";
+        final String methodName = UserAccountController.CNAME + "#showPasswordChange(@ModelAttribute(\"request\") final UserAccount userAccount, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("Model: {}", model);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -381,7 +393,6 @@ public class UserAccountController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
 
         if (DEBUG)
         {
@@ -425,6 +436,24 @@ public class UserAccountController
             }
         }
 
+        if (Objects.isNull(userAccount))
+        {
+        	if (!(Objects.isNull(hSession)))
+        	{
+        		hSession.invalidate();
+        	}
+
+        	ModelAndView redirectView = new ModelAndView();
+        	redirectView.setView(new RedirectView("/esolutions/ui/auth/login"));
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("ModelAndView: {}", redirectView);
+        	}
+
+            return redirectView;
+        }
+
         if ((userAccount.getStatus() == LoginStatus.RESET) || (userAccount.getStatus() == LoginStatus.EXPIRED))
         {
             if (userAccount.getStatus() == LoginStatus.RESET)
@@ -440,6 +469,9 @@ public class UserAccountController
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
         }
 
+        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+
+        mView.addObject(Constants.USER_ACCOUNT, userAccount);
         mView.addObject(Constants.COMMAND, changeReq);
         mView.setViewName(this.changePasswordPage);
 
@@ -452,13 +484,14 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/enable-otp", method = RequestMethod.GET)
-    public final ModelAndView showEnableOtp()
+    public final ModelAndView showEnableOtp(final Model model)
     {
-        final String methodName = UserAccountController.CNAME + "#showEnableOtp()";
+        final String methodName = UserAccountController.CNAME + "#showEnableOtp(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -522,13 +555,14 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/security", method = RequestMethod.GET)
-    public final ModelAndView showSecurityChange()
+    public final ModelAndView showSecurityChange(final Model model)
     {
-        final String methodName = UserAccountController.CNAME + "#showSecurityChange()";
+        final String methodName = UserAccountController.CNAME + "#showSecurityChange(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -642,13 +676,14 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/email", method = RequestMethod.GET)
-    public final ModelAndView showEmailChange()
+    public final ModelAndView showEmailChange(final Model model)
     {
-        final String methodName = UserAccountController.CNAME + "#showEmailChange()";
+        final String methodName = UserAccountController.CNAME + "#showEmailChange(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -712,13 +747,14 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/contact", method = RequestMethod.GET)
-    public final ModelAndView showContactChange()
+    public final ModelAndView showContactChange(final Model model)
     {
-        final String methodName = UserAccountController.CNAME + "#showContactChange()";
+        final String methodName = UserAccountController.CNAME + "#showContactChange(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -993,14 +1029,15 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public final ModelAndView doPasswordChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
+    public final ModelAndView doPasswordChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, @ModelAttribute("userAccount") final UserAccount userAccount, final BindingResult bindResult)
     {
-        final String methodName = UserAccountController.CNAME + "#doPasswordChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
+        final String methodName = UserAccountController.CNAME + "#doPasswordChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, @ModelAttribute(\"userAccount\") final UserAccount userAccount, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         AuthenticationData userSecurity = null;
@@ -1009,7 +1046,6 @@ public class UserAccountController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
 
         if (DEBUG)

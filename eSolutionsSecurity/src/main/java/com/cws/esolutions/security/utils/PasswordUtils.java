@@ -78,7 +78,7 @@ public final class PasswordUtils
      * @return The encrypted string in a reversible format
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final String encryptText(final String value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
+    public static final String encryptText(final char[] value, final byte[] salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#encryptText(final String value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException";
 
@@ -93,115 +93,24 @@ public final class PasswordUtils
             DEBUGGER.debug("Value: {}", encoding);
         }
 
-        String encPass = null;
+        String combined = null;
 
         try
         {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(secretInstance);
-            PBEKeySpec keySpec = new PBEKeySpec(salt.toCharArray(), salt.getBytes(), iterations, keyBits);
+            PBEKeySpec keySpec = new PBEKeySpec(value, salt, iterations, keyBits);
             SecretKey keyTmp = keyFactory.generateSecret(keySpec);
             SecretKeySpec sks = new SecretKeySpec(keyTmp.getEncoded(), algorithm);
-
             Cipher pbeCipher = Cipher.getInstance(cipherInstance);
             pbeCipher.init(Cipher.ENCRYPT_MODE, sks);
 
             AlgorithmParameters parameters = pbeCipher.getParameters();
             IvParameterSpec ivParameterSpec = parameters.getParameterSpec(IvParameterSpec.class);
 
-            byte[] cryptoText = pbeCipher.doFinal(value.getBytes(encoding));
+            byte[] cryptoText = pbeCipher.doFinal(encoding.getBytes());
             byte[] iv = ivParameterSpec.getIV();
 
-            String combined = Base64.getEncoder().encodeToString(iv) + ":" + Base64.getEncoder().encodeToString(cryptoText);
-
-            encPass = Base64.getEncoder().encodeToString(combined.getBytes());
-        }
-        catch (final InvalidKeyException ikx)
-        {
-            throw new SecurityException(ikx.getMessage(), ikx);
-        }
-        catch (final NoSuchAlgorithmException nsx)
-        {
-            throw new SecurityException(nsx.getMessage(), nsx);
-        }
-        catch (final NoSuchPaddingException npx)
-        {
-            throw new SecurityException(npx.getMessage(), npx);
-        }
-        catch (final IllegalBlockSizeException ibx)
-        {
-            throw new SecurityException(ibx.getMessage(), ibx);
-        }
-        catch (final BadPaddingException bpx)
-        {
-            throw new SecurityException(bpx.getMessage(), bpx);
-        }
-        catch (final UnsupportedEncodingException uex)
-        {
-            throw new SecurityException(uex.getMessage(), uex);
-        }
-        catch (final InvalidKeySpecException iksx)
-        {
-            throw new SecurityException(iksx.getMessage(), iksx);
-        }
-        catch (final InvalidParameterSpecException ipsx)
-        {
-            throw new SecurityException(ipsx.getMessage(), ipsx);
-        }
-
-        return encPass;
-    }
-
-    /**
-     * Provides two-way (reversible) encryption of a provided string. Can be used where reversibility
-     * is required but encryption (obfuscation, technically) is required.
-     *
-     * @param value - The plain text data to encrypt
-     * @param salt - The salt value to utilize for the request
-     * @param secretInstance - The cryptographic instance to use for the SecretKeyFactory
-     * @param iterations - The number of times to loop through the keyspec
-     * @param keyBits - The size of the key, in bits
-     * @param algorithm - The algorithm to encrypt the data with
-     * @param cipherInstance - The cipher instance to utilize
-     * @param encoding - The text encoding
-     * @return The encrypted string in a reversible format
-     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
-     */
-    public static final char[] encryptText(final byte[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
-    {
-        final String methodName = PasswordUtils.CNAME + "#encryptText(final char[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", secretInstance);
-            DEBUGGER.debug("Value: {}", iterations);
-            DEBUGGER.debug("Value: {}", keyBits);
-            DEBUGGER.debug("Value: {}", algorithm);
-            DEBUGGER.debug("Value: {}", cipherInstance);
-            DEBUGGER.debug("Value: {}", encoding);
-        }
-
-        char[] encPass = null;
-
-        try
-        {
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(secretInstance);
-            PBEKeySpec keySpec = new PBEKeySpec(salt.toCharArray(), salt.getBytes(), iterations, keyBits);
-            SecretKey keyTmp = keyFactory.generateSecret(keySpec);
-            SecretKeySpec sks = new SecretKeySpec(keyTmp.getEncoded(), algorithm);
-
-            Cipher pbeCipher = Cipher.getInstance(cipherInstance);
-            pbeCipher.init(Cipher.ENCRYPT_MODE, sks);
-
-            AlgorithmParameters parameters = pbeCipher.getParameters();
-            IvParameterSpec ivParameterSpec = parameters.getParameterSpec(IvParameterSpec.class);
-
-            byte[] cryptoText = pbeCipher.doFinal(value);
-            byte[] iv = ivParameterSpec.getIV();
-
-            String combined = Base64.getEncoder().encodeToString(iv) + ":" + Base64.getEncoder().encodeToString(cryptoText);
-
-            encPass = Base64.getEncoder().encodeToString(combined.getBytes()).toCharArray();
+            combined = PasswordUtils.base64Encode(Base64.getEncoder().encodeToString(iv) + ":" + Base64.getEncoder().encodeToString(cryptoText));
         }
         catch (final InvalidKeyException ikx)
         {
@@ -232,7 +141,7 @@ public final class PasswordUtils
             throw new SecurityException(ipsx.getMessage(), ipsx);
         }
 
-        return encPass;
+        return combined;
     }
 
     /**
@@ -323,12 +232,100 @@ public final class PasswordUtils
 
         try
         {
-            String decoded = new String(Base64.getDecoder().decode(value));
+            String decoded = new String(PasswordUtils.base64Decode(value));
             String iv = decoded.split(":")[0];
             String property = decoded.split(":")[1];
 
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(secretInstance);
             PBEKeySpec keySpec = new PBEKeySpec(salt.toCharArray(), salt.getBytes(), iterations, keyBits);
+            SecretKey keyTmp = keyFactory.generateSecret(keySpec);
+            SecretKeySpec sks = new SecretKeySpec(keyTmp.getEncoded(), algorithm);
+
+            Cipher pbeCipher = Cipher.getInstance(cipherInstance);
+            pbeCipher.init(Cipher.DECRYPT_MODE, sks, new IvParameterSpec(Base64.getDecoder().decode(iv)));
+            decPass = new String(pbeCipher.doFinal(Base64.getDecoder().decode(property)), encoding);
+        }
+        catch (final InvalidKeyException ikx)
+        {
+            throw new SecurityException(ikx.getMessage(), ikx);
+        }
+        catch (final NoSuchAlgorithmException nsx)
+        {
+            throw new SecurityException(nsx.getMessage(), nsx);
+        }
+        catch (final NoSuchPaddingException npx)
+        {
+            throw new SecurityException(npx.getMessage(), npx);
+        }
+        catch (final IllegalBlockSizeException ibx)
+        {
+            throw new SecurityException(ibx.getMessage(), ibx);
+        }
+        catch (final BadPaddingException bpx)
+        {
+            throw new SecurityException(bpx.getMessage(), bpx);
+        }
+        catch (final UnsupportedEncodingException uex)
+        {
+            throw new SecurityException(uex.getMessage(), uex);
+        }
+        catch (final InvalidAlgorithmParameterException iapx)
+        {
+            throw new SecurityException(iapx.getMessage(), iapx);
+        }
+        catch (final InvalidKeySpecException iksx)
+        {
+            throw new SecurityException(iksx.getMessage(), iksx);
+        }
+
+        return decPass;
+    }
+
+    /**
+     * Provides two-way (reversible) encryption of a provided string. Can be used where reversibility
+     * is required but encryption (obfuscation, technically) is required.
+     *
+     * @param value - The plain text data to encrypt
+     * @param salt - The salt value to utilize for the request
+     * @param secretInstance - The cryptographic instance to use for the SecretKeyFactory
+     * @param iterations - The number of times to loop through the keyspec
+     * @param keyBits - The size of the key, in bits
+     * @param algorithm - The algorithm to encrypt the data with
+     * @param cipherInstance - The cipher instance to utilize
+     * @param encoding - The text encoding
+     * @return The encrypted string in a reversible format
+     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
+     */
+    public static final String decryptText(final String value, final char[] password, final byte[] salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
+    {
+        final String methodName = PasswordUtils.CNAME + "#encryptText(final String value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", secretInstance);
+            DEBUGGER.debug("Value: {}", iterations);
+            DEBUGGER.debug("Value: {}", keyBits);
+            DEBUGGER.debug("Value: {}", algorithm);
+            DEBUGGER.debug("Value: {}", cipherInstance);
+            DEBUGGER.debug("Value: {}", encoding);
+        }
+
+        String decPass = null;
+
+        try
+        {
+        	String decoded = PasswordUtils.base64Decode(value);
+            String iv = decoded.split(":")[0];
+            String property = decoded.split(":")[1];
+
+            System.out.println(value);
+            System.out.println(decoded);
+            System.out.println(iv);
+            System.out.println(property);
+
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(secretInstance);
+            PBEKeySpec keySpec = new PBEKeySpec(password, salt, iterations, keyBits);
             SecretKey keyTmp = keyFactory.generateSecret(keySpec);
             SecretKeySpec sks = new SecretKeySpec(keyTmp.getEncoded(), algorithm);
 

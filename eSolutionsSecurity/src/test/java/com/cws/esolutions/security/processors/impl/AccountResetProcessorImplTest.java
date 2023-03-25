@@ -71,13 +71,12 @@ public class AccountResetProcessorImplTest
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
-        request.setSearchData("junit@caspersbox.com");
+        request.setSearchData("kmhuntly@gmail.com");
 
         try
         {
             AccountResetResponse response = processor.findUserAccount(request);
 
-            System.out.println(response);
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AccountResetException ax)
@@ -89,8 +88,8 @@ public class AccountResetProcessorImplTest
     @Test public void obtainUserSecurityConfig()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("junit");
-        account.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+        account.setUsername("khuntly");
+        account.setGuid("d4320dd2-fb97-4da8-806b-c424be78f0b4");
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -102,6 +101,7 @@ public class AccountResetProcessorImplTest
         {
             AccountResetResponse response = processor.obtainUserSecurityConfig(request);
 
+            System.out.println(response);
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AccountResetException ax)
@@ -114,7 +114,7 @@ public class AccountResetProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("a332cb8f-6891-4ae0-bd4d-18efe70b4ed2");
+        account.setGuid("d4320dd2-fb97-4da8-806b-c424be78f0b4");
 
         AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setSecAnswerOne("Answer 1");

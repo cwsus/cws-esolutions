@@ -34,6 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -166,7 +167,7 @@ public class ServiceMessagingController
     }
 
     @RequestMapping(value = "default", method = RequestMethod.GET)
-    public final String showDefaultPage(final Model model)
+    public final ModelAndView showDefaultPage(final Model model)
     {
         final String methodName = ServiceMessagingController.CNAME + "#showDefaultPage(final Model model)";
 
@@ -174,6 +175,8 @@ public class ServiceMessagingController
         {
             DEBUGGER.debug(methodName);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -222,8 +225,6 @@ public class ServiceMessagingController
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
-
-        String responsePage = null;
 
         try
         {
@@ -258,18 +259,17 @@ public class ServiceMessagingController
             switch (response.getRequestStatus())
             {
             	case SUCCESS:
-            		model.addAttribute("dateFormat", this.appConfig.getDateFormat());
-            		model.addAttribute("messageList", response.getSvcMessages());
-
-            		responsePage = this.viewServiceMessagesPage;
+            		mView.addObject("dateFormat", this.appConfig.getDateFormat());
+            		mView.addObject("messageList", response.getSvcMessages());
+            		mView.setViewName(this.viewServiceMessagesPage);
 
             		break;
             	case UNAUTHORIZED:
-            		responsePage = this.appConfig.getUnauthorizedPage();
+            		mView.setViewName(this.appConfig.getUnauthorizedPage());
 
             		break;
             	default:
-            		responsePage = this.createMessageRedirect; // try it ?
+            		mView.setViewName(this.createMessageRedirect);
 
             		break;
             }
@@ -279,14 +279,19 @@ public class ServiceMessagingController
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
-            return this.appConfig.getErrorResponsePage();
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
-        return responsePage;
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
     }
 
     @RequestMapping(value = "add-message", method = RequestMethod.GET)
-    public final String showAddMessage(final Model model)
+    public final ModelAndView showAddMessage(final Model model)
     {
         final String methodName = ServiceMessagingController.CNAME + "#showAddMessage(final Model model)";
 
@@ -294,6 +299,8 @@ public class ServiceMessagingController
         {
             DEBUGGER.debug(methodName);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -342,13 +349,19 @@ public class ServiceMessagingController
             }
         }
 
-        model.addAttribute(Constants.COMMAND, new ServiceMessage());
+        mView.addObject(Constants.COMMAND, new ServiceMessage());
+        mView.setViewName(this.addServiceMessagePage);
 
-        return this.addServiceMessagePage;
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
     }
 
     @RequestMapping(value = "edit-message/message/{messageId}", method = RequestMethod.GET)
-    public final String showEditMessage(@PathVariable(value = "messageId") final String messageId, final Model model)
+    public final ModelAndView showEditMessage(@PathVariable(value = "messageId") final String messageId, final Model model)
     {
         final String methodName = ServiceMessagingController.CNAME + "#showEditMessage(@PathVariable(value = \"messageId\", final Model model) final String messageId)";
 
@@ -357,6 +370,8 @@ public class ServiceMessagingController
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("messageId: {}", messageId);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -405,8 +420,6 @@ public class ServiceMessagingController
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
-
-        String responsePage = null;
 
         try
         {
@@ -450,13 +463,13 @@ public class ServiceMessagingController
             switch (response.getRequestStatus())
             {
 				case EXCEPTION:
-					model.addAttribute(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
-					responsePage = this.appConfig.getErrorResponsePage();
+					mView.addObject(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.setViewName(this.appConfig.getErrorResponsePage());
 
 					break;
 				case FAILURE:
-					model.addAttribute(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
-					responsePage = this.appConfig.getErrorResponsePage();
+					mView.addObject(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.setViewName(this.appConfig.getErrorResponsePage());
 
 					break;
 				case SUCCESS:
@@ -467,16 +480,18 @@ public class ServiceMessagingController
 	                    DEBUGGER.debug("ServiceMessage: {}", responseMessage);
 	                }
 
-	                model.addAttribute(Constants.COMMAND, responseMessage);
-
-	                responsePage = this.addServiceMessagePage;
+	                mView.addObject(Constants.COMMAND, responseMessage);
+	                mView.setViewName(this.addServiceMessagePage);
 
 	                break;
 				case UNAUTHORIZED:
-					responsePage = this.appConfig.getUnauthorizedPage();
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
 
 					break;
 				default:
+					mView.addObject(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
 					break;
             }
         }
@@ -484,14 +499,19 @@ public class ServiceMessagingController
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
-            responsePage = this.appConfig.getErrorResponsePage();
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
-        return responsePage;
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
     }
 
     @RequestMapping(value = "submit-message", method = RequestMethod.POST)
-    public final String doAddOrModifyServiceMessage(@ModelAttribute("message") final ServiceMessage message, final Model model, final BindingResult bindResult)
+    public final ModelAndView doAddOrModifyServiceMessage(@ModelAttribute("message") final ServiceMessage message, final Model model, final BindingResult bindResult)
     {
         final String methodName = ServiceMessagingController.CNAME + "#doAddOrModifyServiceMessage(@ModelAttribute(\"message\") final ServiceMessage message, final Model model, final BindingResult bindResult";
 
@@ -500,6 +520,8 @@ public class ServiceMessagingController
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("ServiceMessage: {}", message);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -549,7 +571,6 @@ public class ServiceMessagingController
             }
         }
 
-        // validate here
         try
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
@@ -584,42 +605,55 @@ public class ServiceMessagingController
             switch (response.getRequestStatus())
             {
 				case EXCEPTION:
-					model.addAttribute(Constants.COMMAND, new ServiceMessage());
-					model.addAttribute(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.addObject(Constants.COMMAND, new ServiceMessage());
+					mView.addObject(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.setViewName(this.addServiceMessagePage);
 
-					return this.addServiceMessagePage;
+					break;
 				case FAILURE:
-					model.addAttribute(Constants.COMMAND, new ServiceMessage());
-					model.addAttribute(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.addObject(Constants.COMMAND, new ServiceMessage());
+					mView.addObject(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.setViewName(this.addServiceMessagePage);
 
-					return this.addServiceMessagePage;
+					break;
 				case SUCCESS:
 		            if (message.getIsNewMessage())
 		            {
-		                model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyAdded);
+		                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyAdded);
 		            }
 		            else
 		            {
-		                model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyUpdated);
+		                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyUpdated);
 		            }
 
-		            model.addAttribute(Constants.COMMAND, new ServiceMessage());
+		            mView.addObject(Constants.COMMAND, new ServiceMessage());
+		            mView.setViewName(this.addServiceMessagePage);
 
-		            return this.addServiceMessagePage;
+		            break;
 				case UNAUTHORIZED:
-					return this.appConfig.getUnauthorizedPage();
-				default:
-					model.addAttribute(Constants.COMMAND, new ServiceMessage());
-					model.addAttribute(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-					return this.addServiceMessagePage;
+					break;
+				default:
+					mView.addObject(Constants.COMMAND, new ServiceMessage());
+					mView.addObject(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+					mView.setViewName(this.addServiceMessagePage);
+
+					break;
             }
         }
         catch (final MessagingServiceException msx)
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
-            return this.appConfig.getErrorResponsePage();
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
     }
 }

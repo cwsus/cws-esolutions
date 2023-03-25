@@ -298,7 +298,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     PasswordUtils.decryptText(otpSecret, otpSalt,
                             secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
                             secBean.getConfigData().getSecurityConfig().getIterations(),
-                            secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            secBean.getConfigData().getSecurityConfig().getKeyLength(),
                             secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                             secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                             secBean.getConfigData().getSystemConfig().getEncoding()),

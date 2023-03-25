@@ -1596,14 +1596,14 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSecurity(java.lang.String, java.util.List)
      */
-    public synchronized boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException
+    public synchronized boolean modifyUserSecurity(final String userGuid, final List<String> values) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#modifyUserSecurity(final String userGuid, final List<String> values) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("userGuid: {}", userGuid);
         }
 
         Connection sqlConn = null;
@@ -1634,7 +1634,7 @@ public class SQLUserManager implements UserManager
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
             stmt = sqlConn.prepareCall("{ CALL updateUserSecurity(?, ?, ?, ?, ?) }");
-            stmt.setString(1, userId);
+            stmt.setString(1, userGuid);
             stmt.setString(2, values.get(0));
             stmt.setString(3, values.get(1));
             stmt.setString(4, values.get(2));

@@ -58,8 +58,8 @@ public final class AccountChangeProcessorImplTest
             hostInfo.setHostName("junit");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("21860175-baba-40ce-9923-b516a271fa96");
-            userAccount.setUsername("junit-runner");
+            userAccount.setGuid("d4320dd2-fb97-4da8-806b-c424be78f0b4");
+            userAccount.setUsername("khuntly");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
@@ -154,10 +154,10 @@ public final class AccountChangeProcessorImplTest
     @Test public void changeUserSecurity()
     {
     	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("junit");
-        authData.setPassword("Ariana21*");
-        authData.setSecQuestionOne(RandomStringUtils.randomAlphanumeric(64));
-        authData.setSecQuestionTwo(RandomStringUtils.randomAlphanumeric(64));
+    	authData.setUsername("khuntly");
+    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd");
+        authData.setSecQuestionOne("What is your mother's maiden name ?");
+        authData.setSecQuestionTwo("What is your favourite cartoon ?");
         authData.setSecAnswerOne(RandomStringUtils.randomAlphanumeric(64));
         authData.setSecAnswerTwo(RandomStringUtils.randomAlphanumeric(64));
 
@@ -178,6 +178,7 @@ public final class AccountChangeProcessorImplTest
         }
         catch (final AccountChangeException acx)
         {
+        	acx.printStackTrace();
         	Assertions.fail(acx.getMessage());
         }
     }

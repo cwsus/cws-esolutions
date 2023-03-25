@@ -175,7 +175,7 @@ public final class DAOInitializer
 	                            sslUtil = new SSLUtil(new TrustStoreTrustManager(
 	                                    connProps.getProperty(DAOInitializer.TRUST_FILE),
 	                                    PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-	                                            secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+	                                            secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
 	                                            secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
 	                                            systemConfig.getEncoding()).toCharArray(),
 	                                    connProps.getProperty(DAOInitializer.TRUST_TYPE),
@@ -228,7 +228,7 @@ public final class DAOInitializer
 	                            sslUtil = new SSLUtil(new TrustStoreTrustManager(
 	                                    connProps.getProperty(DAOInitializer.TRUST_FILE),
 	                                    PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-	                                            secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+	                                            secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
 	                                            secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
 	                                            systemConfig.getEncoding()).toCharArray(),
 	                                    connProps.getProperty(DAOInitializer.TRUST_TYPE),
@@ -262,7 +262,7 @@ public final class DAOInitializer
 	
 	                            BindRequest bindRequest = new SimpleBindRequest(connProps.getProperty(DAOInitializer.REPOSITORY_USER),
 	                                    PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-	                                            secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+	                                            secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
 	                                            secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
 	                                            systemConfig.getEncoding()));
 	
@@ -315,7 +315,7 @@ public final class DAOInitializer
 	                    dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
 	                    dataSource.setPassword(PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
 	                			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
-	                			bean.getConfigData().getSecurityConfig().getKeyBits(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+	                			bean.getConfigData().getSecurityConfig().getKeyLength(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
 	                			bean.getConfigData().getSecurityConfig().getEncryptionInstance(), bean.getConfigData().getSystemConfig().getEncoding()));
 
 	                    bean.setAuthDataSource(dataSource);
@@ -396,7 +396,7 @@ public final class DAOInitializer
                 dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
                 dataSource.setPassword(PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
             			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
-            			bean.getConfigData().getSecurityConfig().getKeyBits(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+            			bean.getConfigData().getSecurityConfig().getKeyLength(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
             			bean.getConfigData().getSecurityConfig().getEncryptionInstance(), bean.getConfigData().getSystemConfig().getEncoding()));
 
                 bean.setAuditDataSource(dataSource);

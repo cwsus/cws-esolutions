@@ -95,7 +95,8 @@
 
 <div id="homecontent">
     <div class="wrapper">
-        <div id="error"></div>
+        <div id="error" style="color: #FF0000"></div>
+        <div id="validationError" style="color: #FF0000"></div>
 
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
@@ -117,28 +118,34 @@
         </c:if>
 
         <h1><spring:message code="user.account.update.password" /></h1>
-        <p>
-            <form:form name="submitPasswordChange" id="submitPasswordChange" action="${pageContext.request.contextPath}/ui/user-account/password" method="POST">
-                <form:hidden path="isReset" value="${command.isReset}" />
-                <form:hidden path="resetKey" value="${param.resetKey}" />
+        <form:form name="submitPasswordChange" id="submitPasswordChange" action="${pageContext.request.contextPath}/ui/user-account/password" method="POST">
+            <form:hidden path="isReset" value="${command.isReset}" />
+            <form:hidden path="resetKey" value="${param.resetKey}" />
 
-                <label id="txtCurrentPassword"><spring:message code="user.account.update.password.current" /></label>
-                <form:password path="currentPassword" />
-                <form:errors path="currentPassword" cssClass="error" />
-
-                <label id="txtNewPassword"><spring:message code="user.account.update.password.new" /><br /></label>
-                <form:password path="newPassword" />
-                <form:errors path="newPassword" cssClass="error" />
-
-                <label id="txtConfirmPassword"><spring:message code="user.account.update.password.confirm" /><br /></label>
-                <form:password path="confirmPassword" />
-                <form:errors path="confirmPassword" cssClass="error" />
-
-                <br /><br />
-                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-            </form:form>
+            <p>
+	            <label id="txtCurrentPassword"><spring:message code="user.account.update.password.current" /></label>
+	            <form:password path="currentPassword" />
+	            <form:errors path="currentPassword" cssClass="error" />
+	
+	            <br /><br />
+	
+	            <label id="txtNewPassword"><spring:message code="user.account.update.password.new" /><br /></label>
+	            <form:password path="newPassword" />
+	            <form:errors path="newPassword" cssClass="error" />
+	
+	            <br /><br />
+	
+	            <label id="txtConfirmPassword"><spring:message code="user.account.update.password.confirm" /><br /></label>
+	            <form:password path="confirmPassword" />
+	            <form:errors path="confirmPassword" cssClass="error" />
+	
+	            <br /><br />
+	
+	            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            </p>
+        </form:form>
     </div>
 </div>
 

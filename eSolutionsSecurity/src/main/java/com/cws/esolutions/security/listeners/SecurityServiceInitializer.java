@@ -122,7 +122,7 @@ public class SecurityServiceInitializer
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
                             dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(), svcBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), svcBean.getConfigData().getSecurityConfig().getIterations(),
-                        			svcBean.getConfigData().getSecurityConfig().getKeyBits(), svcBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), svcBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        			svcBean.getConfigData().getSecurityConfig().getKeyLength(), svcBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), svcBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                         			svcBean.getConfigData().getSystemConfig().getEncoding()));
 
                             dsMap.put(mgr.getDsName(), dataSource);

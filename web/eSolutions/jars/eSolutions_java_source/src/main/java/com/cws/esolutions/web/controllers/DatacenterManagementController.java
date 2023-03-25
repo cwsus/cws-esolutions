@@ -34,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import javax.servlet.http.HttpServletRequest;import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,7 +50,6 @@ import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.web.validators.DatacenterValidator;
-
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
@@ -230,7 +230,7 @@ public class DatacenterManagementController
     }
 
     @RequestMapping(value = "default", method = RequestMethod.GET)
-    public final String showDefaultPage(final Model model)
+    public final ModelAndView showDefaultPage(final Model model)
     {
         final String methodName = DatacenterManagementController.CNAME + "#showDefaultPage(final Model model)";
 
@@ -239,6 +239,7 @@ public class DatacenterManagementController
             DEBUGGER.debug(methodName);
         }
 
+        ModelAndView mView = new ModelAndView();
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -288,16 +289,22 @@ public class DatacenterManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            return this.appConfig.getUnavailablePage();
+        	mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
-        model.addAttribute(Constants.COMMAND, new SearchRequest());
+        mView.addObject(Constants.COMMAND, new SearchRequest());
+        mView.setViewName(this.homePage);
 
-        return this.homePage;
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
     }
 
     @RequestMapping(value = "add-datacenter", method = RequestMethod.GET)
-    public final String showAddDatacenter(final Model model)
+    public final ModelAndView showAddDatacenter(final Model model)
     {
         final String methodName = DatacenterManagementController.CNAME + "#showAddDatacenter(final Model model)";
 
@@ -305,6 +312,8 @@ public class DatacenterManagementController
         {
             DEBUGGER.debug(methodName);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -355,17 +364,25 @@ public class DatacenterManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            return this.appConfig.getUnavailablePage();
+            mView.setViewName(this.appConfig.getUnavailablePage());
+        }
+        else
+        {
+	        model.addAttribute("statusList", ServiceStatus.values());
+	        model.addAttribute(Constants.COMMAND, new Datacenter());
+	        mView.setViewName(this.addDatacenterPage);
         }
 
-        model.addAttribute("statusList", ServiceStatus.values());
-        model.addAttribute(Constants.COMMAND, new Datacenter());
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
 
-        return this.addDatacenterPage;
+        return mView;
     }
 
     @RequestMapping(value = "list-datacenters", method = RequestMethod.GET)
-    public final String showDatacenterList(final Model model)
+    public final ModelAndView showDatacenterList(final Model model)
     {
         final String methodName = DatacenterManagementController.CNAME + "#showDatacenterList(final Model model)";
 
@@ -373,6 +390,8 @@ public class DatacenterManagementController
         {
             DEBUGGER.debug(methodName);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -424,87 +443,93 @@ public class DatacenterManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            return this.appConfig.getUnavailablePage();
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
-
-        try
+        else
         {
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            DatacenterManagementRequest request = new DatacenterManagementRequest();
-            request.setApplicationId(this.appConfig.getApplicationId());
-            request.setApplicationName(this.appConfig.getApplicationName());
-            request.setRequestInfo(reqInfo);
-            request.setServiceId(this.serviceId);
-            request.setStartPage(0);
-            request.setUserAccount(userAccount);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("DatacenterManagementRequest: {}", request);
-            }
-
-            DatacenterManagementResponse response = processor.listDatacenters(request);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ServiceManagementResponse: {}", response);
-            }
-
-            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                List<Datacenter> datacenterList = response.getDatacenterList();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<Datacenter>: {}", datacenterList);
-                }
-
-                if ((datacenterList != null) && (datacenterList.size() != 0))
-                {
-                    model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    model.addAttribute("page", 1);
-                    model.addAttribute("datacenterList", datacenterList);
-
-                    return this.listDatacentersPage;
-                }
-                else
-                {
-                    model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageNoSearchResults);
-                    model.addAttribute(Constants.COMMAND, new Datacenter());
-
-                    return this.addDatacenterPage;
-                }
-            }
-            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-            {
-                return this.appConfig.getUnauthorizedPage();
-            }
-            else
-            {
-                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                model.addAttribute(Constants.COMMAND, new Datacenter());
-
-                return this.addDatacenterPage;
-            }
+	        try
+	        {
+	            RequestHostInfo reqInfo = new RequestHostInfo();
+	            reqInfo.setHostName(hRequest.getRemoteHost());
+	            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+	            }
+	
+	            DatacenterManagementRequest request = new DatacenterManagementRequest();
+	            request.setApplicationId(this.appConfig.getApplicationId());
+	            request.setApplicationName(this.appConfig.getApplicationName());
+	            request.setRequestInfo(reqInfo);
+	            request.setServiceId(this.serviceId);
+	            request.setStartPage(0);
+	            request.setUserAccount(userAccount);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("DatacenterManagementRequest: {}", request);
+	            }
+	
+	            DatacenterManagementResponse response = processor.listDatacenters(request);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("ServiceManagementResponse: {}", response);
+	            }
+	
+	            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+	            {
+	                List<Datacenter> datacenterList = response.getDatacenterList();
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("List<Datacenter>: {}", datacenterList);
+	                }
+	
+	                if ((datacenterList != null) && (datacenterList.size() != 0))
+	                {
+	                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+	                    mView.addObject("page", 1);
+	                    mView.addObject("datacenterList", datacenterList);
+	                    mView.setViewName(this.listDatacentersPage);
+	                }
+	                else
+	                {
+	                	mView.addObject(Constants.MESSAGE_RESPONSE, this.messageNoSearchResults);
+	                	mView.addObject(Constants.COMMAND, new Datacenter());
+	                	mView.setViewName(this.addDatacenterPage);
+	                }
+	            }
+	            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+	            {
+	            	mView.setViewName(this.appConfig.getUnauthorizedPage());
+	            }
+	            else
+	            {
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+	            	mView.addObject(Constants.COMMAND, new Datacenter());
+	                mView.setViewName(this.addDatacenterPage);
+	            }
+	        }
+	        catch (final DatacenterManagementException dmx)
+	        {
+	            ERROR_RECORDER.error(dmx.getMessage(), dmx);
+	
+	            mView.setViewName(this.appConfig.getErrorResponsePage());
+	        }
         }
-        catch (final DatacenterManagementException dmx)
+
+        if (DEBUG)
         {
-            ERROR_RECORDER.error(dmx.getMessage(), dmx);
-
-            return this.appConfig.getErrorResponsePage();
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
+
+        return mView;
     }
 
     @RequestMapping(value = "datacenter/{guid}", method = RequestMethod.GET)
-    public final String showSearchPage(@PathVariable("guid") final String guid, final Model model)
+    public final ModelAndView showSearchPage(@PathVariable("guid") final String guid, final Model model)
     {
         final String methodName = DatacenterManagementController.CNAME + "#showSearchPage(@PathVariable(\"guid\") final String guid, final Model model)";
 
@@ -514,6 +539,8 @@ public class DatacenterManagementController
             DEBUGGER.debug("@PathVariable(\"guid\"): ", guid);
         }
 
+        ModelAndView mView = new ModelAndView();
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -564,92 +591,98 @@ public class DatacenterManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            return this.appConfig.getUnavailablePage();
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
-
-        try
+        else
         {
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            Datacenter datacenter = new Datacenter();
-            datacenter.setGuid(guid);
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("Datacenter: {}", datacenter);
-            }
-
-            DatacenterManagementRequest request = new DatacenterManagementRequest();
-            request.setApplicationId(this.appConfig.getApplicationId());
-            request.setApplicationName(this.appConfig.getApplicationName());
-            request.setRequestInfo(reqInfo);
-            request.setServiceId(this.serviceId);
-            request.setStartPage(0);
-            request.setUserAccount(userAccount);
-            request.setDatacenter(datacenter);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("DatacenterManagementRequest: {}", request);
-            }
-
-            DatacenterManagementResponse response = processor.getDatacenterData(request);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ServiceManagementResponse: {}", response);
-            }
-
-            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-            	Datacenter dcResponse = response.getDatacenter();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Datacenter: {}", dcResponse);
-                }
-
-                if (Objects.isNull(dcResponse))
-                {
-                    model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageNoSearchResults);
-                    model.addAttribute(Constants.COMMAND, new Datacenter());
-
-                    return this.addDatacenterPage;
-                }
-
-                model.addAttribute("datacenter", dcResponse);
-
-                return this.viewDatacenterPage;
-            }
-            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-            {
-                return this.appConfig.getUnauthorizedPage();
-            }
-            else
-            {
-                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                model.addAttribute(Constants.COMMAND, new Datacenter());
-
-                return this.addDatacenterPage;
-            }
+	        try
+	        {
+	            RequestHostInfo reqInfo = new RequestHostInfo();
+	            reqInfo.setHostName(hRequest.getRemoteHost());
+	            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+	            }
+	
+	            Datacenter datacenter = new Datacenter();
+	            datacenter.setGuid(guid);
+	
+	            if (DEBUG)
+	            {
+	            	DEBUGGER.debug("Datacenter: {}", datacenter);
+	            }
+	
+	            DatacenterManagementRequest request = new DatacenterManagementRequest();
+	            request.setApplicationId(this.appConfig.getApplicationId());
+	            request.setApplicationName(this.appConfig.getApplicationName());
+	            request.setRequestInfo(reqInfo);
+	            request.setServiceId(this.serviceId);
+	            request.setStartPage(0);
+	            request.setUserAccount(userAccount);
+	            request.setDatacenter(datacenter);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("DatacenterManagementRequest: {}", request);
+	            }
+	
+	            DatacenterManagementResponse response = processor.getDatacenterData(request);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("ServiceManagementResponse: {}", response);
+	            }
+	
+	            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+	            {
+	            	Datacenter dcResponse = response.getDatacenter();
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("Datacenter: {}", dcResponse);
+	                }
+	
+	                if (Objects.isNull(dcResponse))
+	                {
+	                    mView.addObject(Constants.MESSAGE_RESPONSE, this.messageNoSearchResults);
+	                    mView.addObject(Constants.COMMAND, new Datacenter());
+	                    mView.setViewName(this.addDatacenterPage);
+	                }
+	
+	                mView.addObject("datacenter", dcResponse);
+	                mView.setViewName(this.viewDatacenterPage);
+	            }
+	            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+	            {
+	            	mView.setViewName(this.appConfig.getUnauthorizedPage());
+	            }
+	            else
+	            {
+	                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+	                model.addAttribute(Constants.COMMAND, new Datacenter());
+	                mView.setViewName(this.addDatacenterPage);
+	            }
+	        }
+	        catch (final DatacenterManagementException dmx)
+	        {
+	            ERROR_RECORDER.error(dmx.getMessage(), dmx);
+	
+	            mView.setViewName(this.appConfig.getErrorResponsePage());
+	        }
         }
-        catch (final DatacenterManagementException dmx)
+
+        if (DEBUG)
         {
-            ERROR_RECORDER.error(dmx.getMessage(), dmx);
-
-            return this.appConfig.getErrorResponsePage();
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
+
+        return mView;
     }
 
     @RequestMapping(value = "add-datacenter", method = RequestMethod.POST)
-    public final String doAddDatacenter(@ModelAttribute("datacenter") final Datacenter datacenter, final BindingResult bindResult, final Model model)
+    public final ModelAndView doAddDatacenter(@ModelAttribute("datacenter") final Datacenter datacenter, final BindingResult bindResult, final Model model)
     {
         final String methodName = DatacenterManagementController.CNAME + "#doAddDatacenter(@ModelAttribute(\"datacenter\") final Datacenter datacenter, final BindingResult bindResult, final Model model)";
 
@@ -659,6 +692,8 @@ public class DatacenterManagementController
             DEBUGGER.debug("Value: {}", datacenter);
         }
 
+        ModelAndView mView = new ModelAndView();
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -709,79 +744,88 @@ public class DatacenterManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            return this.appConfig.getUnavailablePage();
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
-
-        this.validator.validate(datacenter, bindResult);
-
-        if (bindResult.hasErrors())
+        else
         {
-            // validation failed
-            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
-
-            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
-            model.addAttribute(Constants.COMMAND, new Datacenter());
-
-            return this.addDatacenterPage;
+	        this.validator.validate(datacenter, bindResult);
+	
+	        if (bindResult.hasErrors())
+	        {
+	            // validation failed
+	            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+	
+	            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+	            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+	            mView.addObject(Constants.COMMAND, new Datacenter());
+	            mView.setViewName(this.addDatacenterPage);
+	        }
+	        else
+	        {
+		        try
+		        {
+		            RequestHostInfo reqInfo = new RequestHostInfo();
+		            reqInfo.setHostName(hRequest.getRemoteHost());
+		            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+		            }
+		
+		            DatacenterManagementRequest request = new DatacenterManagementRequest();
+		            request.setDatacenter(datacenter);
+		            request.setRequestInfo(reqInfo);
+		            request.setServiceId(this.serviceId);
+		            request.setUserAccount(userAccount);
+		            request.setApplicationId(this.appConfig.getApplicationId());
+		            request.setApplicationName(this.appConfig.getApplicationName());
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("DatacenterManagementRequest: {}", request);
+		            }
+		
+		            DatacenterManagementResponse response = processor.addNewDatacenter(request);
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("DatacenterManagementResponse: {}", response);
+		            }
+		
+		            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+		            {
+		                // return to add dc page
+		            	mView.addObject(Constants.RESPONSE_MESSAGE, this.messageDatacenterAddSuccess);
+		            	mView.addObject(Constants.COMMAND, new Datacenter());
+		            	mView.setViewName(this.addDatacenterPage);
+		            }
+		            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+		            {
+		            	mView.setViewName(this.appConfig.getUnauthorizedPage());
+		            }
+		            else
+		            {
+		            	mView.addObject(Constants.ERROR_RESPONSE, this.messageDatacenterAddFailure);
+		            	mView.addObject(Constants.COMMAND, new Datacenter());
+		
+		            	mView.setViewName(this.addDatacenterPage);
+		            }
+		        }
+		        catch (final DatacenterManagementException dmx)
+		        {
+		            ERROR_RECORDER.error(dmx.getMessage(), dmx);
+		
+		            mView.setViewName(this.appConfig.getErrorResponsePage());
+		        }
+	        }
         }
 
-        try
+        if (DEBUG)
         {
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            DatacenterManagementRequest request = new DatacenterManagementRequest();
-            request.setDatacenter(datacenter);
-            request.setRequestInfo(reqInfo);
-            request.setServiceId(this.serviceId);
-            request.setUserAccount(userAccount);
-            request.setApplicationId(this.appConfig.getApplicationId());
-            request.setApplicationName(this.appConfig.getApplicationName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("DatacenterManagementRequest: {}", request);
-            }
-
-            DatacenterManagementResponse response = processor.addNewDatacenter(request);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("DatacenterManagementResponse: {}", response);
-            }
-
-            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                // return to add dc page
-                model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageDatacenterAddSuccess);
-                model.addAttribute(Constants.COMMAND, new Datacenter());
-
-                return this.addDatacenterPage;
-            }
-            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-            {
-                return this.appConfig.getUnauthorizedPage();
-            }
-            else
-            {
-                model.addAttribute(Constants.ERROR_RESPONSE, this.messageDatacenterAddFailure);
-                model.addAttribute(Constants.COMMAND, new Datacenter());
-
-                return this.addDatacenterPage;
-            }
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
-        catch (final DatacenterManagementException dmx)
-        {
-            ERROR_RECORDER.error(dmx.getMessage(), dmx);
 
-            return this.appConfig.getErrorResponsePage();
-        }
+        return mView;
     }
 }

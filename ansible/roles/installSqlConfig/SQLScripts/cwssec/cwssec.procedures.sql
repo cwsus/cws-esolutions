@@ -45,6 +45,7 @@ DROP PROCEDURE IF EXISTS `CWSSEC`.`isUserAuthorizedForService` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`retrAuthorizedServices` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`listServicesForUser` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`performSuccessfulLogin` //
+DROP PROCEDURE IF EXISTS `CWSSEC`.`updateUserSecurity` //
 
 CREATE PROCEDURE `CWSSEC`.`getUserByAttribute`(
     IN attributeName VARCHAR(100)
@@ -73,6 +74,27 @@ BEGIN
     FROM `CWSSEC`.`USERS`
     WHERE MATCH (`UID`, `CWSROLE`, `GIVENNAME`, `SN`, `EMAIL`, `CN`)
     AGAINST (+attributeName IN BOOLEAN MODE);
+END //
+COMMIT //
+
+CREATE PROCEDURE `CWSSEC`.`updateUserSecurity`(
+    IN reqUserGuid VARCHAR(128),
+    IN reqQuestionOne VARCHAR(40),
+    IN reqQuestionTwo VARCHAR(40),
+    IN reqAnswerOne VARCHAR(128),
+    IN reqAnswerTwo VARCHAR(128)
+)
+BEGIN
+    UPDATE USERS
+    SET
+        CWSSECQ1 = reqQuestionOne,
+        CWSSECQ2 = reqQuestionTwo,
+        CWSSECANS1 = reqAnswerOne,
+        CWSSECANS2 = reqAnswerTwo
+    WHERE
+        CN = reqUserGuid;
+
+    COMMIT;
 END //
 COMMIT //
 

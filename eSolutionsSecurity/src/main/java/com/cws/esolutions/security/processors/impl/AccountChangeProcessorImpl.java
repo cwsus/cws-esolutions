@@ -557,6 +557,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("AccountChangeRequest: {}", request);
         }
 
+        String existingSalt = null;
         AccountChangeResponse response = new AccountChangeResponse();
 
         final Calendar calendar = Calendar.getInstance();
@@ -615,97 +616,93 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     {
                         // get rollback information in case something breaks...
                         // we already have the existing expiry and password, all we really need to get here is the salt.
-                        String existingSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.RESET.name());
+                    	if (!(request.isReset()))
+                    	{
+                    		existingSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.RESET.name());
+                    	}
 
-                        if (StringUtils.isNotEmpty(existingSalt))
+                        // make the backout
+                        List<Object> currentSec = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
+
+                        // good, move forward
+                        // make the modification in the user repository
+                        boolean isComplete = userManager.modifyUserSecurity(userAccount.getGuid(), 
+                                new ArrayList<String>(
+                                    Arrays.asList(
+                                        reqSecurity.getSecQuestionOne(),
+                                        reqSecurity.getSecQuestionTwo(),
+                                        PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt,
+                                            secConfig.getMessageDigest(), secConfig.getIterations(),
+                                            secBean.getConfigData().getSystemConfig().getEncoding()),
+                                        PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt,
+                                            secConfig.getMessageDigest(), secConfig.getIterations(),
+                                            secBean.getConfigData().getSystemConfig().getEncoding()))));
+
+                        if (DEBUG)
                         {
-                            // make the backout
-                            List<Object> currentSec = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
+                            DEBUGGER.debug("isComplete: {}", isComplete);
+                        }
 
-                            // good, move forward
-                            // make the modification in the user repository
-                            boolean isComplete = userManager.modifyUserSecurity(userAccount.getUsername(), 
-                                    new ArrayList<String>(
-                                        Arrays.asList(
-                                            reqSecurity.getSecQuestionOne(),
-                                            reqSecurity.getSecQuestionTwo(),
-                                            PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt,
-                                                secConfig.getMessageDigest(), secConfig.getIterations(),
-                                                secBean.getConfigData().getSystemConfig().getEncoding()),
-                                            PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt,
-                                                secConfig.getMessageDigest(), secConfig.getIterations(),
-                                                secBean.getConfigData().getSystemConfig().getEncoding()))));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("isComplete: {}", isComplete);
-                            }
+                        if (isComplete)
+                        {
+                            // now update the salt
+                            isComplete = userSec.addOrUpdateSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
 
                             if (isComplete)
                             {
-                                // now update the salt
-                                isComplete = userSec.addOrUpdateSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
-
-                                if (isComplete)
-                                {
-                                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                                }
-                                else
-                                {
-                                    // something failed. we're going to undo what we did in the user
-                                    // repository, because we couldnt update the salt value. if we don't
-                                    // undo it then the user will never be able to login without admin
-                                    // intervention
-                                    boolean isReverted = userManager.modifyUserSecurity(userAccount.getUsername(), 
-                                            new ArrayList<String>(
-                                                Arrays.asList(
-                                                        (String) currentSec.get(0),
-                                                        (String) currentSec.get(1),
-                                                        (String) currentSec.get(2),
-                                                        (String) currentSec.get(3))));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("isReverted: {}", isReverted);
-                                    }
-
-                                    boolean backoutSalt = userSec.addOrUpdateSalt(userAccount.getGuid(), existingSalt, SaltType.RESET.name());
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("backoutSalt: {}", backoutSalt);
-                                    }
-
-                                    if (!(isReverted) && (!(backoutSalt)))
-                                    {
-                                        throw new AccountChangeException("Failed to modify the user account and unable to revert to existing state.");
-                                    }
-
-                                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                                }
+                                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                             }
                             else
                             {
+                                // something failed. we're going to undo what we did in the user
+                                // repository, because we couldnt update the salt value. if we don't
+                                // undo it then the user will never be able to login without admin
+                                // intervention
+                                boolean isReverted = userManager.modifyUserSecurity(userAccount.getUsername(), 
+                                        new ArrayList<String>(
+                                            Arrays.asList(
+                                                    (String) currentSec.get(0),
+                                                    (String) currentSec.get(1),
+                                                    (String) currentSec.get(2),
+                                                    (String) currentSec.get(3))));
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("isReverted: {}", isReverted);
+                                }
+
+                                boolean backoutSalt = userSec.addOrUpdateSalt(userAccount.getGuid(), existingSalt, SaltType.RESET.name());
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("backoutSalt: {}", backoutSalt);
+                                }
+
+                                if (!(isReverted) && (!(backoutSalt)))
+                                {
+                                    throw new AccountChangeException("Failed to modify the user account and unable to revert to existing state.");
+                                }
+
                                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
                             }
                         }
                         else
                         {
-                            ERROR_RECORDER.error("Unable to generate new salt for provided user account.");
+                            ERROR_RECORDER.error("An error occurred while performing the update to the data repository.");
 
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
                         }
                     }
                     else
                     {
-                        ERROR_RECORDER.error("Unable to obtain existing salt value from datastore. Cannot continue.");
+                        ERROR_RECORDER.error("Unable to generate new salt value for user. Cannot continue.");
 
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
                     }
                 }
                 else
                 {
-                    ERROR_RECORDER.error("Unable to obtain configured user salt. Cannot continue");
+                    ERROR_RECORDER.error("Unable to obtain existing user salt for authentication. Cannot continue");
 
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
@@ -959,10 +956,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     }
 
                     boolean isComplete = userManager.modifyOtpSecret(userAccount.getUsername(), true,
-                            PasswordUtils.encryptText(secret, otpSalt,
+                            PasswordUtils.encryptText(secret.toCharArray(), otpSalt.getBytes(),
                                     secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
                                     secBean.getConfigData().getSecurityConfig().getIterations(),
-                                    secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                                    secBean.getConfigData().getSecurityConfig().getKeyLength(),
                                     secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                                     secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                                     secBean.getConfigData().getSystemConfig().getEncoding()));

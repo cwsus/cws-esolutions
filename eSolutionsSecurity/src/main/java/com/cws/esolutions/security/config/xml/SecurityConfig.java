@@ -45,19 +45,19 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class SecurityConfig implements Serializable
 {
-    private int keyBits = 256;
+    private int keyLength = 128;
     private int otpVariance = 0;
     private int saltLength = 32; // default to 64
     private int maxAttempts = 3; // default of 3
     private int resetTimeout = 30; // default of 30 minutes
     private int smsCodeLength = 8; // default of 8
-    private int iterations = 65535; // default to 65535
     private int resetIdLength = 32; // default of 32
     private String userSecDAO = null;
     private String authConfig = null; // FULL path to connection configuration file
     private String auditConfig = null; // FULL path to connection configuration file
     private String authManager = null;
     private String userManager = null;
+    private int iterations = 39542784; // default to 39542784
     private int passwordMinLength = 8; // default of 8 characters
     private String otpAlgorithm = null;
     private int passwordMaxLength = 128; // default of 32 characters
@@ -419,9 +419,9 @@ public final class SecurityConfig implements Serializable
         this.enableSecurity = value;
     }
 
-    public final void setKeyBits(final int value)
+    public final void setKeyLength(final int value)
     {
-        final String methodName = SecurityConfig.CNAME + "#setKeyBits(final int value)";
+        final String methodName = SecurityConfig.CNAME + "#setKeyLength(final int value)";
 
         if (DEBUG)
         {
@@ -429,9 +429,9 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        if (value >= this.keyBits)
+        if (value >= this.keyLength)
         {
-            this.keyBits = value;
+            this.keyLength = value;
         }
     }
 
@@ -798,18 +798,18 @@ public final class SecurityConfig implements Serializable
         return this.svcAccount;
     }
 
-    @XmlElement(name = "keyBits")
-    public final int getKeyBits()
+    @XmlElement(name = "keyLength")
+    public final int getKeyLength()
     {
-        final String methodName = SecurityConfig.CNAME + "#getKeyBits()";
+        final String methodName = SecurityConfig.CNAME + "#getKeyLength()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.keyBits);
+            DEBUGGER.debug("Value: {}", this.keyLength);
         }
 
-        return this.keyBits;
+        return this.keyLength;
     }
 
     @XmlElement(name = "secretKeyAlgorithm")

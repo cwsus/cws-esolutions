@@ -35,6 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -190,7 +191,7 @@ public class DNSServiceController
     }
 
     @RequestMapping(value = {"default", "lookup", "search"}, method = RequestMethod.GET)
-    public final String showDefaultPage(final Model model)
+    public final ModelAndView showDefaultPage(final Model model)
     {
         final String methodName = DNSServiceController.CNAME + "#showLookupPage(final Model model)";
 
@@ -198,6 +199,8 @@ public class DNSServiceController
         {
             DEBUGGER.debug(methodName);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -248,22 +251,25 @@ public class DNSServiceController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            return this.appConfig.getUnavailablePage();
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
-
-        model.addAttribute("serviceTypes", this.serviceTypes);
-        model.addAttribute(Constants.COMMAND, new SearchRequest());
+        else
+        {
+        	mView.addObject("serviceTypes", this.serviceTypes);
+        	mView.addObject(Constants.COMMAND, new SearchRequest());
+        	mView.setViewName(this.lookupPage);
+        }
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", model);
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
-        return this.lookupPage;
+        return mView;
     }
 
     @RequestMapping(value = "search", method = RequestMethod.POST)
-    public final String submitLookup(@ModelAttribute("entry") final SearchRequest request, final BindingResult bindResult, final Model model)
+    public final ModelAndView submitLookup(@ModelAttribute("entry") final SearchRequest request, final BindingResult bindResult, final Model model)
     {
         final String methodName = DNSServiceController.CNAME + "#submitLookup(@ModelAttribute(\"entry\") final SearchRequest request, final BindingResult bindResult)";
 
@@ -273,7 +279,7 @@ public class DNSServiceController
             DEBUGGER.debug("DNSRecord: {}", request);
         }
 
-        String responsePage = null;
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -325,98 +331,104 @@ public class DNSServiceController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            return this.appConfig.getUnavailablePage();
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
-
-        try
+        else
         {
-            // ensure authenticated access
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            reqInfo.setHostName(hRequest.getRemoteHost());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            DNSRecord record = new DNSRecord();
-            record.setRecordName(request.getSearchTerms());
-            record.setRecordType(DNSRecordType.valueOf(request.getSearchExtras()));
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("DNSRecord: {}", record);
-            }
-
-            DNSServiceRequest dnsRequest = new DNSServiceRequest();
-            dnsRequest.setRecord(record);
-            dnsRequest.setRequestInfo(reqInfo);
-            dnsRequest.setUserAccount(userAccount);
-            dnsRequest.setServiceId(this.serviceId);
-            dnsRequest.setSearchURL(this.serviceHost);
-            dnsRequest.setSearchPath(this.searchSuffix);
-            dnsRequest.setRequestType(DNSRequestType.LOOKUP);
-            dnsRequest.setApplicationId(this.appConfig.getApplicationId());
-            dnsRequest.setApplicationName(this.appConfig.getApplicationName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("DNSServiceRequest: {}", dnsRequest);
-            }
-
-            DNSServiceResponse response = processor.performLookup(dnsRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("DNSServiceResponse: {}", response);
-            }
-
-            switch (response.getRequestStatus())
-            {
-	            case SUCCESS:
-	                if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
-	                {
-	                    // multiple records were returned
-	                    model.addAttribute("dnsEntries", response.getDnsRecords());
-	                }
-	                else if (response.getDnsRecord() != null)
-	                {
-	                	model.addAttribute("dnsEntry", response.getDnsRecord());
-	                }
-	                else
-	                {
-	                	model.addAttribute(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
-	                }
-
-	                model.addAttribute("serviceTypes", this.serviceTypes);
-	                model.addAttribute(Constants.COMMAND, new SearchRequest());
-
-	                responsePage = this.lookupPage;
-
-	                break;
-	            case FAILURE:
-	            	responsePage = this.appConfig.getErrorResponsePage();
-
-	            	break;
-	            case EXCEPTION:
-	            	responsePage = this.appConfig.getErrorResponsePage();
-
-	            	break;
-	            case UNAUTHORIZED:
-	            	responsePage = this.appConfig.getUnauthorizedPage();
-
-	            	break;
-            	default:
-            }
+	        try
+	        {
+	            // ensure authenticated access
+	            RequestHostInfo reqInfo = new RequestHostInfo();
+	            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+	            reqInfo.setHostName(hRequest.getRemoteHost());
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+	            }
+	
+	            DNSRecord record = new DNSRecord();
+	            record.setRecordName(request.getSearchTerms());
+	            record.setRecordType(DNSRecordType.valueOf(request.getSearchExtras()));
+	
+	            if (DEBUG)
+	            {
+	            	DEBUGGER.debug("DNSRecord: {}", record);
+	            }
+	
+	            DNSServiceRequest dnsRequest = new DNSServiceRequest();
+	            dnsRequest.setRecord(record);
+	            dnsRequest.setRequestInfo(reqInfo);
+	            dnsRequest.setUserAccount(userAccount);
+	            dnsRequest.setServiceId(this.serviceId);
+	            dnsRequest.setSearchURL(this.serviceHost);
+	            dnsRequest.setSearchPath(this.searchSuffix);
+	            dnsRequest.setRequestType(DNSRequestType.LOOKUP);
+	            dnsRequest.setApplicationId(this.appConfig.getApplicationId());
+	            dnsRequest.setApplicationName(this.appConfig.getApplicationName());
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("DNSServiceRequest: {}", dnsRequest);
+	            }
+	
+	            DNSServiceResponse response = processor.performLookup(dnsRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("DNSServiceResponse: {}", response);
+	            }
+	
+	            switch (response.getRequestStatus())
+	            {
+		            case SUCCESS:
+		                if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
+		                {
+		                    // multiple records were returned
+		                	mView.addObject("dnsEntries", response.getDnsRecords());
+		                }
+		                else if (response.getDnsRecord() != null)
+		                {
+		                	mView.addObject("dnsEntry", response.getDnsRecord());
+		                }
+		                else
+		                {
+		                	mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
+		                }
+	
+		                mView.addObject("serviceTypes", this.serviceTypes);
+		                mView.addObject(Constants.COMMAND, new SearchRequest());
+		                mView.setViewName(this.lookupPage);
+	
+		                break;
+		            case FAILURE:
+		            	mView.setViewName(this.appConfig.getErrorResponsePage());
+	
+		            	break;
+		            case EXCEPTION:
+		            	mView.setViewName(this.appConfig.getErrorResponsePage());
+	
+		            	break;
+		            case UNAUTHORIZED:
+		            	mView.setViewName(this.appConfig.getUnauthorizedPage());
+	
+		            	break;
+	            	default:
+	            }
+	        }
+	        catch (final DNSServiceException dsx)
+	        {
+	            ERROR_RECORDER.error(dsx.getMessage(), dsx);
+	
+	            mView.setViewName(this.appConfig.getErrorResponsePage());
+	        }
         }
-        catch (final DNSServiceException dsx)
+
+        if (DEBUG)
         {
-            ERROR_RECORDER.error(dsx.getMessage(), dsx);
-
-            return this.appConfig.getErrorResponsePage();
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
-        return responsePage;
+        return mView;
     }
 }

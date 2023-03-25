@@ -207,20 +207,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             	if (StringUtils.isEmpty(request.getUserSecurity().getNewPassword()))
             	{
-            		newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
+            		newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()).toCharArray(), newUserSalt.getBytes(),
             				secConfig.getSecretKeyAlgorithm(),
             				secConfig.getIterations(),
-            				secConfig.getKeyBits(),
+            				secConfig.getKeyLength(),
             				secConfig.getEncryptionAlgorithm(),
             				secConfig.getEncryptionInstance(),
                 			secBean.getConfigData().getSystemConfig().getEncoding());
             	}
             	else
             	{
-            		newPassword = PasswordUtils.encryptText(request.getUserSecurity().getNewPassword(), newUserSalt,
+            		newPassword = PasswordUtils.encryptText(request.getUserSecurity().getNewPassword().toCharArray(), newUserSalt.getBytes(),
             				secConfig.getSecretKeyAlgorithm(),
             				secConfig.getIterations(),
-            				secConfig.getKeyBits(),
+            				secConfig.getKeyLength(),
             				secConfig.getEncryptionAlgorithm(),
             				secConfig.getEncryptionInstance(),
                 			secBean.getConfigData().getSystemConfig().getEncoding());

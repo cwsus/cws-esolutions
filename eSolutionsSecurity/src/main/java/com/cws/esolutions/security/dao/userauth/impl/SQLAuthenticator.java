@@ -114,7 +114,7 @@ public class SQLAuthenticator implements Authenticator
             	resultSet.first();
 
             	String decrypted = PasswordUtils.decryptText(resultSet.getString(3), resultSet.getString(4), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
-            			secConfig.getKeyBits(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+            			secConfig.getKeyLength(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
             			svcBean.getConfigData().getSystemConfig().getEncoding());
 
             	if (!(StringUtils.equals(password, decrypted)))
@@ -466,11 +466,11 @@ public class SQLAuthenticator implements Authenticator
                     resultSet.first();
                     
                     String answerOneDecrypted = PasswordUtils.decryptText(resultSet.getString(1), attributes.get(0), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
-                			secConfig.getKeyBits(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                			secConfig.getKeyLength(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                 			svcBean.getConfigData().getSystemConfig().getEncoding());
 
                     String answerTwoDecrypted = PasswordUtils.decryptText(resultSet.getString(2), attributes.get(0), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
-                			secConfig.getKeyBits(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                			secConfig.getKeyLength(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                 			svcBean.getConfigData().getSystemConfig().getEncoding());
 
                     if ((StringUtils.equals(answerOneDecrypted, attributes.get(1))) && (StringUtils.equals(answerTwoDecrypted, attributes.get(2))))

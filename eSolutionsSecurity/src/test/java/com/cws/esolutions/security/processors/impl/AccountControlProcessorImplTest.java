@@ -66,15 +66,20 @@ public class AccountControlProcessorImplTest
             userAccount.setGroups(new String[] { "SiteAdmin" });
             userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
-            newAccount.setUsername("junit-runner");
-            newAccount.setSuspended(false);
-            newAccount.setSurname("test");
-            newAccount.setGivenName("junit");
-            newAccount.setEmailAddr("junit@test.com");
+            newAccount.setUsername("khuntly");
+            newAccount.setAccepted(true);
+            newAccount.setDisplayName("Kein Huntly");
+            newAccount.setEmailAddr("kmhuntly@gmail.com");
+            newAccount.setFailedCount(0);
+            newAccount.setGivenName("Huntly");
             newAccount.setGroups(new String[] { "DNS Operator" });
-            newAccount.setUserRole(SecurityUserRole.NONE);
-            newAccount.setTelephoneNumber("5555551212");
-            newAccount.setPagerNumber("5555551213");
+            newAccount.setOlrLocked(false);
+            newAccount.setOlrSetup(false);
+            newAccount.setSurname("Kevin");
+            newAccount.setSuspended(false);
+            newAccount.setTelephoneNumber("8623999098");
+            newAccount.setUsername("khuntly");
+            newAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
@@ -90,8 +95,8 @@ public class AccountControlProcessorImplTest
     @Test public void createNewUser()
     {
         AuthenticationData authSec = new AuthenticationData();
-        authSec.setNewPassword("naB8QUXNTWFA7MCpFYvT");
-        authSec.setUsername("junit-runner");
+        authSec.setNewPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd");
+        authSec.setUsername("khuntly");
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);

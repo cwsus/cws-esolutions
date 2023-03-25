@@ -112,15 +112,15 @@ public class CoreServicesListener implements ServletContextListener
         }
         catch (final NamingException nx)
         {
-        	System.out.println(nx.getMessage());
+        	System.err.println(nx.getMessage());
         }
         catch (final JAXBException jx)
         {
-        	System.out.println(jx.getMessage());
+        	System.err.println(jx.getMessage());
         }
         catch (final CoreServicesException csx)
         {
-        	System.out.println(csx.getMessage());
+        	System.err.println(csx.getMessage());
         }
     }
 

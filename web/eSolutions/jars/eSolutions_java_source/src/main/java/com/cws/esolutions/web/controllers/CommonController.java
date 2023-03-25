@@ -38,6 +38,7 @@ import org.springframework.stereotype.Controller;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -129,7 +130,7 @@ public class CommonController
     }
 
     @RequestMapping(value = "default", method = RequestMethod.GET)
-    public final String showDefaultPage(final Model model)
+    public final ModelAndView showDefaultPage(final Model model)
     {
         final String methodName = CommonController.CNAME + "#showDefaultPage(final Model model)";
 
@@ -137,6 +138,8 @@ public class CommonController
         {
             DEBUGGER.debug(methodName);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -197,17 +200,23 @@ public class CommonController
 
             if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                model.addAttribute("alertMessages", messageResponse.getSvcMessages());
+                mView.addObject("alertMessages", messageResponse.getSvcMessages());
             }
         }
-        catch (final MessagingServiceException msx) {}
+        catch (final MessagingServiceException msx) {} // do nothing with the exception
 
-        // in here, we're going to get all the messages to display and such
-        return this.homePage;
+        mView.setViewName(this.homePage);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
     }
 
     @RequestMapping(value = "contact", method = RequestMethod.GET)
-    public final String showContactPage(final Model model)
+    public final ModelAndView showContactPage(final Model model)
     {
         final String methodName = CommonController.CNAME + "#showContactPage(final Model model)";
 
@@ -215,6 +224,8 @@ public class CommonController
         {
             DEBUGGER.debug(methodName);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -263,14 +274,20 @@ public class CommonController
             }
         }
 
-        model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
-        model.addAttribute(Constants.COMMAND, new EmailMessage());
+        mView.addObject("serviceEmail", this.appConfig.getEmailAddress());
+        mView.addObject(Constants.COMMAND, new EmailMessage());
+        mView.setViewName(this.appConfig.getContactAdminsPage());
 
-        return this.appConfig.getContactAdminsPage();
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
     }
 
     @RequestMapping(value = "contact", method = RequestMethod.POST)
-    public final String doSubmitMessage(@ModelAttribute("message") final EmailMessage message, final Model model, final BindingResult bindResult)
+    public final ModelAndView doSubmitMessage(@ModelAttribute("message") final EmailMessage message, final Model model, final BindingResult bindResult)
     {
         final String methodName = CommonController.CNAME + "#doSubmitMessage(@ModelAttribute(\"message\") final EmailMessage message, final Model model, final BindingResult bindResult)";
 
@@ -279,6 +296,8 @@ public class CommonController
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("EmailMessage: {}", message);
         }
+
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -335,56 +354,62 @@ public class CommonController
             // validation failed
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
-            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
-            model.addAttribute(Constants.COMMAND, new EmailMessage());
-
-            return this.appConfig.getContactAdminsPage();
+            mView.addObject("serviceEmail", this.appConfig.getEmailAddress());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new EmailMessage());
+            mView.setViewName(this.appConfig.getContactAdminsPage());
         }
-
-        try
+        else
         {
-        	SimpleMailMessage emailMessage = new SimpleMailMessage();
-        	emailMessage.setTo(message.getEmailAddr().get(0));
-        	emailMessage.setSubject(message.getMessageSubject());
-        	emailMessage.setText(message.getMessageBody());
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
-        	}
-
-        	mailSender.send(emailMessage);
-
-        	SimpleMailMessage autoResponse = new SimpleMailMessage();
-        	autoResponse.setReplyTo(this.contactResponseEmail.getFrom());
-        	autoResponse.setTo(this.contactResponseEmail.getTo()[0]);
-        	autoResponse.setSubject(this.contactResponseEmail.getSubject());
-        	autoResponse.setText(message.getMessageBody());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("EmailMessage: {}", autoResponse);
-            }
-
-            mailSender.send(autoResponse);
-
-            model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
-            model.addAttribute(Constants.COMMAND, new EmailMessage());
-            model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageEmailSentSuccess());
-            
-            return this.appConfig.getContactAdminsRedirect();
+	        try
+	        {
+	        	SimpleMailMessage emailMessage = new SimpleMailMessage();
+	        	emailMessage.setTo(message.getEmailAddr().get(0));
+	        	emailMessage.setSubject(message.getMessageSubject());
+	        	emailMessage.setText(message.getMessageBody());
+	
+	        	if (DEBUG)
+	        	{
+	        		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+	        	}
+	
+	        	mailSender.send(emailMessage);
+	
+	        	SimpleMailMessage autoResponse = new SimpleMailMessage();
+	        	autoResponse.setReplyTo(this.contactResponseEmail.getFrom());
+	        	autoResponse.setTo(this.contactResponseEmail.getTo()[0]);
+	        	autoResponse.setSubject(this.contactResponseEmail.getSubject());
+	        	autoResponse.setText(message.getMessageBody());
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("EmailMessage: {}", autoResponse);
+	            }
+	
+	            mailSender.send(autoResponse);
+	
+	            mView.addObject("serviceEmail", this.appConfig.getEmailAddress());
+	            mView.addObject(Constants.COMMAND, new EmailMessage());
+	            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageEmailSentSuccess());
+	            mView.setViewName(this.appConfig.getContactAdminsRedirect());
+	        }
+	        catch (final MailException mx)
+	        {
+	            ERROR_RECORDER.error(mx.getMessage(), mx);
+	
+	            model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
+	            model.addAttribute(Constants.COMMAND, new EmailMessage());
+	            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+	            mView.setViewName(this.appConfig.getContactAdminsPage());
+	        }
         }
-        catch (final MailException mx)
+
+        if (DEBUG)
         {
-            ERROR_RECORDER.error(mx.getMessage(), mx);
-
-            model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
-            model.addAttribute(Constants.COMMAND, new EmailMessage());
-            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-
-            return this.appConfig.getContactAdminsPage();
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
+
+        return mView;
     }
 }
