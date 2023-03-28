@@ -28,6 +28,7 @@ package com.cws.esolutions.security.processors.impl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 
@@ -61,25 +62,26 @@ public class AccountControlProcessorImplTest
             hostInfo.setHostName("junit");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("5c276875-90fa-4cc6-85ab-b2fcc2d27ed6");
-            userAccount.setUsername("khuntly");
-            userAccount.setGroups(new String[] { "SiteAdmin" });
+            userAccount.setGuid("1c260aba-5be1-4854-8695-d5ae9309d4e7");
+            userAccount.setUsername("junit");
             userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
+            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(128));
 
             newAccount.setUsername("khuntly");
             newAccount.setAccepted(true);
-            newAccount.setDisplayName("Kein Huntly");
-            newAccount.setEmailAddr("kmhuntly@gmail.com");
+            newAccount.setDisplayName("Kevin Huntly");
             newAccount.setFailedCount(0);
-            newAccount.setGivenName("Huntly");
-            newAccount.setGroups(new String[] { "DNS Operator" });
+            newAccount.setSurname("Huntly");
             newAccount.setOlrLocked(false);
             newAccount.setOlrSetup(false);
-            newAccount.setSurname("Kevin");
+            newAccount.setGivenName("Kevin");
             newAccount.setSuspended(false);
             newAccount.setTelephoneNumber("8623999098");
+            newAccount.setPagerNumber("7162491027");
             newAccount.setUsername("khuntly");
             newAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
+            newAccount.setGuid("1c260aba-5be1-4854-8695-d5ae9309d4e7");
+            newAccount.setEmailAddr("kmhuntly@gmail.com");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
@@ -95,7 +97,7 @@ public class AccountControlProcessorImplTest
     @Test public void createNewUser()
     {
         AuthenticationData authSec = new AuthenticationData();
-        authSec.setNewPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd");
+        authSec.setNewPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
         authSec.setUsername("khuntly");
 
         AccountControlRequest request = new AccountControlRequest();
@@ -114,27 +116,7 @@ public class AccountControlProcessorImplTest
         }
         catch (final AccountControlException acx)
         {
-            Assertions.fail(acx.getMessage());
-        }
-    }
-
-    @Test public void searchAccounts()
-    {
-        AccountControlRequest request = new AccountControlRequest();
-        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
-        request.setApplicationName("eSolutions");
-        request.setHostInfo(hostInfo);
-        request.setRequestor(userAccount);
-        request.setUserAccount(newAccount);
-
-        try
-        {
-            AccountControlResponse response = processor.searchAccounts(request);
-
-            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
-        }
-        catch (final AccountControlException acx)
-        {
+        	acx.printStackTrace();
             Assertions.fail(acx.getMessage());
         }
     }
@@ -152,6 +134,7 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.loadUserAccount(request);
 
+            System.out.println(response);
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AccountControlException acx)
@@ -162,6 +145,8 @@ public class AccountControlProcessorImplTest
 
     @Test public void modifyUserSuspension()
     {
+    	newAccount.setSuspended(true);
+
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
         request.setUserAccount(newAccount);
@@ -184,7 +169,7 @@ public class AccountControlProcessorImplTest
 
     @Test public void modifyUserRole()
     {
-        newAccount.setFailedCount(0);
+        newAccount.setUserRole(SecurityUserRole.USER_ADMIN);
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);

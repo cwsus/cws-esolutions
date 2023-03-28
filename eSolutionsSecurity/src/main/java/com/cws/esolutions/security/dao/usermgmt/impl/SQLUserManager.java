@@ -26,13 +26,13 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.Arrays;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.ResultSetMetaData;
+import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -61,7 +61,7 @@ public class SQLUserManager implements UserManager
         boolean isValid = false;
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -84,12 +84,12 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -121,7 +121,6 @@ public class SQLUserManager implements UserManager
         }
         catch (final SQLException sqx)
         {
-        	sqx.printStackTrace();
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
         finally
@@ -153,22 +152,21 @@ public class SQLUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List)
      */
-    public synchronized boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<String> userAccount) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<String> userAccount) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userAccount);
-            DEBUGGER.debug("Value: {}", roles);
         }
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -191,26 +189,22 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
-            stmt.setString(1, (String) userAccount.get(0)); // commonName NVARCHAR(128),
-            stmt.setString(2, (String) userAccount.get(1)); // uid NVARCHAR(45),
-            stmt.setString(3, (String) userAccount.get(2)); // givenname NVARCHAR(100),
-            stmt.setString(4, (String) userAccount.get(3)); // sn NVARCHAR(100),
-            stmt.setString(5, (String) userAccount.get(4)); // displayname NVARCHAR(100),
-            stmt.setString(6, (String) userAccount.get(5)); // email NVARCHAR(50),
-            stmt.setString(7, (String) userAccount.get(6)); // cwsrole NVARCHAR(45),
-            stmt.setInt(8, Integer.parseInt(userAccount.get(7).toString())); // cwsfailedpwdcount MEDIUMINT(9),
-            stmt.setBoolean(9, (Boolean) userAccount.get(8)); // cwsissuspended BOOLEAN,
-            stmt.setBoolean(10, (Boolean) userAccount.get(9)); // cwsisolrsetup BOOLEAN,
-            stmt.setBoolean(11, (Boolean) userAccount.get(10)); // cwsisolrlocked BOOLEAN,
-            stmt.setBoolean(12, (Boolean) userAccount.get(11)); // cwsistcaccepted BOOLEAN,
-            stmt.setString(13, (String) userAccount.get(12)); // telephonenumber NVARCHAR(10),
-            stmt.setString(14, (String) userAccount.get(13)); // pager NVARCHAR(10),
-            stmt.setString(15, (String) userAccount.get(14)); // userpassword NVARCHAR(255)
+            stmt = sqlConn.prepareStatement("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt.setString(1, userAccount.get(0)); // commonName NVARCHAR(128),
+            stmt.setString(2, userAccount.get(1)); // uid NVARCHAR(45),
+            stmt.setString(3, userAccount.get(2)); // userpassword NVARCHAR(255)
+            stmt.setString(4, userAccount.get(3)); // cwsrole NVARCHAR(45),
+            stmt.setString(5, userAccount.get(4)); // sn NVARCHAR(100),
+            stmt.setString(6, userAccount.get(5)); // givenname NVARCHAR(100),
+            stmt.setString(7, userAccount.get(6)); // salt value
+            stmt.setString(8, userAccount.get(7)); // salt type
+            stmt.setString(9, userAccount.get(8)); // email addr
+            stmt.setString(10, userAccount.get(9)); // telephonenumber NVARCHAR(10),
+            stmt.setString(11, userAccount.get(10)); // pager NVARCHAR(10),
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (!(stmt.execute()))
@@ -260,7 +254,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -283,12 +277,12 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL removeUserAccount(?) }");
+            stmt = sqlConn.prepareStatement("{ CALL removeUserAccount(?) }");
             stmt.setString(1, userId);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (!(stmt.execute()))
@@ -338,7 +332,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<String[]> results = null;
 
         if (Objects.isNull(dataSource))
@@ -362,43 +356,86 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, searchData);
-
-            if (DEBUG)
+            if (StringUtils.contains(searchData, "@"))
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
+            	stmt = sqlConn.prepareStatement("{ CALL getUserByEmail(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                stmt.setString(1, searchData);
 
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (resultSet.next())
+                if (DEBUG)
                 {
-                    resultSet.beforeFirst();
-                    results = new ArrayList<String[]>();
+                    DEBUGGER.debug("PreparedStatement: {}", stmt);
+                }
 
-                    while (resultSet.next()) // TODO: these should not be static strings.
+                if (stmt.execute())
+                {
+                    resultSet = stmt.getResultSet();
+
+                    if (resultSet.next())
                     {
-                        String[] userData = new String[]
+                        resultSet.beforeFirst();
+                        results = new ArrayList<String[]>();
+
+                        while (resultSet.next())
                         {
-                            resultSet.getString("cn"),
-                            resultSet.getString("uid"),
-                            resultSet.getString("email")
-                        };
+                            String[] userData = new String[]
+                            {
+                                resultSet.getString("cn")
+                            };
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Data: {}", (Object) userData);
+                            }
+
+                            results.add(userData);
+                        }
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Data: {}", (Object) userData);
+                            DEBUGGER.debug("List: {}", results);
+                        }
+                    }
+                }
+            }
+            else
+            {
+            	stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                stmt.setString(1, searchData);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("PreparedStatement: {}", stmt);
+                }
+
+                if (stmt.execute())
+                {
+                    resultSet = stmt.getResultSet();
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        results = new ArrayList<String[]>();
+
+                        while (resultSet.next()) // TODO: these should not be static strings.
+                        {
+                            String[] userData = new String[]
+                            {
+                            	resultSet.getString("cn"),
+                                resultSet.getString("uid")
+                            };
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Data: {}", (Object) userData);
+                            }
+
+                            results.add(userData);
                         }
 
-                        results.add(userData);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List: {}", results);
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List: {}", results);
+                        }
                     }
                 }
             }
@@ -450,7 +487,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object> userAccount = null;
 
         if (Objects.isNull(dataSource))
@@ -479,12 +516,12 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL loadUserAccount(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL showUserAccount(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid); // common name
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -506,15 +543,23 @@ public class SQLUserManager implements UserManager
                         DEBUGGER.debug("x: {}", x);
                     }
 
-                    if ((x == 0) || (x > 1))
+                    if (x > 1)
                     {
-                        throw new UserManagementException("No user account was located for the provided data.");
+                    	throw new UserManagementException("Multiple records were found for the given information.");
                     }
 
                     resultSet.first();
+                    ResultSetMetaData resultMetaData = resultSet.getMetaData(); 
+                    int columnCount = resultMetaData.getColumnCount();
                     userAccount = new ArrayList<Object>();
 
-                    for (int y = 1; y != 18; y++)
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("ResultSetMetaData: {}", resultMetaData);
+                    	DEBUGGER.debug("columnCount: {}", columnCount);
+                    }
+
+                    for (int y = 1; y < columnCount; y++)
                     {
                     	if (DEBUG)
                     	{
@@ -523,137 +568,6 @@ public class SQLUserManager implements UserManager
 
                     	userAccount.add(resultSet.getObject(y));
                     }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("userAccount: {}", userAccount);
-                    }
-                }
-            }
-            else
-            {
-                throw new UserManagementException("No users were located with the provided information");
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new UserManagementException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-            
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (final SQLException sqx)
-            {
-                throw new UserManagementException(sqx.getMessage(), sqx);
-            }
-        }
-
-        return userAccount;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
-     */
-    public synchronized List<String[]> getUserByEmailAddress(final String emailAddress) throws UserManagementException
-    {
-        final String methodName = SQLUserManager.CNAME + "#getUserByEmailAddress(final String emailAddress) throws UserManagementException";
-        
-        if(DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", emailAddress);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-        List<String[]> userAccount = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new UserManagementException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            stmt = sqlConn.prepareCall("{ CALL getUserByEmailAddress(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, emailAddress); // common name
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.last();
-                    int x = resultSet.getRow();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("x: {}", x);
-                    }
-
-                    if ((x == 0) || (x > 1))
-                    {
-                        throw new UserManagementException("No user account was located for the provided data.");
-                    }
-
-                    resultSet.first();
-
-                    String[] returnedData = new String[] { resultSet.getString(1), resultSet.getString(2), resultSet.getString(3) };
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("returnedData {}", (Object[]) returnedData);
-
-                    	for (String value : returnedData)
-                    	{
-                    		DEBUGGER.debug("Entry: {}", value);
-                    	}
-                    }
-
-                    userAccount = new ArrayList<String[]>();
-                    userAccount.add(returnedData);
 
                     if (DEBUG)
                     {
@@ -714,7 +628,7 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         String userAccount = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -737,12 +651,12 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByUsername(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, searchData); // common name
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -830,7 +744,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<String[]> results = null;
 
         if (Objects.isNull(dataSource))
@@ -854,11 +768,11 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL listUserAccounts() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL listUserAccounts() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -944,7 +858,8 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -969,18 +884,43 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserEmail(?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL updateUserEmail(?, ?) }");
             stmt.setString(1, userId);
             stmt.setString(2, value);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            if (stmt.executeUpdate() == 1)
+            stmt.executeUpdate();
+
+            // check if the change was actually made
+            stmt.close();
+            stmt = null;
+
+            stmt = sqlConn.prepareStatement("{ CALL validateEmailUpdate(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userId);
+            stmt.setString(2, value);
+
+            if (DEBUG)
             {
-                isComplete = true;
+            	DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            resultSet = stmt.executeQuery();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("resultSet: {}", resultSet);
+            }
+
+            if ((resultSet.next()))
+            {
+            	if (resultSet.getInt(1) == 1)
+            	{
+            		isComplete = true;
+            	}
             }
         }
         catch (final SQLException sqx)
@@ -991,6 +931,10 @@ public class SQLUserManager implements UserManager
         {
             try
             {
+            	if (resultSet != null)
+            	{
+            		resultSet.close();
+            	}
                 if (stmt != null)
                 {
                     stmt.close();
@@ -1026,7 +970,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -1049,15 +993,14 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            // first make sure the existing password is proper
-            // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserContact(?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL updateUserContact(?, ?, ?) }");
             stmt.setString(1, userId);
             stmt.setString(2, values.get(0));
+            stmt.setString(3, values.get(1));
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -1108,7 +1051,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -1131,29 +1074,21 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL modifyUserSuspension(?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL modifyUserSuspension(?, ?) }");
             stmt.setString(1, userId);
             stmt.setBoolean(2, isSuspended);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            int x = stmt.executeUpdate();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Update: {}", x);
-            }
-
-            if (x == 1)
-            {
-                isComplete = true;
-            }
+            stmt.executeUpdate();
+            isComplete = true;
         }
         catch (final SQLException sqx)
         {
+        	sqx.printStackTrace();
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
         finally
@@ -1180,22 +1115,22 @@ public class SQLUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserGroups(java.lang.String, java.lang.Object[])
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserRole(java.lang.String, java.lang.Object[])
      */
-    public synchronized boolean modifyUserGroups(final String userId, final Object[] values) throws UserManagementException
+    public synchronized boolean modifyUserRole(final String userId, final String role) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#modifyUserGroups(final String userId, final Object[] values) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#modifyUserRole(final String userId, final String role) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", values);
+            DEBUGGER.debug("Value: {}", role);
         }
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -1220,13 +1155,13 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserGroups(?, ?,}");
+            stmt = sqlConn.prepareStatement("{ CALL updateUserRole(?, ?,}");
             stmt.setString(1, userId);
-            stmt.setString(2, Arrays.toString(values));
+            stmt.setString(2, role);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -1277,7 +1212,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -1302,13 +1237,13 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateOlrLock(?, ?,}");
+            stmt = sqlConn.prepareStatement("{ CALL modifyOlrLock(?, ?) }");
             stmt.setString(1, userId);
             stmt.setBoolean(2, isLocked);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -1359,7 +1294,7 @@ public class SQLUserManager implements UserManager
         }
 
         Connection sqlConn = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -1382,20 +1317,14 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            if (isLocked)
-            {
-                stmt = sqlConn.prepareCall("{ CALL lockUserAccount(?) }");
-                stmt.setString(1, userId);
-            }
-            else
-            {
-                stmt = sqlConn.prepareCall("{ CALL lockUserAccount(?) }");
-                stmt.setString(1, userId);
-            }
+            stmt = sqlConn.prepareStatement("{ CALL modifyUserLock(?, ?, ?) }");
+            stmt.setString(1, userId);
+            stmt.setBoolean(2, isLocked);
+            stmt.setInt(3, increment);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             return (stmt.executeUpdate() == 0);
@@ -1440,7 +1369,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -1465,100 +1394,13 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL modifyUserPassword(?, ?) }");
             stmt.setString(1, userId);
             stmt.setString(2, newPass);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            if (stmt.executeUpdate() == 1)
-            {
-                isComplete = true;
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new UserManagementException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (final SQLException sqx)
-            {
-                throw new UserManagementException(sqx.getMessage(), sqx);
-            }
-        }
-
-        return isComplete;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyOtpSecret(java.lang.String, boolean, java.lang.String)
-     */
-    public synchronized boolean modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException
-    {
-        final String methodName = SQLUserManager.CNAME + "#modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userId: {}", userId);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        CallableStatement stmt = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new UserManagementException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((sqlConn == null) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            if (addSecret)
-            {
-                stmt = sqlConn.prepareCall("{ CALL addUserSecret(?, ?) }");
-                stmt.setString(1, userId);
-                stmt.setString(2, secret);
-            }
-            else
-            {
-                stmt = sqlConn.prepareCall("{ CALL removeUserSecret(?) }");
-                stmt.setString(1, userId);
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -1608,7 +1450,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -1631,9 +1473,7 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            // first make sure the existing password is proper
-            // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserSecurity(?, ?, ?, ?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL addOrUpdateSecurityQuestions(?, ?, ?, ?, ?) }");
             stmt.setString(1, userGuid);
             stmt.setString(2, values.get(0));
             stmt.setString(3, values.get(1));
@@ -1642,97 +1482,12 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            if (stmt.executeUpdate() == 1)
-            {
-                isComplete = true;
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new UserManagementException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
+            stmt.executeUpdate();
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (final SQLException sqx)
-            {
-                throw new UserManagementException(sqx.getMessage(), sqx);
-            }
-        }
-
-        return isComplete;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(String, String, int, Long)
-     */
-    public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
-    {
-        final String methodName = SQLUserManager.CNAME + "#modifyUserSecurity(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", guid);
-            DEBUGGER.debug("Value: {}", lockCount);
-            DEBUGGER.debug("Value: {}", timestamp);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        CallableStatement stmt = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new UserManagementException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((sqlConn == null) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            // first make sure the existing password is proper
-            // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL performSuccessfulLogin(?, ?) }");
-            stmt.setString(1, userId);
-            stmt.setString(2, guid);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            if (stmt.executeUpdate() == 1)
-            {
-                isComplete = true;
-            }
+            isComplete = true;
         }
         catch (final SQLException sqx)
         {

@@ -140,20 +140,20 @@
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true</datasource>
+            <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;connectionCollation=utf8mb4_0900_ai_ci</datasource>
             <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
-            <dsPass>K3VyREVvRmpUdElxUStVd3ZxNGxodz09Om1rVWlBcG83SWQzT2x6VGs3TENlUWRqd3hKWlNTdmF4cFJFZmxkd2dsRTQ9</dsPass>
+            <dsPass>ALr5lyTkZint7x4bMTCIFA==:m/wuw9yLfzrbN4TbMd9JINeg359H5KHC1bibEwtCJF4=</dsPass>
             <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true</datasource>
+            <datasource>jdbc:mysql://localhost/AUDIT?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;connectionCollation=utf8mb4_0900_ai_ci</datasource>
             <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
-            <dsPass>K3VyREVvRmpUdElxUStVd3ZxNGxodz09Om1rVWlBcG83SWQzT2x6VGs3TENlUWRqd3hKWlNTdmF4cFJFZmxkd2dsRTQ9</dsPass>
+            <dsPass>ALr5lyTkZint7x4bMTCIFA==:m/wuw9yLfzrbN4TbMd9JINeg359H5KHC1bibEwtCJF4=</dsPass>
             <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>

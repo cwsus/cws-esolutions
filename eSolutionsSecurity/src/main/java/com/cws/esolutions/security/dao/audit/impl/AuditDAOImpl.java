@@ -31,7 +31,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
 /**
@@ -55,7 +55,7 @@ public class AuditDAOImpl implements IAuditDAO
         }
 
         Connection sqlConn = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -73,19 +73,20 @@ public class AuditDAOImpl implements IAuditDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?)}");
-            stmt.setString(1, auditRequest.get(0)); // username
-            stmt.setString(2, auditRequest.get(1)); // userguid
-            stmt.setString(3, auditRequest.get(2)); // userrole
-            stmt.setString(4, auditRequest.get(3)); // applid
-            stmt.setString(5, auditRequest.get(4)); // applname
-            stmt.setString(6, auditRequest.get(5)); // useraction
-            stmt.setString(7, auditRequest.get(6)); // srcaddr
-            stmt.setString(8, auditRequest.get(7)); // srchost
-
+            stmt = sqlConn.prepareStatement("{ CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, auditRequest.get(0)); // session id
+            stmt.setString(2, auditRequest.get(1)); // username
+            stmt.setString(3, auditRequest.get(2)); // guid
+            stmt.setString(4, auditRequest.get(3)); // user role
+            stmt.setString(5, auditRequest.get(4)); // applid
+            stmt.setString(6, auditRequest.get(5)); // applname
+            stmt.setString(7, auditRequest.get(6)); // user action
+            stmt.setString(8, auditRequest.get(7)); // srcaddr
+            stmt.setString(9, auditRequest.get(8)); // srcaddr
+            
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             stmt.execute();
@@ -131,7 +132,7 @@ public class AuditDAOImpl implements IAuditDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object> responseList = null;
 
         if (Objects.isNull(dataSource))
@@ -149,13 +150,13 @@ public class AuditDAOImpl implements IAuditDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getAuditInterval(?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL getAuditInterval(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, guid);
             stmt.setInt(2, startRow);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -169,29 +170,23 @@ public class AuditDAOImpl implements IAuditDAO
 
                 if (resultSet.next())
                 {
-                    int count = resultSet.getInt(1);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("count: {}", count);
-                    }
-
                     resultSet.beforeFirst();
                     responseList = new ArrayList<Object>();
-                    responseList.add(count);
 
                     while (resultSet.next())
                     {
                         Object[] data = new Object[]
                         {
-                            resultSet.getString(3), // USERNAME
-                            resultSet.getString(4), // CN
-                            resultSet.getString(5), // APPLICATION_ID
-                            resultSet.getString(6), // APPLICATION_NAME
-                            resultSet.getTimestamp(7), // REQUEST_TIMESTAMP
-                            resultSet.getString(8), // ACTION
-                            resultSet.getString(9), // SOURCE_ADDRESS
-                            resultSet.getString(10) // SOURCE_HOSTNAME
+                            resultSet.getString(1), // sessid
+                            resultSet.getString(2), // username
+                            resultSet.getString(3), // cn
+                            resultSet.getString(4), // role
+                            resultSet.getString(5), // applid
+                            resultSet.getString(6), // applname
+                            resultSet.getTimestamp(7), // req timestamp
+                            resultSet.getString(8), // req action
+                            resultSet.getString(9), // src addr
+                            resultSet.getString(10) // src host
                         };
 
                         if (DEBUG)

@@ -34,7 +34,7 @@ import java.security.PublicKey;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.security.KeyPairGenerator;
 import java.security.spec.X509EncodedKeySpec;
 import java.security.NoSuchAlgorithmException;
@@ -65,7 +65,7 @@ public class SQLKeyManager implements KeyManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -76,7 +76,12 @@ public class SQLKeyManager implements KeyManager
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -105,14 +110,14 @@ public class SQLKeyManager implements KeyManager
                     throw new KeyManagementException("Unable to generate keys. Cannot continue.");
                 }
 
-                stmt = sqlConn.prepareCall("{ CALL addUserKeys(?, ?, ?) }");
+                stmt = sqlConn.prepareStatement("{ CALL addUserKeys(?, ?, ?) }");
                 stmt.setString(1, guid); // guid
                 stmt.setBytes(2, pubKey.getEncoded());
                 stmt.setBytes(3, privKey.getEncoded());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("CallableStatement: {}", stmt);
+                    DEBUGGER.debug("PreparedStatement: {}", stmt);
                 }
 
                 if (stmt.executeUpdate() != 0)
@@ -122,7 +127,7 @@ public class SQLKeyManager implements KeyManager
 
                     stmt.close();
                     stmt = null;
-                    stmt = sqlConn.prepareCall("{ CALL deleteUserKeys(?) }");
+                    stmt = sqlConn.prepareStatement("{ CALL deleteUserKeys(?) }");
                     stmt.setString(1, guid);
 
                     if (DEBUG)
@@ -187,7 +192,7 @@ public class SQLKeyManager implements KeyManager
         KeyPair keyPair = null;
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -198,14 +203,14 @@ public class SQLKeyManager implements KeyManager
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL retrUserKeys(?) }");
+            stmt = sqlConn.prepareStatement("{ CALL retrUserKeys(?) }");
             stmt.setString(1, guid);
 
             if (DEBUG)
@@ -310,7 +315,7 @@ public class SQLKeyManager implements KeyManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -321,7 +326,7 @@ public class SQLKeyManager implements KeyManager
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -329,7 +334,7 @@ public class SQLKeyManager implements KeyManager
             sqlConn.setAutoCommit(true);
 
             // remove the user keys from the store
-            stmt = sqlConn.prepareCall("{CALL deleteUserKeys(?)}");
+            stmt = sqlConn.prepareStatement("{ CALL deleteUserKeys(? }");
             stmt.setString(1, guid);
 
             if (DEBUG)

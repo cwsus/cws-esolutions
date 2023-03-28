@@ -116,7 +116,7 @@ public class CoreServicesInitializer
                             dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(),
                             		secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
                             		secBean.getConfigData().getSecurityConfig().getIterations(),
-                            		secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            		secBean.getConfigData().getSecurityConfig().getKeyLength(),
                             		secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                             		secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                             		appBean.getConfigData().getSystemConfig().getEncoding()));

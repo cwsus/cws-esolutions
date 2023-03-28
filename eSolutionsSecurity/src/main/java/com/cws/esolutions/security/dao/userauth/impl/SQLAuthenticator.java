@@ -32,13 +32,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.processors.enums.SaltType;
+import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
  * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
@@ -50,21 +47,20 @@ public class SQLAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String)
      */
-    public synchronized boolean performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException
+    public synchronized String performLogon(final String userGuid) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String userGuid, final String userGuid, final String user, final String password) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String userGuid) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("String: {}", userGuid);
-            DEBUGGER.debug("String: {}", username);
+            DEBUGGER.debug("Value: {}", userGuid);
         }
 
-        boolean isValid = false;
+        String response = null;
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -87,14 +83,13 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL retrLogonData(?, ?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, username); // guid
-            stmt.setString(2, userGuid); // username
-            stmt.setString(3, SaltType.LOGON.toString());
+            stmt = sqlConn.prepareStatement("{ CALL getUserSalt(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userGuid); // guid
+            stmt.setString(2, SaltType.LOGON.toString());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (!(stmt.execute()))
@@ -113,17 +108,7 @@ public class SQLAuthenticator implements Authenticator
             {
             	resultSet.first();
 
-            	String decrypted = PasswordUtils.decryptText(resultSet.getString(3), resultSet.getString(4), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
-            			secConfig.getKeyLength(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-            			svcBean.getConfigData().getSystemConfig().getEncoding());
-
-            	if (!(StringUtils.equals(password, decrypted)))
-            	{
-            		throw new AuthenticatorException("Authentication failed");
-            	}
-
-            	// user authentication succeeded, we can drop now
-            	isValid = true;
+            	response = resultSet.getString(1);
             }
         }
         catch (final SQLException sqx)
@@ -155,26 +140,109 @@ public class SQLAuthenticator implements Authenticator
             }
         }
 
-        return isValid;
+        return response;
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#performSuccessfulLogin(String, String, int, Long)
      */
-    public synchronized List<Object> obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException
+    public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#modifyUserSecurity(final String userId, final String guid, final int lockCount, final Long timestamp) throws AuthenticatorException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", guid);
+            DEBUGGER.debug("Value: {}", lockCount);
+            DEBUGGER.debug("Value: {}", timestamp);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new AuthenticatorException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            // first make sure the existing password is proper
+            // then make sure the new password doesnt match the existing password
+            stmt = sqlConn.prepareStatement("{ CALL performSuccessfulLogin(?, ?) }");
+            stmt.setString(1, userId);
+            stmt.setString(2, guid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (stmt.executeUpdate() == 1)
+            {
+                isComplete = true;
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new AuthenticatorException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new AuthenticatorException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String)
+     */
+    public synchronized List<Object> getSecurityQuestions(final String userGuid) throws AuthenticatorException
+    {
+        final String methodName = SQLAuthenticator.CNAME + "#getSecurityQuestions(final String userGuid) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userName);
             DEBUGGER.debug("Value: {}", userGuid);
         }
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object> userSecurity = null;
 
         if (Objects.isNull(dataSource))
@@ -198,12 +266,12 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL getUserByAttribute(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userName); // guid
+            stmt = sqlConn.prepareStatement("{ CALL getSecurityQuestions(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userGuid); // common name
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -217,60 +285,25 @@ public class SQLAuthenticator implements Authenticator
 
                 if (resultSet.next())
                 {
-                    resultSet.beforeFirst();
+                	resultSet.first();
 
-                    while (resultSet.next())
+                    userSecurity = new ArrayList<Object>(
+                        Arrays.asList(
+                            resultSet.getString(1), // GUID
+                            resultSet.getBoolean(2), // cwsisolrsetup
+                        	resultSet.getBoolean(3), // cwsisolrlocked
+                        	resultSet.getString(4), // cwssec1
+                        	resultSet.getString(5))); // cwssecq2
+
+                    if (DEBUG)
                     {
-                        if (StringUtils.equals(resultSet.getString(2), userName))
-                        {
-                            String cn = resultSet.getString(1);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("String: {}", cn);
-                            }
-
-                            resultSet.close();
-                            stmt.close();
-
-                            // found the user we want
-                            stmt = sqlConn.prepareCall("{ CALL getSecurityQuestions(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                            stmt.setString(1, cn); // common name
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("CallableStatement: {}", stmt);
-                            }
-
-                            if (stmt.execute())
-                            {
-                                resultSet = stmt.getResultSet();
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                                }
-
-                                if (resultSet.next())
-                                {
-                                    userSecurity = new ArrayList<Object>(
-                                        Arrays.asList(
-                                            resultSet.getString(1), // GUID
-                                            resultSet.getBoolean(2), // cwsisolrsetup
-                                        	resultSet.getBoolean(3), // cwsisolrlocked
-                                        	resultSet.getString(4), // cwssec1
-                                        	resultSet.getString(5))); // cwssecq2
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("userSecurity: {}", userSecurity);
-                                    }
-                                }
-                            }
-                        }
+                        DEBUGGER.debug("userSecurity: {}", userSecurity);
                     }
-
                 }
+            }
+            else
+            {
+            	throw new AuthenticatorException("Unable to locate security questions for the provided user account");
             }
         }
         catch (final SQLException sqx)
@@ -304,123 +337,24 @@ public class SQLAuthenticator implements Authenticator
 
         return userSecurity;
     }
-    
-    /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String)
-     */
-    public synchronized String obtainOtpSecret(final String userName, final String userGuid) throws AuthenticatorException
-    {
-        final String methodName = SQLAuthenticator.CNAME + "#obtainOtpSecret(final String userName, final String userGuid) throws AuthenticatorException";
-        
-        if(DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userName);
-            DEBUGGER.debug("Value: {}", userGuid);
-        }
-
-        String otpSecret = null;
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new AuthenticatorException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = SQLAuthenticator.dataSource.getConnection();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((sqlConn == null) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            stmt = sqlConn.prepareCall("{CALL getOtpSecret(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userGuid); // guid
-            stmt.setString(2, userName);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    otpSecret = resultSet.getString(1);
-                }
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new AuthenticatorException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-            
-                if (!(Objects.isNull(stmt)))
-                {
-                    stmt.close();
-                }
-
-                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (final SQLException sqx)
-            {
-                throw new AuthenticatorException(sqx.getMessage(), sqx);
-            }
-        }
-
-        return otpSecret;
-    }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String)
      */
-    public synchronized boolean verifySecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException
+    public synchronized List<Object> getSecurityAnswers(final String userGuid) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#getSecurityAnswers(final String userGuid) throws AuthenticatorException";
 
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userId);
             DEBUGGER.debug("Value: {}", userGuid);
         }
 
-        boolean isValid = false;
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
+        List<Object> responseData = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -443,13 +377,12 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL retrSecurityAnswers(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getSecurityAnswers(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid); // guid
-            stmt.setString(2, userId);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -464,19 +397,11 @@ public class SQLAuthenticator implements Authenticator
                 if (resultSet.next())
                 {
                     resultSet.first();
-                    
-                    String answerOneDecrypted = PasswordUtils.decryptText(resultSet.getString(1), attributes.get(0), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
-                			secConfig.getKeyLength(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-                			svcBean.getConfigData().getSystemConfig().getEncoding());
 
-                    String answerTwoDecrypted = PasswordUtils.decryptText(resultSet.getString(2), attributes.get(0), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
-                			secConfig.getKeyLength(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-                			svcBean.getConfigData().getSystemConfig().getEncoding());
-
-                    if ((StringUtils.equals(answerOneDecrypted, attributes.get(1))) && (StringUtils.equals(answerTwoDecrypted, attributes.get(2))))
-                    {
-                    	isValid = true;
-                    }
+                    responseData = new ArrayList<Object>(
+                    		Arrays.asList(
+                    				resultSet.getString(1),
+                    				resultSet.getString(2)));
                 }
                 else
                 {
@@ -518,6 +443,6 @@ public class SQLAuthenticator implements Authenticator
             }
         }
 
-        return isValid;
+        return responseData;
     }
 }

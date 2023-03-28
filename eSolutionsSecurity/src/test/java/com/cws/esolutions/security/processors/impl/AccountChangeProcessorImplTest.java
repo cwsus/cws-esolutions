@@ -58,7 +58,7 @@ public final class AccountChangeProcessorImplTest
             hostInfo.setHostName("junit");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("d4320dd2-fb97-4da8-806b-c424be78f0b4");
+            userAccount.setGuid("b7f6432d-10e1-4258-ad97-f3ea9ac81207");
             userAccount.setUsername("khuntly");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
@@ -71,64 +71,13 @@ public final class AccountChangeProcessorImplTest
         }
     }
 
-    @Test public void enableOtpAuth()
-    {
-    	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("junit");
-
-        AccountChangeRequest request = new AccountChangeRequest();
-        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
-        request.setApplicationName("eSolutions");
-        request.setHostInfo(AccountChangeProcessorImplTest.hostInfo);
-        request.setIsReset(false);
-        request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
-        request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(authData);
-
-        try
-        {
-            AccountChangeResponse response = processor.enableOtpAuth(request);
-
-            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
-        }
-        catch (final AccountChangeException acx)
-        {
-        	Assertions.fail(acx.getMessage());
-        }
-    }
-
-    @Test public void disableOtpAuth()
-    {
-    	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("junit");
-
-        AccountChangeRequest request = new AccountChangeRequest();
-        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
-        request.setApplicationName("eSolutions");
-        request.setHostInfo(AccountChangeProcessorImplTest.hostInfo);
-        request.setIsReset(false);
-        request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
-        request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(authData);
-
-        try
-        {
-            AccountChangeResponse response = processor.disableOtpAuth(request);
-
-            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
-        }
-        catch (final AccountChangeException acx)
-        {
-        	Assertions.fail(acx.getMessage());
-        }
-    }
-
     @Test public void changeUserEmail()
     {
     	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("junit");
+    	authData.setUsername("khuntly");
+    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
 
-        AccountChangeProcessorImplTest.userAccount.setEmailAddr("test@test.com");
+        AccountChangeProcessorImplTest.userAccount.setEmailAddr("kmhuntly@gmail.com");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -147,19 +96,26 @@ public final class AccountChangeProcessorImplTest
         }
         catch (final AccountChangeException acx)
         {
+        	acx.printStackTrace();
         	Assertions.fail(acx.getMessage());
         }
     }
 
     @Test public void changeUserSecurity()
     {
+    	String secAnsOne = RandomStringUtils.randomAlphanumeric(32);
+    	String secAnsTwo = RandomStringUtils.randomAlphanumeric(32);
+
+    	System.out.println(secAnsOne);
+    	System.out.println(secAnsTwo);
+
     	AuthenticationData authData = new AuthenticationData();
     	authData.setUsername("khuntly");
-    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd");
+    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
         authData.setSecQuestionOne("What is your mother's maiden name ?");
         authData.setSecQuestionTwo("What is your favourite cartoon ?");
-        authData.setSecAnswerOne(RandomStringUtils.randomAlphanumeric(64));
-        authData.setSecAnswerTwo(RandomStringUtils.randomAlphanumeric(64));
+        authData.setSecAnswerOne(secAnsOne.toCharArray());
+        authData.setSecAnswerTwo(secAnsTwo.toCharArray());
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -186,10 +142,11 @@ public final class AccountChangeProcessorImplTest
     @Test public void changeUserContact()
     {
     	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("junit");
+    	authData.setUsername("khuntly");
+    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
 
-        AccountChangeProcessorImplTest.userAccount.setPagerNumber("555-555-1212");
-        AccountChangeProcessorImplTest.userAccount.setTelephoneNumber("555-555-1213");
+        AccountChangeProcessorImplTest.userAccount.setPagerNumber("5555561212");
+        AccountChangeProcessorImplTest.userAccount.setTelephoneNumber("5555551213");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -242,9 +199,9 @@ public final class AccountChangeProcessorImplTest
     @Test public void changeUserPassword()
     {
     	AuthenticationData authData = new AuthenticationData();
-    	authData.setNewPassword("Hailey27*");
+    	authData.setNewPassword("Hailey27*".toCharArray());
     	authData.setUsername("junit-runner");
-    	authData.setPassword("naB8QUXNTWFA7MCpFYvT");
+    	authData.setPassword("naB8QUXNTWFA7MCpFYvT".toCharArray());
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");

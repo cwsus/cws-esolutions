@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dao.reference.impl;
  */
 import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
@@ -36,11 +37,11 @@ import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserSecurityInformationDAOImplTest
 {
-    private static final String GUID = "f42fb0ba-4d1e-1126-986f-800cd2650000";
+    private static final String GUID = "99aaefc1-8a2a-4877-bed5-20b73d971e56";
     private static final String resetId = RandomStringUtils.randomAlphanumeric(64);
-    private static final String smsCode = RandomStringUtils.randomAlphanumeric(8);
     private static final String logonSalt = RandomStringUtils.randomAlphanumeric(64);
     private static final IUserSecurityInformationDAO dao = new UserSecurityInformationDAOImpl();
 
@@ -57,11 +58,24 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test public void addOrUpdateSalt()
+    @Test public void addUserSalt()
     {
         try
         {
-        	Assertions.assertThat(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, logonSalt, SaltType.LOGON.name())).isTrue();
+        	Assertions.assertThat(dao.addUserSalt(UserSecurityInformationDAOImplTest.GUID, logonSalt, SaltType.LOGON.name())).isTrue();
+        }
+        catch (final SQLException sqx)
+        {
+        	sqx.printStackTrace();
+            Assertions.fail(sqx.getMessage());
+        }
+    }
+
+    @Test public void updateUserSalt()
+    {
+        try
+        {
+            Assertions.assertThat(dao.updateUserSalt(UserSecurityInformationDAOImplTest.GUID, resetId, SaltType.LOGON.name())).isEqualTo(true);
         }
         catch (final SQLException sqx)
         {
@@ -85,19 +99,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-        	Assertions.assertThat(dao.insertResetData(UserSecurityInformationDAOImplTest.GUID, resetId, null)).isTrue();
-        }
-        catch (final SQLException sqx)
-        {
-        	Assertions.fail(sqx.getMessage());
-        }
-    }
-
-    @Test public void listActiveResets()
-    {
-        try
-        {
-        	Assertions.assertThat(dao.listActiveResets()).isNotEmpty();
+        	Assertions.assertThat(dao.insertResetData(UserSecurityInformationDAOImplTest.GUID, resetId)).isTrue();
         }
         catch (final SQLException sqx)
         {
@@ -109,19 +111,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-        	Assertions.assertThat(dao.getResetData("EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv")).isNotEmpty();
-        }
-        catch (final SQLException sqx)
-        {
-        	Assertions.fail(sqx.getMessage());
-        }
-    }
-
-    @Test public void verifySmsForReset()
-    {
-        try
-        {
-        	Assertions.assertThat(dao.verifySmsForReset(UserSecurityInformationDAOImplTest.GUID, resetId, smsCode)).isTrue();
+        	Assertions.assertThat(dao.getResetData(resetId)).isNotEmpty();
         }
         catch (final SQLException sqx)
         {
@@ -133,19 +123,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-        	Assertions.assertThat(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, "EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv")).isTrue();
-        }
-        catch (final SQLException sqx)
-        {
-        	Assertions.fail(sqx.getMessage());
-        }
-    }
-
-    @Test public void removeUserData()
-    {
-        try
-        {
-        	Assertions.assertThat(dao.removeUserData(UserSecurityInformationDAOImplTest.GUID, null)).isTrue();
+        	Assertions.assertThat(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, "qBED281bKoFnr8DEelsVPtmpFWfo3wxMhSEubAMrhRWSUkxBRng5tX2FtJHPDI9u")).isTrue();
         }
         catch (final SQLException sqx)
         {

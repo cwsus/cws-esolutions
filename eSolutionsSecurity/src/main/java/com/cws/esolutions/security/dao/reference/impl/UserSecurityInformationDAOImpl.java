@@ -27,12 +27,13 @@ package com.cws.esolutions.security.dao.reference.impl;
  */
 import java.util.List;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
@@ -43,11 +44,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     private static final String CNAME = UserSecurityInformationDAOImpl.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#addOrUpdateSalt(java.lang.String, java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#addUserSalt(java.lang.String, java.lang.String, java.lang.String)
      */
-    public synchronized boolean addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException
+    public synchronized boolean addUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException
     {
-        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException";
+        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#addUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException";
 
         if (DEBUG)
         {
@@ -58,7 +59,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -76,7 +77,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL addOrUpdateSalt(?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL addUserSalt(?, ?, ?) }");
             stmt.setString(1, commonName);
             stmt.setString(2, saltValue);
             stmt.setString(3, saltType);
@@ -109,9 +110,9 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#getUserSalt(java.lang.String, java.lang.String)
      */
-    public synchronized String getUserSalt(final String commonName, final String saltType) throws SQLException
+    public synchronized boolean updateUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException
     {
-        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#getUserSalt(final String commonName, final String saltType) throws SQLException";
+        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#updateUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException";
 
         if (DEBUG)
         {
@@ -119,10 +120,10 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             DEBUGGER.debug("commonName: {}", commonName);
         }
 
-        String saltValue = null;
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -144,13 +145,87 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL retrUserSalt(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            stmt = sqlConn.prepareStatement("{ CALL updateUserSalt(?, ?, ?) }");
+            stmt.setString(1, commonName);
+            stmt.setString(2, saltValue);
+            stmt.setString(3, saltType);
+
+            if (!(stmt.execute()))
+            {
+                isComplete = true;
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#getUserSalt(java.lang.String, java.lang.String)
+     */
+    public synchronized String getUserSalt(final String commonName, final String saltType) throws SQLException
+    {
+        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#getUserSalt(final String commonName, final String saltType) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("commonName: {}", commonName);
+        }
+
+        String saltValue = null;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareStatement("{ CALL getUserSalt(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, commonName);
             stmt.setString(2, saltType);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -190,84 +265,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#removeUserData(java.lang.String, java.lang.String)
-     */
-    public synchronized boolean removeUserData(final String commonName, final String saltType) throws SQLException
-    {
-        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#removeUserData(final String commonName, final String saltType) throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("commonName: {}", commonName);
-            DEBUGGER.debug("saltType: {}", saltType);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        CallableStatement stmt = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new SQLException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Connection: {}", sqlConn);
-            }
-            
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL removeUserData(?)}");
-            stmt.setString(1, commonName);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            isComplete = (!(stmt.execute()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isComplete: {}", isComplete);
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return isComplete;
-    }
-
-    /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#insertResetData(java.lang.String, java.lang.String, java.lang.String)
      */
-    public synchronized boolean insertResetData(final String commonName, final String resetId, final String smsCode) throws SQLException
+    public synchronized boolean insertResetData(final String commonName, final String resetId) throws SQLException
     {
-        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#insertResetData(final String commonName, final String resetId, final String smsCode) throws SQLException";
+        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#insertResetData(final String commonName, final String resetId) throws SQLException";
 
         if (DEBUG)
         {
@@ -277,7 +279,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -294,10 +296,9 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL insertResetData(?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL insertResetData(?, ?) }");
             stmt.setString(1, commonName);
             stmt.setString(2, resetId);
-            stmt.setString(3, smsCode);
 
             isComplete = (!(stmt.execute()));
 
@@ -324,94 +325,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         }
 
         return isComplete;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#listActiveResets()
-     */
-    public synchronized List<String[]> listActiveResets() throws SQLException
-    {
-        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#listActiveResets() throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-        List<String[]> response = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new SQLException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            stmt = sqlConn.prepareCall("{CALL listActiveResetRequests()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    response = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[] { resultSet.getString(1), String.valueOf(resultSet.getTimestamp(2)) };
-
-                        response.add(data);
-                    }
-                }
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            if (resultSet != null)
-            {
-                resultSet.close();
-            }
-
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return response;
     }
 
     /**
@@ -429,7 +342,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         Connection sqlConn = null;
         ResultSet resultSet = null;
         List<Object> resetData = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -451,7 +364,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getResetData(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getResetData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, resetId);
 
             if (stmt.execute())
@@ -509,7 +422,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -531,7 +444,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL removeResetData(?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL removeResetData(?, ?) }");
             stmt.setString(1, commonName);
             stmt.setString(2, resetId);
 
@@ -563,21 +476,21 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#verifySmsForReset(java.lang.String, java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#obtainSecurityQuestionList()
      */
-    public synchronized boolean verifySmsForReset(final String userGuid, final String resetId, final String smsCode) throws SQLException
+    public synchronized HashMap<Integer, String> obtainSecurityQuestionList() throws SQLException
     {
-        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#verifySmsForReset(final String userGuid, final String resetId, final String smsCode) throws SQLException";
+        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#obtainSecurityQuestionList() throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userGuid: {}", userGuid);
         }
 
         Connection sqlConn = null;
-        boolean isVerified = false;
-        CallableStatement stmt = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        HashMap<Integer, String> questionMap = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -588,27 +501,59 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             sqlConn = dataSource.getConnection();
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Connection: {}", sqlConn);
-            }
-
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getCommonNameForReset(?, ?, ?)}");
-            stmt.setString(1, userGuid);
-            stmt.setString(2, resetId);
-            stmt.setString(3, smsCode);
-
-            isVerified = stmt.execute(); // this will return true if theres a resultset, which we expect
+            stmt = sqlConn.prepareStatement("{ CALL retrSecurityQuestions() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isVerified: {}", isVerified);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+                resultSet.last();
+                int iRowCount = resultSet.getRow();
+                resultSet.beforeFirst();
+
+                if (DEBUG)
+                {
+                	DEBUGGER.debug("iRowCount: {}", iRowCount);
+                }
+
+                if (iRowCount == 0)
+                {
+                    throw new SQLException("No security questions are currently configured.");
+                }
+
+                if (resultSet.next())
+                {
+                    questionMap = new HashMap<Integer, String>();
+
+                    while (resultSet.next())
+                    {
+                    	questionMap.put(resultSet.getInt(1), resultSet.getString(2));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("questionMap: {}", questionMap);
+                        }
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Map<Integer, String>: {}", questionMap);
+                    }
+                }
+                else
+                {
+                	throw new SQLException("No security questions are currently configured.");
+                }
             }
         }
         catch (final SQLException sqx)
@@ -617,17 +562,22 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         }
         finally
         {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
             if (stmt != null)
             {
                 stmt.close();
             }
 
-            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
             {
                 sqlConn.close();
             }
         }
 
-        return isVerified;
+        return questionMap;
     }
 }

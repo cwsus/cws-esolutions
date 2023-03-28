@@ -65,31 +65,11 @@ public class AccountResetProcessorImplTest
         }
     }
 
-    @Test public void findUserAccount()
-    {
-    	AccountResetRequest request = new AccountResetRequest();
-        request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
-        request.setApplicationName("eSolutions");
-        request.setHostInfo(hostInfo);
-        request.setSearchData("kmhuntly@gmail.com");
-
-        try
-        {
-            AccountResetResponse response = processor.findUserAccount(request);
-
-            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
-        }
-        catch (final AccountResetException ax)
-        {
-            Assertions.fail(ax.getMessage());
-        }
-    }
-
     @Test public void obtainUserSecurityConfig()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("d4320dd2-fb97-4da8-806b-c424be78f0b4");
+        account.setGuid("49c494f2-ba82-4dbf-a3f5-d7a4c2268a35");
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -100,8 +80,8 @@ public class AccountResetProcessorImplTest
         try
         {
             AccountResetResponse response = processor.obtainUserSecurityConfig(request);
-
             System.out.println(response);
+
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AccountResetException ax)
@@ -114,11 +94,11 @@ public class AccountResetProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("d4320dd2-fb97-4da8-806b-c424be78f0b4");
+        account.setGuid("205ebd1b-5900-46d0-aabc-94a2e86c3c33");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setSecAnswerOne("Answer 1");
-        userSecurity.setSecAnswerTwo("Answer 2");
+        userSecurity.setSecAnswerOne("Answer 1".toCharArray());
+        userSecurity.setSecAnswerTwo("Answer 2".toCharArray());
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");

@@ -36,9 +36,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.config.xml.RepositoryConfig;
 import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
-import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
-import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 /**
  * API allowing user key management tasks. Used in conjunction with the
  * {@link com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory}
@@ -55,7 +53,6 @@ public interface KeyManager
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
-    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
     
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

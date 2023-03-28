@@ -32,7 +32,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
@@ -60,7 +60,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -78,7 +78,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, (String) serverData.get(0)); // systemGuid
             stmt.setString(2, (String) serverData.get(1)); // systemOs
             stmt.setString(3, (String) serverData.get(2)); // systemStatus
@@ -111,7 +111,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -161,7 +161,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -179,7 +179,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
  
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL updateServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL updateServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, serverGuid); // systemGuid
             stmt.setString(2, (String) serverData.get(1)); // systemOs
             stmt.setString(3, (String) serverData.get(2)); // systemStatus
@@ -212,7 +212,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -257,7 +257,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -275,12 +275,12 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL removeServerFromAssets(?)}");
+            stmt = sqlConn.prepareStatement("{ CALL removeServerFromAssets(? }");
             stmt.setString(1, serverGuid);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -325,7 +325,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<String[]> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -344,12 +344,12 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL retrServerList(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrServerList(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, startRow);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -439,7 +439,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object[]> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -482,13 +482,13 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 sBuilder.append("+" + value);
             }
 
-            stmt = sqlConn.prepareCall("{CALL getServerByAttribute(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getServerByAttribute(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, sBuilder.toString().trim());
             stmt.setInt(2, startRow);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -569,7 +569,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -590,12 +590,12 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             // we dont know what we have here - it could be a guid or it could be a hostname
             // most commonly it'll be a guid, but we're going to search anyway
-            stmt = sqlConn.prepareCall("{ CALL retrServerData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrServerData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, attribute);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())

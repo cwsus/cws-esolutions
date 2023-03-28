@@ -25,16 +25,11 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
-import net.glxn.qrgen.QRCode;
 import java.sql.SQLException;
-import java.io.ByteArrayOutputStream;
-import net.glxn.qrgen.image.ImageType;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -83,7 +78,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final AuthenticationData reqSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -105,41 +99,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-            // ok, authenticate first
-            String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
+            // we aren't getting the data back here because we don't need it. if the request
+            // fails we'll get an exception and not process further. this might not be the
+            // best flow control, but it does exactly what we need where we need it.
+            authenticator.performLogon(userAccount.getGuid());
 
-            if (StringUtils.isNotEmpty(userSalt))
+            boolean isComplete = userManager.modifyUserEmail(userAccount.getGuid(), userAccount.getEmailAddr());
+
+            if (isComplete)
             {
-                // we aren't getting the data back here because we don't need it. if the request
-                // fails we'll get an exception and not process further. this might not be the
-                // best flow control, but it does exactly what we need where we need it.
-                authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
+                UserAccount retAccount = userAccount;
+                retAccount.setEmailAddr(userAccount.getEmailAddr());
 
-                boolean isComplete = userManager.modifyUserEmail(userAccount.getUsername(), userAccount.getEmailAddr());
-
-                if (isComplete)
-                {
-                    UserAccount retAccount = userAccount;
-                    retAccount.setEmailAddr(userAccount.getEmailAddr());
-
-                    response.setUserAccount(retAccount);
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
+                response.setUserAccount(retAccount);
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
             else
             {
-                throw new AccountChangeException("Unable to obtain configured user salt. Cannot continue");
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountChangeException(sqx.getMessage(), sqx);
         }
         catch (final AuthenticatorException ax)
         {
@@ -214,7 +192,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final AuthenticationData reqSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -236,46 +213,27 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-            // ok, authenticate first
-            String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
+            authenticator.performLogon(userAccount.getGuid());
 
-            if (StringUtils.isNotEmpty(userSalt))
+            boolean isComplete = userManager.modifyUserContact(userAccount.getGuid(),
+                    new ArrayList<String>(
+                            Arrays.asList(
+                                    userAccount.getTelephoneNumber(),
+                                    userAccount.getPagerNumber())));
+
+            if (isComplete)
             {
-                // we aren't getting the data back here because we don't need it. if the request
-                // fails we'll get an exception and not process further. this might not be the
-                // best flow control, but it does exactly what we need where we need it.
-            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
+                UserAccount retAccount = userAccount;
+                retAccount.setTelephoneNumber(userAccount.getTelephoneNumber());
+                retAccount.setPagerNumber(userAccount.getPagerNumber());
 
-                boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(),
-                        new ArrayList<String>(
-                                Arrays.asList(
-                                        userAccount.getTelephoneNumber(),
-                                        userAccount.getPagerNumber())));
-
-                if (isComplete)
-                {
-                    UserAccount retAccount = userAccount;
-                    retAccount.setTelephoneNumber(userAccount.getTelephoneNumber());
-                    retAccount.setPagerNumber(userAccount.getPagerNumber());
-
-                    response.setUserAccount(retAccount);
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
+                response.setUserAccount(retAccount);
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
             else
             {
-                throw new AccountChangeException("Unable to obtain configured user salt. Cannot continue");
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountChangeException(sqx.getMessage(), sqx);
         }
         catch (final AuthenticatorException ax)
         {
@@ -381,12 +339,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         {
             // otherwise, keep going
             // make sure the new password isnt the same as the existing
-            if (StringUtils.equals(reqSecurity.getNewPassword(), reqSecurity.getPassword()))
+            if (Arrays.equals(reqSecurity.getNewPassword(), reqSecurity.getPassword()))
             {
                 throw new AccountChangeException("The new password MUST differ from the existing password.");
             }
-            else if ((reqSecurity.getNewPassword().length() < secConfig.getPasswordMinLength()) // less than minimum
-                    || (reqSecurity.getNewPassword().length() > secConfig.getPasswordMaxLength())) // greater than maximum
+            else if ((reqSecurity.getNewPassword().length < secConfig.getPasswordMinLength()) // less than minimum
+                    || (reqSecurity.getNewPassword().length > secConfig.getPasswordMaxLength())) // greater than maximum
             {
                 // password doesnt meet requirements, is either too short or too long
                 throw new AccountChangeException("The chosen password does not meet the configured length requirements.");
@@ -396,15 +354,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 if (!(request.isReset()))
                 {
                     // ok, authenticate first
-                    String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
-
-                    if (StringUtils.isNotEmpty(userSalt))
-                    {
-                        // we aren't getting the data back here because we don't need it. if the request
-                        // fails we'll get an exception and not process further. this might not be the
-                        // best flow control, but it does exactly what we need where we need it.
-                    	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
-                    }
+                    authenticator.performLogon(userAccount.getGuid());
                 }
 
                 if (StringUtils.isNotEmpty(newUserSalt))
@@ -417,7 +367,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     {
                         // good, move forward
                         // put the new salt in the database
-                        boolean isComplete = userSec.addOrUpdateSalt(userAccount.getGuid(), newUserSalt, SaltType.LOGON.name());
+                        boolean isComplete = userSec.addUserSalt(userAccount.getGuid(), newUserSalt, SaltType.LOGON.name());
 
                         if (DEBUG)
                         {
@@ -427,10 +377,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         if (isComplete)
                         {
                             // make the modification in the user repository
-                            userManager.modifyUserPassword(userAccount.getGuid(),
-                                    PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt,
-                                            secConfig.getMessageDigest(), secConfig.getIterations(),
-                                            secBean.getConfigData().getSystemConfig().getEncoding()));
+                            isComplete = userManager.modifyUserPassword(userAccount.getGuid(),
+                                    PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt.getBytes(),
+                                    		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+                                    		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), sysConfig.getEncoding()));
 
                             if (DEBUG)
                             {
@@ -557,7 +507,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("AccountChangeRequest: {}", request);
         }
 
-        String existingSalt = null;
         AccountChangeResponse response = new AccountChangeResponse();
 
         final Calendar calendar = Calendar.getInstance();
@@ -593,112 +542,66 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             {
                 throw new AccountChangeException("The security questions must be different.");
             }
-            else if ((StringUtils.equals(reqSecurity.getSecAnswerOne(), reqSecurity.getSecAnswerTwo())))
+            else if ((Arrays.equals(reqSecurity.getSecAnswerOne(), reqSecurity.getSecAnswerTwo())))
             {
                 throw new AccountChangeException("The security answers must be different.");
             }
             else
             {
                 // ok, authenticate first
-                String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
+        	    // we aren't getting the data back here because we don't need it. if the request
+                // fails we'll get an exception and not process further. this might not be the
+                // best flow control, but it does exactly what we need where we need it.
+            	authenticator.performLogon(userAccount.getGuid());
 
-                if (StringUtils.isNotEmpty(userSalt))
+                // ok, thats out of the way. lets keep moving.
+                String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
+
+                if (StringUtils.isNotEmpty(newUserSalt))
                 {
-                    // we aren't getting the data back here because we don't need it. if the request
-                    // fails we'll get an exception and not process further. this might not be the
-                    // best flow control, but it does exactly what we need where we need it.
-                	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
+                    // good, move forward
+                    // make the modification in the user repository
+                    boolean isComplete = userManager.modifyUserSecurity(userAccount.getGuid(), 
+                            new ArrayList<String>(
+                                Arrays.asList(
+                                    reqSecurity.getSecQuestionOne(),
+                                    reqSecurity.getSecQuestionTwo(),
+                                    PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt.getBytes(), secConfig.getSecretKeyAlgorithm(),
+                                			secConfig.getIterations(), secConfig.getKeyLength(),
+                                			secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                                			sysConfig.getEncoding()),
+                                    PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt.getBytes(), secConfig.getSecretKeyAlgorithm(),
+                                			secConfig.getIterations(), secConfig.getKeyLength(),
+                                			secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                                			sysConfig.getEncoding()))));
 
-                    // ok, thats out of the way. lets keep moving.
-                    String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
-
-                    if (StringUtils.isNotEmpty(newUserSalt))
+                    if (DEBUG)
                     {
-                        // get rollback information in case something breaks...
-                        // we already have the existing expiry and password, all we really need to get here is the salt.
-                    	if (!(request.isReset()))
-                    	{
-                    		existingSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.RESET.name());
-                    	}
+                        DEBUGGER.debug("isComplete: {}", isComplete);
+                    }
 
-                        // make the backout
-                        List<Object> currentSec = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
-
-                        // good, move forward
-                        // make the modification in the user repository
-                        boolean isComplete = userManager.modifyUserSecurity(userAccount.getGuid(), 
-                                new ArrayList<String>(
-                                    Arrays.asList(
-                                        reqSecurity.getSecQuestionOne(),
-                                        reqSecurity.getSecQuestionTwo(),
-                                        PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt,
-                                            secConfig.getMessageDigest(), secConfig.getIterations(),
-                                            secBean.getConfigData().getSystemConfig().getEncoding()),
-                                        PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt,
-                                            secConfig.getMessageDigest(), secConfig.getIterations(),
-                                            secBean.getConfigData().getSystemConfig().getEncoding()))));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isComplete: {}", isComplete);
-                        }
+                    if (isComplete)
+                    {
+                        // now update the salt
+                        isComplete = userSec.updateUserSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
 
                         if (isComplete)
                         {
-                            // now update the salt
-                            isComplete = userSec.addOrUpdateSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
-
-                            if (isComplete)
-                            {
-                                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            }
-                            else
-                            {
-                                // something failed. we're going to undo what we did in the user
-                                // repository, because we couldnt update the salt value. if we don't
-                                // undo it then the user will never be able to login without admin
-                                // intervention
-                                boolean isReverted = userManager.modifyUserSecurity(userAccount.getUsername(), 
-                                        new ArrayList<String>(
-                                            Arrays.asList(
-                                                    (String) currentSec.get(0),
-                                                    (String) currentSec.get(1),
-                                                    (String) currentSec.get(2),
-                                                    (String) currentSec.get(3))));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("isReverted: {}", isReverted);
-                                }
-
-                                boolean backoutSalt = userSec.addOrUpdateSalt(userAccount.getGuid(), existingSalt, SaltType.RESET.name());
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("backoutSalt: {}", backoutSalt);
-                                }
-
-                                if (!(isReverted) && (!(backoutSalt)))
-                                {
-                                    throw new AccountChangeException("Failed to modify the user account and unable to revert to existing state.");
-                                }
-
-                                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            }
+                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         }
                         else
                         {
-                            ERROR_RECORDER.error("An error occurred while performing the update to the data repository.");
+                            ERROR_RECORDER.error("Failed to add the new user salt information to the database.");
 
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
                         }
                     }
-                    else
-                    {
-                        ERROR_RECORDER.error("Unable to generate new salt value for user. Cannot continue.");
-
+	                else
+	                {
+                        ERROR_RECORDER.error("Failed to modify the account in the user repository.");
+                    	
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    }
+	                }
                 }
                 else
                 {
@@ -846,338 +749,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             ERROR_RECORDER.error(kmx.getMessage(), kmx);
 
             throw new AccountChangeException(kmx.getMessage(), kmx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.CHANGEKEYS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#enableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
-     */
-    public AccountChangeResponse enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
-    {
-        final String methodName = AccountChangeProcessorImpl.CNAME + "#enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountChangeRequest: {}", request);
-        }
-
-        AccountChangeResponse response = new AccountChangeResponse();
-
-        final UserAccount requestor = request.getRequestor();
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
-        final AuthenticationData reqSecurity = request.getUserSecurity();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-        }
-
-        if (!(StringUtils.equals(userAccount.getGuid(), requestor.getGuid())))
-        {
-            // requesting user is not the same as the user being reset. authorize
-            response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
-            return response;
-        }
-
-        try
-        {
-            String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
-
-            if (StringUtils.isNotEmpty(userSalt))
-            {
-                // we aren't getting the data back here because we don't need it. if the request
-                // fails we'll get an exception and not process further. this might not be the
-                // best flow control, but it does exactly what we need where we need it.
-            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
-
-                String secret = new String(new Base32().encode(RandomStringUtils.randomAlphanumeric(10).getBytes()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("String: {}", secret);
-                }
-
-                String otpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
-
-                if (StringUtils.isNotEmpty(otpSalt))
-                {
-                    boolean isSaltInserted = userSec.addOrUpdateSalt(userAccount.getGuid(), otpSalt, SaltType.OTP.name());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isSaltInserted: {}", isSaltInserted);
-                    }
-
-                    if ((!isSaltInserted))
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                        return response;
-                    }
-
-                    boolean isComplete = userManager.modifyOtpSecret(userAccount.getUsername(), true,
-                            PasswordUtils.encryptText(secret.toCharArray(), otpSalt.getBytes(),
-                                    secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                                    secBean.getConfigData().getSecurityConfig().getIterations(),
-                                    secBean.getConfigData().getSecurityConfig().getKeyLength(),
-                                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                                    secBean.getConfigData().getSystemConfig().getEncoding()));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
-                    }
-
-                    if (!(isComplete))
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                        return response;
-                    }
-
-                    String qrCodeData = String.format(AccountChangeProcessorImpl.KEY_URI_FORMAT,
-                            userAccount.getUsername(),
-                            secret,
-                            request.getApplicationName(),
-                            secConfig.getOtpAlgorithm());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("qrCodeData: {}", qrCodeData);
-                    }
-
-                    ByteArrayOutputStream qrCode = QRCode.from(qrCodeData.trim()).to(ImageType.PNG).stream();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ByteArrayOutputStream: {}", qrCode);
-                    }
-
-                    response.setSecret(secret);
-                    response.setQrCode(qrCode);
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
-            }
-            else
-            {
-                ERROR_RECORDER.error("Unable to obtain configured user salt. Cannot continue");
-
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountChangeException(sqx.getMessage(), sqx);
-        }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountChangeException(ax.getMessage(), ax);
-        }
-        catch (final SecurityException sx)
-        {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
-            throw new SecurityException(sx.getMessage(), sx);
-        }
-        catch (final UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new SecurityException(umx.getMessage(), umx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.CHANGEKEYS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#disableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
-     */
-    public AccountChangeResponse disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
-    {
-        final String methodName = AccountChangeProcessorImpl.CNAME + "#disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountChangeRequest: {}", request);
-        }
-
-        AccountChangeResponse response = new AccountChangeResponse();
-
-        final UserAccount requestor = request.getRequestor();
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
-        final AuthenticationData reqSecurity = request.getUserSecurity();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-        }
-
-        if (!(StringUtils.equals(userAccount.getGuid(), requestor.getGuid())))
-        {
-            // requesting user is not the same as the user being reset. authorize
-            response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
-            return response;
-        }
-
-        try
-        {
-            String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
-
-            if (StringUtils.isNotEmpty(userSalt))
-            {
-                // we aren't getting the data back here because we don't need it. if the request
-                // fails we'll get an exception and not process further. this might not be the
-                // best flow control, but it does exactly what we need where we need it.
-            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
-
-                // delete entries here
-                boolean isSecretRemoved = userManager.modifyOtpSecret(userAccount.getGuid(), false, null);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isSecretRemoved: {}", isSecretRemoved);
-                }
-
-                if (!(isSecretRemoved))
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                    return response;
-                }
-
-                boolean isSaltRemoved = userSec.removeUserData(userAccount.getGuid(), SaltType.OTP.name());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isSaltRemoved: {}", isSaltRemoved);
-                }
-
-                if (!(isSaltRemoved))
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                    return response;
-                }
-
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            }
-            else
-            {
-                ERROR_RECORDER.error("Unable to obtain configured user salt. Cannot continue");
-
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountChangeException(sqx.getMessage(), sqx);
-        }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountChangeException(ax.getMessage(), ax);
-        }
-        catch (final SecurityException sx)
-        {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
-            throw new SecurityException(sx.getMessage(), sx);
-        }
-        catch (final UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new SecurityException(umx.getMessage(), umx);
         }
         finally
         {

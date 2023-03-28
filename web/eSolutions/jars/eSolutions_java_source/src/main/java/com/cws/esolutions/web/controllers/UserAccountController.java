@@ -74,13 +74,11 @@ import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
 @RequestMapping("user-account")
 public class UserAccountController
 {
-    private String enableOtpPage = null;
     private String myAccountPage = null;
     private String changeEmailPage = null;
     private String changeContactPage = null;
     private String changeSecurityPage = null;
     private String changePasswordPage = null;
-    private String messageEnableOtpSuccess = null;
     private TelephoneValidator telValidator = null;
     private ApplicationServiceBean appConfig = null;
     private String messageEmailChangeSuccess = null;
@@ -160,19 +158,6 @@ public class UserAccountController
         }
 
         this.myAccountPage = value;
-    }
-
-    public final void setEnableOtpPage(final String value)
-    {
-        final String methodName = UserAccountController.CNAME + "#setEnableOtpPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.enableOtpPage = value;
     }
 
     public final void setChangeEmailPage(final String value)
@@ -277,19 +262,6 @@ public class UserAccountController
         }
 
         this.messagePasswordChangeSuccess = value;
-    }
-
-    public final void setMessageEnableOtpSuccess(final String value)
-    {
-        final String methodName = UserAccountController.CNAME + "#setMessageEnableOtpSuccess(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageEnableOtpSuccess = value;
     }
 
     public final void setMessageSecurityChangeSuccess(final String value)
@@ -474,77 +446,6 @@ public class UserAccountController
         mView.addObject(Constants.USER_ACCOUNT, userAccount);
         mView.addObject(Constants.COMMAND, changeReq);
         mView.setViewName(this.changePasswordPage);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/enable-otp", method = RequestMethod.GET)
-    public final ModelAndView showEnableOtp(final Model model)
-    {
-        final String methodName = UserAccountController.CNAME + "#showEnableOtp(final Model model)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-        mView.addObject(Constants.COMMAND, new AccountChangeData());
-        mView.setViewName(this.enableOtpPage);
 
         if (DEBUG)
         {
@@ -1113,13 +1014,13 @@ public class UserAccountController
             if (userAccount.getStatus() == LoginStatus.RESET)
             {
                 userSecurity = new AuthenticationData();
-                userSecurity.setNewPassword(changeReq.getConfirmPassword());
+                userSecurity.setNewPassword(changeReq.getConfirmPassword().toCharArray());
             }
             else
             {
                 userSecurity = new AuthenticationData();
-                userSecurity.setPassword(changeReq.getCurrentPassword());
-                userSecurity.setNewPassword(changeReq.getConfirmPassword());
+                userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
+                userSecurity.setNewPassword(changeReq.getConfirmPassword().toCharArray());
             }
 
             if (DEBUG)
@@ -1194,150 +1095,6 @@ public class UserAccountController
                 hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
 
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.messagePasswordChangeSuccess);
-                mView.setViewName(this.myAccountPage);
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-        }
-        catch (final AccountChangeException acx)
-        {
-            ERROR_RECORDER.error(acx.getMessage(), acx);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-
-            return mView;
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/enable-otp", method = RequestMethod.POST)
-    public final ModelAndView doEnableOtp(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
-    {
-        final String methodName = UserAccountController.CNAME + "#doEnableOtp(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-        // validate our new password here
-        this.passwordValidator.validate(changeReq, bindResult);
-
-        if (bindResult.hasErrors())
-        {
-            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
-
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new AccountChangeData());
-            mView.setViewName(this.enableOtpPage);
-        }
-
-        try
-        {
-            AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setPassword(changeReq.getCurrentPassword());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
-            }
-
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            reqInfo.setHostName(hRequest.getRemoteHost());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            AccountChangeRequest request = new AccountChangeRequest();
-            request.setHostInfo(reqInfo);
-            request.setRequestor(userAccount);
-            request.setUserAccount(userAccount);
-            request.setUserSecurity(userSecurity);
-            request.setApplicationId(this.appConfig.getApplicationId());
-            request.setApplicationName(this.appConfig.getApplicationName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccountChangeRequest: {}", request);
-            }
-
-            AccountChangeResponse response = processor.enableOtpAuth(request);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccountChangeResponse: {}", response);
-            }
-
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageEnableOtpSuccess);
                 mView.setViewName(this.myAccountPage);
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
@@ -1456,9 +1213,9 @@ public class UserAccountController
             AuthenticationData userSecurity = new AuthenticationData();
             userSecurity.setSecQuestionOne(changeReq.getSecQuestionOne());
             userSecurity.setSecQuestionTwo(changeReq.getSecQuestionTwo());
-            userSecurity.setSecAnswerOne(changeReq.getSecQuestionOne());
-            userSecurity.setSecAnswerTwo(changeReq.getSecAnswerTwo());
-            userSecurity.setPassword(changeReq.getCurrentPassword());
+            userSecurity.setSecAnswerOne(changeReq.getSecQuestionOne().toCharArray());
+            userSecurity.setSecAnswerTwo(changeReq.getSecAnswerTwo().toCharArray());
+            userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
 
             if (DEBUG)
             {
@@ -1602,7 +1359,7 @@ public class UserAccountController
             }
 
             AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setPassword(changeReq.getCurrentPassword());
+            userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
 
             if (DEBUG)
             {
@@ -1758,7 +1515,7 @@ public class UserAccountController
             }
 
             AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setPassword(changeReq.getCurrentPassword());
+            userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
 
             if (DEBUG)
             {

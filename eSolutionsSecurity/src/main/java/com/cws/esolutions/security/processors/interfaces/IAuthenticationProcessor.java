@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -42,9 +43,7 @@ import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
-import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 import com.cws.esolutions.security.dao.reference.factory.UserSecurityInformationDAOFactory;
 /**
@@ -57,9 +56,9 @@ public interface IAuthenticationProcessor
 {
     static final String CNAME = IAuthenticationProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SystemConfig sysConfig = secBean.getConfigData().getSystemConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
     static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
     static final IAccountControlProcessor controlProcessor = (IAccountControlProcessor) new AccountControlProcessorImpl();
@@ -84,20 +83,4 @@ public interface IAuthenticationProcessor
      * @throws AuthenticationException {@link com.cws.esolutions.security.processors.exception.AuthenticationException} if an exception occurs during processing
      */
     AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException;
-
-    /**
-     * Performs agent authentication and validation for access to application.
-     * Calls AgentLogonDAO to perform database calls to verify authentication
-     * and authorization to utilize service. Sets up session and entitlements
-     * for application access. This method will be utilized if configured
-     * for an LDAP user datastore. This method provides OTP authentication processing
-     * on top of the normal username/password process.
-     *
-     * @param request The {@link com.cws.esolutions.security.processors.dto.AuthenticationRequest}
-     * containing the necessary authentication information to process the request.
-     * @return {@link com.cws.esolutions.security.processors.dto.AuthenticationResponse}
-     * containing the response for the provided request.
-     * @throws AuthenticationException {@link com.cws.esolutions.security.processors.exception.AuthenticationException} if an exception occurs during processing
-     */
-    AuthenticationResponse processOtpLogon(final AuthenticationRequest request) throws AuthenticationException;
 }

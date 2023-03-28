@@ -25,7 +25,6 @@ package com.cws.esolutions.core.dao.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
@@ -33,7 +32,7 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
@@ -59,7 +58,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -77,7 +76,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, (String) value.get(0));
             stmt.setString(2, (String) value.get(1));
             stmt.setDouble(3, (Double) value.get(2));
@@ -90,7 +89,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -135,7 +134,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -153,7 +152,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, (String) value.get(0));
             stmt.setString(2, (String) value.get(1));
             stmt.setDouble(3, (Double) value.get(2));
@@ -166,7 +165,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -211,7 +210,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -229,12 +228,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL removeApplicationData(?)}");
+            stmt = sqlConn.prepareStatement("{ CALL removeApplicationData(? }");
             stmt.setString(1, value);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -279,7 +278,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<String[]> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -298,13 +297,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL listApplications(?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL listApplications(?, ?) }");
             stmt.setInt(1, startRow);
-            stmt.registerOutParameter(1, Types.INTEGER);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -385,7 +383,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object[]> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -428,13 +426,13 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 sBuilder.append("+" + value);
             }
 
-            stmt = sqlConn.prepareCall("{CALL getApplicationByAttribute(?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL getApplicationByAttribute(?, ?) }");
             stmt.setString(1, sBuilder.toString().trim());
             stmt.setInt(2, startRow);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -515,7 +513,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -533,12 +531,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getApplicationData(?)}");
+            stmt = sqlConn.prepareStatement("{ CALL getApplicationData(? }");
             stmt.setString(1, value);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())

@@ -38,6 +38,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -67,12 +68,14 @@ public class AuditDAOImplTest
         {
             List<String> auditList = new ArrayList<String>(
                 Arrays.asList(
-                        RandomStringUtils.randomAlphanumeric(32),
+                        RandomStringUtils.randomAlphanumeric(128),
                         "junit",
-                        "f42fb0ba-4d1e-1126-986f-800cd2650000",
+                        "99aaefc1-8a2a-4877-bed5-20b73d971e56",
+                        SecurityUserRole.NONE.toString(),
                         "6236B840-88B0-4230-BCBC-8EC33EE837D9",
                         "eSolutions-" + x,
                         AuditType.JUNIT.name(),
+                        "ACTION",
                         "junit",
                         "junit"));
 
@@ -92,10 +95,11 @@ public class AuditDAOImplTest
     {
         try
         {
-        	Assertions.assertThat(auditDAO.getAuditInterval("f42fb0ba-4d1e-1126-986f-800cd2650000", 1)).isNotEmpty();
+        	Assertions.assertThat(auditDAO.getAuditInterval("99aaefc1-8a2a-4877-bed5-20b73d971e56", 1)).isNotEmpty();
         }
         catch (final SQLException sqx)
         {
+        	sqx.printStackTrace();
         	Assertions.fail(sqx.getMessage());
         }
     }

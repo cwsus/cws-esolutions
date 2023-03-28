@@ -34,6 +34,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
@@ -43,6 +46,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public class SQLUserManagerTest
 {
 	private static final String GUID = "99aaefc1-8a2a-4877-bed5-20b73d971e56";
+	private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
     private static final UserManager manager = UserManagerFactory.getUserManager("com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager");
 
     @BeforeAll public void setUp()
@@ -64,29 +68,25 @@ public class SQLUserManagerTest
         try
         {
             Assertions.assertThat(manager.addUserAccount(
-                    new ArrayList<Object>(
-                            Arrays.asList(
-                                    SQLUserManagerTest.GUID, // stmt.setString(1, (String) userAccount.get(0)); // commonName NVARCHAR(128),
-                            		"junit-test", // stmt.setString(2, (String) userAccount.get(1)); // uid NVARCHAR(45),
-                            		"Junit", // stmt.setString(3, (String) userAccount.get(2)); // givenname NVARCHAR(100),
-                            		"Test", // stmt.setString(4, (String) userAccount.get(3)); // sn NVARCHAR(100),
-                            		"JUnit Test", // stmt.setString(5, (String) userAccount.get(4)); // displayname NVARCHAR(100),
-                            		"junit@caspersbox.com", // stmt.setString(6, (String) userAccount.get(5)); // email NVARCHAR(50),
-                            		"USER", // stmt.setString(7, (String) userAccount.get(6)); // cwsrole NVARCHAR(45),
-                            		0, // stmt.setInt(8, (int) userAccount.get(7)); // cwsfailedpwdcount MEDIUMINT(9),
-                            		false, // stmt.setBoolean(9, (Boolean) userAccount.get(8)); // cwsissuspended BOOLEAN,
-                            		true, // stmt.setBoolean(10, (Boolean) userAccount.get(9)); // cwsisolrsetup BOOLEAN,
-                            		false, // stmt.setBoolean(11, (Boolean) userAccount.get(10)); // cwsisolrlocked BOOLEAN,
-                            		false, // stmt.setBoolean(12, (Boolean) userAccount.get(11)); // cwsistcaccepted BOOLEAN,
-                            		"7161231234", // stmt.setString(13, (String) userAccount.get(12)); // telephonenumber NVARCHAR(10),
-                            		"7161231234", // stmt.setString(14, (String) userAccount.get(13)); // pager NVARCHAR(10),
-                            		RandomStringUtils.randomAlphanumeric(64))), // stmt.setString(15, (String) userAccount.get(14)); // userpassword NVARCHAR(255)
                     new ArrayList<String>(
                             Arrays.asList(
-                                    "USER")))).isTrue();
+                            		GUID,
+                            		"junit-test",
+                            		PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(32).toCharArray(), RandomStringUtils.randomAlphanumeric(32).getBytes(),
+                            				bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+                                			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
+                                			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                                			bean.getConfigData().getSystemConfig().getEncoding()),
+                            		SecurityUserRole.NONE.toString(),
+                            		"junit",
+                            		"test",
+                            		"junit@test.com",
+                            		"1234567890",
+                            		"1987654321")))).isTrue();
         }
         catch (final UserManagementException umx)
         {
+        	umx.printStackTrace();
             Assertions.fail(umx.getMessage());
         }
     }
@@ -95,7 +95,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assertions.assertThat(manager.validateUserAccount("junit-test", "99aaefc1-8a2a-4877-bed5-20b73d971e56")).isTrue();
+            Assertions.assertThat(manager.validateUserAccount("junit-test", GUID)).isTrue();
         }
         catch (final UserManagementException umx)
         {
@@ -143,7 +143,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assertions.assertThat(manager.modifyUserEmail(SQLUserManagerTest.GUID, "test@test.com")).isTrue();
+            Assertions.assertThat(manager.modifyUserEmail(SQLUserManagerTest.GUID, "foo@bar.com")).isTrue();
         }
         catch (final UserManagementException umx)
         {
@@ -157,10 +157,11 @@ public class SQLUserManagerTest
         {
             Assertions.assertThat(manager.modifyUserContact(SQLUserManagerTest.GUID,
                     new ArrayList<String>(
-                            Arrays.asList("555-555-1212", "555-555-1213"))));
+                            Arrays.asList("9078963341", "9089177215"))));
         }
         catch (final UserManagementException umx)
         {
+        	umx.printStackTrace();
             Assertions.fail(umx.getMessage());
         }
     }
@@ -182,7 +183,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assertions.assertThat(manager.modifyUserGroups(SQLUserManagerTest.GUID, new Object[] { "Service Admins" }));
+            Assertions.assertThat(manager.modifyUserRole(SQLUserManagerTest.GUID, SecurityUserRole.USER.toString()));
         }
         catch (final UserManagementException umx)
         {
@@ -221,7 +222,12 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assertions.assertThat(manager.modifyUserPassword(SQLUserManagerTest.GUID, RandomStringUtils.randomAlphanumeric(64)));
+            Assertions.assertThat(manager.modifyUserPassword(SQLUserManagerTest.GUID,
+            		PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(32).toCharArray(), RandomStringUtils.randomAlphanumeric(32).getBytes(),
+            				bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+                			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
+                			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                			bean.getConfigData().getSystemConfig().getEncoding())));
         }
         catch (final UserManagementException umx)
         {
@@ -235,23 +241,22 @@ public class SQLUserManagerTest
         {
             Assertions.assertThat(manager.modifyUserSecurity(SQLUserManagerTest.GUID, new ArrayList<String>(
                     Arrays.asList(
-                            RandomStringUtils.randomAlphanumeric(64),
-                            RandomStringUtils.randomAlphanumeric(64),
-                            RandomStringUtils.randomAlphanumeric(64),
-                            RandomStringUtils.randomAlphanumeric(64)))));
-        }
-        catch (final UserManagementException umx)
-        {
-            Assertions.fail(umx.getMessage());
-        }
-    }
-
-    @Test public void modifyOtpSecret()
-    {
-        try
-        {
-            Assertions.assertThat(manager.modifyOtpSecret(SQLUserManagerTest.GUID, true, RandomStringUtils.randomAlphanumeric(64)));
-            Assertions.assertThat(manager.modifyOtpSecret(SQLUserManagerTest.GUID, false, null));
+                            "What is your favourite cartoon ?",
+                            "Who was your childhood best friend ?",
+                            PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(32).toCharArray(), RandomStringUtils.randomAlphanumeric(32).getBytes(),
+                    				bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+                        			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
+                        			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        			bean.getConfigData().getSystemConfig().getEncoding()),
+                            PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(32).toCharArray(), RandomStringUtils.randomAlphanumeric(32).getBytes(),
+                            		bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+                            		bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
+                            		bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            		bean.getConfigData().getSystemConfig().getEncoding())
+                            )
+                    )
+            		)
+            		);
         }
         catch (final UserManagementException umx)
         {

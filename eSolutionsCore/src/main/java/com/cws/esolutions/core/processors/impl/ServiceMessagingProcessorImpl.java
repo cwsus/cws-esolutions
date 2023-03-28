@@ -347,7 +347,6 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
                 UserAccount svcAccount = new UserAccount();
                 svcAccount.setUsername(serviceAccount.getAccountName());
                 svcAccount.setGuid(serviceAccount.getAccountGuid());
-                svcAccount.setGroups(new String[] { serviceAccount.getAccountRole() });
 
                 if (DEBUG)
                 {
@@ -588,7 +587,6 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
             UserAccount svcAccount = new UserAccount();
             svcAccount.setUsername(serviceAccount.getAccountName());
             svcAccount.setGuid(serviceAccount.getAccountGuid());
-            svcAccount.setGroups(new String[] { serviceAccount.getAccountRole() });
 
             if (DEBUG)
             {

@@ -26,7 +26,6 @@ package com.cws.esolutions.web;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
@@ -43,38 +42,36 @@ import com.cws.esolutions.web.validators.EmailMessageValidator;
 @Component
 public class ApplicationServiceBean implements Serializable
 {
-    private String homePage = null;
-    private int requestTimeout = 10;
-    private String dateFormat = null;
-    private String fileEncoding = null;
-    private String homeRedirect = null;
-    private String isTestSystem = null;
-    private String emailAddress = null;
-    private String logonRedirect = null;
-    private String applicationId = null;
-    private boolean isSmsEnabled = false;
-    private String expiredRedirect = null;
-    private String applicationName = null;
-    private String unavailablePage = null;
-    private String unauthorizedPage = null;
-    private String contactAdminsPage = null;
-    private String errorResponsePage = null;
-    private String searchRequestPage = null;
-    private String themeMessageSource = null;
-    private String requestCompletePage = null;
-    private String contactAdminsRedirect = null;
-    private String messageNoSearchResults = null;
-    private String messageEmailSendFailed = null;
-    private String messageRequestCanceled = null;
-    private Map<String, Boolean> services = null;
-    private String messagePasswordExpired = null;
-    private String messageUserNotLoggedIn = null;
-    private String messageValidationFailed = null;
-    private String messageEmailSentSuccess = null;
-    private String messageAccountNotAuthorized = null;
-    private EmailAddressValidator emailValidator = null;
-    private EmailMessageValidator messageValidator = null;
-    private String messageRequestProcessingFailure = null;
+	private String homePage = null;
+	private int requestTimeout = 10;
+	private String dateFormat = null;
+	private String fileEncoding = null;
+	private String homeRedirect = null;
+	private String isTestSystem = null;
+	private String emailAddress = null;
+	private String logonRedirect = null;
+	private String applicationId = null;
+	private String expiredRedirect = null;
+	private String applicationName = null;
+	private String unavailablePage = null;
+	private String unauthorizedPage = null;
+	private String contactAdminsPage = null;
+	private String errorResponsePage = null;
+	private String searchRequestPage = null;
+	private String themeMessageSource = null;
+	private String requestCompletePage = null;
+	private String contactAdminsRedirect = null;
+	private String messageNoSearchResults = null;
+	private String messageEmailSendFailed = null;
+	private String messageRequestCanceled = null;
+	private String messagePasswordExpired = null;
+	private String messageUserNotLoggedIn = null;
+	private String messageValidationFailed = null;
+	private String messageEmailSentSuccess = null;
+	private String messageAccountNotAuthorized = null;
+	private EmailAddressValidator emailValidator = null;
+	private EmailMessageValidator messageValidator = null;
+	private String messageRequestProcessingFailure = null;
 
     private static final long serialVersionUID = 6547417416150985897L;
     private static final String CNAME = ApplicationServiceBean.class.getName();
@@ -290,19 +287,6 @@ public class ApplicationServiceBean implements Serializable
         this.emailAddress = value;
     }
 
-    public final void setServices(final Map<String, Boolean> value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setServices(final Map<String, Boolean> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.services = value;
-    }
-
     public final void setMessageRequestCanceled(final String value)
     {
         final String methodName = ApplicationServiceBean.CNAME + "#setMessageRequestCanceled(final String value)";
@@ -485,19 +469,6 @@ public class ApplicationServiceBean implements Serializable
         this.isTestSystem = value;
     }
 
-    public final void setIsSmsEnabled(final boolean value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setIsSmsEnabled(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.isSmsEnabled = value;
-    }
-
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -600,19 +571,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.emailAddress;
-    }
-
-    public final Map<String, Boolean> getServices()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getServices()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.services);
-        }
-
-        return this.services;
     }
 
     public final String getHomePage()
@@ -887,32 +845,6 @@ public class ApplicationServiceBean implements Serializable
 
         return this.expiredRedirect;
     }
-
-	public final boolean isSmsEnabled()
-	{
-        final String methodName = ApplicationServiceBean.CNAME + "#getIsSmsEnabled()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.isSmsEnabled);
-        }
-
-        return this.isSmsEnabled;
-	}
-
-	public final boolean getIsSmsEnabled()
-	{
-        final String methodName = ApplicationServiceBean.CNAME + "#getIsSmsEnabled()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.isSmsEnabled);
-        }
-
-        return this.isSmsEnabled;
-	}
 
 	public final boolean getIsTestSystem()
 	{

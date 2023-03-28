@@ -31,7 +31,6 @@ import java.util.Objects;
 import java.util.Arrays;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.ArrayList;
 import java.security.KeyPair;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
@@ -62,103 +61,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     private static final String CNAME = AccountResetProcessorImpl.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#findUserAccount(com.cws.esolutions.security.processors.dto.AccountResetRequest)
-     */
-    public AccountResetResponse findUserAccount(final AccountResetRequest request) throws AccountResetException
-    {
-        final String methodName = AccountResetProcessorImpl.CNAME + "#findUserAccount(final AccountResetRequest request) throws AccountResetException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountResetRequest: {}", request);
-        }
-
-        AccountResetResponse response = new AccountResetResponse();
-
-        final RequestHostInfo reqInfo = request.getHostInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-        	List<String[]> userList = userManager.searchUsers(request.getSearchData());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<String[]>: {}", userList);
-            }
-
-            if ((Objects.isNull(userList)) || (userList.size() == 0))
-            {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                return response;
-            }
-
-            UserAccount userInfo = new UserAccount();
-            userInfo.setGuid(userList.get(0)[0]);
-            userInfo.setUsername(userList.get(0)[1]);
-            userInfo.setEmailAddr(userList.get(0)[2]);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", userInfo);
-            }
-
-            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            response.setUserAccount(userInfo);
-        }
-        catch (final UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new AccountResetException(umx.getMessage(), umx);
-        }
-        finally
-        {
-        	if (secConfig.getPerformAudit())
-        	{
-	            // audit
-	            try
-	            {
-	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
-	                auditEntry.setAuditType(AuditType.LOADSECURITY);
-	                auditEntry.setUserAccount(request.getUserAccount());
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-	                }
-	
-	                AuditRequest auditRequest = new AuditRequest();
-	                auditRequest.setAuditEntry(auditEntry);
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-	                }
-	
-	                auditor.auditRequest(auditRequest);
-	            }
-	            catch (final AuditServiceException asx)
-	            {
-	                ERROR_RECORDER.error(asx.getMessage(), asx);
-	            }
-        	}
-        }
-
-        return response;
-    }
-
-    /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#obtainUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
     public AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
@@ -184,7 +86,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         try
         {
-            List<Object> securityData = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
+            List<Object> securityData = authenticator.getSecurityQuestions(userAccount.getGuid());
 
             if (DEBUG)
             {
@@ -207,7 +109,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 		// user is in olrsetup, we can't do a reset here
                 		ERROR_RECORDER.error("User has not set up the online reset process. Cannot continue.");
 
-                		response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                		response.setRequestStatus(SecurityRequestStatus.OLRSETUP);
 
                 		return response;
                 	}
@@ -216,7 +118,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 		// olr locked
                 		ERROR_RECORDER.error("User is currently OLR locked. Cannot continue.");
 
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        response.setRequestStatus(SecurityRequestStatus.OLRLOCKED);
 
                         return response;
                 	}
@@ -327,15 +229,18 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             if (StringUtils.isNotEmpty(userSalt))
             {
-                boolean isVerified = authenticator.verifySecurityData(reqAccount.getUsername(), reqAccount.getGuid(), 
-                		new ArrayList<String>(Arrays.asList(userSalt, reqSecurity.getSecAnswerOne(), reqSecurity.getSecAnswerTwo())));
+                List<Object> resultList = authenticator.getSecurityAnswers(reqAccount.getGuid());
+
+                boolean answerOneMatches = Arrays.equals(reqSecurity.getSecAnswerOne(), (char[]) resultList.get(0));
+                boolean answerTwoMatches = Arrays.equals(reqSecurity.getSecAnswerTwo(), (char[]) resultList.get(1));
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isVerified: {}", isVerified);
+                    DEBUGGER.debug("answerOneMatches: {}", answerOneMatches);
+                    DEBUGGER.debug("answerOneMatches: {}", answerTwoMatches);
                 }
 
-                if (isVerified)
+                if ((answerOneMatches) && (answerTwoMatches))
                 {
                 	// build a user account object here
                     // load the user account here
@@ -501,7 +406,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             if (StringUtils.isNotEmpty(resetId))
             {
-                boolean isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, ((secConfig.getSmsResetEnabled()) ? smsReset : null));
+                boolean isComplete = userSec.insertResetData(userAccount.getGuid(), resetId);
 
                 if (DEBUG)
                 {
@@ -748,163 +653,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountResetException(sqx.getMessage(), sqx);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#insertResetData(AccountResetRequest)
-     */
-    public AccountResetResponse insertResetData(final AccountResetRequest request) throws AccountResetException
-    {
-        final String methodName = AccountResetProcessorImpl.CNAME + "#insertResetData(final AccountResetRequest request) throws AccountResetException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountResetRequest: {}", request);
-        }
-
-        AccountResetResponse response = new AccountResetResponse();
-
-        final Calendar calendar = Calendar.getInstance();
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
-
-        calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Calendar: {}", calendar);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-        }
-
-        try
-        {
-            String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
-            String smsReset = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
-
-            
-            if (StringUtils.isNotEmpty(resetId))
-            {
-                boolean isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, ((secConfig.getSmsResetEnabled()) ? smsReset : null));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-
-                if (isComplete)
-                {
-                    // load the user account for the email response
-                    List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserData: {}", userData);
-                    }
-
-                    if ((userData != null) && (!(userData.isEmpty())))
-                    {
-                        UserAccount responseAccount = new UserAccount();
-                        responseAccount.setGuid((String) userData.get(0)); // CN
-                        responseAccount.setUsername((String) userData.get(1)); // UID
-                        responseAccount.setGivenName((String) userData.get(2)); // GIVENNAME
-                        responseAccount.setSurname((String) userData.get(3)); // sn
-                        responseAccount.setDisplayName((String) userData.get(4)); // displayName
-                        responseAccount.setEmailAddr((String) userData.get(5)); // email
-                        responseAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(6))); //cwsrole
-                        responseAccount.setFailedCount(Integer.parseInt(userData.get(7).toString())); // cwsfailedpwdcount            
-                        responseAccount.setLastLogin((Timestamp) userData.get(8)); // cwslastlogin
-                        responseAccount.setExpiryDate((Timestamp) userData.get(9)); // cwsexpirydate
-                        responseAccount.setSuspended(Boolean.valueOf(userData.get(10).toString())); // cwsissuspended
-                        responseAccount.setOlrSetup(Boolean.valueOf(userData.get(11).toString())); // cwsisolrsetup
-                        responseAccount.setOlrLocked(Boolean.valueOf(userData.get(12).toString())); // cwsisolrlocked
-                        responseAccount.setAccepted(Boolean.valueOf(userData.get(13).toString())); // cwsistcaccepted
-                        responseAccount.setUserKeys((KeyPair) userData.get(14)); // cwspublickey
-                        responseAccount.setTelephoneNumber((String) userData.get(15)); // telephoneNumber
-                        responseAccount.setPagerNumber((String) userData.get(16)); // pager
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", responseAccount);
-                        }
-
-                        response.setResetId(resetId);
-                        response.setSmsCode(((secConfig.getSmsResetEnabled()) ? smsReset : null));
-                        response.setUserAccount(responseAccount);
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        ERROR_RECORDER.error("Failed to locate user account in authentication repository. Cannot continue.");
-
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    }
-                }
-                else
-                {
-                    ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
-
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
-            }
-            else
-            {
-                ERROR_RECORDER.error("Unable to generate a unique identifier. Cannot continue.");
-
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountResetException(sqx.getMessage(), sqx);
-        }
-        catch (final UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new AccountResetException(umx.getMessage(), umx);
-        }
-        finally
-        {
-        	if (secConfig.getPerformAudit())
-        	{
-	            // audit
-	            try
-	            {
-	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
-	                auditEntry.setAuditType(AuditType.RESETPASS);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-	                }
-	
-	                AuditRequest auditRequest = new AuditRequest();
-	                auditRequest.setAuditEntry(auditEntry);
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-	                }
-	
-	                auditor.auditRequest(auditRequest);
-	            }
-	            catch (final AuditServiceException asx)
-	            {
-	                ERROR_RECORDER.error(asx.getMessage(), asx);
-	            }
-        	}
         }
 
         return response;

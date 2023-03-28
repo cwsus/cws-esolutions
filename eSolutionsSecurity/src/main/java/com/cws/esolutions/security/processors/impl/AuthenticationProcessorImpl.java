@@ -25,8 +25,9 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import java.util.Date;
+import java.util.List;
+import java.util.Arrays;
 import java.sql.Timestamp;
 import java.security.KeyPair;
 import java.sql.SQLException;
@@ -89,36 +90,30 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (DEBUG)
             {
-                DEBUGGER.debug("String: {}", userInfo);
+                DEBUGGER.debug("userInfo: {}", userInfo);
             }
 
-            if (StringUtils.isBlank(userInfo))
+            if (StringUtils.isEmpty(userInfo))
             {
-            	ERROR_RECORDER.error("No user account was located for the given information");
-
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                return response;
+            	throw new AuthenticationException("Unable to locate an account for the given information. Cannot continue");
             }
 
+            
             String userSalt = userSec.getUserSalt(userInfo, SaltType.LOGON.name()); // user salt as obtained from the database
 
-            if ((StringUtils.isEmpty(userInfo)) || (StringUtils.isEmpty(userSalt)))
+            if (StringUtils.isEmpty(userSalt))
             {
                 throw new AuthenticationException("Unable to obtain configured user security information. Cannot continue");
             }
 
-            isValid = authenticator.performLogon(userInfo, authUser.getUsername(), authSec.getPassword()); // the password provided here is decrypted. it must be
+        	char[] decrypted = PasswordUtils.decryptText(authenticator.performLogon(userInfo), authSec.getPassword(), userSalt.getBytes(),
+        			secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+            		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), sysConfig.getEncoding()).toCharArray();
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isValid: {}", isValid);
-            }
-
-            if (!(isValid))
-            {
-                throw new AuthenticationException("Failed to load user account information!");
-            }
+        	if (!(Arrays.equals(decrypted, authSec.getPassword())))
+        	{
+        		throw new AuthenticationException("Authentication failure");
+        	}
 
             // load the user account here
             List<Object> authObject = userManager.loadUserAccount(userInfo);
@@ -185,7 +180,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
             else
             {
-                userManager.performSuccessfulLogin(userAccount.getUsername(), userAccount.getGuid(), userAccount.getFailedCount(), System.currentTimeMillis());
+                authenticator.performSuccessfulLogin(userAccount.getUsername(), userAccount.getGuid(), userAccount.getFailedCount(), System.currentTimeMillis());
 
                 userAccount.setLastLogin(new Timestamp(System.currentTimeMillis()));
                 userAccount.setStatus(LoginStatus.SUCCESS);
@@ -245,164 +240,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
 	                }
 
-	                auditor.auditRequest(auditRequest);
-	            }
-	            catch (final AuditServiceException asx)
-	            {
-	                ERROR_RECORDER.error(asx.getMessage(), asx);
-	            }
-        	}
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processOtpLogon(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
-     */
-    public AuthenticationResponse processOtpLogon(final AuthenticationRequest request) throws AuthenticationException
-    {
-        final String methodName = AuthenticationProcessorImpl.CNAME + "#processOtpLogon(final AuthenticationRequest request) throws AuthenticationException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationRequest: {}", request);
-        }
-
-        UserAccount userAccount = null;
-        AuthenticationResponse response = new AuthenticationResponse();
-
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount authUser = request.getUserAccount();
-        final AuthenticationData authSec = request.getUserSecurity();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", authUser);
-        }
-
-        try
-        {
-            String otpSalt = userSec.getUserSalt(authUser.getGuid(), SaltType.OTP.name());
-            String otpSecret = authenticator.obtainOtpSecret(authUser.getUsername(), authUser.getGuid());
-
-            // if the user has enabled otp auth, do it here
-            if ((StringUtils.isEmpty(otpSalt)) || (StringUtils.isEmpty(otpSecret)))
-            {
-                throw new AuthenticationException("Unable to obtain security information. Cannot continue.");
-            }
-
-            boolean isAuthorized = PasswordUtils.validateOtpValue(secConfig.getOtpVariance(), secConfig.getOtpAlgorithm(),
-                    PasswordUtils.decryptText(otpSecret, otpSalt,
-                            secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations(),
-                            secBean.getConfigData().getSecurityConfig().getKeyLength(),
-                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            secBean.getConfigData().getSystemConfig().getEncoding()),
-                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    authSec.getOtpValue());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
-            }
-
-            if (!(isAuthorized))
-            {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setCount(request.getCount() + 1);
-
-                return response;
-            }
-
-            List<Object> userData = userManager.loadUserAccount(authUser.getGuid());
-
-            userAccount = new UserAccount();
-            userAccount.setGuid((String) userData.get(0));
-            userAccount.setUsername((String) userData.get(1));
-            userAccount.setGivenName((String) userData.get(2));
-            userAccount.setSurname((String) userData.get(3));
-            userAccount.setDisplayName((String) userData.get(4));
-            userAccount.setEmailAddr((String) userData.get(5));
-            userAccount.setPagerNumber((String) userData.get(6));
-            userAccount.setTelephoneNumber((String) userData.get(7));
-            userAccount.setFailedCount((Integer) userData.get(8));
-            userAccount.setLastLogin((Timestamp) userData.get(9));
-            userAccount.setExpiryDate((Timestamp) userData.get(10));
-            userAccount.setSuspended((Boolean) userData.get(11));
-            userAccount.setOlrSetup((Boolean) userData.get(12));
-            userAccount.setOlrLocked((Boolean) userData.get(13));
-            userAccount.setGroups(StringUtils.split((String) userData.get(15), ","));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
-            }
-
-            // have a user account, run with it
-            if ((userAccount.getExpiryDate().before(new Date(System.currentTimeMillis())) || (userAccount.getExpiryDate().equals(new Date(System.currentTimeMillis())))))
-            {
-                userAccount.setStatus(LoginStatus.EXPIRED);
-
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setUserAccount(userAccount);
-            }
-            else
-            {
-                userAccount.setStatus(LoginStatus.SUCCESS);
-
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setUserAccount(userAccount);
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationResponse: {}", response);
-            }
-        }
-        catch (final SecurityServiceException ssx)
-        {
-            ERROR_RECORDER.error(ssx.getMessage(), ssx);
-
-            throw new AuthenticationException(ssx.getMessage(), ssx);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AuthenticationException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-        	if (secConfig.getPerformAudit())
-        	{
-	            // audit
-	            try
-	            {
-	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
-	                auditEntry.setAuditType(AuditType.LOGON);
-	                auditEntry.setUserAccount(authUser);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-	                }
-	
-	                AuditRequest auditRequest = new AuditRequest();
-	                auditRequest.setAuditEntry(auditEntry);
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-	                }
-	
 	                auditor.auditRequest(auditRequest);
 	            }
 	            catch (final AuditServiceException asx)

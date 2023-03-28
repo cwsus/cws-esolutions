@@ -21,7 +21,6 @@
     </bean>
 
     <!-- load the datasources -->
-    <jee:jndi-lookup expected-type="javax.sql.DataSource" id="esolutionsDS" jndi-name="java:comp/env/jdbc/esolutions" />
     <jee:jndi-lookup expected-type="javax.mail.Session" id="mailSession" jndi-name="java:comp/env/mail/MailSession" />
     <jee:jndi-lookup expected-type="java.lang.String" id="isTestSystem" jndi-name="java:comp/env/isTestSystem" />
 
@@ -59,19 +58,6 @@
         <property name="requestTimeout" value="10" /> <!-- timeout value (primarily for connections) -->
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
         <property name="emailAddress" value="esolutions@caspersbox.com" />
-        <property name="isSmsEnabled" value="true" />
-        <!-- enable/disable services. true for on, false for off -->
-        <property name="services">
-            <map>
-                <entry key="appMgmt" value="true" />
-                <entry key="dnsAdmin" value="true" />
-                <entry key="sysMgmt" value="true" />
-                <entry key="svcMgmt" value="true" />
-                <entry key="userAdmin" value="true" />
-                <entry key="certMgmt" value="true" />
-                <entry key="dcMgmt" value="true" />
-            </map>
-        </property>
         <property name="homePage" value="/jsp/html/en/CommonLandingPage" />
         <property name="contactAdminsPage" value="/jsp/html/en/System_ContactAdmins" />
         <property name="errorResponsePage" value="/jsp/html/en/System_ErrorHandler" />

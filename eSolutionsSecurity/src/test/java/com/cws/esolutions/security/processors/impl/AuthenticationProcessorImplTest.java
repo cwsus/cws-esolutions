@@ -71,7 +71,7 @@ public class AuthenticationProcessorImplTest
         account.setUsername("khuntly");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd");
+        userSecurity.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
@@ -89,36 +89,6 @@ public class AuthenticationProcessorImplTest
         catch (final AuthenticationException ax)
         {
         	ax.printStackTrace();
-            Assertions.fail(ax.getMessage());
-        }
-    }
-
-    @Test public void processOtpLogon()
-    {
-        UserAccount account = new UserAccount();
-        account.setUsername("junit");
-        account.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-
-        AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("junit");
-        userSecurity.setSecret("RHmJrNj6KISffPbnksYZDuKr9pookp0oxThyHa0rqkrID+tX8PTVcTl6D/MoA0FCp2r7lv+HaHrRrR/w/FaGSA==");
-        userSecurity.setOtpValue(790269);
-
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setApplicationName("esolutions");
-        request.setUserAccount(account);
-        request.setUserSecurity(userSecurity);
-        request.setHostInfo(hostInfo);
-
-        try
-        {
-            AuthenticationResponse response = processor.processOtpLogon(request);
-
-            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
-        }
-        catch (final AuthenticationException ax)
-        {
-            ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }

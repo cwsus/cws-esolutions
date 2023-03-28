@@ -25,8 +25,6 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.Arrays;
-import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,6 +39,8 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SQLAuthenticatorTest
 {
+	private static final String GUID = "b7f6432d-10e1-4258-ad97-f3ea9ac81207";
+
     @BeforeAll public void setUp()
     {
         try
@@ -60,7 +60,7 @@ public class SQLAuthenticatorTest
 
         try
         {
-        	authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "junit-test", "Dcs5/bktmt1aEeVZn/kvKSrSP+AdS3q/E56E8Gfq23vjhcJIPenmvlLhrD+PvTTfLChqudUeK/biHp/nKl2/GA==");
+        	System.out.println(authenticator.performLogon(GUID));
         }
         catch (final AuthenticatorException e)
         {
@@ -74,41 +74,11 @@ public class SQLAuthenticatorTest
 
         try
         {
-        	Assertions.assertThat(authenticator.obtainSecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000")).isNotEmpty();
+        	Assertions.assertThat(authenticator.getSecurityAnswers(GUID)).isNotEmpty();
         }
         catch (final AuthenticatorException e)
         {
-        	Assertions.fail(e.getMessage());
-        }
-    }
-
-    @Test public void obtainOtpSecret()
-    {
-        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator");
-
-        try
-        {
-        	Assertions.assertThat(authenticator.obtainOtpSecret("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000")).isNotEmpty();
-        }
-        catch (final AuthenticatorException e)
-        {
-        	Assertions.fail(e.getMessage());
-        }
-    }
-
-    @Test public void verifySecurityData()
-    {
-        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator");
-
-        try
-        {
-            Assertions.assertThat(authenticator.verifySecurityData("khuntly", "a332cb8f-6891-4ae0-bd4d-18efe70b4ed2",
-                    new ArrayList<String>(
-                            Arrays.asList("PIQNYhYZgEDdePK4ObMF", "Answer One", "Answer Two")))).isTrue();
-                                    
-        }
-        catch (final AuthenticatorException e)
-        {
+        	e.printStackTrace();
         	Assertions.fail(e.getMessage());
         }
     }

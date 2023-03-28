@@ -47,13 +47,11 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="enableOtpPage" value=".user-account/jsp/html/en/UserAccount_EnableOTP" />
         <property name="myAccountPage" value=".user-account/jsp/html/en/UserAccount_ViewAccount" />
         <property name="changeEmailPage" value=".user-account/jsp/html/en/UserAccount_ChangeEmail" />
         <property name="changeSecurityPage" value=".user-account/jsp/html/en/UserAccount_ChangeSecurity" />
         <property name="changePasswordPage" value=".user-account/jsp/html/en/UserAccount_ChangePassword" />
         <property name="changeContactPage" value=".user-account/jsp/html/en/UserAccount_ChangeContact" />
-        <property name="messageEnableOtpSuccess" value="user.account.otp.enable.success" />
         <property name="messageEmailChangeSuccess" value="user.account.email.change.success" />
         <property name="messagePasswordChangeSuccess" value="user.account.password.change.success" />
         <property name="messageSecurityChangeSuccess" value="user.account.update.security.success" />

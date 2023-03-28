@@ -57,7 +57,7 @@ public final class SecurityConfig implements Serializable
     private String auditConfig = null; // FULL path to connection configuration file
     private String authManager = null;
     private String userManager = null;
-    private int iterations = 39542784; // default to 39542784
+    private int iterations = 600000;
     private int passwordMinLength = 8; // default of 8 characters
     private String otpAlgorithm = null;
     private int passwordMaxLength = 128; // default of 32 characters

@@ -49,14 +49,13 @@
         </property>
         <property name="recordsPerPage" value="20" />
         <property name="addDatacenterRedirect" value="redirect:/ui/service-management/add-datacenter" />
-        <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
-        <property name="systemService" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
+        <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="serviceName" value="sysMgmt" />
         <property name="addServerPage" value=".system-management/jsp/html/en/SystemMgmt_AddServer" />
         <property name="viewServerPage" value=".system-management/jsp/html/en/SystemMgmt_ViewServer" />
         <property name="defaultPage" value=".system-management/jsp/html/en/SystemMgmt_DefaultHandler" />
         <property name="adminConsolePage" value=".system-management/jsp/html/en/SystemMgmt_AdminConsoles" />
-        <!--<property name="messageServerAdded" value="system.mgmt.server.successfully.added" />-->
+        <property name="messageServerAdded" value="system.mgmt.server.successfully.added" />
         <property name="messageNoDmgrsFound" value="system.mgmt.no.dmgrs" />
         <property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
         <property name="messageAddServerSuccess" value="system.mgmt.add.server.success" />

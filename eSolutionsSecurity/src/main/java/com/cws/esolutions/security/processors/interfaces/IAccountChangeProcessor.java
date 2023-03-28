@@ -31,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.KeyConfig;
+import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -41,8 +42,6 @@ import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
-import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
-import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
@@ -60,10 +59,9 @@ public interface IAccountChangeProcessor
 	static final String CNAME = IAccountChangeProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
+    static final SystemConfig sysConfig = secBean.getConfigData().getSystemConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final String KEY_URI_FORMAT = "otpauth://totp/%s?secret=%s&issuer=%s&algorithm=%s"; // https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
-    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
     static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
     static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
     static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
@@ -71,31 +69,6 @@ public interface IAccountChangeProcessor
     static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccountChangeProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    /**
-     * Enables OTP authentication for a provided user account by setting a flag in the user repository
-     * datastore as such. When enabled, the user must have an OTP authentication utility, such as Google
-     * Authenticator, to complete the authentication process in addition to their username/password.
-     *
-     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
-     * which contains the necessary information to complete the request
-     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
-     * response information regarding the request status
-     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
-     */
-    AccountChangeResponse enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException;
-
-    /**
-     * Disables OTP authentication for a provided user account by setting a flag in the user repository
-     * datastore as such.
-     *
-     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
-     * which contains the necessary information to complete the request
-     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
-     * response information regarding the request status
-     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
-     */
-    AccountChangeResponse disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException;
 
     /**
      * Allows a provided user to change the email address associated with their account. When performed,

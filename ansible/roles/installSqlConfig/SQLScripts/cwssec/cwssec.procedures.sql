@@ -30,7 +30,7 @@ DROP PROCEDURE IF EXISTS `CWSSEC`.`getResetData` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`verifySmsCodeForReset` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`listActiveResetRequests` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`removeResetData` //
-DROP PROCEDURE IF EXISTS `CWSSEC`.`retrieve_user_questions` //
+DROP PROCEDURE IF EXISTS `CWSSEC`.`retrSecurityQuestions` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`getAuditEntryByAttribute` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`getAuditCount` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`getAuditInterval` //
@@ -46,6 +46,8 @@ DROP PROCEDURE IF EXISTS `CWSSEC`.`retrAuthorizedServices` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`listServicesForUser` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`performSuccessfulLogin` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`updateUserSecurity` //
+DROP PROCEDURE IF EXISTS `CWSSEC`.`updateUserEmail` //
+DROP PROCEDURE IF EXISTS `CWSSEC`.`updateUserContact` //
 
 CREATE PROCEDURE `CWSSEC`.`getUserByAttribute`(
     IN attributeName VARCHAR(100)
@@ -57,7 +59,6 @@ BEGIN
         GIVENNAME,
         SN,
         DISPLAYNAME,
-        EMAIL,
         CWSROLE,
         CWSFAILEDPWDCOUNT,
         CWSLASTLOGIN,
@@ -77,20 +78,31 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `CWSSEC`.`updateUserSecurity`(
+CREATE PROCEDURE `CWSSEC`.`updateUserEmail`(
     IN reqUserGuid VARCHAR(128),
-    IN reqQuestionOne VARCHAR(40),
-    IN reqQuestionTwo VARCHAR(40),
-    IN reqAnswerOne VARCHAR(128),
-    IN reqAnswerTwo VARCHAR(128)
+    IN newEmail VARCHAR(128)
 )
 BEGIN
-    UPDATE USERS
+    UPDATE CONTACT_DATA
     SET
-        CWSSECQ1 = reqQuestionOne,
-        CWSSECQ2 = reqQuestionTwo,
-        CWSSECANS1 = reqAnswerOne,
-        CWSSECANS2 = reqAnswerTwo
+        EMAIL = newEmail
+    WHERE
+        CN = reqUserGuid;
+
+    COMMIT;
+END //
+COMMIT //
+
+CREATE PROCEDURE `CWSSEC`.`updateUserContact`(
+    IN reqUserGuid VARCHAR(128),
+    IN newPhone INTEGER(10),
+    IN newCell INTEGER(10)
+)
+BEGIN
+    UPDATE CONTACT_DATA
+    SET
+        TELEPHONENUMBER = newPhone,
+        PAGER = newCell
     WHERE
         CN = reqUserGuid;
 
@@ -108,7 +120,6 @@ BEGIN
         GIVENNAME,
         SN,
         DISPLAYNAME,
-        EMAIL,
         CWSROLE,
         CWSFAILEDPWDCOUNT,
         CWSLASTLOGIN,
@@ -130,7 +141,6 @@ CREATE PROCEDURE `CWSSEC`.`addUserAccount`(
     IN cwsRole VARCHAR(45),
     IN surname VARCHAR(100),
     IN givenName VARCHAR(100),
-    IN emailAddr VARCHAR(50),
     IN commonName VARCHAR(128),
     IN displayName VARCHAR(100)
 )
@@ -140,12 +150,12 @@ BEGIN
     INSERT INTO USERS
     (
         UID, USERPASSWORD, CWSROLE, SN, GIVENNAME,
-        CWSEXPIRYDATE, EMAIL, CN, DISPLAYNAME
+        CWSEXPIRYDATE, CN, DISPLAYNAME
     )
     VALUES
     (
         uid, userPassword, cwsRole, surname, givenName,
-        unix_timestamp(now()), emailAddr, commonName, displayName
+        unix_timestamp(now()), commonName, displayName
     );
 
     COMMIT;
@@ -174,7 +184,6 @@ CREATE PROCEDURE `CWSSEC`.`updateUserAccount`(
     IN cwsRole VARCHAR(45),
     IN surname VARCHAR(100),
     IN givenName VARCHAR(100),
-    IN emailAddr VARCHAR(100),
     IN displayName VARCHAR(100)
 )
 BEGIN
@@ -183,7 +192,6 @@ BEGIN
         CWSROLE = cwsRole,
         sn = surname,
         GIVENNAME = givenName,
-        EMAIL = emailAddr,
         DISPLAYNAME = displayName
     WHERE cn = commonName;
 
@@ -235,7 +243,6 @@ BEGIN
         SN,
         GIVENNAME,
         CWSEXPIRYDATE,
-        EMAIL,
         CWSISSUSPENDED,
         CN,
         CWSISOLRSETUP,
@@ -259,7 +266,6 @@ BEGIN
         SN,
         GIVENNAME,
         CWSEXPIRYDATE,
-        EMAIL,
         CWSISSUSPENDED,
         CN,
         CWSISOLRSETUP,
@@ -295,7 +301,6 @@ BEGIN
         GIVENNAME,
         SN,
         DISPLAYNAME,
-        EMAIL,
         CWSROLE,
         CWSFAILEDPWDCOUNT,
         CWSLASTLOGIN,
@@ -346,7 +351,6 @@ COMMIT //
 CREATE PROCEDURE `CWSSEC`.`addOrUpdateSecurityQuestions`(
     IN commonName VARCHAR(128),
     IN userName VARCHAR(100),
-    IN userPassword VARCHAR(255),
     IN secQuestionOne VARCHAR(60),
     IN secQuestionTwo VARCHAR(60),
     IN secAnswerOne VARCHAR(255),
@@ -360,8 +364,7 @@ BEGIN
         CWSSECANS1 = secAnswerOne,
         CWSSECANS2 = secAnswerTwo
     WHERE UID = userName
-    AND CN = commonName
-    AND USERPASSWORD = userPassword;
+    AND CN = commonName;
 
     COMMIT;
 END //
@@ -499,14 +502,13 @@ COMMIT //
 CREATE PROCEDURE `CWSSEC`.`insertResetData`(
     IN guid VARCHAR(128),
     IN resetId VARCHAR(128),
-    IN timeCreated BIGINT(20),
-    IN smsId VARCHAR(8)
+    IN timeCreated BIGINT(20)
 )
 BEGIN
     INSERT INTO `CWSSEC`.`RESET_DATA`
-    (CN, RESET_KEY, CREATE_TIME, SMS_CODE)
+    (CN, RESET_KEY, CREATE_TIME)
     VALUES
-    (guid, resetId, timeCreated, SMS_CODE);
+    (guid, resetId, timeCreated);
 
     COMMIT;
 END //
@@ -519,20 +521,6 @@ BEGIN
     SELECT CN, CREATE_TIME
     FROM RESET_DATA
     WHERE RESET_KEY = resetId;
-END //
-COMMIT //
-
-CREATE PROCEDURE `CWSSEC`.`verifySmsCodeForReset`(
-    IN guid VARCHAR(128),
-    IN resetId VARCHAR(128),
-    IN smsId VARCHAR(8)
-)
-BEGIN
-    SELECT RESET_KEY, CREATE_TIME
-    FROM RESET_DATA
-    WHERE CN = guid
-    AND RESET_KEY = resetId
-    AND SMS_CODE = smsId;
 END //
 COMMIT //
 
@@ -557,7 +545,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `CWSSEC`.`retrieve_user_questions`(
+CREATE PROCEDURE `CWSSEC`.`retrSecurityQuestions`(
 )
 BEGIN
     SELECT *

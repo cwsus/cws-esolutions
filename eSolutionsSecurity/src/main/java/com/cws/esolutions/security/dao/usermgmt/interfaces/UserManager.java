@@ -80,11 +80,10 @@ public interface UserManager
      *
      * @param userAccount - An <code>ArrayList</code> containing the actual user information,
      * such as username, first name, etc.
-     * @param roles - An <code>ArrayList</code> containing the actual user information,
      * @return boolean - <code>true</code> if user creation was successful, <code>false</code> otherwise
      * @throws UserManagementException if an exception occurs during processing
      */
-    boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException;
+    boolean addUserAccount(final List<String> userAccount) throws UserManagementException;
 
     /**
      * Removes a provided user account from the authentication datastore. This
@@ -119,29 +118,6 @@ public interface UserManager
      * @throws UserManagementException if an exception occurs during processing
      */
     List<String[]> searchUsers(final String searchData) throws UserManagementException;
-
-    /**
-     * Searches for user accounts given provided search data.
-     * The following <code>SearchRequestType</code>s are available:
-     * <code>USERNAME</code> - A basic username search. If a wildcard
-     * is utilized, all matching accounts are returned, otherwise one
-     * or zero accounts will be returned, depending on result.
-     * <code>EMAILADDR</code> - An email address search. Response follows
-     * that of <code>USERNAME</code> search.
-     * <code>GUID</code> - A UUID search. 1 or zero accounts should be
-     * returned with this type of search.
-     * <code>FIRSTNAME</code> - Search based on first name. Multiple accounts
-     * may be returned as a result of this search, with or without wildcarding.
-     * <code>LASTNAME</code> - Search based on last name. Multiple accounts
-     * may be returned as a result of this search, with or without wildcarding.
-     *
-     * @param searchData - The search string to utilize within the <code>Filter</code>
-     * that correlates to the provided <code>SearchRequestType</code>
-     * @return List - An <code>String</code> containing a string array of
-     * all possible responses
-     * @throws UserManagementException if an exception occurs during processing
-     */
-    List<String[]> getUserByEmailAddress(final String searchData) throws UserManagementException;
 
     /**
      * Searches for user accounts given provided search data.
@@ -233,7 +209,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an exception occurs during processing
      */
-    boolean modifyUserGroups(final String userId, final Object[] value) throws UserManagementException;
+    boolean modifyUserRole(final String userId, final String role) throws UserManagementException;
 
     /**
      * Allows an administrator to either lock or unlock a user account's ability to perform an
@@ -258,18 +234,6 @@ public interface UserManager
     boolean modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException;
 
     /**
-     * Allows an administrator to lock or unlock a user account as desired.
-     *
-     * @param userId - The username to perform the modification against
-     * @param guid - The Globally Unique Identifier for the account in the repository
-     * @param lockCount - The (current) lock count value for the account
-     * @param timestamp - The timestamp to use for the last login
-     * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException if an exception occurs during processing
-     */
-    boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException;
-
-    /**
      * Allows administrators and users alike to modify their password, either via an Online Reset
      * request or via accounting screens upon request.
      *
@@ -291,16 +255,4 @@ public interface UserManager
      * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException;
-
-    /**
-     * Allows a user account to modify their OTP secret, if the account has been set up with OTP
-     * authentication.
-     *
-     * @param userId - The username to perform the modification against
-     * @param addSecret - <code>true</code> to add a new secret, <code>false</code> to replace an existing secret
-     * @param secret - The secret itself
-     * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException if an exception occurs during processing
-     */
-    boolean modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException;
 }

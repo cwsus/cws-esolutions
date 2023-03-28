@@ -25,6 +25,5 @@
         <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
         <property name="logoffCompleteString" value="login.user.logoff" />
         <property name="loginPage" value=".login/jsp/html/en/Login" />
-        <property name="otpLoginPage" value=".login/jsp/html/en/LoginOTP" />
     </bean>
 </beans>

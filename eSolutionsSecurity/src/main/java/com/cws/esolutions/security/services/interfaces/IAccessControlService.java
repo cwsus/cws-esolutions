@@ -33,8 +33,6 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
-import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
-import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * API allowing access control to functionality for role-based
@@ -48,7 +46,6 @@ public interface IAccessControlService
 	static final String CNAME = IAccessControlService.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final ISecurityReferenceDAO ref = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -38,14 +38,12 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AuthenticationData implements Serializable
 {
-    private int otpValue = 0;
-    private String secret = null;
     private String username = null;
-    private String userSalt = null;
-    private String password = null;
-    private String newPassword = null;
-    private String secAnswerOne = null;
-    private String secAnswerTwo = null;
+    private byte[] userSalt = null;
+    private char[] password = null;
+    private char[] newPassword = null;
+    private char[] secAnswerOne = null;
+    private char[] secAnswerTwo = null;
     private String secQuestionOne = null;
     private String secQuestionTwo = null;
 
@@ -67,9 +65,9 @@ public class AuthenticationData implements Serializable
         this.username = value;
     }
 
-    public final void setUserSalt(final String value)
+    public final void setUserSalt(final byte[] value)
     {
-        final String methodName = AuthenticationData.CNAME + "#setUserSalt(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setUserSalt(final byte[] value)";
 
         if (DEBUG)
         {
@@ -79,9 +77,9 @@ public class AuthenticationData implements Serializable
         this.userSalt = value;
     }
 
-    public final void setPassword(final String value)
+    public final void setPassword(final char[] value)
     {
-        final String methodName = AuthenticationData.CNAME + "#setPassword(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setPassword(final char[] value)";
 
         if (DEBUG)
         {
@@ -91,9 +89,9 @@ public class AuthenticationData implements Serializable
         this.password = value;
     }
 
-    public final void setNewPassword(final String value)
+    public final void setNewPassword(final char[] value)
     {
-        final String methodName = AuthenticationData.CNAME + "#setNewPassword(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setNewPassword(final char[] value)";
 
         if (DEBUG)
         {
@@ -101,18 +99,6 @@ public class AuthenticationData implements Serializable
         }
 
         this.newPassword = value;
-    }
-
-    public final void setOtpValue(final int value)
-    {
-        final String methodName = AuthenticationData.CNAME + "#setOtpValue(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.otpValue = value;
     }
 
     public final void setSecQuestionOne(final String value)
@@ -139,9 +125,9 @@ public class AuthenticationData implements Serializable
         this.secQuestionTwo = value;
     }
 
-    public final void setSecAnswerOne(final String value)
+    public final void setSecAnswerOne(final char[] value)
     {
-        final String methodName = AuthenticationData.CNAME + "#setSecAnswerOne(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setSecAnswerOne(final char[] value)";
 
         if (DEBUG)
         {
@@ -151,9 +137,9 @@ public class AuthenticationData implements Serializable
         this.secAnswerOne = value;
     }
 
-    public final void setSecAnswerTwo(final String value)
+    public final void setSecAnswerTwo(final char[] value)
     {
-        final String methodName = AuthenticationData.CNAME + "#setSecAnswerTwo(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setSecAnswerTwo(final char[] value)";
 
         if (DEBUG)
         {
@@ -161,18 +147,6 @@ public class AuthenticationData implements Serializable
         }
 
         this.secAnswerTwo = value;
-    }
-
-    public final void setSecret(final String value)
-    {
-        final String methodName = AuthenticationData.CNAME + "#setSecret(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.secret = value;
     }
 
     public final String getUsername()
@@ -188,7 +162,7 @@ public class AuthenticationData implements Serializable
         return this.username;
     }
 
-    public final String getUserSalt()
+    public final byte[] getUserSalt()
     {
         final String methodName = AuthenticationData.CNAME + "#getUserSalt()";
 
@@ -200,7 +174,7 @@ public class AuthenticationData implements Serializable
         return this.userSalt;
     }
 
-    public final String getPassword()
+    public final char[] getPassword()
     {
         final String methodName = AuthenticationData.CNAME + "#getPassword()";
 
@@ -212,7 +186,7 @@ public class AuthenticationData implements Serializable
         return this.password;
     }
 
-    public final String getNewPassword()
+    public final char[] getNewPassword()
     {
         final String methodName = AuthenticationData.CNAME + "#getNewPassword()";
 
@@ -222,18 +196,6 @@ public class AuthenticationData implements Serializable
         }
 
         return this.newPassword;
-    }
-
-    public final int getOtpValue()
-    {
-        final String methodName = AuthenticationData.CNAME + "#getOtpValue()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.otpValue;
     }
 
     public final String getSecQuestionOne()
@@ -260,7 +222,7 @@ public class AuthenticationData implements Serializable
         return this.secQuestionTwo;
     }
 
-    public final String getSecAnswerOne()
+    public final char[] getSecAnswerOne()
     {
         final String methodName = AuthenticationData.CNAME + "#getSecAnswerOne()";
 
@@ -272,7 +234,7 @@ public class AuthenticationData implements Serializable
         return this.secAnswerOne;
     }
 
-    public final String getSecAnswerTwo()
+    public final char[] getSecAnswerTwo()
     {
         final String methodName = AuthenticationData.CNAME + "#getSecAnswerTwo()";
 
@@ -282,18 +244,6 @@ public class AuthenticationData implements Serializable
         }
 
         return this.secAnswerTwo;
-    }
-
-    public final String getSecret()
-    {
-        final String methodName = AuthenticationData.CNAME + "#getSecret()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.secret;
     }
 
     @Override

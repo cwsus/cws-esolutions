@@ -28,6 +28,7 @@ package com.cws.esolutions.security.processors.impl;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Calendar;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -80,7 +81,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
         final AuthenticationData userSecurity = request.getUserSecurity();
-        final String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
         if (DEBUG)
         {
@@ -193,88 +193,47 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
             }
 
-            // insert the user salt
-            boolean isSaltInserted = userSec.addOrUpdateSalt(userGuid, newUserSalt, SaltType.LOGON.name());
+            String newSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
+            String newPassword = Objects.isNull(userSecurity.getNewPassword()) ? PasswordUtils.encryptText(userSecurity.getNewPassword(), newSalt.getBytes(),
+            		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+            		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), sysConfig.getEncoding()) :
+            			RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()); 
+
+            List<String> accountData = new ArrayList<String>(
+                Arrays.asList(
+                		userGuid, // commonName
+                		userAccount.getUsername(), // uid
+                		newPassword,
+                		userAccount.getUserRole().toString(), // cwsrole
+                		userAccount.getSurname(), // surname
+                		userAccount.getGivenName(), // gvenName
+                		newSalt,
+                		SaltType.LOGON.toString(),
+                		userAccount.getEmailAddr(), // email
+                		userAccount.getTelephoneNumber(), // telnum
+                		userAccount.getPagerNumber() // pagernum
+                		));
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isSaltInserted: {}", isSaltInserted);
+                DEBUGGER.debug("accountData: {}", accountData);
             }
 
-            if (isSaltInserted)
+            boolean isUserCreated = userManager.addUserAccount(accountData);
+
+            if (DEBUG)
             {
-            	String newPassword = null;
+                DEBUGGER.debug("isUserCreated: {}", isUserCreated);
+            }
 
-            	if (StringUtils.isEmpty(request.getUserSecurity().getNewPassword()))
-            	{
-            		newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()).toCharArray(), newUserSalt.getBytes(),
-            				secConfig.getSecretKeyAlgorithm(),
-            				secConfig.getIterations(),
-            				secConfig.getKeyLength(),
-            				secConfig.getEncryptionAlgorithm(),
-            				secConfig.getEncryptionInstance(),
-                			secBean.getConfigData().getSystemConfig().getEncoding());
-            	}
-            	else
-            	{
-            		newPassword = PasswordUtils.encryptText(request.getUserSecurity().getNewPassword().toCharArray(), newUserSalt.getBytes(),
-            				secConfig.getSecretKeyAlgorithm(),
-            				secConfig.getIterations(),
-            				secConfig.getKeyLength(),
-            				secConfig.getEncryptionAlgorithm(),
-            				secConfig.getEncryptionInstance(),
-                			secBean.getConfigData().getSystemConfig().getEncoding());
-            	}
-
-                // meh
-                List<Object> accountData = new ArrayList<Object>(
-                    Arrays.asList(
-                    		userGuid, // commonName
-                    		userAccount.getUsername(), // uid
-                    		userAccount.getGivenName(), // gvenName
-                    		userAccount.getSurname(), // surname
-                    		userAccount.getGivenName() + " " + userAccount.getSurname(), // displayname
-                    		userAccount.getEmailAddr(), // email
-                    		userAccount.getUserRole().toString(), // cwsrole
-                    		0, // cwsfailedpwdcount
-                    		false, // cwsissuspended
-                    		true, // cwsisolrsetup
-                    		false, // cwsisolrlocked
-                    		false, // cwsistcaccepted
-                    		userAccount.getTelephoneNumber(), // telnum
-                    		userAccount.getPagerNumber(), // pagernum
-                    		newPassword // password
-                    		));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("accountData: {}", accountData);
-                }
-
-                boolean isUserCreated = userManager.addUserAccount(accountData,
-                        new ArrayList<String>(Arrays.asList(Arrays.toString(userAccount.getGroups()))));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserCreated: {}", isUserCreated);
-                }
-
-                if (isUserCreated)
-                {
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    // failed to add the user to the repository
-                    ERROR_RECORDER.error("Failed to add user to the userAccount repository");
-
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
+            if (isUserCreated)
+            {
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
             else
             {
-                // failed to insert salt
-                ERROR_RECORDER.error("Failed to provision new user: failed to insert the generated salt value");
+                // failed to add the user to the repository
+                ERROR_RECORDER.error("Failed to add user to the userAccount repository");
 
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
@@ -297,12 +256,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
         }
         catch (final SecurityException sx)
         {
@@ -589,7 +542,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if ((userData != null) && (userData.size() != 0))
             {
-                boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), userAccount.isSuspended());
+                boolean isComplete = userManager.modifyUserSuspension(userAccount.getGuid(), userAccount.isSuspended());
 
                 if (DEBUG)
                 {
@@ -756,7 +709,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if ((userData != null) && (userData.size() != 0))
             {
-                boolean isComplete = userManager.modifyUserGroups((String) userData.get(0), userAccount.getGroups());
+                boolean isComplete = userManager.modifyUserRole(userAccount.getGuid(), userAccount.getUserRole().toString());
 
                 if (DEBUG)
                 {
@@ -781,8 +734,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         resAccount.setSurname((String) userData.get(3));
                         resAccount.setDisplayName((String) userData.get(4));
                         resAccount.setEmailAddr((String) userData.get(5));
-                        resAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
-                        resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
+                        resAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(6));
+                        resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(7));
                         resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
                         resAccount.setLastLogin(((userData.get(10) == null) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(10)));
                         resAccount.setExpiryDate(((userData.get(11) == null) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(11)));
@@ -962,10 +915,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // first, change the existing password
             // 128 character values - its possible that the reset is
             // coming as a result of a possible compromise
-            String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()),
-                    RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
-                    secConfig.getMessageDigest(), secConfig.getIterations(),
-                    secBean.getConfigData().getSystemConfig().getEncoding());
+            String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()).toCharArray(),
+            		RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()).getBytes(),
+            		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+            		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), sysConfig.getEncoding());
             String tmpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
             if ((StringUtils.isNotEmpty(tmpPassword)) && (StringUtils.isNotEmpty(tmpSalt)))
@@ -988,7 +941,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((StringUtils.isNotEmpty(resetId)) && (StringUtils.isNotEmpty(resetSms)))
                 {
-                    isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, ((secConfig.getSmsResetEnabled()) ? resetSms : null));
+                    isComplete = userSec.insertResetData(userAccount.getGuid(), resetId);
 
                     if (DEBUG)
                     {
@@ -1245,189 +1198,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#searchAccounts(com.cws.esolutions.security.processors.dto.AccountControlRequest)
-     */
-    public AccountControlResponse searchAccounts(final AccountControlRequest request) throws AccountControlException
-    {
-        final String methodName = AccountControlProcessorImpl.CNAME + "#searchAccounts(final AccountControlRequest request) throws AccountControlException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountControlRequest: {}", request);
-        }
-
-        List<UserAccount> userAccounts = new ArrayList<UserAccount>();
-        AccountControlResponse response = new AccountControlResponse();
-
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount reqAccount = request.getRequestor();
-        final UserAccount userAccount = request.getUserAccount();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("UserAccount: {}", reqAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-        }
-
-        try
-        {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
-
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-
-                return response;
-            }
-
-            List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
-
-	        if (DEBUG)
-	        {
-	        	DEBUGGER.debug("userList: {}", userList);
-	        }
-
-            if ((userList != null) && (userList.size() != 0))
-            {
-                for (Object[] userData : userList)
-                {
-                	if (DEBUG)
-                	{
-                		DEBUGGER.debug("userData: {}", userData);
-                	}
-
-                	if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
-                	{
-                		UserAccount userInfo = new UserAccount();
-                		userInfo.setGuid((String) userData[0]);
-                		userInfo.setUsername((String) userData[1]);
-
-                		if (DEBUG)
-                		{
-                			DEBUGGER.debug("UserAccount: {}", userInfo);
-                		}
-
-                		userAccounts.add(userInfo);
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("userAccounts: {}", userAccounts);
-                        }
-
-                        if (userAccounts.size() == 0)
-                        {
-                        	response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        }
-                        else
-                        {
-                        	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            response.setUserList(userAccounts);
-                        }
-                	}
-                }
-            }
-            else
-            {
-            	throw new AccountControlException("Failed to load account for the given information.");
-            }
-        }
-        catch (final UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new AccountControlException(umx.getMessage(), umx);
-        }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
-        }
-        finally
-        {
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#loadUserAccount(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
     public AccountControlResponse loadUserAccount(final AccountControlRequest request) throws AccountControlException
@@ -1526,7 +1296,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 loadAccount.setGivenName((String) userData.get(3));
                 loadAccount.setEmailAddr((String) userData.get(4));
                 loadAccount.setDisplayName((String) userData.get(5));
-                loadAccount.setTelephoneNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
+                loadAccount.setTelephoneNumber((userData.get(6) == null) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(6));
 
                 if (DEBUG)
                 {

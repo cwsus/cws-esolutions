@@ -31,7 +31,7 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO;
@@ -54,7 +54,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         }
 
         Connection sqlConn = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         boolean isComplete = false;
 
         if (Objects.isNull(dataSource))
@@ -72,7 +72,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL submitSvcMessage(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL submitSvcMessage(?, ?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, (String) messageList.get(0)); // message id
             stmt.setString(2, (String) messageList.get(1)); // message title
             stmt.setString(3, (String) messageList.get(2)); // message text
@@ -126,7 +126,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object> svcMessage = null;
 
         if (Objects.isNull(dataSource))
@@ -144,12 +144,12 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL retrServiceMessage(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrServiceMessage(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, messageId);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -220,7 +220,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object[]> response = null;
 
         if (Objects.isNull(dataSource))
@@ -238,11 +238,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
             
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL retrServiceMessages()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrServiceMessages()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -327,7 +327,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object[]> response = null;
 
         if (Objects.isNull(dataSource))
@@ -345,11 +345,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
             
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL retrAlertMessages()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrAlertMessages()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -436,7 +436,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -453,7 +453,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, messageId); // messageId
             stmt.setString(2, (String) messageList.get(0)); // messageTitle
             stmt.setString(3, (String) messageList.get(1)); // messageText
@@ -465,7 +465,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -512,7 +512,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -529,12 +529,12 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL removeSvcMessage(?)}");
+            stmt = sqlConn.prepareStatement("{ CALL removeSvcMessage(? }");
             stmt.setString(1, messageId);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -580,7 +580,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object[]> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -623,12 +623,12 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 sBuilder.append("+" + value);
             }
 
-            stmt = sqlConn.prepareCall("{CALL getMessagesByAttribute(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getMessagesByAttribute(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, sBuilder.toString().trim());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())

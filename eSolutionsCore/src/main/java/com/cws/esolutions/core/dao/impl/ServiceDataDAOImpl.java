@@ -32,7 +32,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
@@ -60,7 +60,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -78,7 +78,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL addNewService(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL addNewService(?, ?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, data.get(0)); // guid
             stmt.setString(2, data.get(1)); // serviceType
             stmt.setString(3, data.get(2)); // name
@@ -90,7 +90,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -139,7 +139,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -157,7 +157,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL updateServiceData(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareStatement("{ CALL updateServiceData(?, ?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, data.get(0)); // guid
             stmt.setString(2, data.get(1)); // serviceType
             stmt.setString(3, data.get(2)); // name
@@ -169,7 +169,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -214,7 +214,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -232,12 +232,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL removeServiceData(?)}");
+            stmt = sqlConn.prepareStatement("{ CALL removeServiceData(? }");
             stmt.setString(1, datacenter);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -282,7 +282,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<String[]> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -301,12 +301,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL listServices(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL listServices(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, startRow);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -384,7 +384,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object[]> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -427,13 +427,13 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
                 sBuilder.append("+" + attribute);
             }
 
-            stmt = sqlConn.prepareCall("{CALL getServiceByAttribute(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getServiceByAttribute(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, sBuilder.toString().trim());
             stmt.setInt(2, startRow);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -514,7 +514,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<String> responseData = null;
 
         if (Objects.isNull(dataSource))
@@ -535,12 +535,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             // we dont know what we have here - it could be a guid or it could be a hostname
             // most commonly it'll be a guid, but we're going to search anyway
-            stmt = sqlConn.prepareCall("{ CALL getServiceData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getServiceData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, attribute);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
             if (stmt.execute())

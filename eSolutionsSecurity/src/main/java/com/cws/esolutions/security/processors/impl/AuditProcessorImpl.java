@@ -32,12 +32,15 @@ import java.util.ArrayList;
 import java.net.InetAddress;
 import java.sql.SQLException;
 import java.net.UnknownHostException;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -89,12 +92,13 @@ public class AuditProcessorImpl implements IAuditProcessor
             try
             {
 	            List<String> auditList = new ArrayList<String>();
+	            auditList.add((StringUtils.isEmpty(userAccount.getSessionId())) ? RandomStringUtils.randomAlphanumeric(128) : userAccount.getSessionId()); // sessionid
 	            auditList.add((StringUtils.isEmpty(userAccount.getUsername())) ? "WEBUSR" : userAccount.getUsername()); // username
 	            auditList.add((StringUtils.isEmpty(userAccount.getGuid())) ? "918671b2-662e-4499-9fd3-1e4e88e0fba2" : userAccount.getGuid()); // userguid
-	            auditList.add((Objects.isNull(userAccount.getUserRole())) ? "NONE" : userAccount.getUserRole().toString()); // userrole
+	            auditList.add((Objects.isNull(userAccount.getUserRole())) ? SecurityUserRole.NONE.toString() : userAccount.getUserRole().toString()); // userrole
 	            auditList.add((StringUtils.isEmpty(auditEntry.getApplicationId())) ? "SecurityServicesDefault" : auditEntry.getApplicationId()); // applid
 	            auditList.add((StringUtils.isEmpty(auditEntry.getApplicationName())) ? "SecurityServicesDefault" : auditEntry.getApplicationName()); // applname
-	            auditList.add((StringUtils.isEmpty(auditEntry.getAuditType().toString())) ? "NONE" : auditEntry.getAuditType().toString()); // useraction
+	            auditList.add((StringUtils.isEmpty(auditEntry.getAuditType().toString())) ? AuditType.NONE.toString() : auditEntry.getAuditType().toString()); // useraction
 	            auditList.add((StringUtils.isEmpty(hostInfo.getHostAddress())) ? InetAddress.getLocalHost().getHostAddress() : hostInfo.getHostAddress()); // srcaddr
 	            auditList.add((StringUtils.isEmpty(hostInfo.getHostName())) ? InetAddress.getLocalHost().getHostName() : hostInfo.getHostName()); // srchost
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.reference.interfaces;
+import java.util.HashMap;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.reference.interfaces
@@ -59,19 +60,27 @@ public interface IUserSecurityInformationDAO
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
-    boolean addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException;
+    boolean addUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException;
 
     /**
-     * Removes the salt value for the provided user. This only happens during account
-     * removal, as without the salt value the user cannot complete an authentication
-     * request.
+     * Processes authentication for the selected security question and user. If successful,
+     * a true response is returned back to the frontend signalling that further
+     * authentication processing, if required, can take place.
      *
-     * @param commonName - The commonName associated with the user (also known as GUID)
-     * @param saltType - The salt type to remove
-     * @return <code>true</code> if successful, <code>false</code> otherwise
+     * @return List - A list of all approved servers within the authorization datastore
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
-    boolean removeUserData(final String commonName, final String saltType) throws SQLException;
+    HashMap<Integer, String> obtainSecurityQuestionList() throws SQLException;
+
+    /**
+     * 
+     * @param guid
+     * @param saltValue
+     * @param saltType
+     * @return
+     * @throws SQLException
+     */
+    boolean updateUserSalt(final String guid, final String saltValue, final String saltType) throws SQLException;
 
     /**
      * Returns the salt value associated with the given user account to process an
@@ -96,15 +105,7 @@ public interface IUserSecurityInformationDAO
      * @return <code>true</code> if the insertion was successful, <code>false</code> otherwise
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
-    boolean insertResetData(final String commonName, final String resetId, final String smsCode) throws SQLException;
-
-    /**
-     * Lists reset requests housed in the security datastore.
-     *
-     * @return A <code>List</code> of all associated reset requests housed.
-     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
-     */
-    List<String[]> listActiveResets() throws SQLException;
+    boolean insertResetData(final String commonName, final String resetId) throws SQLException;
 
     /**
      * Returns the salt value associated with the given user account to process an
@@ -126,16 +127,4 @@ public interface IUserSecurityInformationDAO
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     boolean removeResetData(final String commonName, final String resetId) throws SQLException;
-
-    /**
-     * Returns the salt value associated with the given user account to process an
-     * authentication request.
-     *
-     * @param commonName - The commonName (GUID) associated with the reset request
-     * @param resetId - The reset request identifier provided to the user
-     * @param smsCode - The SMS code provided to the user associated with the reset request
-     * @return <code>true</code> if successful, <code>false</code> otherwise
-     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
-     */
-    boolean verifySmsForReset(final String commonName, final String resetId, final String smsCode) throws SQLException;
 }

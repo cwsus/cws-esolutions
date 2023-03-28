@@ -46,17 +46,20 @@ import com.unboundid.ldap.sdk.ExtendedResult;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import java.security.GeneralSecurityException;
 import org.apache.commons.dbcp2.BasicDataSource;
-
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
+import org.apache.commons.codec.binary.StringUtils;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
+import com.unboundid.ldap.sdk.StartTLSPostConnectProcessor;
+import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
+
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.SystemConfig;
-import com.unboundid.ldap.sdk.StartTLSPostConnectProcessor;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.ResourceConfig;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
+import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.enums.RepositoryConnectionType;
@@ -72,14 +75,11 @@ public final class DAOInitializer
     private static final String TRUST_SALT = "trustStoreSalt";
     private static final String TRUST_PASS = "trustStorePass";
     private static final String TRUST_TYPE = "trustStoreType";
-    private static final String CONN_DRIVER = "repositoryDriver";
     private static final String REPOSITORY_HOST = "repositoryHost";
     private static final String REPOSITORY_PORT = "repositoryPort";
     private static final String MIN_CONNECTIONS = "minConnections";
     private static final String MAX_CONNECTIONS = "maxConnections";
     private static final String REPOSITORY_USER = "repositoryUser";
-    private static final String REPOSITORY_PASS = "repositoryPass";
-    private static final String REPOSITORY_SALT = "repositorySalt";
     private static final String CONN_TIMEOUT = "repositoryConnTimeout";
     private static final String READ_TIMEOUT = "repositoryReadTimeout";
     private static final String CNAME = DAOInitializer.class.getName();
@@ -87,6 +87,7 @@ public final class DAOInitializer
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     private static final SystemConfig systemConfig = svcBean.getConfigData().getSystemConfig();
     private static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    private static final ResourceConfig resConfig = svcBean.getConfigData().getResourceConfig();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -307,19 +308,30 @@ public final class DAOInitializer
 	
 	                    break;
 	                case SQL:
-	                	BasicDataSource dataSource = new BasicDataSource();
-	                    dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
-	                    dataSource.setMaxTotal(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
-	                    dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
-	                    dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
-	                    dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
-	                    dataSource.setPassword(PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
-	                			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
-	                			bean.getConfigData().getSecurityConfig().getKeyLength(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-	                			bean.getConfigData().getSecurityConfig().getEncryptionInstance(), bean.getConfigData().getSystemConfig().getEncoding()));
+	                	for (DataSourceManager dsm : resConfig.getDsManager())
+	                	{
+	                		if (DEBUG)
+	                		{
+	                			DEBUGGER.debug("DataSourceManager: {}", dsm);
+	                		}
 
-	                    bean.setAuthDataSource(dataSource);
-	
+	                		if (StringUtils.equals(dsm.getDsName(), "SecurityDataSource"))
+	                		{
+	                			BasicDataSource dataSource = new BasicDataSource();
+	                			dataSource.setDriverClassName(dsm.getDriver());
+	                			dataSource.setUrl(dsm.getDataSource());
+	                			dataSource.setUsername(dsm.getDsUser());
+	                			dataSource.setPassword(PasswordUtils.decryptText(dsm.getDsPass(), dsm.getDsSalt(),
+	                					secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
+	                					secConfig.getKeyLength(), secConfig.getEncryptionAlgorithm(),
+	                					secConfig.getEncryptionInstance(), systemConfig.getEncoding()));
+
+	                			bean.setAuthDataSource(dataSource);
+
+	                			break;
+	                		}
+	                	}
+
 	                    break;
 	                case NONE:
 	                    return;
@@ -380,26 +392,29 @@ public final class DAOInitializer
         {
             if (!(isContainer))
             {
-                Properties connProps = new Properties();
-                connProps.load(properties);
+            	for (DataSourceManager dsm : resConfig.getDsManager())
+            	{
+            		if (DEBUG)
+            		{
+            			DEBUGGER.debug("DataSourceManager: {}", dsm);
+            		}
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Properties: {}", connProps);
-                }
+            		if (StringUtils.equals(dsm.getDsName(), "AuditDataSource"))
+            		{
+            			BasicDataSource dataSource = new BasicDataSource();
+            			dataSource.setDriverClassName(dsm.getDriver());
+            			dataSource.setUrl(dsm.getDataSource());
+            			dataSource.setUsername(dsm.getDsUser());
+            			dataSource.setPassword(PasswordUtils.decryptText(dsm.getDsPass(), dsm.getDsSalt(),
+            					secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
+            					secConfig.getKeyLength(), secConfig.getEncryptionAlgorithm(),
+            					secConfig.getEncryptionInstance(), systemConfig.getEncoding()));
 
-            	BasicDataSource dataSource = new BasicDataSource();
-                dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
-                dataSource.setMaxTotal(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
-                dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
-                dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
-                dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
-                dataSource.setPassword(PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
-            			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
-            			bean.getConfigData().getSecurityConfig().getKeyLength(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-            			bean.getConfigData().getSecurityConfig().getEncryptionInstance(), bean.getConfigData().getSystemConfig().getEncoding()));
+            			bean.setAuditDataSource(dataSource);
 
-                bean.setAuditDataSource(dataSource);
+            			break;
+            		}
+            	}
             }
             else
             {
@@ -412,14 +427,6 @@ public final class DAOInitializer
         catch (final NamingException nx)
         {
             throw new SecurityServiceException(nx.getMessage(), nx);
-        }
-        catch (final FileNotFoundException fnfx)
-        {
-            throw new SecurityServiceException(fnfx.getMessage(), fnfx);
-        }
-        catch (final IOException iox)
-        {
-            throw new SecurityServiceException(iox.getMessage(), iox);
         }
     }
 

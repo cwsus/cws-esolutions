@@ -36,7 +36,7 @@ public class LoginRequest implements Serializable
 {
 	private String otpValue = null;
     private String loginUser = null;
-    private String loginPass = null;
+    private char[] loginPass = null;
 
     private static final String CNAME = LoginRequest.class.getName();
     private static final long serialVersionUID = -7043606830867233708L;
@@ -57,9 +57,9 @@ public class LoginRequest implements Serializable
         this.loginUser = value;
     }
 
-    public final void setLoginPass(final String value)
+    public final void setLoginPass(final char[] value)
     {
-        final String methodName = LoginRequest.CNAME + "#setLoginPass(final String value)";
+        final String methodName = LoginRequest.CNAME + "#setLoginPass(final char[] value)";
 
         if (DEBUG)
         {
@@ -94,7 +94,7 @@ public class LoginRequest implements Serializable
         return this.loginUser;
     }
 
-    public final String getLoginPass()
+    public final char[] getLoginPass()
     {
         final String methodName = LoginRequest.CNAME + "#getLoginPass";
 

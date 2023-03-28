@@ -41,8 +41,6 @@ import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
-import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
-import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
@@ -57,7 +55,6 @@ public interface IAccountResetProcessor
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
     static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
     static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
@@ -66,17 +63,6 @@ public interface IAccountResetProcessor
     static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccountResetProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    /**
-     * Finds and returns the user account associated with the provided search criterion.
-     *
-     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
-     * which contains the necessary information to complete the request
-     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
-     * response information regarding the request status
-     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
-     */
-    AccountResetResponse findUserAccount(final AccountResetRequest request) throws AccountResetException;
 
     /**
      * Obtains and returns the associated security information for the selected user account
@@ -124,15 +110,4 @@ public interface IAccountResetProcessor
      * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
      */
     AccountResetResponse insertResetRequest(final AccountResetRequest request) throws AccountResetException;
-
-    /**
-     * Inserts the reset information into the database.
-     *
-     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
-     * which contains the necessary information to complete the request
-     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
-     * response information regarding the request status
-     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
-     */
-    AccountResetResponse insertResetData(final AccountResetRequest request) throws AccountResetException;
 }

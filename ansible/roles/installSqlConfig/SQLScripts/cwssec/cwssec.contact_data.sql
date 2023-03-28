@@ -1,0 +1,105 @@
+--
+-- CWSSEC / CONTACT_DATA
+--
+DELIMITER //
+
+DROP TABLE IF EXISTS CWSSEC.CONTACT_DATA //
+
+CREATE TABLE CWSSEC.CONTACT_DATA (
+    CN VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    EMAIL VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    TELEPHONENUMBER VARCHAR(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL NOT NULL,
+    PAGER VARCHAR(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    PRIMARY KEY (CN),
+    UNIQUE KEY EMAIL (EMAIL),
+    INDEX IDX_CONTACT (CN, EMAIL, TELEPHONENUMBER, PAGER),
+    FULLTEXT KEY FT_USERS (EMAIL, TELEPHONENUMBER, PAGER),
+    CONSTRAINT FK_CONTACT_DATA
+        FOREIGN KEY (CN)
+        REFERENCES CWSSEC.USERS (CN)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COLLATE utf8mb4_0900_ai_ci //
+COMMIT //
+
+GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON CWSSEC.* TO 'appadm'@'localhost' //
+GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON CWSSEC.* TO 'appadm'@'appsrv.lan' //
+
+--
+--
+--
+DROP PROCEDURE IF EXISTS CWSSEC.updateUserEmail //
+DROP PROCEDURE IF EXISTS CWSSEC.updateUserContact //
+DROP PROCEDURE IF EXISTS CWSSEC.getUserByEmail //
+DROP PROCEDURE IF EXISTS CWSSEC.validateEmailUpdate //
+
+CREATE PROCEDURE CWSSEC.getUserByEmail(
+    IN attributeName VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+)
+BEGIN
+    SELECT
+        CN,
+        EMAIL,
+        TELEPHONENUMBER,
+        PAGER,
+    MATCH (EMAIL, TELEPHONENUMBER, PAGER)
+    AGAINST (+attributeName WITH QUERY EXPANSION)
+    FROM CWSSEC.CONTACT_DATA
+    WHERE MATCH (EMAIL, TELEPHONENUMBER, PAGER)
+    AGAINST (+attributeName);
+END //
+COMMIT //
+
+CREATE PROCEDURE CWSSEC.updateUserEmail(
+    IN reqUserGuid VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+    IN newEmail VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+)
+BEGIN
+    UPDATE CWSSEC.CONTACT_DATA
+    SET EMAIL = newEmail
+    WHERE CN = reqUserGuid;
+
+    COMMIT;
+END //
+COMMIT //
+
+CREATE PROCEDURE CWSSEC.validateEmailUpdate(
+    IN reqUserGuid VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+    IN newEmail VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+)
+BEGIN
+	SELECT COUNT(EMAIL)
+    FROM CWSSEC.CONTACT_DATA
+    WHERE EMAIL = newEmail
+    AND CN = reqUserGuid;
+END //
+COMMIT //
+
+CREATE PROCEDURE CWSSEC.updateUserContact(
+    IN reqUserGuid VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+    IN newPhone VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+    IN newCell VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+)
+BEGIN
+    UPDATE CWSSEC.CONTACT_DATA
+    SET
+        TELEPHONENUMBER = newPhone,
+        PAGER = newCell
+    WHERE
+        CN = reqUserGuid;
+
+    COMMIT;
+END //
+COMMIT //
+
+GRANT EXECUTE ON PROCEDURE CWSSEC.updateUserContact TO 'appadm'@'localhost' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.updateUserEmail TO 'appadm'@'localhost' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.getUserByEmail TO 'appadm'@'localhost' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.validateEmailUpdate TO 'appadm'@'localhost' //
+
+GRANT EXECUTE ON PROCEDURE CWSSEC.updateUserContact TO 'appadm'@'appsrv.lan' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.updateUserEmail TO 'appadm'@'appsrv.lan' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.getUserByEmail TO 'appadm'@'appsrv.lan' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.validateEmailUpdate TO 'appadm'@'appsrv.lan' //
+
+DELIMITER ;

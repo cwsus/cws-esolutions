@@ -42,6 +42,11 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Application;
+import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
+import com.cws.esolutions.core.processors.dto.ApplicationEnablementResponse;
+import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
+import com.cws.esolutions.core.processors.impl.ApplicationEnablementProcessorImpl;
+import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -60,6 +65,7 @@ public class CertificateManagementController
 
     private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(Constants.ERROR_LOGGER + CNAME);
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
@@ -129,6 +135,7 @@ public class CertificateManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -172,15 +179,57 @@ public class CertificateManagementController
             }
         }
 
-        if (!(this.appConfig.getServices().get(this.serviceName)))
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+        ApplicationEnablementRequest request = new ApplicationEnablementRequest();
+        request.setApplicationId(this.appConfig.getApplicationId());
+        request.setApplicationName(this.appConfig.getApplicationName());
+        request.setServiceGuid(this.serviceId);
+        request.setServiceName(this.serviceName);
 
-            return mView;
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ApplicationEnablementRequest: {}", request);
         }
 
-        mView.addObject(Constants.COMMAND, new Application());
-        mView.setViewName(this.defaultPage);
+        try
+        {
+            ApplicationEnablementResponse response = enabler.isServiceEnabled(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationEnablementResponse: {}", response);
+            }
+
+            switch (response.getRequestStatus())
+            {
+                case EXCEPTION:
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
+
+                    break;
+                case FAILURE:
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
+
+                    break;
+                case SUCCESS:
+                    mView.addObject(Constants.COMMAND, new Application());
+                    mView.setViewName(this.defaultPage);
+
+                    break;
+                case UNAUTHORIZED:
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+                    break;
+                default:
+                    mView.setViewName(this.appConfig.getUnavailablePage());
+
+                    break;
+            }
+        }
+        catch (final ApplicationEnablementException aex)
+        {
+            ERROR_RECORDER.error(aex.getMessage(), aex);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
+        }
 
         if (DEBUG)
         {

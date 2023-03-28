@@ -202,7 +202,7 @@ public final class NetworkUtils
                             PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
                                 secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                                 secBean.getConfigData().getSecurityConfig().getIterations(),
-                                secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                                secBean.getConfigData().getSecurityConfig().getKeyLength(),
                                 secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                                 secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                                 appBean.getConfigData().getSystemConfig().getEncoding()));
@@ -215,7 +215,7 @@ public final class NetworkUtils
                 session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
                         secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                         secBean.getConfigData().getSecurityConfig().getIterations(),
-                        secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                        secBean.getConfigData().getSecurityConfig().getKeyLength(),
                         secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                         secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                         appBean.getConfigData().getSystemConfig().getEncoding()));
@@ -395,7 +395,7 @@ public final class NetworkUtils
                             PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
                                     secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                                     secBean.getConfigData().getSecurityConfig().getIterations(),
-                                    secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                                    secBean.getConfigData().getSecurityConfig().getKeyLength(),
                                     secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                                     secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                                     appBean.getConfigData().getSystemConfig().getEncoding()));
@@ -408,7 +408,7 @@ public final class NetworkUtils
                 session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
                         secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                         secBean.getConfigData().getSecurityConfig().getIterations(),
-                        secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                        secBean.getConfigData().getSecurityConfig().getKeyLength(),
                         secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                         secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                         appBean.getConfigData().getSystemConfig().getEncoding()));
@@ -559,7 +559,7 @@ public final class NetworkUtils
                     PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt(),
                             secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                             secBean.getConfigData().getSecurityConfig().getIterations(),
-                            secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            secBean.getConfigData().getSecurityConfig().getKeyLength(),
                             secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                             secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                             appBean.getConfigData().getSystemConfig().getEncoding()));

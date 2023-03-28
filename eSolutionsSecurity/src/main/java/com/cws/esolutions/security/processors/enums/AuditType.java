@@ -33,6 +33,11 @@ public enum AuditType
 {
     NONE,
 
+    // umm
+    ENABLE_SERVICE,
+    DISABLE_SERVICE,
+    GET_SERVICE_STATUS,
+
     // authentication
     LOGON,
     LOGOFF,

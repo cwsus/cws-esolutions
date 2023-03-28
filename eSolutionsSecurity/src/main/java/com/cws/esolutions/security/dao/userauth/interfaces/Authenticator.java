@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.config.xml.RepositoryConfig;
@@ -38,6 +39,7 @@ import com.cws.esolutions.security.config.xml.UserReturningAttributes;
 import com.cws.esolutions.security.config.xml.PasswordRepositoryConfig;
 import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
+import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * API allowing user authentication tasks. Used in conjunction with the
  * {@link com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory}
@@ -52,6 +54,7 @@ public interface Authenticator
     static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    static final SystemConfig systemConfig = svcBean.getConfigData().getSystemConfig();
     static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
     static final PasswordRepositoryConfig passwordConfig = svcBean.getConfigData().getPasswordRepo();
@@ -69,12 +72,22 @@ public interface Authenticator
      * handling.
      *
      * @param guid - The user's UUID
-     * @param userId - the username to validate data against
-     * @param password - the password to validate data against
-     * @return List - The account information for the authenticated user
+     * @return String - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    boolean performLogon(final String guid, final String userId, final String password) throws AuthenticatorException;
+    String performLogon(final String guid) throws AuthenticatorException;
+
+    /**
+     * Allows an administrator to lock or unlock a user account as desired.
+     *
+     * @param userId - The username to perform the modification against
+     * @param guid - The Globally Unique Identifier for the account in the repository
+     * @param lockCount - The (current) lock count value for the account
+     * @param timestamp - The timestamp to use for the last login
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
+     * @throws UserManagementException if an exception occurs during processing
+     */
+    boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the
@@ -90,23 +103,7 @@ public interface Authenticator
      * @return List - The security data housed for the given user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<Object> obtainSecurityData(final String userId, final String guid) throws AuthenticatorException;
-
-    /**
-     * Processes an agent logon request via an LDAP user datastore. If the
-     * information provided matches an existing record, the user is
-     * considered authenticated successfully and further processing
-     * is performed to determine if that user is required to modify
-     * their password or setup online reset questions. If yes, the
-     * necessary flags are sent back to the frontend for further
-     * handling.
-     *
-     * @param userId - the username to validate data against
-     * @param guid - the GUID to validate data against
-     * @return boolean - <code>true</code> if verified, <code>false</code> otherwise
-     * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
-     */
-    String obtainOtpSecret(final String userId, final String guid) throws AuthenticatorException;
+    List<Object> getSecurityQuestions(final String guid) throws AuthenticatorException;
 
     /**
      * Processes authentication for the selected security question and user. If successful,
@@ -119,5 +116,5 @@ public interface Authenticator
      * @return boolean - <code>true</code> if verified, <code>false</code> otherwise
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    boolean verifySecurityData(final String userId, final String guid, List<String> values) throws AuthenticatorException;
+    List<Object> getSecurityAnswers(final String guid) throws AuthenticatorException;
 }

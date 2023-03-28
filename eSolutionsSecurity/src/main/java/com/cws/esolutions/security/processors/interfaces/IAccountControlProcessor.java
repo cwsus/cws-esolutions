@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -39,9 +40,7 @@ import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
-import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
@@ -55,9 +54,9 @@ public interface IAccountControlProcessor
 {
 	static final String CNAME = IAccountControlProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();    
+    static final SystemConfig sysConfig = secBean.getConfigData().getSystemConfig();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
     static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
     static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
@@ -76,18 +75,6 @@ public interface IAccountControlProcessor
      * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
      */
     AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException;
-
-    /**
-     * Performs a search against the authentication datastore for the provided information and returns
-     * the data as obtained.
-     *
-     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
-     * which contains the necessary information to complete the request
-     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
-     * response information regarding the request status
-     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
-     */
-    AccountControlResponse searchAccounts(final AccountControlRequest request) throws AccountControlException;
 
     /**
      * Returns detailed information regarding a provided user account for review, modification or removal.

@@ -51,23 +51,28 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.model.UserChangeRequest;
-import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.web.validators.PasswordValidator;
+import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
+import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
+import com.cws.esolutions.security.processors.dto.AccountSearchResponse;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
+import com.cws.esolutions.security.processors.impl.AccountSearchProcessorImpl;
 import com.cws.esolutions.security.processors.impl.AccountChangeProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
+import com.cws.esolutions.security.processors.exception.AccountSearchException;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
+import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -658,7 +663,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IAccountResetProcessor processor = (IAccountResetProcessor) new AccountResetProcessorImpl();
+        final IAccountSearchProcessor processor = (IAccountSearchProcessor) new AccountSearchProcessorImpl();
 
         if (DEBUG)
         {
@@ -728,22 +733,22 @@ public class OnlineResetController
 	                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
 	            }
 	
-	            AccountResetRequest resetRequest = new AccountResetRequest();
-	            resetRequest.setApplicationId(this.appConfig.getApplicationId());
-	            resetRequest.setApplicationName(this.appConfig.getApplicationName());
-	            resetRequest.setHostInfo(reqInfo);
-	            resetRequest.setSearchData(request.getEmailAddr());
+	            AccountSearchRequest searchRequest = new AccountSearchRequest();
+	            searchRequest.setApplicationId(this.appConfig.getApplicationId());
+	            searchRequest.setApplicationName(this.appConfig.getApplicationName());
+	            searchRequest.setHostInfo(reqInfo);
+	            searchRequest.setSearchTerms(request.getEmailAddr());
 	
 	            if (DEBUG)
 	            {
-	                DEBUGGER.debug("AccountResetRequest: {}", request);
+	                DEBUGGER.debug("AccountSearchRequest: {}", searchRequest);
 	            }
 	
-	            AccountResetResponse response = processor.findUserAccount(resetRequest);
+	            AccountSearchResponse response = processor.findUserAccount(searchRequest);
 	
 	            if (DEBUG)
 	            {
-	                DEBUGGER.debug("AccountResetResponse: {}", response);
+	                DEBUGGER.debug("AccountSearchResponse: {}", response);
 	            }
 	
 	            switch (response.getRequestStatus())
@@ -810,11 +815,25 @@ public class OnlineResetController
 						mView.setViewName(this.appConfig.getUnauthorizedPage());
 	
 						break;
+				case OLRLOCKED:
+					mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestFailure);
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
+				case OLRSETUP:
+					mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestFailure);
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
+				default:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
 	            }
 	        }
-	        catch (final AccountResetException arx)
+	        catch (final AccountSearchException asx)
 	        {
-	            ERROR_RECORDER.error(arx.getMessage(), arx);
+	            ERROR_RECORDER.error(asx.getMessage(), asx);
 	
 	            mView.setViewName(this.appConfig.getErrorResponsePage());
 	        }
@@ -845,6 +864,7 @@ public class OnlineResetController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final IAccountResetProcessor processor = (IAccountResetProcessor) new AccountResetProcessorImpl();
+        final IAccountSearchProcessor searcher = (IAccountSearchProcessor) new AccountSearchProcessorImpl();
 
         if (DEBUG)
         {
@@ -913,18 +933,18 @@ public class OnlineResetController
 	                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
 	            }
 	
-	            AccountResetRequest resetRequest = new AccountResetRequest();
-	            resetRequest.setApplicationId(this.appConfig.getApplicationId());
-	            resetRequest.setApplicationName(this.appConfig.getApplicationName());
-	            resetRequest.setHostInfo(reqInfo);
-	            resetRequest.setSearchData(request.getUsername());
+	            AccountSearchRequest searchRequest = new AccountSearchRequest();
+	            searchRequest.setApplicationId(this.appConfig.getApplicationId());
+	            searchRequest.setApplicationName(this.appConfig.getApplicationName());
+	            searchRequest.setHostInfo(reqInfo);
+	            searchRequest.setSearchTerms(request.getUsername());
 	
 	            if (DEBUG)
 	            {
-	                DEBUGGER.debug("AccountResetRequest: {}", request);
+	                DEBUGGER.debug("AccountSearchRequest: {}", searchRequest);
 	            }
 	
-	            AccountResetResponse response = processor.findUserAccount(resetRequest);
+	            AccountSearchResponse response = searcher.findUserAccount(searchRequest);
 	
 	            if (DEBUG)
 	            {
@@ -1033,14 +1053,30 @@ public class OnlineResetController
 						mView.setViewName(this.appConfig.getUnauthorizedPage());
 	
 						break;
+				case OLRLOCKED:
+					// TODO
+					break;
+				case OLRSETUP:
+					// TODO
+					break;
+				default:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
 	            }
 	        }
-	        catch (final AccountResetException arx)
+	        catch (final AccountSearchException asx)
 	        {
-	            ERROR_RECORDER.error(arx.getMessage(), arx);
+	            ERROR_RECORDER.error(asx.getMessage(), asx);
 	
 	            mView.setViewName(this.appConfig.getErrorResponsePage());
 	        }
+	        catch (AccountResetException arx)
+	        {
+	            ERROR_RECORDER.error(arx.getMessage(), arx);
+	        	
+	            mView.setViewName(this.appConfig.getErrorResponsePage());
+			}
         }
 
         if (DEBUG)
@@ -1146,8 +1182,8 @@ public class OnlineResetController
 	            }
 	
 	            AuthenticationData userSecurity = new AuthenticationData();
-	            userSecurity.setSecAnswerOne(request.getSecAnswerOne());
-	            userSecurity.setSecAnswerTwo(request.getSecAnswerTwo());
+	            userSecurity.setSecAnswerOne(request.getSecAnswerOne().toCharArray());
+	            userSecurity.setSecAnswerTwo(request.getSecAnswerTwo().toCharArray());
 	
 	            if (DEBUG)
 	            {
@@ -1414,7 +1450,7 @@ public class OnlineResetController
 	            }
 	
 	            AuthenticationData userSecurity = new AuthenticationData();
-	            userSecurity.setNewPassword(request.getConfirmPassword());
+	            userSecurity.setNewPassword(request.getConfirmPassword().toCharArray());
 	
 	            if (DEBUG)
 	            {

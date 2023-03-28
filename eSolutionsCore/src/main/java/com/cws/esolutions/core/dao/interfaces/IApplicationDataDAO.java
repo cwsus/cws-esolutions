@@ -16,7 +16,7 @@
 package com.cws.esolutions.core.dao.interfaces;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.processors.interfaces
+ * Package: com.cws.esolutions.core.dao.interfaces
  * File: IApplicationDataDAO.java
  *
  * History

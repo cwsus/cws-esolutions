@@ -43,6 +43,7 @@ public class AccountControlRequest implements Serializable
     private int startPage = 0;
     private String projectId = null;
     private String serviceId = null;
+    private String searchTerms = null;
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
@@ -186,6 +187,19 @@ public class AccountControlRequest implements Serializable
         this.startPage = value;
     }
 
+    public final void setSearchTerms(final String value)
+    {
+        final String methodName = AccountControlRequest.CNAME + "#setSearchTerms(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchTerms = value;
+    }
+
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AccountControlRequest.CNAME + "#getHostInfo()";
@@ -313,6 +327,19 @@ public class AccountControlRequest implements Serializable
         }
 
         return this.startPage;
+    }
+
+    public final String getSearchTerms()
+    {
+        final String methodName = AccountControlRequest.CNAME + "#getSearchTerms()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.searchTerms);
+        }
+
+        return this.searchTerms;
     }
 
     @Override

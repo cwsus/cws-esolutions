@@ -45,17 +45,17 @@ public class UserAccount implements Serializable
     private String guid = null;
     private String surname = null;
     private String username = null;
-    private String[] groups = null;
     private String emailAddr = null;
     private String givenName = null;
     private KeyPair userKeys = null;
+    private String sessionId = null;
     private boolean accepted = false;
     private boolean olrSetup = false;
+    private String pagerNumber = null;
     private String displayName = null;
     private boolean olrLocked = false;
     private boolean suspended = false;
     private LoginStatus status = null;
-    private String pagerNumber = null;
     private Integer failedCount = null;
     private Timestamp lastLogin = null;
     private Timestamp expiryDate = null;
@@ -229,22 +229,6 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value - The groups associated with the account
-     */
-    public final void setGroups(final String[] value)
-    {
-        final String methodName = UserAccount.CNAME + "#setGroups(final String[] value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", (Object) value);
-        }
-
-        this.groups = value;
-    }
-
-    /**
      * @param value - The display name associated with the account
      */
     public final void setDisplayName(final String value)
@@ -370,6 +354,22 @@ public class UserAccount implements Serializable
         }
 
         this.userKeys = value;
+    }
+
+    /**
+     * @param value - The SessionID
+     */
+    public final void setSessionId(final String value)
+    {
+        final String methodName = UserAccount.CNAME + "#setSessionId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.sessionId = value;
     }
 
     /**
@@ -549,22 +549,6 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @return The groups associated with the account
-     */
-    public final String[] getGroups()
-    {
-        final String methodName = UserAccount.CNAME + "#getGroups()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", (Object) this.groups);
-        }
-
-        return this.groups;
-    }
-
-    /**
      * @return The display name associated with the account
      */
     public final String getDisplayName()
@@ -674,6 +658,22 @@ public class UserAccount implements Serializable
         }
 
         return this.userKeys;
+    }
+
+    /**
+     * @return String
+     */
+    public final String getSessionId()
+    {
+        final String methodName = UserAccount.CNAME + "#getSessionId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.sessionId);
+        }
+
+        return this.sessionId;
     }
 
     /**
