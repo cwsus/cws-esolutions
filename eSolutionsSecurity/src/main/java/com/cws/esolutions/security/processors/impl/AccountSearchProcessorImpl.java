@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
-import java.util.ArrayList;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.processors.impl
@@ -28,6 +27,7 @@ import java.util.ArrayList;
  */
 import java.util.List;
 import java.util.Objects;
+import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -89,37 +89,64 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
                 return response;
             }
 
-            responseData = new ArrayList<UserAccount>();
-
-            for (String[] data : userList)
+            if (userList.size() == 1)
             {
+            	List<Object> accountData = userManager.loadUserAccount(userList.get(0)[0]);
+
             	if (DEBUG)
             	{
-            		DEBUGGER.debug("data: {}", (Object) data);
+            		DEBUGGER.debug("accountData: {}", accountData);
             	}
 
-            	UserAccount foundAccount = new UserAccount();
+                UserAccount foundAccount = new UserAccount();
+            	foundAccount.setGuid((String) accountData.get(1));
+            	foundAccount.setUsername((String) accountData.get(0));
+            	foundAccount.setDisplayName((String) accountData.get(12));
+            	foundAccount.setEmailAddr((String) accountData.get(14));
 
-            	if (data.length > 1)
+            	System.out.println(foundAccount);
+            	if (DEBUG)
             	{
-                	foundAccount.setGuid(data[0]);
-                	foundAccount.setUsername(data[1]);
-            	}
-            	else
-            	{
-                	foundAccount.setGuid(data[0]);
+            		DEBUGGER.debug("UserAccount: {}", foundAccount);
             	}
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("foundAccount: {}", foundAccount);
-                }
-
-                responseData.add(foundAccount);
+            	response.setUserAccount(foundAccount);
+            	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
-
-            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            response.setUserList(responseData);
+            else
+            {
+	            responseData = new ArrayList<UserAccount>();
+	
+	            for (String[] data : userList)
+	            {
+	            	if (DEBUG)
+	            	{
+	            		DEBUGGER.debug("data: {}", (Object) data);
+	            	}
+	
+	            	UserAccount foundAccount = new UserAccount();
+	
+	            	if (data.length > 1)
+	            	{
+	                	foundAccount.setGuid(data[0]);
+	                	foundAccount.setUsername(data[1]);
+	            	}
+	            	else
+	            	{
+	                	foundAccount.setGuid(data[0]);
+	            	}
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("foundAccount: {}", foundAccount);
+	                }
+	
+	                responseData.add(foundAccount);
+	            }
+	
+	            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+	            response.setUserList(responseData);
+            }
         }
         catch (final UserManagementException umx)
         {

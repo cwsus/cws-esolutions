@@ -780,14 +780,13 @@ public class OnlineResetController
 			                {
 			                    DEBUGGER.debug("UserAccount: {}", userAccount);
 			                }
-	
+
 			                try
 			                {
-			                	// TODO some shit here
 			                	SimpleMailMessage emailMessage = this.forgotPasswordEmail;
-			                	emailMessage.setTo(response.getUserAccount().getEmailAddr());
+			                	emailMessage.setTo(userAccount.getEmailAddr());
 			                	emailMessage.setText(String.format(this.forgotUsernameEmail.getText(),
-			                            userAccount.getGivenName(),
+			                            userAccount.getDisplayName(),
 			                            new Date(System.currentTimeMillis()),
 			                            reqInfo.getHostName(),
 			                            userAccount.getUsername()));

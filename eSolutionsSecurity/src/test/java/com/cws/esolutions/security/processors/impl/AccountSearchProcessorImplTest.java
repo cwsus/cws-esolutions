@@ -81,7 +81,6 @@ class AccountSearchProcessorImplTest
         {
             AccountSearchResponse response = searcher.findUserAccount(request);
 
-            System.out.println(response);
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AccountSearchException asx)

@@ -87,6 +87,7 @@ BEGIN
     FROM CWSSEC.USERS
     WHERE CN = guid;
 END //
+COMMIT //
 
 CREATE PROCEDURE CWSSEC.getSecurityQuestions(
     IN guid VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
@@ -96,6 +97,7 @@ BEGIN
     FROM CWSSEC.USERS
     WHERE CN = guid;
 END //
+COMMIT //
 
 CREATE PROCEDURE CWSSEC.getUserByAttribute(
     IN attributeName VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
@@ -130,21 +132,25 @@ CREATE PROCEDURE CWSSEC.showUserAccount(
 )
 BEGIN
     SELECT
-        UID,
-        CWSROLE,
-        CWSFAILEDPWDCOUNT,
-        CWSLASTLOGIN,
-        SN,
-        GIVENNAME,
-        CWSEXPIRYDATE,
-        CWSISSUSPENDED,
-        CN,
-        CWSISOLRSETUP,
-        CWSISOLRLOCKED,
-        DISPLAYNAME,
-        CWSISTCACCEPTED
-    FROM CWSSEC.USERS
-    WHERE cn = commonName;
+        T1.UID,
+        T1.CN,
+        T1.CWSROLE,
+        T1.CWSFAILEDPWDCOUNT,
+        T1.CWSLASTLOGIN,
+        T1.SN,
+        T1.GIVENNAME,
+        T1.CWSEXPIRYDATE,
+        T1.CWSISSUSPENDED,
+        T1.CN,
+        T1.CWSISOLRSETUP,
+        T1.CWSISOLRLOCKED,
+        T1.DISPLAYNAME,
+        T1.CWSISTCACCEPTED,
+        T2.EMAIL
+    FROM CWSSEC.USERS T1
+    INNER JOIN CWSSEC.CONTACT_DATA T2
+    ON T1.CN = T2.CN
+    WHERE T1.CN = commonName;
 END //
 COMMIT //
 

@@ -559,7 +559,7 @@ public class SQLUserManager implements UserManager
                     	DEBUGGER.debug("columnCount: {}", columnCount);
                     }
 
-                    for (int y = 1; y < columnCount; y++)
+                    for (int y = 1; y != columnCount + 1; y++)
                     {
                     	if (DEBUG)
                     	{
