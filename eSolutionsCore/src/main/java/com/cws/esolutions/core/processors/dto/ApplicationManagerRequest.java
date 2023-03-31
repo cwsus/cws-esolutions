@@ -41,15 +41,15 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 public class ApplicationManagerRequest implements Serializable
 {
-    private double version = 0.0;
+	private double version = 0.0;
     private String installPath = null;
     private String packageName = null;
     private String packageLocation = null;
     private String packageInstaller = null;
     private String installerOptions = null;
 
+    private static final long serialVersionUID = 4397118445298904497L;
     private static final String CNAME = ApplicationManagerRequest.class.getName();
-    private static final long serialVersionUID = -7939041322590386615L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -40,7 +40,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class FileSecurityRequest implements Serializable
 {
-    private String appName = null;
+	private String appName = null;
     private File signedFile = null;
     private File requestFile = null;
     private File unsignedFile = null;
@@ -51,7 +51,7 @@ public class FileSecurityRequest implements Serializable
     private RequestHostInfo hostInfo = null;
     private AuthenticationData userSecurity = null;
 
-    private static final long serialVersionUID = 3260829311647276588L;
+    private static final long serialVersionUID = 5458528497721677390L;
     private static final String CNAME = FileSecurityRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

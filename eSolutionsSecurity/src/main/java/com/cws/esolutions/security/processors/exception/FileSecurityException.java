@@ -31,9 +31,9 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  */
 public class FileSecurityException extends SecurityServiceException
 {
-    private static final long serialVersionUID = -930492911008590921L;
+    private static final long serialVersionUID = -8714162288754922045L;
 
-    /**
+	/**
      * @param message - The thrown exception message
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
      */

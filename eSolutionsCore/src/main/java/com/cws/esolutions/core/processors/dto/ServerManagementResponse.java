@@ -40,12 +40,12 @@ import com.cws.esolutions.core.enums.CoreServicesStatus;
  */
 public class ServerManagementResponse implements Serializable
 {
-    private int entryCount = 0;
+	private int entryCount = 0;
     private Server server = null;
     private List<Server> serverList = null;
     private CoreServicesStatus requestStatus = null;
 
-    private static final long serialVersionUID = -5996501661468136126L;
+    private static final long serialVersionUID = -3557204889078999912L;
     private static final String CNAME = ServerManagementResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

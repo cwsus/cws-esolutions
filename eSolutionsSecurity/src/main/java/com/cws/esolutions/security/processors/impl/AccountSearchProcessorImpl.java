@@ -91,7 +91,14 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
             if (userList.size() == 1)
             {
-            	List<Object> accountData = userManager.loadUserAccount(userList.get(0)[0]);
+            	String userGuid = userList.get(0)[0];
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("userGuid: {}", userGuid);
+            	}
+
+            	List<Object> accountData = userManager.loadUserAccount(userGuid);
 
             	if (DEBUG)
             	{
@@ -99,12 +106,11 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
             	}
 
                 UserAccount foundAccount = new UserAccount();
-            	foundAccount.setGuid((String) accountData.get(1));
-            	foundAccount.setUsername((String) accountData.get(0));
-            	foundAccount.setDisplayName((String) accountData.get(12));
-            	foundAccount.setEmailAddr((String) accountData.get(14));
+            	foundAccount.setGuid((String) accountData.get(0)); // CN
+            	foundAccount.setUsername((String) accountData.get(1)); // UID
+	            foundAccount.setDisplayName((String) accountData.get(7)); // DISPLAYNAME
+	            foundAccount.setEmailAddr((String) accountData.get(10)); // EMAIL
 
-            	System.out.println(foundAccount);
             	if (DEBUG)
             	{
             		DEBUGGER.debug("UserAccount: {}", foundAccount);

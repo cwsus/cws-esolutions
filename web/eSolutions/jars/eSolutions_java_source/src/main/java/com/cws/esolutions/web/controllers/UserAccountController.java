@@ -348,14 +348,13 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.GET)
-    public final ModelAndView showPasswordChange(@ModelAttribute("request") final UserAccount userAccount, final Model model)
+    public final ModelAndView showPasswordChange(final Model model)
     {
-        final String methodName = UserAccountController.CNAME + "#showPasswordChange(@ModelAttribute(\"request\") final UserAccount userAccount, final Model model)";
+        final String methodName = UserAccountController.CNAME + "#showPasswordChange(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("Model: {}", model);
         }
 
@@ -365,6 +364,7 @@ public class UserAccountController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT))) ? (UserAccount) model.getAttribute(Constants.USER_ACCOUNT) : (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
 
         if (DEBUG)
         {
@@ -416,7 +416,7 @@ public class UserAccountController
         	}
 
         	ModelAndView redirectView = new ModelAndView();
-        	redirectView.setView(new RedirectView("/esolutions/ui/auth/login"));
+        	redirectView.setView(new RedirectView(this.appConfig.getLogonRedirect()));
 
         	if (DEBUG)
         	{
@@ -930,15 +930,14 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public final ModelAndView doPasswordChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, @ModelAttribute("userAccount") final UserAccount userAccount, final BindingResult bindResult)
+    public final ModelAndView doPasswordChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
     {
-        final String methodName = UserAccountController.CNAME + "#doPasswordChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, @ModelAttribute(\"userAccount\") final UserAccount userAccount, final BindingResult bindResult)";
+        final String methodName = UserAccountController.CNAME + "#doPasswordChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         AuthenticationData userSecurity = null;
@@ -947,6 +946,7 @@ public class UserAccountController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
 
         if (DEBUG)
@@ -1001,7 +1001,6 @@ public class UserAccountController
             AccountChangeData command = new AccountChangeData();
             changeReq.setIsReset(changeReq.isReset());
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
             mView.addObject(Constants.COMMAND, command);
             mView.setViewName(this.changePasswordPage);

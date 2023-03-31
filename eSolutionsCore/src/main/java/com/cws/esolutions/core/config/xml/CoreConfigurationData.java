@@ -25,7 +25,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +41,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class CoreConfigurationData implements Serializable
+public final class CoreConfigurationData
 {
     private SSHConfig sshConfig = null;
     private FTPConfig ftpConfig = null;
@@ -57,7 +56,6 @@ public final class CoreConfigurationData implements Serializable
     private ExceptionConfig exceptionConfig = null;
     private DeploymentConfig deploymentConfig = null;
 
-    private static final long serialVersionUID = -3876853588713098436L;
     private static final String CNAME = CoreConfigurationData.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

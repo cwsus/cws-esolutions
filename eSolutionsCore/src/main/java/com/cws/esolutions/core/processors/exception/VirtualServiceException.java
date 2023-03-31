@@ -31,7 +31,6 @@ import com.cws.esolutions.core.exception.CoreServicesException;
  */
 public class VirtualServiceException extends CoreServicesException
 {
-    private static final long serialVersionUID = -1845781429123758169L;
 
     /**
      * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)

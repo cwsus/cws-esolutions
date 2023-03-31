@@ -38,8 +38,8 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AuthenticationData implements Serializable
 {
-    private String username = null;
-    private byte[] userSalt = null;
+	private String username = null;
+    private String userSalt = null;
     private char[] password = null;
     private char[] newPassword = null;
     private char[] secAnswerOne = null;
@@ -47,7 +47,7 @@ public class AuthenticationData implements Serializable
     private String secQuestionOne = null;
     private String secQuestionTwo = null;
 
-    private static final long serialVersionUID = -1680121237315483191L;
+    private static final long serialVersionUID = 1920284352649895644L;
     private static final String CNAME = AuthenticationData.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
@@ -65,9 +65,9 @@ public class AuthenticationData implements Serializable
         this.username = value;
     }
 
-    public final void setUserSalt(final byte[] value)
+    public final void setUserSalt(final String value)
     {
-        final String methodName = AuthenticationData.CNAME + "#setUserSalt(final byte[] value)";
+        final String methodName = AuthenticationData.CNAME + "#setUserSalt(final String value)";
 
         if (DEBUG)
         {
@@ -162,7 +162,7 @@ public class AuthenticationData implements Serializable
         return this.username;
     }
 
-    public final byte[] getUserSalt()
+    public final String getUserSalt()
     {
         final String methodName = AuthenticationData.CNAME + "#getUserSalt()";
 

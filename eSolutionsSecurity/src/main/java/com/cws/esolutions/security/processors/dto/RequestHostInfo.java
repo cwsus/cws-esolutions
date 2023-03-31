@@ -38,10 +38,10 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class RequestHostInfo implements Serializable
 {
-    private String hostName = null;
+	private String hostName = null;
     private String hostAddress = null;
 
-    private static final long serialVersionUID = -3333451729768743405L;
+    private static final long serialVersionUID = -8780316582324981901L;
     private static final String CNAME = RequestHostInfo.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

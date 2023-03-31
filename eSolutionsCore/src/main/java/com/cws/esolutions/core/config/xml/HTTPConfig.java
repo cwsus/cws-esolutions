@@ -26,7 +26,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +42,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlType(name = "http-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class HTTPConfig implements Serializable
+public final class HTTPConfig
 {
     private int soTimeout = 10;
     private int socketLinger = 1;

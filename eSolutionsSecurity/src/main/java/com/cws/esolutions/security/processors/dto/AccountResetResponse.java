@@ -41,15 +41,14 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AccountResetResponse implements Serializable
 {
-    private int count = 0;
+	private int count = 0;
     private String resetId = null;
-    private String smsCode = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
     private AuthenticationData userSecurity = null;
     private SecurityRequestStatus requestStatus = null;
 
-    private static final long serialVersionUID = -3110651267063305566L;
+    private static final long serialVersionUID = 5259716158255929392L;
     private static final String CNAME = AccountResetResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
@@ -91,18 +90,6 @@ public class AccountResetResponse implements Serializable
         }
 
         this.resetId = value;
-    }
-
-    public final void setSmsCode(final String value)
-    {
-        final String methodName = AccountResetResponse.CNAME + "#setSmsCode(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.smsCode = value;
     }
 
     public final void setCount(final int value)
@@ -181,18 +168,6 @@ public class AccountResetResponse implements Serializable
         return this.resetId;
     }
 
-    public final String getSmsCode()
-    {
-        final String methodName = AccountResetResponse.CNAME + "#getSmsCode()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.smsCode;
-    }
-
     public final List<String> getQuestionList()
     {
         final String methodName = AccountResetResponse.CNAME + "#getQuestionList()";
@@ -245,8 +220,7 @@ public class AccountResetResponse implements Serializable
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("resetId"))) &&
-                    (!(field.getName().equals("serialVersionUID"))) &&
-                    (!(field.getName().equals("userSecurity"))))
+                    (!(field.getName().equals("serialVersionUID"))))
             {
                 try
                 {

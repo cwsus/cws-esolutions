@@ -31,7 +31,7 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  */
 public class AccountSearchException extends SecurityServiceException
 {
-    private static final long serialVersionUID = -5369904764496961135L;
+	private static final long serialVersionUID = -5369904764496961135L;
 
 	/**
      * @param message - The thrown exception message

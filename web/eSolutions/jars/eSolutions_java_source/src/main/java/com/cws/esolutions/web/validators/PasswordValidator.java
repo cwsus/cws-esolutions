@@ -26,7 +26,6 @@ package com.cws.esolutions.web.validators;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +49,7 @@ public class PasswordValidator implements Validator
     private String messageConfirmPasswordRequired = null;
     private String messageCurrentPasswordRequired = null;
     private String messagePasswordFailedValidation = null;
+    private String messagePasswordLengthCheckFailed = null;
 
     private static final String CNAME = PasswordValidator.class.getName();
 
@@ -147,6 +147,19 @@ public class PasswordValidator implements Validator
         this.messagePasswordFailedValidation = value;
     }
 
+    public final void setMessagePasswordLengthCheckFailed(final String value)
+    {
+        final String methodName = PasswordValidator.CNAME + "#setMessagePasswordLengthCheckFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Class: {}", value);
+        }
+
+    	this.messagePasswordLengthCheckFailed = value;
+    }
+
     public final boolean supports(final Class<?> value)
     {
         final String methodName = PasswordValidator.CNAME + "#supports(final Class<?> value)";
@@ -174,6 +187,7 @@ public class PasswordValidator implements Validator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("target: {}", target);
             DEBUGGER.debug("errors: {}", errors);
         }
 
@@ -182,14 +196,12 @@ public class PasswordValidator implements Validator
         final String existingPassword = changeReq.getCurrentPassword();
         final int minLength = this.passwordMinLength;
         final int maxLength = this.passwordMaxLength;
-        final Pattern pattern = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#\\$%\\^\\&\\*()\\_\\-\\+\\=\\{\\}\\[\\]\\/|'\";:.,<>?]).{" + minLength + "," + maxLength + "})");
 
         if (DEBUG)
         {
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
             DEBUGGER.debug("minLength: {}", minLength);
             DEBUGGER.debug("maxLength: {}", maxLength);
-            DEBUGGER.debug("pattern: {}", pattern);
         }
 
         if (!(changeReq.isReset()))
@@ -204,9 +216,13 @@ public class PasswordValidator implements Validator
         {
             errors.reject("currentPassword", this.messagePasswordMatch);
         }
-        else if (!(pattern.matcher(newPassword).matches()))
+        else if (!(StringUtils.isAlphanumeric(newPassword)))
         {
-            errors.reject("newPassword", this.messagePasswordFailedValidation);
+        	errors.reject("currentPassword", this.messagePasswordFailedValidation);
+        }
+        else if ((newPassword.length() < minLength) || (newPassword.length() > maxLength))
+        {
+        	errors.reject("currentPassword", this.messagePasswordLengthCheckFailed);
         }
     }
 }

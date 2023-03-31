@@ -25,7 +25,6 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -34,7 +33,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 
-import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @author cws-khuntly
@@ -43,37 +41,32 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 @XmlType(name = "security-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class SecurityConfig implements Serializable
+public final class SecurityConfig
 {
     private int keyLength = 128;
-    private int otpVariance = 0;
-    private int saltLength = 32; // default to 64
-    private int maxAttempts = 3; // default of 3
-    private int resetTimeout = 30; // default of 30 minutes
-    private int smsCodeLength = 8; // default of 8
-    private int resetIdLength = 32; // default of 32
+    private int saltLength = 32;
+    private int maxAttempts = 3;
+    private int resetTimeout = 30;
+    private int resetIdLength = 32;
+    private int iterations = 600000;
     private String userSecDAO = null;
-    private String authConfig = null; // FULL path to connection configuration file
-    private String auditConfig = null; // FULL path to connection configuration file
+    private String authConfig = null;
+    private String auditConfig = null;
     private String authManager = null;
     private String userManager = null;
-    private int iterations = 600000;
-    private int passwordMinLength = 8; // default of 8 characters
-    private String otpAlgorithm = null;
-    private int passwordMaxLength = 128; // default of 32 characters
-    private int passwordExpiration = 45; // 90 day lifetime
+    private int passwordMinLength = 8;
+    private int passwordMaxLength = 128;
+    private int passwordExpiration = 45;
     private String messageDigest = null;
-    private String applicationId = null; // only required if its not already fed
-    private boolean performAudit = true; // default true to perform audit
+    private String applicationId = null;
+    private boolean performAudit = true;
+    private String randomGenerator = null;
     private boolean enableSecurity = true;
-    private String applicationName = null; // only required if its not already fed
-    private UserAccount svcAccount = null; // service account, if necessary
-    private boolean smsResetEnabled = false;
-    private String encryptionAlgorithm = "AES"; // algorithm
-    private String secretKeyAlgorithm = "PBKDF2WithHmacSHA512"; // secret instance
-    private String encryptionInstance = "AES/CBC/PKCS5Padding";  // cipher instance
+    private String applicationName = null;
+    private String encryptionAlgorithm = "AES";
+    private String secretKeyAlgorithm = "PBKDF2WithHmacSHA512";
+    private String encryptionInstance = "AES/CBC/PKCS5Padding";
 
-    private static final long serialVersionUID = -338675198961732554L;
     private static final String CNAME = SecurityConfig.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
@@ -195,19 +188,6 @@ public final class SecurityConfig implements Serializable
         this.messageDigest = value;
     }
 
-    public final void setOtpAlgorithm(final String value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setOtpAlgorithm(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.otpAlgorithm = value;
-    }
-
     public final void setEncryptionAlgorithm(final String value)
     {
         final String methodName = SecurityConfig.CNAME + "#setEncryptionAlgorithm(final String value)";
@@ -315,32 +295,6 @@ public final class SecurityConfig implements Serializable
         this.resetIdLength = value;
     }
 
-    public final void setIsSmsResetEnabled(final boolean value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setIsSmsResetEnabled(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.smsResetEnabled = value;
-    }
-
-    public final void setSmsCodeLength(final int value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setSmsCodeLength(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.smsCodeLength = value;
-    }
-
     public final void setResetTimeout(final int value)
     {
         final String methodName = SecurityConfig.CNAME + "#setResetTimeout(final int value)";
@@ -378,32 +332,6 @@ public final class SecurityConfig implements Serializable
         }
 
         this.auditConfig = value;
-    }
-
-    public final void setOtpVariance(final int value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setOtpVariance(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.otpVariance = value;
-    }
-
-    public final void setSvcAccount(final UserAccount value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setSvcAccount(final UserAccount value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.svcAccount = value;
     }
 
     public final void setEnableSecurity(final boolean value)
@@ -446,6 +374,19 @@ public final class SecurityConfig implements Serializable
         }
 
         this.secretKeyAlgorithm = value;
+    }
+
+    public final void setRandomGenerator(final String value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setRandomGenerator(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.randomGenerator = value;
     }
 
     @XmlElement(name = "applicationId")
@@ -530,20 +471,6 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.messageDigest;
-    }
-
-    @XmlElement(name = "otpAlgorithm")
-    public final String getOtpAlgorithm()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getOtpAlgorithm()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.otpAlgorithm);
-        }
-
-        return this.otpAlgorithm;
     }
 
     @XmlElement(name = "encryptionAlgorithm")
@@ -700,34 +627,6 @@ public final class SecurityConfig implements Serializable
         return this.resetIdLength;
     }
 
-    @XmlElement(name = "smsResetEnabled")
-    public final boolean getSmsResetEnabled()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getSmsResetEnabled()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.smsResetEnabled);
-        }
-
-        return this.smsResetEnabled;
-    }
-
-    @XmlElement(name = "smsCodeLength")
-    public final int getSmsCodeLength()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getSmsCodeLength()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.smsCodeLength);
-        }
-
-        return this.smsCodeLength;
-    }
-
     @XmlElement(name = "resetTimeout")
     public final int getResetTimeout()
     {
@@ -770,34 +669,6 @@ public final class SecurityConfig implements Serializable
         return this.auditConfig;
     }
 
-    @XmlElement(name = "otpVariance")
-    public final int getOtpVariance()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getOtpVariance()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.otpVariance);
-        }
-        
-        return this.otpVariance;
-    }
-
-    @XmlElement(name = "serviceAccount")
-    public final UserAccount getSvcAccount()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getSvcAccount()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.svcAccount);
-        }
-
-        return this.svcAccount;
-    }
-
     @XmlElement(name = "keyLength")
     public final int getKeyLength()
     {
@@ -824,6 +695,20 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.secretKeyAlgorithm;
+    }
+
+    @XmlElement(name = "randomGenerator")
+    public final String getRandomGenerator()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getRandomGenerator()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.randomGenerator);
+        }
+
+        return this.randomGenerator;
     }
 
     @Override

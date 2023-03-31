@@ -32,11 +32,10 @@ package com.cws.esolutions.security.processors.enums;
 public enum LoginStatus
 {
     SUCCESS,
-    CONTINUE,
     RESET,
     FAILURE,
     LOCKOUT,
+    OLRSETUP,
     SUSPENDED,
-    SESSION_EXISTS,
     EXPIRED;
 }

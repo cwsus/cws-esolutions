@@ -41,7 +41,7 @@ import com.cws.esolutions.security.processors.enums.AuditType;
  */
 public class AuditEntry implements Serializable
 {
-    private Date auditDate = null;
+	private Date auditDate = null;
     private Boolean authorized = false;
     private AuditType auditType = null;
     private String applicationId = null;
@@ -50,7 +50,7 @@ public class AuditEntry implements Serializable
     private RequestHostInfo hostInfo = null;
 
     private static final String CNAME = AuditEntry.class.getName();
-    private static final long serialVersionUID = 6018575153093937981L;
+    private static final long serialVersionUID = 6162424573063066481L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

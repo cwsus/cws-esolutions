@@ -38,10 +38,10 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccessControlServiceResponse implements Serializable
 {
-    private Boolean isUserAuthorized = false;
+	private Boolean isUserAuthorized = false;
 
+	private static final long serialVersionUID = 6265718216747680811L;
     private static final String CNAME = AccessControlServiceResponse.class.getName();
-    private static final long serialVersionUID = 3314079583199404196L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

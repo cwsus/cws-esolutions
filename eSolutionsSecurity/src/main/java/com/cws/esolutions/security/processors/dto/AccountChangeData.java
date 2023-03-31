@@ -34,7 +34,7 @@ import com.cws.esolutions.security.processors.enums.ResetRequestType;
  */
 public final class AccountChangeData implements Serializable
 {
-    private int count = 0;
+	private int count = 0;
     private String guid = null;
     private String resetKey = null;
     private String username = null;
@@ -51,8 +51,8 @@ public final class AccountChangeData implements Serializable
     private String confirmPassword = null;
     private ResetRequestType resetType = null;
 
+    private static final long serialVersionUID = -7617490638200945132L;
     private static final String CNAME = AccountChangeData.class.getName();
-    private static final long serialVersionUID = -990715180500683492L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

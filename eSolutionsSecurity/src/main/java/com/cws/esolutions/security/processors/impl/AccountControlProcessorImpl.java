@@ -25,10 +25,10 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Calendar;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.SaltType;
@@ -160,7 +161,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             {
                 if (x == 10)
                 {
-                    throw new AccountControlException("Failed to generate a unique user GUID");
+                    throw new AccountControlException("Failed to generate a unique user identifier");
                 }
 
                 try
@@ -193,11 +194,18 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
             }
 
-            String newSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
-            String newPassword = Objects.isNull(userSecurity.getNewPassword()) ? PasswordUtils.encryptText(userSecurity.getNewPassword(), newSalt.getBytes(),
-            		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
-            		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), sysConfig.getEncoding()) :
-            			RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()); 
+            char[] newPass = RandomStringUtils.random(secConfig.getPasswordMaxLength()).toCharArray();
+            String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getIterations());
+            String newPassword = PasswordUtils.encryptText(newPass, newSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                    sysConfig.getEncoding());
+
+            if ((StringUtils.isBlank(newSalt) || (StringUtils.isBlank(newPassword))))
+            {
+            	throw new AccountControlException("Failed to generate new user logon information.");
+            }
 
             List<String> accountData = new ArrayList<String>(
                 Arrays.asList(
@@ -740,8 +748,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         resAccount.setLastLogin(((userData.get(10) == null) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(10)));
                         resAccount.setExpiryDate(((userData.get(11) == null) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(11)));
                         resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
-                        resAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
-                        resAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
 
                         if (DEBUG)
                         {
@@ -915,63 +921,60 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // first, change the existing password
             // 128 character values - its possible that the reset is
             // coming as a result of a possible compromise
-            String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()).toCharArray(),
-            		RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()).getBytes(),
-            		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
-            		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), sysConfig.getEncoding());
-            String tmpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
+            char[] newPassword = RandomStringUtils.random(secConfig.getPasswordMaxLength()).toCharArray();
+            String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
+            String tmpPassword = PasswordUtils.encryptText(newPassword, newSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                    sysConfig.getEncoding());
 
-            if ((StringUtils.isNotEmpty(tmpPassword)) && (StringUtils.isNotEmpty(tmpSalt)))
+            if ((StringUtils.isBlank(newSalt)) || (StringUtils.isBlank(tmpPassword)))
             {
-                // update the authentication datastore with the new password
-                // we never show the user the password, we're only doing this
-                // to prevent unauthorized access (or further unauthorized access)
-                // we get a return code back but we aren't going to use it really
-                boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), tmpPassword);
+            	throw new AccountControlException("Failed to generate security information for the request.");
+            }
+
+            // update the authentication datastore with the new password
+            // we never show the user the password, we're only doing this
+            // to prevent unauthorized access (or further unauthorized access)
+            // we get a return code back but we aren't going to use it really
+            boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), tmpPassword);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
+            }
+
+            // now generate a temporary id to stuff into the database
+            // this will effectively replace the current salt value
+            String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
+
+            if (StringUtils.isNotEmpty(resetId))
+            {
+                isComplete = userSec.insertResetData(userAccount.getGuid(), resetId);
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("isComplete: {}", isComplete);
                 }
 
-                // now generate a temporary id to stuff into the database
-                // this will effectively replace the current salt value
-                String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
-                String resetSms = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
-
-                if ((StringUtils.isNotEmpty(resetId)) && (StringUtils.isNotEmpty(resetSms)))
+                if (isComplete)
                 {
-                    isComplete = userSec.insertResetData(userAccount.getGuid(), resetId);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
-                    }
-
-                    if (isComplete)
-                    {
-                        response.setResetId(resetId);
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
-
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    }
+                    response.setResetId(resetId);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
                 else
                 {
-                    ERROR_RECORDER.error("Unable to generate a unique identifier. Cannot continue.");
+                    ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
 
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
             }
             else
             {
-                ERROR_RECORDER.error("Failed to generate a temporary password. Cannot continue.");
+                ERROR_RECORDER.error("Unable to generate a unique identifier. Cannot continue.");
 
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (final SQLException sqx)
@@ -1289,22 +1292,27 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if ((userData != null) && (!(userData.isEmpty())))
             {
-                UserAccount loadAccount = new UserAccount();
-                loadAccount.setGuid((String) userData.get(0));
-                loadAccount.setUsername((String) userData.get(1));
-                loadAccount.setSurname((String) userData.get(2));
-                loadAccount.setGivenName((String) userData.get(3));
-                loadAccount.setEmailAddr((String) userData.get(4));
-                loadAccount.setDisplayName((String) userData.get(5));
-                loadAccount.setTelephoneNumber((userData.get(6) == null) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(6));
+            	UserAccount loadedAccount = new UserAccount();
+            	loadedAccount.setUsername((String) userData.get(0)); // T1.UID,
+            	loadedAccount.setGuid((String) userData.get(1)); // T1.CN,
+            	loadedAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(2))); // T1.CWSROLE,
+            	loadedAccount.setFailedCount((Integer) userData.get(3)); // T1.CWSFAILEDPWDCOUNT,
+            	loadedAccount.setLastLogin((Date) userData.get(4)); // T1.CWSLASTLOGIN,
+            	loadedAccount.setSurname((String) userData.get(5)); // T1.SN,
+            	loadedAccount.setGivenName((String) userData.get(6)); // T1.GIVENNAME,
+            	loadedAccount.setExpiryDate((Date) userData.get(7)); // T1.CWSEXPIRYDATE,
+            	loadedAccount.setSuspended((Boolean) userData.get(8)); // T1.CWSISSUSPENDED,
+            	loadedAccount.setDisplayName((String) userData.get(11)); // T1.DISPLAYNAME,
+            	loadedAccount.setAccepted((Boolean) userData.get(12)); // T1.CWSISTCACCEPTED,
+            	loadedAccount.setEmailAddr((String) userData.get(13)); // T2.EMAIL
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", loadAccount);
+                    DEBUGGER.debug("UserAccount: {}", loadedAccount);
                 }
 
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setUserAccount(loadAccount);
+                response.setUserAccount(loadedAccount);
             }
             else
             {

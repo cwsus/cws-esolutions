@@ -39,11 +39,11 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccessControlServiceRequest implements Serializable
 {
-    private String serviceGuid = null;
+	private String serviceGuid = null;
     private UserAccount userAccount = null;
 
+    private static final long serialVersionUID = -4023063417915572531L;
     private static final String CNAME = AccessControlServiceRequest.class.getName();
-    private static final long serialVersionUID = 3314079583199404196L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

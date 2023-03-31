@@ -39,7 +39,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  */
 public class CoreServicesBean implements Serializable
 {
-    private String osType = null;
+	private String osType = null;
     private String hostName = null;
     private CoreConfigurationData configData = null;
     private Map<String, DataSource> dataSources = null;

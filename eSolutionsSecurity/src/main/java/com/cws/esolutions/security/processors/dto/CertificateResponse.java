@@ -41,11 +41,11 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class CertificateResponse implements Serializable
 {
-    private File csrFile = null;
+	private File csrFile = null;
     private ArrayList<String> availableRequests = null;
     private SecurityRequestStatus requestStatus = null;
 
-    private static final long serialVersionUID = 4835067783924884463L;
+    private static final long serialVersionUID = 2186502682448455471L;
     private static final String CNAME = CertificateResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

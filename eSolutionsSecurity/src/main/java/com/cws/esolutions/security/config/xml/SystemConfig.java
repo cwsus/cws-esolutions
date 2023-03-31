@@ -25,7 +25,6 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -42,12 +41,11 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 @XmlType(name = "system-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class SystemConfig implements Serializable
+public final class SystemConfig
 {
     private String encoding = null;
 
     private static final String CNAME = SystemConfig.class.getName();
-    private static final long serialVersionUID = -5821156452877640093L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

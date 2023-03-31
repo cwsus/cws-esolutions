@@ -39,14 +39,14 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AuthenticationRequest implements Serializable
 {
-    private int count = 0;
+	private int count = 0;
     private String applicationId = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
     private AuthenticationData userSecurity = null;
 
-    private static final long serialVersionUID = -201074803920605226L;
+    private static final long serialVersionUID = 3936565128393404979L;
     private static final String CNAME = AuthenticationRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

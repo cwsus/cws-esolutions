@@ -65,6 +65,14 @@ public interface IAccountResetProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**
+     * 
+     * @param request
+     * @return
+     * @throws AccountResetException
+     */
+    AccountResetResponse isOnlineResetAvailable(final AccountResetRequest request) throws AccountResetException;
+
+    /**
      * Obtains and returns the associated security information for the selected user account
      *
      * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}

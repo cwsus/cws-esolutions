@@ -31,9 +31,9 @@ import com.unboundid.ldap.sdk.ResultCode;
  */
 public class SecurityServiceException extends Exception
 {
-    private static final long serialVersionUID = -5953286132656674063L;
+    private static final long serialVersionUID = -5699062698422073328L;
 
-    /**
+	/**
      * @param message - The thrown exception message
      * @see java.lang.Exception#Exception(java.lang.String)
      */

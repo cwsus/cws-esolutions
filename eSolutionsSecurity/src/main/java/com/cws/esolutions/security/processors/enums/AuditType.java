@@ -47,6 +47,7 @@ public enum AuditType
     LOADSECURITY,
     VERIFYSECURITY,
     VERIFYRESET,
+    VALIDATESECURITY,
 
     // user management
     CREATEUSER,

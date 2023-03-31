@@ -149,8 +149,15 @@
         <res-sharing-scope>Unshareable</res-sharing-scope>
     </resource-ref>
     <resource-ref id="cwssec">
-        <description>Application Datasource</description>
+        <description>Security Datasource</description>
         <res-ref-name>jdbc/cwssec</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Unshareable</res-sharing-scope>
+    </resource-ref>
+    <resource-ref id="audit">
+        <description>Audit Datasource</description>
+        <res-ref-name>jdbc/audit</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Unshareable</res-sharing-scope>
@@ -218,20 +225,9 @@
 
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>JSP-NoAccess</web-resource-name>
-            <description>No access to JSP files</description>
-            <url-pattern>*.jsp</url-pattern>
-            <http-method-omission>GET</http-method-omission>
-            <http-method-omission>POST</http-method-omission>
-            <http-method-omission>HEAD</http-method-omission>
-        </web-resource-collection>
-        <web-resource-collection>
             <web-resource-name>Secure URLs</web-resource-name>
             <description>Enforce SSL</description>
             <url-pattern>/*</url-pattern>
-            <http-method-omission>GET</http-method-omission>
-            <http-method-omission>POST</http-method-omission>
-            <http-method-omission>HEAD</http-method-omission>
         </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>

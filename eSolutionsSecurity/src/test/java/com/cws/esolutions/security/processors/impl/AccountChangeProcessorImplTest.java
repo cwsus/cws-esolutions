@@ -34,7 +34,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
@@ -57,10 +56,6 @@ public final class AccountChangeProcessorImplTest
             hostInfo.setHostAddress("junit");
             hostInfo.setHostName("junit");
 
-            userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("b7f6432d-10e1-4258-ad97-f3ea9ac81207");
-            userAccount.setUsername("khuntly");
-
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (final Exception ex)
@@ -73,19 +68,22 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserEmail()
     {
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("393ac161-3941-428b-9d60-31d72b839cf3");
+    	account.setEmailAddr("kmhuntly@gmail.com");
+
     	AuthenticationData authData = new AuthenticationData();
     	authData.setUsername("khuntly");
     	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
-
-        AccountChangeProcessorImplTest.userAccount.setEmailAddr("kmhuntly@gmail.com");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
         request.setHostInfo(AccountChangeProcessorImplTest.hostInfo);
         request.setIsReset(false);
-        request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
-        request.setRequestor(AccountChangeProcessorImplTest.userAccount);
+        request.setUserAccount(account);
+        request.setRequestor(account);
         request.setUserSecurity(authData);
 
         try
@@ -109,6 +107,10 @@ public final class AccountChangeProcessorImplTest
     	System.out.println(secAnsOne);
     	System.out.println(secAnsTwo);
 
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("129e32f6-9f94-446b-b8ef-2451083a5681");
+
     	AuthenticationData authData = new AuthenticationData();
     	authData.setUsername("khuntly");
     	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
@@ -122,8 +124,8 @@ public final class AccountChangeProcessorImplTest
         request.setApplicationName("eSolutions");
         request.setHostInfo(AccountChangeProcessorImplTest.hostInfo);
         request.setIsReset(false);
-        request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
-        request.setRequestor(AccountChangeProcessorImplTest.userAccount);
+        request.setUserAccount(account);
+        request.setRequestor(account);
         request.setUserSecurity(authData);
 
         try
@@ -199,9 +201,8 @@ public final class AccountChangeProcessorImplTest
     @Test public void changeUserPassword()
     {
     	AuthenticationData authData = new AuthenticationData();
-    	authData.setNewPassword("Hailey27*".toCharArray());
-    	authData.setUsername("junit-runner");
-    	authData.setPassword("naB8QUXNTWFA7MCpFYvT".toCharArray());
+    	authData.setNewPassword("naB8QUXNTWFA7MCpFYvT".toCharArray());
+    	authData.setUsername("khuntly");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");

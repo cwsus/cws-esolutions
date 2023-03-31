@@ -42,7 +42,7 @@ import com.cws.esolutions.core.processors.enums.DeploymentType;
  */
 public class Application implements Serializable
 {
-    private double score = 0.0;
+	private double score = 0.0;
     private String name = null;
     private String guid = null;
     private double version = 1.0;
@@ -68,7 +68,7 @@ public class Application implements Serializable
     private DeploymentType deploymentType = null;
 
     private static final String CNAME = Application.class.getName();
-    private static final long serialVersionUID = -7939041322590386615L;
+    private static final long serialVersionUID = 5766570647243160904L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

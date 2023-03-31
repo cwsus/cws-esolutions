@@ -25,7 +25,6 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -42,12 +41,11 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 @XmlType(name = "password-repository")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class PasswordRepositoryConfig implements Serializable
+public final class PasswordRepositoryConfig
 {
     private String saltFile = System.getProperty("user.home") + "/etc/secret.properties";
     private String passwordFile = System.getProperty("user.home") + "/etc/repository.properties";
 
-    private static final long serialVersionUID = -7170928520641664631L;
     private static final String CNAME = PasswordRepositoryConfig.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

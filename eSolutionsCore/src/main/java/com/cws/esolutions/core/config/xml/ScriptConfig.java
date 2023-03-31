@@ -25,7 +25,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -42,12 +41,11 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlType(name = "script-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class ScriptConfig implements Serializable
+public final class ScriptConfig
 {
     private int scriptTimeout = 0;
     private String netstatCmd = null;
 
-    private static final long serialVersionUID = -3642577456377481341L;
     private static final String CNAME = ScriptConfig.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

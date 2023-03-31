@@ -40,7 +40,7 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class ApplicationManagementRequest implements Serializable
 {
-    private int startPage = 0;
+	private int startPage = 0;
     private Server server = null;
     private String serviceId = null;
     private String requestFile = null;
@@ -50,7 +50,7 @@ public class ApplicationManagementRequest implements Serializable
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
 
-    private static final long serialVersionUID = -3338722152044272397L;
+    private static final long serialVersionUID = 8771229565823239942L;
     private static final String CNAME = ApplicationManagementRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

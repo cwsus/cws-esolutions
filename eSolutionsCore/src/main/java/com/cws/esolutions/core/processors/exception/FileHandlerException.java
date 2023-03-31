@@ -31,7 +31,6 @@ import com.cws.esolutions.core.exception.CoreServicesException;
  */
 public class FileHandlerException extends CoreServicesException
 {
-    private static final long serialVersionUID = -7112480254009579206L;
 
     /**
      * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)

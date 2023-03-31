@@ -42,7 +42,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 public class EmailMessage implements Serializable
 {
-    private String lastName = null;
+	private String lastName = null;
     private Date messageDate = null;
     private String messageId = null;
     private boolean isAlert = false;
@@ -57,7 +57,7 @@ public class EmailMessage implements Serializable
     private Map<String, InputStream> messageAttachments = null;
 
     private static final String CNAME = EmailMessage.class.getName();
-    private static final long serialVersionUID = -4668375236085938239L;
+    private static final long serialVersionUID = -2799691169985063289L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

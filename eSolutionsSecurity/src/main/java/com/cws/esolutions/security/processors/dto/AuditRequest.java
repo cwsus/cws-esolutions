@@ -39,7 +39,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AuditRequest implements Serializable
 {
-    private int startRow = 0;
+	private int startRow = 0;
     private String applicationId = null;
     private AuditEntry auditEntry = null;
     private String applicationName = null;
@@ -47,7 +47,7 @@ public class AuditRequest implements Serializable
     private RequestHostInfo hostInfo = null;
 
     private static final String CNAME = AuditRequest.class.getName();
-    private static final long serialVersionUID = 8332518266785977842L;
+    private static final long serialVersionUID = -2653808130602070325L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

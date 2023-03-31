@@ -32,9 +32,9 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  */
 public class AuthenticatorException extends SecurityServiceException
 {
-    private ResultCode resultCode = null;
+	private ResultCode resultCode = null;
 
-    private static final long serialVersionUID = -8824085932178422693L;
+	private static final long serialVersionUID = -5371706933379675820L;
 
     /**
      * @param value - The <code>ResultCode</code> value

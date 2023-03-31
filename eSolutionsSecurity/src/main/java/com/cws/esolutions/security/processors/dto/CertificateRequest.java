@@ -40,7 +40,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class CertificateRequest implements Serializable
 {
-    private int keySize = 2048;
+	private int keySize = 2048;
     private String stateName = null;
     private int validityPeriod = 365;
     private String commonName = null;
@@ -56,7 +56,7 @@ public class CertificateRequest implements Serializable
     private RequestHostInfo hostInfo = null;
     private String organizationalUnit = null;
 
-    private static final long serialVersionUID = -4071795817942006166L;
+    private static final long serialVersionUID = -1532539537386933012L;
     private static final String CNAME = CertificateRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

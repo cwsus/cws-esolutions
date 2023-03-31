@@ -58,20 +58,20 @@ public class PasswordUtilsTest
 
     @Test public void encrypt()
     {
-    	String plainText = "zYB790qWv2GmMVljY1yb";
-    	String salt = "F7niDTJvDam470jFdHwIm8SmqzHxXH5N";
+		char[] plainText = "ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray();
+		// String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
+		String newSalt = "326c8fd123282b936e6e4037e95f5469ff6ce4d8866d9e170bb19afef0566eb595540c1967045eb67b671ac9438ac14727f2285310e70f4e5bc4d276f94a57e1";
+		String expected = "7db4b6090b74a832fa76d28a0d7490a6e8a464825d593db3d9c2f6af7e67b5071b34d0dca67e3c2bc5a765473c76329c544f04e7e9605ec59c32bc0b14c786c5";
 
-    	String encrypted = PasswordUtils.encryptText(plainText.toCharArray(), salt.getBytes(), bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-    			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
-    			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+    	String encrypted = PasswordUtils.encryptText(plainText, newSalt,
+    			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+    			bean.getConfigData().getSecurityConfig().getIterations(),
+    			bean.getConfigData().getSecurityConfig().getKeyLength(),
+    			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
     			bean.getConfigData().getSystemConfig().getEncoding());
 
-    	String decrypted = PasswordUtils.decryptText(encrypted, plainText.toCharArray(), salt.getBytes(), bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-    			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
-    			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-    			bean.getConfigData().getSystemConfig().getEncoding());
-
-    	Assertions.assertThat(decrypted).isEqualTo(plainText);
+    	Assertions.assertThat(encrypted).isEqualTo(expected);
     }
 
     @AfterAll public void tearDown()

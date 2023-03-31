@@ -26,7 +26,6 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.enums.ResetRequestType;
 /**
@@ -35,7 +34,6 @@ import com.cws.esolutions.web.enums.ResetRequestType;
  */
 public final class UserChangeRequest implements Serializable
 {
-    private int count = 0;
     private String guid = null;
     private String resetKey = null;
     private String username = null;
@@ -52,8 +50,8 @@ public final class UserChangeRequest implements Serializable
     private String confirmPassword = null;
     private ResetRequestType resetType = null;
 
+    private static final long serialVersionUID = -1657933655967329236L;
     private static final String CNAME = UserChangeRequest.class.getName();
-    private static final long serialVersionUID = -990715180500683492L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -246,19 +244,6 @@ public final class UserChangeRequest implements Serializable
         }
 
         this.pagerNumber = value;
-    }
-
-    public final void setCount(final int value)
-    {
-        final String methodName = UserChangeRequest.CNAME + "#setCount(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.count = value;
     }
 
     public final boolean getIsReset()
@@ -464,24 +449,11 @@ public final class UserChangeRequest implements Serializable
         return this.pagerNumber;
     }
 
-    public final int getCount()
-    {
-        final String methodName = UserChangeRequest.CNAME + "#getCount()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.count);
-        }
-
-        return this.count;
-    }
-
     @Override
     public final String toString()
     {
     	StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -496,7 +468,7 @@ public final class UserChangeRequest implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
                     }
                 }
                 catch (final IllegalAccessException iax) {}

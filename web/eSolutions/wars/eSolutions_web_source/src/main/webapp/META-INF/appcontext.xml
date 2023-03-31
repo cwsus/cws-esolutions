@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * Copyright (c) 2009 - 2020 CaspersBox Web Services
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+-->
+<Context useNaming="true" sessionCookiePath="/esolutions" sessionCookieName="ESOLUTIONS_ID" reloadable="true"
+    docBase="${catalina.home}/installedApps/eSolutions_web_source-1.0-SNAPSHOT.war">
+
+    <Environment name="environment" value="dev" type="java.lang.String" override="false" />
+    <Environment name="isTestSystem" value="true" type="java.lang.String" override="false" />
+
+    <Resource name="jdbc/esolutions" auth="Container" type="javax.sql.DataSource"
+        username="appadm" password="XwNT5EQqpfRWnFVfgYyW" driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://localhost/ESOLUTIONS?useConfigs=fullDebug&amp;useCompression=true&amp;
+            useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
+            trustCertificateKeyStoreUrl=file:///home/appsrv/etc/kdb/trust.p12&amp;
+            trustCertificateKeyStoreType=PKCS12&amp;trustCertificateKeyStorePassword=twO23w2urkcVh3S4QGrD&amp;
+            autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;
+            useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;
+            zeroDateTimeBehavior=CONVERT_TO_NULL" removeAbandonedOnMaintenance="true"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+        validationQuery="/* ping */"
+        timeBetweenEvictionRunsMillis="5000" maxTotal="100" minIdle="0"
+        maxWaitMillis="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
+        removeAbandonedOnBorrow="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" />
+
+    <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
+        username="appadm" password="XwNT5EQqpfRWnFVfgYyW" driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://localhost/ESOLUTIONSSVC?useConfigs=fullDebug&amp;useCompression=true&amp;
+            useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
+            trustCertificateKeyStoreUrl=file:///home/appsrv/etc/kdb/trust.p12&amp;
+            trustCertificateKeyStoreType=PKCS12&amp;trustCertificateKeyStorePassword=twO23w2urkcVh3S4QGrD&amp;
+            autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;
+            useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;
+            zeroDateTimeBehavior=CONVERT_TO_NULL" removeAbandonedOnMaintenance="true"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+        validationQuery="/* ping */"
+        timeBetweenEvictionRunsMillis="5000" maxTotal="100" minIdle="0"
+        maxWaitMillis="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
+        removeAbandonedOnBorrow="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" />
+
+    <Resource name="jdbc/cwssec" auth="Container" type="javax.sql.DataSource"
+        username="appadm" password="XwNT5EQqpfRWnFVfgYyW" driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://localhost/CWSSEC?useConfigs=fullDebug&amp;useCompression=true&amp;
+            useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
+            trustCertificateKeyStoreUrl=file:///home/appsrv/etc/kdb/trust.p12&amp;
+            trustCertificateKeyStoreType=PKCS12&amp;trustCertificateKeyStorePassword=twO23w2urkcVh3S4QGrD&amp;
+            autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;
+            useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;
+            zeroDateTimeBehavior=CONVERT_TO_NULL" removeAbandonedOnMaintenance="true"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+        validationQuery="/* ping */"
+        timeBetweenEvictionRunsMillis="5000" maxTotal="100" minIdle="0"
+        maxWaitMillis="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
+        removeAbandonedOnBorrow="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" />
+
+    <Resource name="jdbc/audit" auth="Container" type="javax.sql.DataSource"
+        username="appadm" password="XwNT5EQqpfRWnFVfgYyW" driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://localhost/AUDIT?useConfigs=fullDebug&amp;useCompression=true&amp;
+            useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
+            trustCertificateKeyStoreUrl=file:///home/appsrv/etc/kdb/trust.p12&amp;
+            trustCertificateKeyStoreType=PKCS12&amp;trustCertificateKeyStorePassword=twO23w2urkcVh3S4QGrD&amp;
+            autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;
+            useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;
+            zeroDateTimeBehavior=CONVERT_TO_NULL" removeAbandonedOnMaintenance="true"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+        validationQuery="/* ping */"
+        timeBetweenEvictionRunsMillis="5000" maxTotal="100" minIdle="0"
+        maxWaitMillis="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
+        removeAbandonedOnBorrow="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" />
+</Context>

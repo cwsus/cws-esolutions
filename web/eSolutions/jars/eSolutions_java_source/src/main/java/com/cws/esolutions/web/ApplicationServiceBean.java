@@ -26,13 +26,12 @@ package com.cws.esolutions.web;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 /**
@@ -40,40 +39,43 @@ import com.cws.esolutions.web.validators.EmailMessageValidator;
  * @version 1.0
  */
 @Component
-public class ApplicationServiceBean implements Serializable
+public class ApplicationServiceBean
 {
-	private String homePage = null;
-	private int requestTimeout = 10;
-	private String dateFormat = null;
-	private String fileEncoding = null;
-	private String homeRedirect = null;
-	private String isTestSystem = null;
-	private String emailAddress = null;
-	private String logonRedirect = null;
-	private String applicationId = null;
-	private String expiredRedirect = null;
-	private String applicationName = null;
-	private String unavailablePage = null;
-	private String unauthorizedPage = null;
-	private String contactAdminsPage = null;
-	private String errorResponsePage = null;
-	private String searchRequestPage = null;
-	private String themeMessageSource = null;
-	private String requestCompletePage = null;
-	private String contactAdminsRedirect = null;
-	private String messageNoSearchResults = null;
-	private String messageEmailSendFailed = null;
-	private String messageRequestCanceled = null;
-	private String messagePasswordExpired = null;
-	private String messageUserNotLoggedIn = null;
-	private String messageValidationFailed = null;
-	private String messageEmailSentSuccess = null;
-	private String messageAccountNotAuthorized = null;
-	private EmailAddressValidator emailValidator = null;
-	private EmailMessageValidator messageValidator = null;
-	private String messageRequestProcessingFailure = null;
+	@Autowired private String homePage = null;
+	@Autowired private String dateFormat = null;
+	@Autowired private String olrRedirect = null;
+	@Autowired private String fileEncoding = null;
+	@Autowired private String homeRedirect = null;
+	@Autowired private String isTestSystem = null;
+	@Autowired private String emailAddress = null;
+	@Autowired private String logonRedirect = null;
+	@Autowired private String applicationId = null;
+	@Autowired private String expiredRedirect = null;
+	@Autowired private String applicationName = null;
+	@Autowired private String unavailablePage = null;
+	@Autowired private String messageOlrSetup = null;
+	@Autowired private String unauthorizedPage = null;
+	@Autowired private String contactAdminsPage = null;
+	@Autowired private String errorResponsePage = null;
+	@Autowired private String searchRequestPage = null;
+	@Autowired private String themeMessageSource = null;
+	@Autowired private String requestCompletePage = null;
+	@Autowired private String messageAccountLocked = null;
+	@Autowired private String contactAdminsRedirect = null;
+	@Autowired private String messageNoSearchResults = null;
+	@Autowired private String messageEmailSendFailed = null;
+	@Autowired private String messageRequestCanceled = null;
+	@Autowired private String messagePasswordExpired = null;
+	@Autowired private String messageUserNotLoggedIn = null;
+	@Autowired private String messageValidationFailed = null;
+	@Autowired private String messageEmailSentSuccess = null;
+	@Autowired private String messageAccountSuspended = null;
+	@Autowired private String messageAccountNotAuthorized = null;
+	@Autowired private EmailAddressValidator emailValidator = null;
+	@Autowired private EmailMessageValidator messageValidator = null;
+	@Autowired private String messageRequestProcessingFailure = null;
+	@Autowired private String messagePasswordLengthCheckFailed = null;
 
-    private static final long serialVersionUID = 6547417416150985897L;
     private static final String CNAME = ApplicationServiceBean.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
@@ -105,6 +107,19 @@ public class ApplicationServiceBean implements Serializable
         this.logonRedirect = value;
     }
 
+    public final void setMessageOlrSetup(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageOlrSetup(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageOlrSetup = value;
+    }
+
     public final void setHomeRedirect(final String value)
     {
         final String methodName = ApplicationServiceBean.CNAME + "#setHomeRedirect(final String value)";
@@ -116,6 +131,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.homeRedirect = value;
+    }
+
+    public void setOlrRedirect(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setOlrRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.olrRedirect = value;
     }
 
     public final void setHomePage(final String value)
@@ -220,19 +248,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.requestCompletePage = value;
-    }
-
-    public final void setRequestTimeout(final int value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setRequestTimeout(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.requestTimeout = value;
     }
 
     public final void setDateFormat(final String value)
@@ -391,6 +406,19 @@ public class ApplicationServiceBean implements Serializable
         this.messageNoSearchResults = value;
     }
 
+    public final void setMessageAccountLocked(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageAccountLocked(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountLocked = value;
+    }
+
     public final void setMessageEmailSentSuccess(final String value)
     {
         final String methodName = ApplicationServiceBean.CNAME + "#setMessageEmailSentSuccess(final String value)";
@@ -469,6 +497,32 @@ public class ApplicationServiceBean implements Serializable
         this.isTestSystem = value;
     }
 
+    public final void setMessageAccountSuspended(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageAccountSuspended(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountSuspended = value;
+    }
+
+    public final void setMessagePasswordLengthCheckFailed(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessagePasswordLengthCheckFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messagePasswordLengthCheckFailed = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -506,19 +560,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.homeRedirect;
-    }
-
-    public final int getRequestTimeout()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getRequestTimeout()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestTimeout);
-        }
-
-        return this.requestTimeout;
     }
 
     public final String getDateFormat()
@@ -560,6 +601,19 @@ public class ApplicationServiceBean implements Serializable
         return this.applicationId;
     }
 
+    public final String getMessageOlrSetup()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageOlrSetup()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageOlrSetup);
+        }
+
+        return this.messageOlrSetup;
+    }
+
     public final String getEmailAddress()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getEmailAddress()";
@@ -571,6 +625,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.emailAddress;
+    }
+
+    public final String getOlrRedirect()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getChangePasswordRedirect()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.olrRedirect);
+        }
+
+        return this.olrRedirect;
     }
 
     public final String getHomePage()
@@ -701,6 +768,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.messagePasswordExpired;
+    }
+
+    public final String getMessagePasswordLengthCheckFailed()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessagePasswordLengthCheckFailed()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messagePasswordLengthCheckFailed);
+        }
+
+        return this.messagePasswordLengthCheckFailed;
     }
 
     public final String getMessageAccountNotAuthorized()
@@ -846,6 +926,32 @@ public class ApplicationServiceBean implements Serializable
         return this.expiredRedirect;
     }
 
+    public final String getMessageAccountLocked()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageAccountLocked()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageAccountLocked);
+        }
+
+        return this.messageAccountLocked;
+    }
+
+    public final String getMessageAccountSuspended()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageAccountSuspended()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageAccountSuspended);
+        }
+
+        return this.messageAccountSuspended;
+    }
+    
 	public final boolean getIsTestSystem()
 	{
         final String methodName = ApplicationServiceBean.CNAME + "#getIsTestSystem()";
@@ -876,7 +982,7 @@ public class ApplicationServiceBean implements Serializable
     public final String toString()
     {
     	StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -891,7 +997,7 @@ public class ApplicationServiceBean implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
                     }
                 }
                 catch (final IllegalAccessException iax) {}

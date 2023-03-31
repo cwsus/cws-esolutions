@@ -42,13 +42,13 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AccountChangeResponse implements Serializable
 {
-    private String secret = null;
+	private String secret = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
     private ByteArrayOutputStream qrCode = null;
     private SecurityRequestStatus requestStatus = null;
 
-    private static final long serialVersionUID = 430337834863065121L;
+    private static final long serialVersionUID = 2748842176593775221L;
     private static final String CNAME = AccountChangeResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

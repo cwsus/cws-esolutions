@@ -40,12 +40,12 @@ import com.cws.esolutions.core.enums.CoreServicesStatus;
  */
 public class DatacenterManagementResponse implements Serializable
 {
-    private int entryCount = 0;
+	private int entryCount = 0;
     private Datacenter dataCenter = null;
     private List<Datacenter> datacenterList = null;
     private CoreServicesStatus requestStatus = null;
 
-    private static final long serialVersionUID = -9169608004657687586L;
+    private static final long serialVersionUID = 2017168903668847528L;
     private static final String CNAME = DatacenterManagementResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

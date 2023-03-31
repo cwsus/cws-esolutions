@@ -83,6 +83,8 @@ import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor
 public class OnlineResetController
 {
     private String resetURL = null;
+    private String messageOlrSetup = null;
+    private String messageOlrLocked = null;
     private String submitAnswersPage = null;
     private JavaMailSender mailSender = null;
     private String submitUsernamePage = null;
@@ -95,7 +97,6 @@ public class OnlineResetController
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
     private PasswordValidator passwordValidator = null;
-
     private SimpleMailMessage forgotUsernameEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
 
@@ -168,6 +169,32 @@ public class OnlineResetController
         }
 
         this.messageRequestComplete = value;
+    }
+
+    public final void setMessageOlrLocked(final String value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setMessageOlrLocked(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageOlrLocked = value;
+    }
+
+    public final void setMessageOlrSetup(final String value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setMessageOlrSetup(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageOlrSetup = value;
     }
 
     public final void setMessageRequestFailure(final String value)
@@ -738,14 +765,14 @@ public class OnlineResetController
 	            searchRequest.setApplicationName(this.appConfig.getApplicationName());
 	            searchRequest.setHostInfo(reqInfo);
 	            searchRequest.setSearchTerms(request.getEmailAddr());
-	
+
 	            if (DEBUG)
 	            {
 	                DEBUGGER.debug("AccountSearchRequest: {}", searchRequest);
 	            }
-	
+
 	            AccountSearchResponse response = processor.findUserAccount(searchRequest);
-	
+
 	            if (DEBUG)
 	            {
 	                DEBUGGER.debug("AccountSearchResponse: {}", response);
@@ -815,13 +842,13 @@ public class OnlineResetController
 	
 						break;
 				case OLRLOCKED:
-					mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestFailure);
-					mView.setViewName(this.appConfig.getErrorResponsePage());
+					mView.addObject(Constants.ERROR_MESSAGE, this.messageOlrLocked);
+					mView.setViewName(this.appConfig.getLogonRedirect());
 
 					break;
 				case OLRSETUP:
-					mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestFailure);
-					mView.setViewName(this.appConfig.getErrorResponsePage());
+					mView.addObject(Constants.ERROR_MESSAGE, this.messageOlrSetup);
+					mView.setViewName(this.appConfig.getLogonRedirect());
 
 					break;
 				default:
@@ -953,14 +980,15 @@ public class OnlineResetController
 	            switch (response.getRequestStatus())
 	            {
 					case DISABLED:
-	            		mView.addObject(Constants.ERROR_MESSAGE, this.messageAccountDisabled);
-	
+	            		mView.addObject(Constants.ERROR_MESSAGE, this.messageAccountDisabled);	
 	            		mView.setViewName(this.appConfig.getLogonRedirect());
 	
 	            		break;
 					case FAILURE:
 	            		mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
 	            		mView.setViewName(this.appConfig.getErrorResponsePage());
+
+	            		break;
 					case SUCCESS:
 		                // this will return a single user account
 						if (Objects.isNull(response.getUserAccount()))
@@ -972,79 +1000,133 @@ public class OnlineResetController
 						}
 						else
 						{
-				            AccountResetRequest resetReq = new AccountResetRequest();
-				            resetReq.setApplicationId(this.appConfig.getApplicationId());
-				            resetReq.setApplicationName(this.appConfig.getApplicationName());
-				            resetReq.setHostInfo(reqInfo);
-				            resetReq.setUserAccount(response.getUserAccount());
-	
-				            if (DEBUG)
-				            {
-				                DEBUGGER.debug("AccountResetRequest: {}", resetReq);
-				            }
-	
-				            AccountResetResponse resetResponse = processor.obtainUserSecurityConfig(resetReq);
-	
-				            if (DEBUG)
-				            {
-				                DEBUGGER.debug("AccountResetResponse: {}", resetResponse);
-				            }
-	
-				            switch (resetResponse.getRequestStatus())
-				            {
+							AccountResetRequest isOlrAvailableReq = new AccountResetRequest();
+							isOlrAvailableReq.setApplicationId(this.appConfig.getApplicationId());
+							isOlrAvailableReq.setApplicationName(this.appConfig.getApplicationName());
+							isOlrAvailableReq.setHostInfo(reqInfo);
+							isOlrAvailableReq.setUserAccount(response.getUserAccount());
+
+							if (DEBUG)
+							{
+								DEBUGGER.debug("AccountResetRequest isOlrAvailableReq: {}", isOlrAvailableReq);
+							}
+
+							AccountResetResponse isOlrAvailableResp = processor.isOnlineResetAvailable(isOlrAvailableReq);
+
+							if (DEBUG)
+							{
+								DEBUGGER.debug("AccountResetResponse isOlrAvailableResp: {}", isOlrAvailableResp);
+							}
+
+							switch (isOlrAvailableResp.getRequestStatus())
+							{
 								case DISABLED:
-									mView.addObject(Constants.ERROR_MESSAGE, this.messageAccountDisabled);
-									mView.setViewName(this.appConfig.getErrorResponsePage());
-	
-									break;
+				            		mView.addObject(Constants.ERROR_MESSAGE, this.messageAccountDisabled);
+				            		mView.setViewName(this.appConfig.getLogonRedirect());
+
+				            		break;
 								case FAILURE:
-									mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestFailure);
-									mView.setViewName(this.appConfig.getErrorResponsePage());
-	
+				            		mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
+				            		mView.setViewName(this.appConfig.getErrorResponsePage());
+
+				            		break;
+								case OLRLOCKED:
+									mView.addObject(Constants.ERROR_MESSAGE, this.messageOlrLocked);
+
+									mView.setViewName(this.appConfig.getLogonRedirect());
+
+									break;
+								case OLRSETUP:
+									mView.addObject(Constants.ERROR_MESSAGE, this.messageOlrSetup);
+
+									mView.setViewName(this.appConfig.getLogonRedirect());
+
 									break;
 								case SUCCESS:
-					                UserAccount resAccount = resetResponse.getUserAccount();
-	
-					                if (DEBUG)
-					                {
-					                	DEBUGGER.debug("UserAccount resAccount: {}", resAccount);
-					                }
-		
-					                if ((resAccount.isSuspended()) || (resAccount.isOlrLocked()))
-					                {
-					                	mView.setViewName(this.appConfig.getUnauthorizedPage());
-					                }
-					                else
-					                {
-					                	AuthenticationData secResponse = resetResponse.getUserSecurity();
-	
-						                AccountChangeData changeReq = new AccountChangeData();
-						                changeReq.setSecQuestionOne(secResponse.getSecQuestionOne());
-						                changeReq.setSecQuestionTwo(secResponse.getSecQuestionTwo());
-						                changeReq.setGuid(resAccount.getGuid());
-						                changeReq.setUsername(resAccount.getUsername());
-						                changeReq.setResetType(ResetRequestType.QUESTIONS);
-		
-						                if (DEBUG)
-						                {
-						                    DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-						                }
-		
-						                mView.addObject(Constants.COMMAND, changeReq);
-						                mView.setViewName(this.submitAnswersPage);
-					                }
-		
+						            AccountResetRequest resetReq = new AccountResetRequest();
+						            resetReq.setApplicationId(this.appConfig.getApplicationId());
+						            resetReq.setApplicationName(this.appConfig.getApplicationName());
+						            resetReq.setHostInfo(reqInfo);
+						            resetReq.setUserAccount(response.getUserAccount());
+
+						            if (DEBUG)
+						            {
+						                DEBUGGER.debug("AccountResetRequest: {}", resetReq);
+						            }
+
+						            AccountResetResponse resetResponse = processor.obtainUserSecurityConfig(resetReq);
+
+						            if (DEBUG)
+						            {
+						                DEBUGGER.debug("AccountResetResponse: {}", resetResponse);
+						            }
+
+						            switch (resetResponse.getRequestStatus())
+						            {
+										case DISABLED:
+											mView.addObject(Constants.ERROR_MESSAGE, this.messageAccountDisabled);
+											mView.setViewName(this.appConfig.getErrorResponsePage());
+
+											break;
+										case FAILURE:
+											mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestFailure);
+											mView.setViewName(this.appConfig.getErrorResponsePage());
+
+											break;
+										case SUCCESS:
+							                UserAccount resAccount = resetResponse.getUserAccount();
+
+							                if (DEBUG)
+							                {
+							                	DEBUGGER.debug("UserAccount resAccount: {}", resAccount);
+							                }
+				
+							                if (resAccount.isSuspended()) // TODO
+							                {
+							                	mView.setViewName(this.appConfig.getUnauthorizedPage());
+							                }
+							                else
+							                {
+							                	AuthenticationData secResponse = resetResponse.getUserSecurity();
+
+								                AccountChangeData changeReq = new AccountChangeData();
+								                changeReq.setSecQuestionOne(secResponse.getSecQuestionOne());
+								                changeReq.setSecQuestionTwo(secResponse.getSecQuestionTwo());
+								                changeReq.setGuid(resAccount.getGuid());
+								                changeReq.setUsername(resAccount.getUsername());
+								                changeReq.setResetType(ResetRequestType.QUESTIONS);
+				
+								                if (DEBUG)
+								                {
+								                    DEBUGGER.debug("UserChangeRequest: {}", changeReq);
+								                }
+				
+								                mView.addObject(Constants.COMMAND, changeReq);
+								                mView.setViewName(this.submitAnswersPage);
+							                }
+				
+											break;
+										case UNAUTHORIZED:
+											mView.setViewName(this.appConfig.getUnauthorizedPage());
+				
+											break;
+										default:
+											mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+											mView.setViewName(this.appConfig.getErrorResponsePage());
+				
+											break;
+						            }
+
 									break;
 								case UNAUTHORIZED:
 									mView.setViewName(this.appConfig.getUnauthorizedPage());
-		
+
 									break;
 								default:
-									mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 									mView.setViewName(this.appConfig.getErrorResponsePage());
-		
+
 									break;
-				            }
+							}
 	
 				            break;
 						}
@@ -1053,12 +1135,17 @@ public class OnlineResetController
 	
 						break;
 				case OLRLOCKED:
-					// TODO
+					mView.addObject(Constants.ERROR_MESSAGE, this.messageOlrLocked);
+					mView.setViewName(this.appConfig.getLogonRedirect());
+
 					break;
 				case OLRSETUP:
-					// TODO
+					mView.addObject(Constants.ERROR_MESSAGE, this.messageOlrSetup);
+					mView.setViewName(this.appConfig.getLogonRedirect());
+
 					break;
 				default:
+					mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 					mView.setViewName(this.appConfig.getErrorResponsePage());
 
 					break;
@@ -1344,6 +1431,7 @@ public class OnlineResetController
 
         return mView;
     }
+
 
     @RequestMapping(value = "forgot-password/change-password", method = RequestMethod.POST)
     public final ModelAndView submitPasswordChange(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)

@@ -25,7 +25,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -42,7 +41,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlType(name = "serviceAccount")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class ServiceAccount implements Serializable
+public final class ServiceAccount
 {
     private String accountName = null;
     private String accountGuid = null;

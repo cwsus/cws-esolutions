@@ -136,11 +136,11 @@ public interface UserManager
      *
      * @param searchData - The search string to utilize within the <code>Filter</code>
      * that correlates to the provided <code>SearchRequestType</code>
-     * @return List - An <code>String</code> containing a string array of
+     * @return List<String> - An <code>String</code> containing a string array of
      * all possible responses
      * @throws UserManagementException if an exception occurs during processing
      */
-    String getUserByUsername(final String searchData) throws UserManagementException;
+    List<String> getUserByUsername(final String searchData) throws UserManagementException;
 
     /**
      * Loads and returns data for a provided user account. Search is performed using the user's

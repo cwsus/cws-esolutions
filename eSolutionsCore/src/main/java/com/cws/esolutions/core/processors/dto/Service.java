@@ -43,7 +43,7 @@ import com.cws.esolutions.core.processors.enums.NetworkPartition;
  */
 public class Service implements Serializable
 {
-    private double score = 0.0;
+	private double score = 0.0;
     private String guid = null;
     private String name = null;
     private ServiceType type = null;
@@ -54,7 +54,7 @@ public class Service implements Serializable
     private NetworkPartition partition = null;
 
     private static final String CNAME = Service.class.getName();
-    private static final long serialVersionUID = -4382390818947300324L;
+    private static final long serialVersionUID = 955456213967889796L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

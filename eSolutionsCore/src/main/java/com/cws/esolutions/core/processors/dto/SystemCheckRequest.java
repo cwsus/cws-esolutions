@@ -40,7 +40,7 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class SystemCheckRequest implements Serializable
 {
-    private int portNumber = 0;
+	private int portNumber = 0;
     private String serviceId = null;
     private String processName = null;
     private Server sourceServer = null;
@@ -50,7 +50,7 @@ public class SystemCheckRequest implements Serializable
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
 
-    private static final long serialVersionUID = -46841443676631031L;
+    private static final long serialVersionUID = -2220217709344312463L;
     private static final String CNAME = SystemCheckRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

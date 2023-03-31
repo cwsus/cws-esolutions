@@ -41,14 +41,14 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AccountControlResponse implements Serializable
 {
-    private int entryCount = 0;
+	private int entryCount = 0;
     private String resetId = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
     private List<UserAccount> userList = null;
     private SecurityRequestStatus requestStatus = null;
 
-    private static final long serialVersionUID = 7424992844092841578L;
+    private static final long serialVersionUID = 2909205394410802509L;
     private static final String CNAME = AccountControlResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

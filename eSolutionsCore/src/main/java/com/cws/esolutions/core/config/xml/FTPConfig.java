@@ -25,7 +25,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +41,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlRootElement(name = "ftp-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class FTPConfig implements Serializable
+public final class FTPConfig
 {
     private int timeout = 10; // default to 10 seconds
     private String ftpSalt= null;
@@ -50,7 +49,6 @@ public final class FTPConfig implements Serializable
     private String ftpPassword = null;
 
     private static final String CNAME = FTPConfig.class.getName();
-    private static final long serialVersionUID = -4670903285628304991L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

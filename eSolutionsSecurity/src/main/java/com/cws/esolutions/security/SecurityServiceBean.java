@@ -26,8 +26,8 @@ package com.cws.esolutions.security;
  * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 import java.util.Map;
-import java.io.Serializable;
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -40,14 +40,14 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
  */
 public class SecurityServiceBean implements Serializable
 {
-    private Object authDataSource = null;
+	private Object authDataSource = null;
     private Object auditDataSource = null;
     private Map<String, DataSource> dataSources = null;
     private SecurityConfigurationData configData = null;
 
     private static SecurityServiceBean instance = null;
 
-    private static final long serialVersionUID = -2801382473833987974L;
+    private static final long serialVersionUID = 8530076928316338421L;
     private static final String CNAME = SecurityServiceBean.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

@@ -28,6 +28,7 @@ package com.cws.esolutions.security.utils;
 import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import java.security.SecureRandom;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
@@ -35,15 +36,18 @@ import org.apache.logging.log4j.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import java.security.InvalidKeyException;
-import java.security.AlgorithmParameters;
-import jakarta.xml.bind.DatatypeConverter;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import java.io.UnsupportedEncodingException;
 import javax.crypto.IllegalBlockSizeException;
 import java.security.NoSuchAlgorithmException;
+import org.apache.commons.lang3.RandomStringUtils;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -75,9 +79,9 @@ public final class PasswordUtils
      * @return The encrypted string in a reversible format
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final String encryptText(final char[] value, final byte[] salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
+    public static final String encryptText(final char[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#encryptText(final String value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException";
+        final String methodName = PasswordUtils.CNAME + "#encryptText(final char[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String encoding) throws SecurityException";
 
         if (DEBUG)
         {
@@ -85,20 +89,21 @@ public final class PasswordUtils
             DEBUGGER.debug("Value: {}", secretInstance);
             DEBUGGER.debug("Value: {}", iterations);
             DEBUGGER.debug("Value: {}", keyBits);
-            DEBUGGER.debug("Value: {}", algorithm);
-            DEBUGGER.debug("Value: {}", cipherInstance);
             DEBUGGER.debug("Value: {}", encoding);
         }
 
-        String result = null;
+        System.out.println("provided value: " + new String(value));
+        System.out.println("provided salt: " + salt);
+
+        String response = null;
 
         try
         {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(secretInstance);
-            PBEKeySpec keySpec = new PBEKeySpec(value, salt, iterations, keyBits);
+            PBEKeySpec keySpec = new PBEKeySpec(value, salt.getBytes(encoding), iterations, keyBits);
             SecretKey keyTmp = keyFactory.generateSecret(keySpec);
-            SecretKeySpec sks = new SecretKeySpec(keyTmp.getEncoded(), algorithm);
             Cipher pbeCipher = Cipher.getInstance(cipherInstance);
+            SecretKeySpec sks = new SecretKeySpec(keyTmp.getEncoded(), algorithm);
             pbeCipher.init(Cipher.ENCRYPT_MODE, sks);
 
             AlgorithmParameters parameters = pbeCipher.getParameters();
@@ -107,119 +112,43 @@ public final class PasswordUtils
             byte[] cryptoText = pbeCipher.doFinal(new String(value).getBytes(encoding));
             byte[] iv = ivParameterSpec.getIV();
 
-            result = PasswordUtils.base64Encode(DatatypeConverter.printBase64Binary(iv) + ":" + DatatypeConverter.printBase64Binary(cryptoText));
-        }
-        catch (final InvalidKeyException ikx)
-        {
-            throw new SecurityException(ikx.getMessage(), ikx);
+            response = DigestUtils.sha512Hex(iv + ":" + cryptoText);
+            System.out.println("response: " + response);
         }
         catch (final NoSuchAlgorithmException nsx)
         {
             throw new SecurityException(nsx.getMessage(), nsx);
         }
-        catch (final NoSuchPaddingException npx)
-        {
-            throw new SecurityException(npx.getMessage(), npx);
-        }
-        catch (final IllegalBlockSizeException ibx)
-        {
-            throw new SecurityException(ibx.getMessage(), ibx);
-        }
-        catch (final BadPaddingException bpx)
-        {
-            throw new SecurityException(bpx.getMessage(), bpx);
-        }
         catch (final InvalidKeySpecException iksx)
         {
             throw new SecurityException(iksx.getMessage(), iksx);
-        }
-        catch (final InvalidParameterSpecException ipsx)
-        {
-            throw new SecurityException(ipsx.getMessage(), ipsx);
         }
         catch (UnsupportedEncodingException uex)
         {
         	throw new SecurityException(uex.getMessage(), uex);
 		}
-
-        return result;
-    }
-
-    /**
-     * Provides an encryption method for given values
-     *
-     * @param value - The plain text data to encrypt
-     * @param salt - The salt value to utilize for the request
-     * @param secretInstance - The cryptographic instance to use for the SecretKeyFactory
-     * @param iterations - The number of times to loop through the keyspec
-     * @param keyBits - The size of the key, in bits
-     * @param algorithm - The algorithm to encrypt the data with
-     * @param cipherInstance - The cipher instance to utilize
-     * @param encoding - The text encoding
-     * @return The encrypted string in a reversible format
-     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
-     */
-    public static final String decryptText(final String password, final char[] value, final byte[] salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
-    {
-        final String methodName = PasswordUtils.CNAME + "#decryptText(final String password, final char[] value, final byte[] salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException";
-
-        if (DEBUG)
+        catch (NoSuchPaddingException nspx)
         {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", secretInstance);
-            DEBUGGER.debug("Value: {}", iterations);
-            DEBUGGER.debug("Value: {}", keyBits);
-            DEBUGGER.debug("Value: {}", algorithm);
-            DEBUGGER.debug("Value: {}", cipherInstance);
-            DEBUGGER.debug("Value: {}", encoding);
-        }
-
-        String result = null;
-        String base = PasswordUtils.base64Decode(password);
-        String iv = base.split(":")[0];
-        String property = base.split(":")[1];
-
-        try
+        	throw new SecurityException(nspx.getMessage(), nspx);
+		}
+        catch (InvalidKeyException ikx)
         {
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(secretInstance);
-            PBEKeySpec keySpec = new PBEKeySpec(value, salt, iterations, keyBits);
-            SecretKey keyTmp = keyFactory.generateSecret(keySpec);
-            SecretKeySpec sks = new SecretKeySpec(keyTmp.getEncoded(), algorithm);
-            Cipher pbeCipher = Cipher.getInstance(cipherInstance);
-            pbeCipher.init(Cipher.DECRYPT_MODE, sks, new IvParameterSpec(DatatypeConverter.parseBase64Binary(iv)));
-
-            result = new String(pbeCipher.doFinal(DatatypeConverter.parseBase64Binary(property)));
-        }
-        catch (final InvalidKeyException ikx)
+        	throw new SecurityException(ikx.getMessage(), ikx);
+		}
+        catch (InvalidParameterSpecException ipsx)
         {
-            throw new SecurityException(ikx.getMessage(), ikx);
-        }
-        catch (final NoSuchAlgorithmException nsx)
+        	throw new SecurityException(ipsx.getMessage(), ipsx);
+		}
+        catch (IllegalBlockSizeException ibsx)
         {
-            throw new SecurityException(nsx.getMessage(), nsx);
-        }
-        catch (final NoSuchPaddingException npx)
+			throw new SecurityException(ibsx.getMessage(), ibsx);
+		}
+        catch (BadPaddingException bpx)
         {
-            throw new SecurityException(npx.getMessage(), npx);
-        }
-        catch (final IllegalBlockSizeException ibx)
-        {
-            throw new SecurityException(ibx.getMessage(), ibx);
-        }
-        catch (final BadPaddingException bpx)
-        {
-            throw new SecurityException(bpx.getMessage(), bpx);
-        }
-        catch (final InvalidKeySpecException iksx)
-        {
-            throw new SecurityException(iksx.getMessage(), iksx);
-        }
-        catch (InvalidAlgorithmParameterException iapx)
-        {
-        	throw new SecurityException(iapx.getMessage(), iapx);
+        	throw new SecurityException(bpx.getMessage(), bpx);
 		}
 
-        return result;
+        return response;
     }
 
     /**
@@ -304,43 +233,32 @@ public final class PasswordUtils
         return decPass;
     }
 
-    /**
-     * Base64 encodes a given string
-     *
-     * @param text - The text to base64 encode
-     * @return The base64-encoded string
-     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
-     */
-    public static final String base64Encode(final String text) throws SecurityException
+    public static final String returnGeneratedSalt(final String generator, final int length)
     {
-        final String methodName = PasswordUtils.CNAME + "#base64Encode(final String text) throws SecurityException";
+        final String methodName = PasswordUtils.CNAME + "#returnGeneratedSalt(final String generator, final int length)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", text);
+            DEBUGGER.debug("Value: {}", generator);
+            DEBUGGER.debug("Value: {}", length);
         }
 
-        return Base64.getEncoder().encodeToString(text.getBytes());
-    }
+        String newSalt = null;
 
-    /**
-     * Base64 decodes a given string
-     *
-     * @param text - The text to base64 decode
-     * @return The base64-decoded string
-     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
-     */
-    public static final String base64Decode(final String text) throws SecurityException
-    {
-        final String methodName = PasswordUtils.CNAME + "#base64Decode(final String text) throws SecurityException";
+		try
+		{
+			SecureRandom sRandom = SecureRandom.getInstance(generator);
+        	byte[] salt = new byte[length];
+        	sRandom.nextBytes(salt);
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", text);
-        }
+        	newSalt = DigestUtils.sha512Hex(salt);
+		}
+		catch (NoSuchAlgorithmException nsax)
+		{
+			newSalt = RandomStringUtils.randomAlphanumeric(length);
+		}
 
-        return new String(Base64.getDecoder().decode(text.getBytes()));
+		return newSalt;
     }
 }

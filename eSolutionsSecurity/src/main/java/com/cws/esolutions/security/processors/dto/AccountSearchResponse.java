@@ -47,7 +47,7 @@ public class AccountSearchResponse implements Serializable
 	private List<UserAccount> userList = null;
     private SecurityRequestStatus requestStatus = null;
 
-    private static final long serialVersionUID = 8842652760635361813L;
+    private static final long serialVersionUID = 4315804998196069359L;
     private static final String CNAME = AccountSearchResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

@@ -26,6 +26,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.Arrays;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -85,7 +86,7 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userId);
+            stmt.setString(1, userGuid);
 
             if (DEBUG)
             {
@@ -109,13 +110,11 @@ public class SQLUserManager implements UserManager
                     {
                         if ((StringUtils.equals(resultSet.getString(1), userGuid)) || (StringUtils.equals(resultSet.getString(2), userId)))
                         {
-                            resultSet.close();
-                            stmt.close();
-                            sqlConn.close();
-
-                            throw new UserManagementException("A user currently exists with the provided information.");
+                        	throw new UserManagementException("A user currently exists with the provided information.");
                         }
                     }
+
+                    isValid = true;
                 }
             }
         }
@@ -214,7 +213,13 @@ public class SQLUserManager implements UserManager
         }
         catch (final SQLException sqx)
         {
-            throw new UserManagementException(sqx.getMessage(), sqx);
+        	switch (sqx.getErrorCode())
+        	{
+        		case 1061:
+        			throw new UserManagementException("An account already exists with that username.");
+    			default:
+    				throw new UserManagementException(sqx.getMessage(), sqx);
+        	}
         }
         finally
         {
@@ -416,7 +421,7 @@ public class SQLUserManager implements UserManager
                         resultSet.beforeFirst();
                         results = new ArrayList<String[]>();
 
-                        while (resultSet.next()) // TODO: these should not be static strings.
+                        while (resultSet.next())
                         {
                             String[] userData = new String[]
                             {
@@ -615,7 +620,7 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
      */
-    public synchronized String getUserByUsername(final String searchData) throws UserManagementException
+    public synchronized List<String> getUserByUsername(final String searchData) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#getUserByUsername(final String searchData) throws UserManagementException";
         
@@ -629,6 +634,7 @@ public class SQLUserManager implements UserManager
         String userAccount = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
+        List<String> responseList = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -685,7 +691,10 @@ public class SQLUserManager implements UserManager
 
                     resultSet.first();
 
-                    userAccount = resultSet.getString(1);
+                    responseList = new ArrayList<String>(
+                    		Arrays.asList(
+                    				resultSet.getString(1),
+                    				resultSet.getString(2)));
 
                     if (DEBUG)
                     {
@@ -727,7 +736,7 @@ public class SQLUserManager implements UserManager
             }
         }
 
-        return userAccount;
+        return responseList;
     }
 
     /**

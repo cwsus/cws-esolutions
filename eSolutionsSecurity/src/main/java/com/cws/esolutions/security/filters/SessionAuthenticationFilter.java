@@ -45,6 +45,8 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.FlashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -267,7 +269,80 @@ public class SessionAuthenticationFilter implements Filter
                 DEBUGGER.debug("sessionValue: {}", value);
             }
 
-            if (value instanceof UserAccount)
+            if (value instanceof CopyOnWriteArrayList)
+            {
+            	CopyOnWriteArrayList<?> flashAttribs = (CopyOnWriteArrayList<?>) value;
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("CopyOnWriteArrayList<Object>: {}", flashAttribs);
+            	}
+
+            	FlashMap flashMap = (FlashMap) flashAttribs.get(0);
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("FlashMap: {}", flashMap);
+            	}
+
+            	for (Object flashObject : flashMap.values())
+            	{
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("flashObject: {}", flashObject);
+                	}
+
+            		if (flashObject instanceof UserAccount)
+            		{
+            			UserAccount userAccount = (UserAccount) flashObject;
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", userAccount);
+                        }
+
+                        if (userAccount.getStatus() != null)
+                        {
+                            switch (userAccount.getStatus())
+                            {
+                                case EXPIRED:
+                                    if ((!(StringUtils.equals(requestURI, passwdPage))))
+                                    {
+                                        ERROR_RECORDER.error("Account is expired and this request is not for the password page. Redirecting !");
+
+                                        hResponse.sendRedirect(this.passwordURI);
+
+                                        return;
+                                    }
+
+                                    filterChain.doFilter(sRequest, sResponse);
+
+                                    return;
+                                case RESET:
+                                    if ((!(StringUtils.equals(requestURI, passwdPage))))
+                                    {
+                                        ERROR_RECORDER.error("Account has status RESET and this request is not for the password page. Redirecting !");
+
+                                        hResponse.sendRedirect(this.passwordURI);
+
+                                        return;
+                                    }
+
+                                    filterChain.doFilter(sRequest, sResponse);
+
+                                    return;
+                                case SUCCESS:
+                                    filterChain.doFilter(sRequest, sResponse);
+
+                                    return;
+                                default:
+                                    break;
+                            }
+                        }
+            		}
+            	}
+            }
+            else if (value instanceof UserAccount)
             {
                 UserAccount userAccount = (UserAccount) value;
 

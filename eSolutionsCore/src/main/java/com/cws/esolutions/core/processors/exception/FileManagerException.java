@@ -31,7 +31,6 @@ import com.cws.esolutions.core.exception.CoreServicesException;
  */
 public class FileManagerException extends CoreServicesException
 {
-    private static final long serialVersionUID = -2932676631264113045L;
 
     /**
      * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)

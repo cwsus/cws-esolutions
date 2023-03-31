@@ -31,9 +31,9 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  */
 public class AuditServiceException extends SecurityServiceException
 {
-    private static final long serialVersionUID = -4989476871384420297L;
+    private static final long serialVersionUID = -6272396991913081945L;
 
-    /**
+	/**
      * @param message - The thrown exception message
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
      */

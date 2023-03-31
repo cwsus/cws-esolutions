@@ -41,13 +41,13 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 public class CoreServicesRequest implements Serializable
 {
-    private String appName = null;
+	private String appName = null;
     private String projectId = null;
     private String serviceId = null;
     private Object requestPayload = null;
 
+    private static final long serialVersionUID = 8744045748424626849L;
     private static final String CNAME = CoreServicesRequest.class.getName();
-    private static final long serialVersionUID = -7910758710669328293L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

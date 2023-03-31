@@ -60,7 +60,7 @@ public class SQLAuthenticatorTest
 
         try
         {
-        	System.out.println(authenticator.performLogon(GUID));
+        	Assertions.assertThat(authenticator.performLogon(GUID)).isNotEmpty();
         }
         catch (final AuthenticatorException e)
         {

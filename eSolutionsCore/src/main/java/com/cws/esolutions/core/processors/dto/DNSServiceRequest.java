@@ -43,7 +43,7 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class DNSServiceRequest implements Serializable
 {
-    private String serviceId = null;
+	private String serviceId = null;
     private String searchURL = null;
     private DNSRecord record = null;
     private DNSEntry dnsEntry = null;
@@ -59,7 +59,7 @@ public class DNSServiceRequest implements Serializable
     private RequestHostInfo requestInfo = null;
     private ServiceRegion serviceRegion = null;
 
-    private static final long serialVersionUID = -1572590232161993918L;
+    private static final long serialVersionUID = -9053933093135370183L;
     private static final String CNAME = DNSServiceRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

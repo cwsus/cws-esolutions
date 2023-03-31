@@ -34,8 +34,6 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.enums.ServiceCheckType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-//import com.cws.esolutions.agent.processors.enums.StateManagementType;
-//import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -43,7 +41,7 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class ServerManagementRequest implements Serializable
 {
-    private int startPage = 0;
+	private int startPage = 0;
     private String attribute = null;
     private String serviceId = null;
     private Server sourceServer = null;
@@ -54,10 +52,8 @@ public class ServerManagementRequest implements Serializable
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
     private ServiceCheckType requestType = null;
-    //private ServiceOperationType serviceType = null;
-    //private StateManagementType stateMgmtType = null;
 
-    private static final long serialVersionUID = -5693821644019998365L;
+    private static final long serialVersionUID = 784606731297721639L;
     private static final String CNAME = ServerManagementRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
@@ -193,19 +189,6 @@ public class ServerManagementRequest implements Serializable
         this.requestType = value;
     }
 
-    /*public final void setServiceType(final ServiceOperationType value)
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#setServiceType(final ServiceOperationType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceType = value;
-    }*/
-
     public final void setInstallAgent(final boolean value)
     {
         final String methodName = ServerManagementRequest.CNAME + "#setInstallAgent(final boolean value)";
@@ -218,19 +201,6 @@ public class ServerManagementRequest implements Serializable
 
         this.installAgent = value;
     }
-
-    /*public final void setStateMgmtType(final StateManagementType value)
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#setStateMgmtType(final StateManagementType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.stateMgmtType = value;
-    }*/
 
     public final UserAccount getUserAccount()
     {
@@ -362,19 +332,6 @@ public class ServerManagementRequest implements Serializable
         return this.requestType;
     }
 
-    /*public final ServiceOperationType getServiceType()
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#getServiceType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceType);
-        }
-
-        return this.serviceType;
-    }*/
-
     public final boolean installAgent()
     {
         final String methodName = ServerManagementRequest.CNAME + "#installAgent()";
@@ -387,19 +344,6 @@ public class ServerManagementRequest implements Serializable
 
         return this.installAgent;
     }
-
-    /*public final StateManagementType getStateMgmtType()
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#getStateMgmtType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.stateMgmtType);
-        }
-
-        return this.stateMgmtType;
-    }*/
 
     @Override
     public String toString()

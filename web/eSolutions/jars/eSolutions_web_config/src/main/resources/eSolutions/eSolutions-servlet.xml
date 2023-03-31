@@ -55,7 +55,6 @@
         <property name="fileEncoding" value="UTF-8" />
         <property name="applicationName" value="eSolutions" /> <!-- application name -->
         <property name="applicationId" value="6236B840-88B0-4230-BCBC-8EC33EE837D9" />
-        <property name="requestTimeout" value="10" /> <!-- timeout value (primarily for connections) -->
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
         <property name="emailAddress" value="esolutions@caspersbox.com" />
         <property name="homePage" value="/jsp/html/en/CommonLandingPage" />
@@ -69,6 +68,7 @@
         <property name="homeRedirect" value="redirect:/ui/common/default" />
         <property name="contactAdminsRedirect" value="redirect:/ui/common/contact" />
         <property name="expiredRedirect" value="redirect:/ui/user-account/password" />
+        <property name="olrRedirect" value="redirect:/ui/user-account/security" />
         <property name="themeMessageSource" value="nls.theme.resources" />
         <property name="messageEmailSendFailed" value="theme.system.message.email.send.failed" />
         <property name="messageRequestCanceled" value="theme.system.message.request.canceled" />
@@ -79,6 +79,10 @@
         <property name="messageValidationFailed" value="theme.request.validation.failed" />
         <property name="messageNoSearchResults" value="theme.search.no.results" />
         <property name="messageEmailSentSuccess" value="theme.email.sent.success" />
+        <property name="messageAccountLocked" value="theme.error.account.locked" />
+        <property name="messageAccountSuspended" value="theme.error.account.suspended" />
+        <property name="messagePasswordLengthCheckFailed" value="theme.password.length.check.failed" />
+        <property name="messageOlrSetup" value="theme.olr.setup" />
     </bean>
 
 	<bean class="org.springframework.web.context.support.ServletContextAttributeExporter">

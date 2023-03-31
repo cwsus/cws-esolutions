@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /**
@@ -183,7 +182,7 @@ public class PlatformRequest implements Serializable
     public final String toString()
     {
     	StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -198,7 +197,7 @@ public class PlatformRequest implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
                     }
                 }
                 catch (final IllegalAccessException iax) {}

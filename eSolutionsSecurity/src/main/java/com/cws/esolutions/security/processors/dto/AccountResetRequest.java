@@ -39,9 +39,8 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccountResetRequest implements Serializable
 {
-    private int count = 0;
+	private int count = 0;
     private String searchData = null;
-    private String resetSmsCode = null;
     private String applicationId = null;
     private String resetRequestId = null;
     private String applicationName = null;
@@ -49,7 +48,7 @@ public class AccountResetRequest implements Serializable
     private RequestHostInfo hostInfo = null;
     private AuthenticationData userSecurity = null;
 
-    private static final long serialVersionUID = 3969406266859633875L;
+    private static final long serialVersionUID = 1315217992273921012L;
     private static final String CNAME = AccountResetRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
@@ -142,18 +141,6 @@ public class AccountResetRequest implements Serializable
         }
 
         this.resetRequestId = value;
-    }
-
-    public final void setResetSmsCode(final String value)
-    {
-        final String methodName = AccountResetRequest.CNAME + "#setResetSmsCode(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.resetSmsCode = value;
     }
 
     public final void setCount(final int value)
@@ -269,18 +256,6 @@ public class AccountResetRequest implements Serializable
         }
 
         return this.resetRequestId;
-    }
-
-    public final String getResetSmsCode()
-    {
-        final String methodName = AccountResetRequest.CNAME + "#getResetSmsCode()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.resetSmsCode;
     }
 
     @Override

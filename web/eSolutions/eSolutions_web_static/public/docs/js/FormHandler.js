@@ -1,3 +1,9 @@
+// Redirect on cancel
+function redirectOnCancel(theLocation)
+{
+    window.location.replace(theLocation);
+}
+
 // Disable button
 function disableButton(theButton)
 {

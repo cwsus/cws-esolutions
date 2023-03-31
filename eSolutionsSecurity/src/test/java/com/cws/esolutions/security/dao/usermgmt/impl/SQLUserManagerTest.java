@@ -72,11 +72,16 @@ public class SQLUserManagerTest
                             Arrays.asList(
                             		GUID,
                             		"junit-test",
-                            		PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(32).toCharArray(), RandomStringUtils.randomAlphanumeric(32).getBytes(),
+                            		PasswordUtils.encryptText(
+                            				RandomStringUtils.randomAlphanumeric(32).toCharArray(),
+                            				PasswordUtils.returnGeneratedSalt(
+                            						bean.getConfigData().getSecurityConfig().getRandomGenerator(), bean.getConfigData().getSecurityConfig().getSaltLength()),
                             				bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                                			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
-                                			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                                			bean.getConfigData().getSystemConfig().getEncoding()),
+                            				bean.getConfigData().getSecurityConfig().getIterations(),
+                            				bean.getConfigData().getSecurityConfig().getKeyLength(),
+                            				bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            				bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                                            bean.getConfigData().getSystemConfig().getEncoding()),
                             		SecurityUserRole.NONE.toString(),
                             		"junit",
                             		"test",
@@ -84,6 +89,7 @@ public class SQLUserManagerTest
                             		"1234567890",
                             		"1987654321")))).isTrue();
         }
+
         catch (final UserManagementException umx)
         {
         	umx.printStackTrace();
@@ -223,11 +229,17 @@ public class SQLUserManagerTest
         try
         {
             Assertions.assertThat(manager.modifyUserPassword(SQLUserManagerTest.GUID,
-            		PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(32).toCharArray(), RandomStringUtils.randomAlphanumeric(32).getBytes(),
-            				bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
-                			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                			bean.getConfigData().getSystemConfig().getEncoding())));
+            		PasswordUtils.encryptText(
+            				RandomStringUtils.randomAlphanumeric(32).toCharArray(),
+            				PasswordUtils.returnGeneratedSalt(
+            						bean.getConfigData().getSecurityConfig().getRandomGenerator(),
+            						bean.getConfigData().getSecurityConfig().getSaltLength()),
+            					bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+            					bean.getConfigData().getSecurityConfig().getIterations(),
+            					bean.getConfigData().getSecurityConfig().getKeyLength(),
+            					bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+            					bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+            					bean.getConfigData().getSystemConfig().getEncoding())));
         }
         catch (final UserManagementException umx)
         {
@@ -243,20 +255,28 @@ public class SQLUserManagerTest
                     Arrays.asList(
                             "What is your favourite cartoon ?",
                             "Who was your childhood best friend ?",
-                            PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(32).toCharArray(), RandomStringUtils.randomAlphanumeric(32).getBytes(),
-                    				bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                        			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
-                        			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                        			bean.getConfigData().getSystemConfig().getEncoding()),
-                            PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(32).toCharArray(), RandomStringUtils.randomAlphanumeric(32).getBytes(),
-                            		bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                            		bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSecurityConfig().getKeyLength(),
-                            		bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            		bean.getConfigData().getSystemConfig().getEncoding())
-                            )
-                    )
-            		)
-            		);
+                            PasswordUtils.encryptText(
+                            		RandomStringUtils.randomAlphanumeric(32).toCharArray(),
+                            		PasswordUtils.returnGeneratedSalt(
+                            				bean.getConfigData().getSecurityConfig().getRandomGenerator(),
+                            				bean.getConfigData().getSecurityConfig().getSaltLength()),
+                            			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+                            			bean.getConfigData().getSecurityConfig().getIterations(),
+                            			bean.getConfigData().getSecurityConfig().getKeyLength(),
+                            			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            			bean.getConfigData().getSystemConfig().getEncoding()),
+                            PasswordUtils.encryptText(
+                            		RandomStringUtils.randomAlphanumeric(32).toCharArray(),
+                            		PasswordUtils.returnGeneratedSalt(
+                            				bean.getConfigData().getSecurityConfig().getRandomGenerator(),
+                            				bean.getConfigData().getSecurityConfig().getSaltLength()),
+                            			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+                            			bean.getConfigData().getSecurityConfig().getIterations(),
+                            			bean.getConfigData().getSecurityConfig().getKeyLength(),
+                            			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            			bean.getConfigData().getSystemConfig().getEncoding())))));
         }
         catch (final UserManagementException umx)
         {

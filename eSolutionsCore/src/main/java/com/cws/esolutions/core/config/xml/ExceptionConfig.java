@@ -26,7 +26,6 @@ package com.cws.esolutions.core.config.xml;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -44,13 +43,12 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlRootElement(name = "exception-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class ExceptionConfig implements Serializable
+public final class ExceptionConfig
 {
     private String emailFrom = null;
     private List<String> notificationAddress = null;
     private boolean sendExceptionNotifications = false;
 
-    private static final long serialVersionUID = -8486613546271441632L;
     private static final String CNAME = ExceptionConfig.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

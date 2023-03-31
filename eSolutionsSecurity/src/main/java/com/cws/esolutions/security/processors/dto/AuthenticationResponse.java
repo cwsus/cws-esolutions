@@ -40,11 +40,11 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AuthenticationResponse implements Serializable
 {
-    private int count = 0;
+	private int count = 0;
     private UserAccount userAccount = null;
     private SecurityRequestStatus requestStatus = null;
 
-    private static final long serialVersionUID = 1605278206605846598L;
+    private static final long serialVersionUID = -3506122563139951976L;
     private static final String CNAME = AuthenticationResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

@@ -39,7 +39,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccountChangeRequest implements Serializable
 {
-    private boolean isReset = false;
+	private boolean isReset = false;
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
@@ -47,7 +47,7 @@ public class AccountChangeRequest implements Serializable
     private RequestHostInfo hostInfo = null;
     private AuthenticationData userSecurity = null;
 
-    private static final long serialVersionUID = -7265044360536886625L;
+    private static final long serialVersionUID = 972018204605942088L;
     private static final String CNAME = AccountChangeRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

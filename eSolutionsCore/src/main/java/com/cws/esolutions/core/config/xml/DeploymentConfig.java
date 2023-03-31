@@ -27,7 +27,6 @@ package com.cws.esolutions.core.config.xml;
  */
 import java.io.File;
 import java.util.List;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +44,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlRootElement(name = "deployment-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class DeploymentConfig implements Serializable
+public final class DeploymentConfig
 {
     private String controlFile = null;
     private File activeDeployDir = null;

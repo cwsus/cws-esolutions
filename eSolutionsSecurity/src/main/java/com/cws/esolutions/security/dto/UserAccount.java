@@ -25,9 +25,8 @@ package com.cws.esolutions.security.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
-import java.sql.Timestamp;
+import java.util.Date;
 import java.io.Serializable;
-import java.security.KeyPair;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -42,28 +41,25 @@ import com.cws.esolutions.security.processors.enums.LoginStatus;
  */
 public class UserAccount implements Serializable
 {
-    private String guid = null;
+	private String guid = null;
+    private Date lastLogin = null;
     private String surname = null;
+    private Date expiryDate = null;
     private String username = null;
     private String emailAddr = null;
     private String givenName = null;
-    private KeyPair userKeys = null;
     private String sessionId = null;
     private boolean accepted = false;
-    private boolean olrSetup = false;
     private String pagerNumber = null;
     private String displayName = null;
-    private boolean olrLocked = false;
     private boolean suspended = false;
     private LoginStatus status = null;
     private Integer failedCount = null;
-    private Timestamp lastLogin = null;
-    private Timestamp expiryDate = null;
     private String telephoneNumber = null;
     private SecurityUserRole userRole = null;
 
     private static final String CNAME = UserAccount.class.getName();
-    private static final long serialVersionUID = -1860442834878637721L;
+    private static final long serialVersionUID = -4373126337438707230L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -119,9 +115,9 @@ public class UserAccount implements Serializable
     /**
      * @param value - The expiration date associated with the account
      */
-    public final void setExpiryDate(final Timestamp value)
+    public final void setExpiryDate(final Date value)
     {
-        final String methodName = UserAccount.CNAME + "#setExpiryDate(final Timestamp value)";
+        final String methodName = UserAccount.CNAME + "#setExpiryDate(final Date value)";
 
         if (DEBUG)
         {
@@ -146,38 +142,6 @@ public class UserAccount implements Serializable
         }
 
         this.failedCount = value;
-    }
-
-    /**
-     * @param value - The OLR lockout flag associated with the account
-     */
-    public final void setOlrLocked(final boolean value)
-    {
-        final String methodName = UserAccount.CNAME + "#setOlrLocked(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.olrLocked = value;
-    }
-
-    /**
-     * @param value - The OLR setup flag associated with the account
-     */
-    public final void setOlrSetup(final boolean value)
-    {
-        final String methodName = UserAccount.CNAME + "#setOlrSetup(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.olrSetup = value;
     }
 
     /**
@@ -215,9 +179,9 @@ public class UserAccount implements Serializable
     /**
      * @param value - The last login timestamp associated with the account
      */
-    public final void setLastLogin(final Timestamp value)
+    public final void setLastLogin(final Date value)
     {
-        final String methodName = UserAccount.CNAME + "#setLastLogin(final Timestamp value)";
+        final String methodName = UserAccount.CNAME + "#setLastLogin(final Date value)";
 
         if (DEBUG)
         {
@@ -341,22 +305,6 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value - The SecurityUserRole for the provided user
-     */
-    public final void setUserKeys(final KeyPair value)
-    {
-        final String methodName = UserAccount.CNAME + "#setUserKeys(final KeyPair value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userKeys = value;
-    }
-
-    /**
      * @param value - The SessionID
      */
     public final void setSessionId(final String value)
@@ -439,7 +387,7 @@ public class UserAccount implements Serializable
     /**
      * @return The expiration date associated with the account
      */
-    public final Timestamp getExpiryDate()
+    public final Date getExpiryDate()
     {
         final String methodName = UserAccount.CNAME + "#getExpiryDate()";
 
@@ -466,38 +414,6 @@ public class UserAccount implements Serializable
         }
 
         return this.failedCount;
-    }
-
-    /**
-     * @return The OLR lockout flag associated with the account
-     */
-    public final boolean isOlrLocked()
-    {
-        final String methodName = UserAccount.CNAME + "#isOlrLocked()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.olrLocked);
-        }
-
-        return this.olrLocked;
-    }
-
-    /**
-     * @return The OLR setup flag associated with the account
-     */
-    public final boolean isOlrSetup()
-    {
-        final String methodName = UserAccount.CNAME + "#isOlrSetup()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.olrSetup);
-        }
-
-        return this.olrSetup;
     }
 
     /**
@@ -535,7 +451,7 @@ public class UserAccount implements Serializable
     /**
      * @return The last login timestamp associated with the account
      */
-    public final Timestamp getLastLogin()
+    public final Date getLastLogin()
     {
         final String methodName = UserAccount.CNAME + "#getLastLogin()";
 
@@ -642,22 +558,6 @@ public class UserAccount implements Serializable
         }
 
         return this.userRole;
-    }
-
-    /**
-     * @return KeyPair
-     */
-    public final KeyPair getUserKeys()
-    {
-        final String methodName = UserAccount.CNAME + "#getUserKeys()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userKeys);
-        }
-
-        return this.userKeys;
     }
 
     /**

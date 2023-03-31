@@ -98,12 +98,27 @@ public interface Authenticator
      * necessary flags are sent back to the frontend for further
      * handling.
      *
+     * @param guid - The user's UUID
+     * @return String - The account information for the authenticated user
+     * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
+     */
+    List<Boolean> getOlrStatus(final String guid) throws AuthenticatorException;
+
+    /**
+     * Processes an agent logon request via an LDAP user datastore. If the
+     * information provided matches an existing record, the user is
+     * considered authenticated successfully and further processing
+     * is performed to determine if that user is required to modify
+     * their password or setup online reset questions. If yes, the
+     * necessary flags are sent back to the frontend for further
+     * handling.
+     *
      * @param userId - the username to validate data against
      * @param guid - the GUID to validate data against
      * @return List - The security data housed for the given user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<Object> getSecurityQuestions(final String guid) throws AuthenticatorException;
+    List<String> getSecurityQuestions(final String guid) throws AuthenticatorException;
 
     /**
      * Processes authentication for the selected security question and user. If successful,
@@ -116,5 +131,5 @@ public interface Authenticator
      * @return boolean - <code>true</code> if verified, <code>false</code> otherwise
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<Object> getSecurityAnswers(final String guid) throws AuthenticatorException;
+    List<String> getSecurityAnswers(final String guid) throws AuthenticatorException;
 }

@@ -40,12 +40,12 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class FileSecurityResponse implements Serializable
 {
-    private File signedFile = null;
+	private File signedFile = null;
     private File encryptedFile = null;
     private boolean isSignatureValid = false;
     private SecurityRequestStatus requestStatus = null;
 
-    private static final long serialVersionUID = 1435610483075480864L;
+    private static final long serialVersionUID = 1762008247933953229L;
     private static final String CNAME = FileSecurityResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

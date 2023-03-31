@@ -40,7 +40,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccountControlRequest implements Serializable
 {
-    private int startPage = 0;
+	private int startPage = 0;
     private String projectId = null;
     private String serviceId = null;
     private String searchTerms = null;
@@ -52,7 +52,7 @@ public class AccountControlRequest implements Serializable
     private List<String> servicesList = null;
     private AuthenticationData userSecurity = null;
 
-    private static final long serialVersionUID = -6754484691575800762L;
+    private static final long serialVersionUID = 5302970590794596568L;
     private static final String CNAME = AccountControlRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

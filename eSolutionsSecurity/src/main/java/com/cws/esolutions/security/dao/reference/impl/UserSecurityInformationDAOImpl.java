@@ -265,6 +265,90 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     }
 
     /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#getUserSalt(java.lang.String, java.lang.String)
+     */
+    public synchronized String getUserPassword(final String commonName, final String userId) throws SQLException
+    {
+        final String methodName = UserSecurityInformationDAOImpl.CNAME + "#getUserPassword(final String commonName, final String userId) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", commonName);
+            DEBUGGER.debug("Value: {}", userId);
+        }
+
+        Connection sqlConn = null;
+        String userPassword = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareStatement("{ CALL getUserPassword(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, commonName);
+            stmt.setString(2, userId);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+                    userPassword = resultSet.getString(1);
+                }
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return userPassword;
+    }
+
+    /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#insertResetData(java.lang.String, java.lang.String, java.lang.String)
      */
     public synchronized boolean insertResetData(final String commonName, final String resetId) throws SQLException

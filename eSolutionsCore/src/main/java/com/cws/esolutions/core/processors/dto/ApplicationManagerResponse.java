@@ -42,10 +42,10 @@ import com.cws.esolutions.core.enums.CoreServicesStatus;
  */
 public class ApplicationManagerResponse implements Serializable
 {
-    private String response = null;
+	private String response = null;
     private CoreServicesStatus requestStatus = null;
 
-    private static final long serialVersionUID = -9096097694538612637L;
+    private static final long serialVersionUID = 8659021884253590896L;
     private static final String CNAME = ApplicationManagerResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

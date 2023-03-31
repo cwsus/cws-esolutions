@@ -25,7 +25,6 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -42,7 +41,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 @XmlType(name = "key-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class KeyConfig implements Serializable
+public final class KeyConfig
 {
     private int keySize = 1024;
     private String keyManager = null;
@@ -52,7 +51,6 @@ public final class KeyConfig implements Serializable
     private String publicKeyAttribute = null;
 
     private static final String CNAME = KeyConfig.class.getName();
-    private static final long serialVersionUID = -8561778865375243181L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -25,7 +25,6 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -42,7 +41,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 @XmlType(name = "securityReturningAttributes")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class SecurityReturningAttributes implements Serializable
+public final class SecurityReturningAttributes
 {
     private String secret = null;
     private String olrLocked = null;
@@ -56,8 +55,7 @@ public final class SecurityReturningAttributes implements Serializable
     private String userPassword = null;
     private String secQuestionTwo = null;
     private String secQuestionOne = null;
-
-    private static final long serialVersionUID = -6606124907043164731L;    
+    
     private static final String CNAME = SecurityReturningAttributes.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

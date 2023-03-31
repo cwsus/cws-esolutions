@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.reference.interfaces;
-import java.util.HashMap;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.reference.interfaces
@@ -27,6 +26,7 @@ import java.util.HashMap;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.HashMap;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.apache.logging.log4j.Logger;
@@ -92,6 +92,16 @@ public interface IUserSecurityInformationDAO
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     String getUserSalt(final String commonName, final String saltType) throws SQLException;
+
+    /**
+     * Returns the salt value associated with the given user account to process an
+     * authentication request.
+     *
+     * @param commonName - The commonName associated with the user (also known as GUID)
+     * @return String - The salt value for the configured user account
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     */
+    String getUserPassword(final String commonName, final String userId) throws SQLException;
 
     /**
      * Adds a reset request into the security datastore. This information is added on

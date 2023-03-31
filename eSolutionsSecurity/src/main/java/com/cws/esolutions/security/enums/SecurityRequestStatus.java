@@ -36,5 +36,6 @@ public enum SecurityRequestStatus
     OLRLOCKED,
     OLRSETUP,
     UNAUTHORIZED,
+    SUSPENDED,
     DISABLED;
 }

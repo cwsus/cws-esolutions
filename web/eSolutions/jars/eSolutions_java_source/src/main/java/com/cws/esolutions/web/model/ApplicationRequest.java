@@ -35,7 +35,7 @@ import com.cws.esolutions.core.processors.enums.DeploymentType;
  */
 public class ApplicationRequest implements Serializable
 {
-    private double version = 0.0;
+	private double version = 0.0;
     private String scmPath = null;
     private String jvmName = null;
     private String basePath = null;
@@ -50,7 +50,7 @@ public class ApplicationRequest implements Serializable
     private DeploymentType deploymentType = null;
     private MultipartFile applicationBinary = null;
 
-    private static final long serialVersionUID = -3668811202791320189L;
+    private static final long serialVersionUID = -2460962203983190636L;
     private static final String CNAME = ApplicationRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);

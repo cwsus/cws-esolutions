@@ -39,12 +39,12 @@ import com.cws.esolutions.core.enums.CoreServicesStatus;
  */
 public class SystemCheckResponse implements Serializable
 {
-    private String response = null;
+	private String response = null;
     private boolean isComplete = false;
     private Object responseObject = null;
     private CoreServicesStatus requestStatus = null;
 
-    private static final long serialVersionUID = -7337349584404643896L;
+    private static final long serialVersionUID = 2309162156416230524L;
     private static final String CNAME = SystemCheckResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

@@ -26,7 +26,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +42,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlType(name = "proxy-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class ProxyConfig implements Serializable
+public final class ProxyConfig
 {
     private int proxyServerPort = 0;
     private String proxyUserId = null;

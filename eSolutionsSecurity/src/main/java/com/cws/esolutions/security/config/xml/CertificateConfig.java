@@ -26,7 +26,6 @@ package com.cws.esolutions.security.config.xml;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.io.File;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -43,7 +42,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 @XmlType(name = "certificate-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class CertificateConfig implements Serializable
+public final class CertificateConfig
 {
     private int certKeySize = 2048;
     private File csrDirectory = null;
@@ -60,7 +59,6 @@ public final class CertificateConfig implements Serializable
     private File intermediateCertificateFile = null;
     private String intermediateCertificateName = null;
 
-    private static final long serialVersionUID = -8867893854548973748L;
     private static final String CNAME = CertificateConfig.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

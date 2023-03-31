@@ -41,7 +41,7 @@ import com.cws.esolutions.core.processors.enums.DNSRecordType;
  */
 public class DNSRecord implements Serializable
 {
-    private int recordPort = 0; // only used for srv records
+	private int recordPort = 0; // only used for srv records
     private int recordWeight = 0; // only used for srv/mx records
     private int recordLifetime = 0; // only used for srv records
     private int recordPriority = 10; // only used for srv/mx records
@@ -55,7 +55,7 @@ public class DNSRecord implements Serializable
     private DNSRecordClass recordClass = DNSRecordClass.IN; // used for all record types
 
     private static final String CNAME = DNSRecord.class.getName();
-    private static final long serialVersionUID = -3108982210099182120L;
+    private static final long serialVersionUID = 7793957400055784881L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

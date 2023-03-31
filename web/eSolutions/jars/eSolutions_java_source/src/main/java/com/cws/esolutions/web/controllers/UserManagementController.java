@@ -36,7 +36,6 @@ import org.apache.logging.log4j.LogManager;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -57,7 +56,6 @@ import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
@@ -2005,8 +2003,6 @@ public class UserManagementController
 	            newUser.setGuid(user.getGuid());
 	            newUser.setSurname(user.getSurname());
 	            newUser.setFailedCount(user.getFailedCount());
-	            newUser.setOlrLocked(false);
-	            newUser.setOlrSetup(true);
 	            newUser.setSuspended(user.isSuspended());
 	            newUser.setDisplayName(user.getGivenName() + " " + user.getSurname());
 	            newUser.setEmailAddr(user.getEmailAddr());
@@ -2017,21 +2013,11 @@ public class UserManagementController
 	            {
 	                DEBUGGER.debug("UserAccount: {}", newUser);
 	            }
-	
-	            AuthenticationData security = new AuthenticationData();
-	            security.setPassword(RandomStringUtils.randomAlphanumeric(128).toCharArray()); // TODO
-	            security.setUserSalt(RandomStringUtils.randomAlphanumeric(64).getBytes()); // TODO
-	
-	            if (DEBUG)
-	            {
-	                DEBUGGER.debug("AuthenticationData: {}", security);
-	            }
-	
+
 	            // search accounts
 	            AccountControlRequest request = new AccountControlRequest();
 	            request.setHostInfo(reqInfo);
 	            request.setUserAccount(newUser);
-	            request.setUserSecurity(security);
 	            request.setApplicationId(this.appConfig.getApplicationName());
 	            request.setRequestor(userAccount);
 	            request.setApplicationId(this.appConfig.getApplicationId());
@@ -2055,7 +2041,6 @@ public class UserManagementController
 	                AccountControlRequest resetReq = new AccountControlRequest();
 	                resetReq.setHostInfo(reqInfo);
 	                resetReq.setUserAccount(newUser);
-	                resetReq.setUserSecurity(security);
 	                resetReq.setApplicationId(this.appConfig.getApplicationName());
 	                resetReq.setRequestor(userAccount);
 	                resetReq.setApplicationId(this.appConfig.getApplicationId());
@@ -2082,14 +2067,7 @@ public class UserManagementController
 	                    {
 	                        DEBUGGER.debug("UserAccount: {}", responseAccount);
 	                    }
-	
-	                    String emailId = RandomStringUtils.randomAlphanumeric(16);
-	
-	                    if (DEBUG)
-	                    {
-	                        DEBUGGER.debug("Message ID: {}", emailId);
-	                    }
-	
+
 	                    StringBuilder targetURL = new StringBuilder()
 	                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
 	                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())

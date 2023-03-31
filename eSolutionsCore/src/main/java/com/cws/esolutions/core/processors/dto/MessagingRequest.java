@@ -41,7 +41,7 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class MessagingRequest implements Serializable
 {
-    private String serviceId = null;
+	private String serviceId = null;
     private boolean webRequest = false;
     private String applicationId = null;
     private String applicationName = null;
@@ -50,7 +50,7 @@ public class MessagingRequest implements Serializable
     private ServiceMessage svcMessage = null;
     private RequestHostInfo requestInfo = null;
 
-    private static final long serialVersionUID = -4178330895599726483L;
+    private static final long serialVersionUID = 515358967722248144L;
     private static final String CNAME = MessagingRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

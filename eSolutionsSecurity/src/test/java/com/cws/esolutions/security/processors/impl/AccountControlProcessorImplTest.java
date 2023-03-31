@@ -28,9 +28,9 @@ package com.cws.esolutions.security.processors.impl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityUserRole;
@@ -49,7 +49,6 @@ import com.cws.esolutions.security.processors.interfaces.IAccountControlProcesso
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AccountControlProcessorImplTest
 {
-    private static UserAccount newAccount = new UserAccount();
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
     private static final IAccountControlProcessor processor = new AccountControlProcessorImpl();
@@ -67,22 +66,6 @@ public class AccountControlProcessorImplTest
             userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
             userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(128));
 
-            newAccount.setUsername("khuntly");
-            newAccount.setAccepted(true);
-            newAccount.setDisplayName("Kevin Huntly");
-            newAccount.setFailedCount(0);
-            newAccount.setSurname("Huntly");
-            newAccount.setOlrLocked(false);
-            newAccount.setOlrSetup(false);
-            newAccount.setGivenName("Kevin");
-            newAccount.setSuspended(false);
-            newAccount.setTelephoneNumber("8623999098");
-            newAccount.setPagerNumber("7162491027");
-            newAccount.setUsername("khuntly");
-            newAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
-            newAccount.setGuid("1c260aba-5be1-4854-8695-d5ae9309d4e7");
-            newAccount.setEmailAddr("kmhuntly@gmail.com");
-
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (final Exception ex)
@@ -96,6 +79,16 @@ public class AccountControlProcessorImplTest
 
     @Test public void createNewUser()
     {
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setSurname("Huntly");
+    	account.setGivenName("Kevin");
+    	account.setTelephoneNumber("8623999098");
+    	account.setPagerNumber("7162491027");
+    	account.setUsername("khuntly");
+    	account.setUserRole(SecurityUserRole.SITE_ADMIN);
+    	account.setEmailAddr("kmhuntly@gmail.com");
+
         AuthenticationData authSec = new AuthenticationData();
         authSec.setNewPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
         authSec.setUsername("khuntly");
@@ -103,7 +96,7 @@ public class AccountControlProcessorImplTest
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
-        request.setUserAccount(newAccount);
+        request.setUserAccount(account);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
         request.setUserSecurity(authSec);
@@ -123,18 +116,22 @@ public class AccountControlProcessorImplTest
 
     @Test public void loadUserAccount()
     {
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
+    	account.setUserRole(SecurityUserRole.SITE_ADMIN);
+
         AccountControlRequest request = new AccountControlRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
-        request.setUserAccount(newAccount);
+        request.setUserAccount(account);
 
         try
         {
             AccountControlResponse response = processor.loadUserAccount(request);
 
-            System.out.println(response);
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AccountControlException acx)
@@ -145,15 +142,17 @@ public class AccountControlProcessorImplTest
 
     @Test public void modifyUserSuspension()
     {
-    	newAccount.setSuspended(true);
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
+    	account.setSuspended(true);
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(newAccount);
+        request.setUserAccount(account);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);
-        request.setServiceId("AEB46994-57B4-4E92-90AA-A4046F60B830");
 
         try
         {
@@ -169,15 +168,17 @@ public class AccountControlProcessorImplTest
 
     @Test public void modifyUserRole()
     {
-        newAccount.setUserRole(SecurityUserRole.USER_ADMIN);
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
+        account.setUserRole(SecurityUserRole.USER_ADMIN);
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(newAccount);
+        request.setUserAccount(account);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);
-        request.setServiceId("AEB46994-57B4-4E92-90AA-A4046F60B830");
 
         try
         {
@@ -193,13 +194,17 @@ public class AccountControlProcessorImplTest
 
     @Test public void modifyUserPassword()
     {
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
+        account.setUserRole(SecurityUserRole.USER_ADMIN);
+
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(newAccount);
+        request.setUserAccount(account);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);
-        request.setServiceId("AEB46994-57B4-4E92-90AA-A4046F60B830");
 
         try
         {
@@ -215,11 +220,14 @@ public class AccountControlProcessorImplTest
 
     @Test public void modifyUserLockout()
     {
-        newAccount.setFailedCount(0);
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
+    	account.setFailedCount(0);
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(newAccount);
+        request.setUserAccount(account);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);
@@ -239,9 +247,13 @@ public class AccountControlProcessorImplTest
 
     @Test public void removeUserAccount()
     {
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
+
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(newAccount);
+        request.setUserAccount(account);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);

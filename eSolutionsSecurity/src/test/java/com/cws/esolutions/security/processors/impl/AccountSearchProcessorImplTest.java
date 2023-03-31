@@ -75,7 +75,7 @@ class AccountSearchProcessorImplTest
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
-        request.setSearchTerms("kmhuntly@gmail.com");
+        request.setSearchTerms("khuntly");
 
         try
         {

@@ -40,12 +40,12 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AuditResponse implements Serializable
 {
-    private int entryCount = 0;
+	private int entryCount = 0;
     private List<AuditEntry> auditList = null;
     private SecurityRequestStatus requestStatus = null;
 
-    private static final long serialVersionUID = 4340210996951737264L;
     private static final String CNAME = AuditResponse.class.getName();
+    private static final long serialVersionUID = -6944324117201453121L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

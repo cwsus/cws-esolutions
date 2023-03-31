@@ -25,7 +25,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +41,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlRootElement(name = "dns-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class DNSConfig implements Serializable
+public final class DNSConfig
 {
     private int ttlInterval = 900;
     private String adminName = null;
@@ -57,7 +56,6 @@ public final class DNSConfig implements Serializable
     private String searchServiceHost = null;
 
     private static final String CNAME = DNSConfig.class.getName();
-    private static final long serialVersionUID = -8781098886379821126L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

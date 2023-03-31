@@ -44,6 +44,9 @@ public final class SecurityServiceConstants
     public static final String INIT_SECURITYDS_MANAGER = "SecurityDataSource";
     public static final String LINE_BREAK = System.getProperty("line.separator");
 
+    // umm
+    public static final Object USER_ACCOUNT = "userAccount";
+
     // set some stuff
     public static final String CSR_FILE_EXT = ".csr";
     public static final String KEYSTORE_FILE_EXT = ".jks";

@@ -42,7 +42,7 @@ public class UserSecurityInformationDAOImplTest
 {
     private static final String GUID = "99aaefc1-8a2a-4877-bed5-20b73d971e56";
     private static final String resetId = RandomStringUtils.randomAlphanumeric(64);
-    private static final String logonSalt = RandomStringUtils.randomAlphanumeric(64);
+
     private static final IUserSecurityInformationDAO dao = new UserSecurityInformationDAOImpl();
 
     @BeforeAll public void setUp()
@@ -60,27 +60,30 @@ public class UserSecurityInformationDAOImplTest
 
     @Test public void addUserSalt()
     {
+    	String saltValue = RandomStringUtils.randomAlphanumeric(64);
+
         try
         {
-        	Assertions.assertThat(dao.addUserSalt(UserSecurityInformationDAOImplTest.GUID, logonSalt, SaltType.LOGON.name())).isTrue();
-        }
+			Assertions.assertThat(dao.addUserSalt(UserSecurityInformationDAOImplTest.GUID, saltValue, SaltType.LOGON.name())).isTrue();
+		}
         catch (final SQLException sqx)
         {
-        	sqx.printStackTrace();
-            Assertions.fail(sqx.getMessage());
-        }
+			Assertions.fail(sqx.getMessage());
+		}
     }
 
     @Test public void updateUserSalt()
     {
-        try
+    	String saltValue = RandomStringUtils.randomAlphanumeric(64);
+
+    	try
         {
-            Assertions.assertThat(dao.updateUserSalt(UserSecurityInformationDAOImplTest.GUID, resetId, SaltType.LOGON.name())).isEqualTo(true);
-        }
+			Assertions.assertThat(dao.updateUserSalt(UserSecurityInformationDAOImplTest.GUID, saltValue, SaltType.LOGON.name())).isTrue();
+		}
         catch (final SQLException sqx)
         {
-            Assertions.fail(sqx.getMessage());
-        }
+			Assertions.fail(sqx.getMessage());
+		}
     }
 
     @Test public void getUserSalt()

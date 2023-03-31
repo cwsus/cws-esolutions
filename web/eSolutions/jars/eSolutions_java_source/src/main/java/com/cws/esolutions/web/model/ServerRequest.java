@@ -27,7 +27,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
@@ -39,7 +38,7 @@ import com.cws.esolutions.core.processors.enums.NetworkPartition;
  */
 public class ServerRequest implements Serializable
 {
-    private int cpuCount = 1; // has to be at least 1
+	private int cpuCount = 1; // has to be at least 1
     private int dmgrPort = 0; // only used when the servertype is dmgr
     private String mgrUrl = null; // this is used for both vmgr and dmgr - the access url
     private String osName = null;
@@ -69,7 +68,7 @@ public class ServerRequest implements Serializable
     private NetworkPartition networkPartition = null;
 
     private static final String CNAME = Server.class.getName();
-    private static final long serialVersionUID = -6997903779656691703L;
+    private static final long serialVersionUID = -4118030346282371095L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -806,7 +805,7 @@ public class ServerRequest implements Serializable
     public final String toString()
     {
     	StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -821,7 +820,7 @@ public class ServerRequest implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
                     }
                 }
                 catch (final IllegalAccessException iax) {}

@@ -28,7 +28,6 @@ package com.cws.esolutions.security.config.xml;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +45,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 @XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class SecurityConfigurationData implements Serializable
+public final class SecurityConfigurationData
 {
     private KeyConfig keyConfig = null;
     private SystemConfig systemConfig = null;
@@ -58,7 +57,6 @@ public final class SecurityConfigurationData implements Serializable
     private PasswordRepositoryConfig passwordRepo = null;
     private FileSecurityConfig fileSecurityConfig = null;
 
-    private static final long serialVersionUID = -795898942156658458L;
     private static final String CNAME = SecurityConfigurationData.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

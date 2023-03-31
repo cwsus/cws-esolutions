@@ -31,7 +31,6 @@ import java.util.Objects;
 import java.util.Arrays;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.security.KeyPair;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -61,6 +60,109 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     private static final String CNAME = AccountResetProcessorImpl.class.getName();
 
     /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
+    public AccountResetResponse isOnlineResetAvailable(final AccountResetRequest request) throws AccountResetException
+    {
+        final String methodName = AccountResetProcessorImpl.CNAME + "#isOnlineResetAvailable(final AccountResetRequest request) throws AccountResetException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountResetRequest: {}", request);
+        }
+
+        AccountResetResponse response = new AccountResetResponse();
+
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount  = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
+        }
+
+        try
+        {
+        	List<Boolean> authList = authenticator.getOlrStatus(reqAccount.getGuid());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AuthList: {}", authList);
+        	}
+
+        	if (Objects.isNull(authList))
+        	{
+        		throw new AccountResetException("No online reset information was found for the provided user");
+        	}
+
+        	boolean isOlrSetup = authList.get(0); // isOlrSetup
+        	boolean isOlrLocked = authList.get(1); // isOlrLocked
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isOlrSetup: {}", isOlrSetup);
+        		DEBUGGER.debug("isOlrLocked: {}", isOlrLocked);
+        	}
+
+        	if (isOlrSetup)
+        	{
+        		response.setRequestStatus(SecurityRequestStatus.OLRSETUP);
+        	}
+
+        	if (isOlrLocked)
+        	{
+        		response.setRequestStatus(SecurityRequestStatus.OLRLOCKED);
+        	}
+        }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountResetException(ax.getMessage(), ax);
+        }
+        finally
+        {
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.VALIDATESECURITY);
+	                auditEntry.setUserAccount(reqAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (final AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
+        }
+
+        return response;
+    }
+
+    /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#obtainUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
     public AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
@@ -86,7 +188,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         try
         {
-            List<Object> securityData = authenticator.getSecurityQuestions(userAccount.getGuid());
+            List<String> securityData = authenticator.getSecurityQuestions(userAccount.getGuid());
 
             if (DEBUG)
             {
@@ -100,56 +202,31 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
 
-            if (securityData != null)
+        	UserAccount resAccount = new UserAccount();
+            resAccount.setGuid(userAccount.getGuid());
+            resAccount.setUsername(userAccount.getUsername());
+
+            if (DEBUG)
             {
-                if (StringUtils.isNotBlank((String) (securityData.get(0))))
-                {
-                	if ((Boolean) securityData.get(1))
-                	{
-                		// user is in olrsetup, we can't do a reset here
-                		ERROR_RECORDER.error("User has not set up the online reset process. Cannot continue.");
+                DEBUGGER.debug("UserAccount: {}", resAccount);
+            }
 
-                		response.setRequestStatus(SecurityRequestStatus.OLRSETUP);
+            AuthenticationData userSecurity = new AuthenticationData();
+            userSecurity.setSecQuestionOne((String) securityData.get(0));
+            userSecurity.setSecQuestionTwo((String) securityData.get(1));
 
-                		return response;
-                	}
-                	else if ((Boolean) securityData.get(2))
-                	{
-                		// olr locked
-                		ERROR_RECORDER.error("User is currently OLR locked. Cannot continue.");
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
+            }
 
-                        response.setRequestStatus(SecurityRequestStatus.OLRLOCKED);
+            response.setUserAccount(resAccount);
+            response.setUserSecurity(userSecurity);
+            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
 
-                        return response;
-                	}
-
-                    UserAccount resAccount = new UserAccount();
-                    resAccount.setGuid((String) securityData.get(0));
-                    resAccount.setUsername(userAccount.getUsername());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", resAccount);
-                    }
-
-                    AuthenticationData userSecurity = new AuthenticationData();
-                    userSecurity.setSecQuestionOne((String) securityData.get(3));
-                    userSecurity.setSecQuestionTwo((String) securityData.get(4));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuthenticationData: {}", userSecurity);
-                    }
-
-                    response.setUserAccount(resAccount);
-                    response.setUserSecurity(userSecurity);
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountResetResponse: {}", response);
-                    }
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountResetResponse: {}", response);
             }
         }
         catch (final AuthenticatorException ax)
@@ -225,14 +302,19 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         try
         {
-            final String userSalt = userSec.getUserSalt(reqAccount.getGuid(), SaltType.RESET.name());
+            String userSalt = userSec.getUserSalt(reqAccount.getGuid(), SaltType.RESET.name());
 
-            if (StringUtils.isNotEmpty(userSalt))
+            if (DEBUG)
             {
-                List<Object> resultList = authenticator.getSecurityAnswers(reqAccount.getGuid());
+            	DEBUGGER.debug("userSalt: {}", userSalt);
+            }
 
-                boolean answerOneMatches = Arrays.equals(reqSecurity.getSecAnswerOne(), (char[]) resultList.get(0));
-                boolean answerTwoMatches = Arrays.equals(reqSecurity.getSecAnswerTwo(), (char[]) resultList.get(1));
+            if (!(Objects.isNull(userSalt)))
+            {
+                List<String> resultList = authenticator.getSecurityAnswers(reqAccount.getGuid());
+
+                boolean answerOneMatches = Arrays.equals(reqSecurity.getSecAnswerOne(), resultList.get(0).toCharArray());
+                boolean answerTwoMatches = Arrays.equals(reqSecurity.getSecAnswerTwo(), resultList.get(1).toCharArray());
 
                 if (DEBUG)
                 {
@@ -280,10 +362,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     resAccount.setLastLogin((Timestamp) authObject.get(8)); // cwslastlogin
                     resAccount.setExpiryDate((Timestamp) authObject.get(9)); // cwsexpirydate
                     resAccount.setSuspended(Boolean.valueOf(authObject.get(10).toString())); // cwsissuspended
-                    resAccount.setOlrSetup(Boolean.valueOf(authObject.get(11).toString())); // cwsisolrsetup
-                    resAccount.setOlrLocked(Boolean.valueOf(authObject.get(12).toString())); // cwsisolrlocked
                     resAccount.setAccepted(Boolean.valueOf(authObject.get(13).toString())); // cwsistcaccepted
-                    resAccount.setUserKeys((KeyPair) authObject.get(14)); // cwspublickey
                     resAccount.setTelephoneNumber((String) authObject.get(15)); // telephoneNumber
                     resAccount.setPagerNumber((String) authObject.get(16)); // pager
 
@@ -402,7 +481,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         try
         {
             String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
-            String smsReset = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
 
             if (StringUtils.isNotEmpty(resetId))
             {
@@ -437,10 +515,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         responseAccount.setLastLogin((Timestamp) userData.get(8)); // cwslastlogin
                         responseAccount.setExpiryDate((Timestamp) userData.get(9)); // cwsexpirydate
                         responseAccount.setSuspended(Boolean.valueOf(userData.get(10).toString())); // cwsissuspended
-                        responseAccount.setOlrSetup(Boolean.valueOf(userData.get(11).toString())); // cwsisolrsetup
-                        responseAccount.setOlrLocked(Boolean.valueOf(userData.get(12).toString())); // cwsisolrlocked
                         responseAccount.setAccepted(Boolean.valueOf(userData.get(13).toString())); // cwsistcaccepted
-                        responseAccount.setUserKeys((KeyPair) userData.get(14)); // cwspublickey
                         responseAccount.setTelephoneNumber((String) userData.get(15)); // telephoneNumber
                         responseAccount.setPagerNumber((String) userData.get(16)); // pager
 
@@ -450,7 +525,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         }
 
                         response.setResetId(resetId);
-                        response.setSmsCode(((secConfig.getSmsResetEnabled()) ? smsReset : null));
                         response.setUserAccount(responseAccount);
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     }
@@ -609,10 +683,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             userAccount.setLastLogin((Timestamp) userList.get(8)); // cwslastlogin
             userAccount.setExpiryDate((Timestamp) userList.get(9)); // cwsexpirydate
             userAccount.setSuspended(Boolean.valueOf(userList.get(10).toString())); // cwsissuspended
-            userAccount.setOlrSetup(Boolean.valueOf(userList.get(11).toString())); // cwsisolrsetup
-            userAccount.setOlrLocked(Boolean.valueOf(userList.get(12).toString())); // cwsisolrlocked
             userAccount.setAccepted(Boolean.valueOf(userList.get(13).toString())); // cwsistcaccepted
-            userAccount.setUserKeys((KeyPair) userList.get(14)); // cwspublickey
             userAccount.setTelephoneNumber((String) userList.get(15)); // telephoneNumber
             userAccount.setPagerNumber((String) userList.get(16)); // pager
 

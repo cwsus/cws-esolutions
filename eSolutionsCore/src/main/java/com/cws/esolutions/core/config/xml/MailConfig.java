@@ -25,7 +25,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -42,14 +41,13 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlType(name = "mail-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class MailConfig implements Serializable
+public final class MailConfig
 {
     private String mailFrom = null;
     private String propertyFile = null;
     private String dataSourceName = null;
 
     private static final String CNAME = MailConfig.class.getName();
-    private static final long serialVersionUID = -3187516318848375651L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

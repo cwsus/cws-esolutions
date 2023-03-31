@@ -25,7 +25,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -42,7 +41,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlType(name = "DataSourceManager")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class DataSourceManager implements Serializable
+public final class DataSourceManager
 {
     private String dsName = null;
     private String driver = null;
@@ -53,7 +52,6 @@ public final class DataSourceManager implements Serializable
     private int connectTimeout = 10000; // default to 10 seconds
     private boolean autoReconnect = true; // default to true
 
-    private static final long serialVersionUID = -7075366167619836844L;
     private static final String CNAME = DataSourceManager.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

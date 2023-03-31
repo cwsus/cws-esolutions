@@ -40,14 +40,14 @@ import com.cws.esolutions.core.enums.CoreServicesStatus;
  */
 public class DNSServiceResponse implements Serializable
 {
-    private DNSEntry dnsEntry = null;
+	private DNSEntry dnsEntry = null;
     private DNSRecord dnsRecord = null;
     private StringBuilder zoneData = null;
     private List<DNSEntry> dnsEntries = null;
     private List<DNSRecord> dnsRecords = null;
     private CoreServicesStatus requestStatus = null;
 
-    private static final long serialVersionUID = -1730196918896683625L;
+    private static final long serialVersionUID = 8158396063713700009L;
     private static final String CNAME = DNSServiceResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

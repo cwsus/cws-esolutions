@@ -228,9 +228,117 @@ public class SQLAuthenticator implements Authenticator
     }
 
     /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#getOlrStatus(String)
+     */
+    public List<Boolean> getOlrStatus(final String guid) throws AuthenticatorException
+    {
+        final String methodName = SQLAuthenticator.CNAME + "#getOlrStatus(final String guid) throws AuthenticatorException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", guid);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        List<Boolean> response = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new AuthenticatorException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            // first make sure the existing password is proper
+            // then make sure the new password doesnt match the existing password
+            stmt = sqlConn.prepareStatement("{ CALL getOlrStatus(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, guid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (!(stmt.execute()))
+            {
+                throw new AuthenticatorException("No user was found for the provided user information");
+            }
+
+            resultSet = stmt.getResultSet();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ResultSet: {}", resultSet);
+            }
+
+            if (resultSet.next())
+            {
+            	resultSet.first();
+
+            	response = new ArrayList<Boolean>(
+            			Arrays.asList(
+            					resultSet.getBoolean(1),
+            					resultSet.getBoolean(2)));
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("Response list: {}", response);
+            	}
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new AuthenticatorException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+            	if (resultSet != null)
+            	{
+            		resultSet.close();
+            	}
+
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new AuthenticatorException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return response;
+    }
+    
+    /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String)
      */
-    public synchronized List<Object> getSecurityQuestions(final String userGuid) throws AuthenticatorException
+    public synchronized List<String> getSecurityQuestions(final String userGuid) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#getSecurityQuestions(final String userGuid) throws AuthenticatorException";
         
@@ -243,7 +351,7 @@ public class SQLAuthenticator implements Authenticator
         Connection sqlConn = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
-        List<Object> userSecurity = null;
+        List<String> userSecurity = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -287,13 +395,10 @@ public class SQLAuthenticator implements Authenticator
                 {
                 	resultSet.first();
 
-                    userSecurity = new ArrayList<Object>(
+                    userSecurity = new ArrayList<String>(
                         Arrays.asList(
-                            resultSet.getString(1), // GUID
-                            resultSet.getBoolean(2), // cwsisolrsetup
-                        	resultSet.getBoolean(3), // cwsisolrlocked
-                        	resultSet.getString(4), // cwssec1
-                        	resultSet.getString(5))); // cwssecq2
+                        	resultSet.getString(1), // cwssec1
+                        	resultSet.getString(2))); // cwssecq2
 
                     if (DEBUG)
                     {
@@ -341,7 +446,7 @@ public class SQLAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String)
      */
-    public synchronized List<Object> getSecurityAnswers(final String userGuid) throws AuthenticatorException
+    public synchronized List<String> getSecurityAnswers(final String userGuid) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#getSecurityAnswers(final String userGuid) throws AuthenticatorException";
 
@@ -354,7 +459,7 @@ public class SQLAuthenticator implements Authenticator
         Connection sqlConn = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
-        List<Object> responseData = null;
+        List<String> responseData = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -398,7 +503,7 @@ public class SQLAuthenticator implements Authenticator
                 {
                     resultSet.first();
 
-                    responseData = new ArrayList<Object>(
+                    responseData = new ArrayList<String>(
                     		Arrays.asList(
                     				resultSet.getString(1),
                     				resultSet.getString(2)));

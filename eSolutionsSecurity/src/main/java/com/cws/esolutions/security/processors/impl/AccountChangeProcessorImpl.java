@@ -26,11 +26,11 @@ package com.cws.esolutions.security.processors.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -303,7 +303,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("AccountChangeRequest: {}", request);
         }
 
-        // List<String> authList = null;
         String currentPassword = null;
         AccountChangeResponse response = new AccountChangeResponse();
 
@@ -312,7 +311,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
         final AuthenticationData reqSecurity = request.getUserSecurity();
-        final String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
         calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
 
@@ -357,17 +355,24 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     authenticator.performLogon(userAccount.getGuid());
                 }
 
-                if (StringUtils.isNotEmpty(newUserSalt))
+                String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
+
+                if (DEBUG)
+                {
+                	DEBUGGER.debug("newSalt: {}", newSalt);
+                }
+
+                if (!(Objects.isNull(newSalt)))
                 {
                     // get rollback information in case something breaks...
                     // we already have the existing expiry and password, all we really need to get here is the salt.
                     String existingSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-                    if (StringUtils.isNotEmpty(existingSalt))
+                    if (Objects.isNull(existingSalt))
                     {
                         // good, move forward
                         // put the new salt in the database
-                        boolean isComplete = userSec.addUserSalt(userAccount.getGuid(), newUserSalt, SaltType.LOGON.name());
+                        boolean isComplete = userSec.addUserSalt(userAccount.getGuid(), newSalt, SaltType.LOGON.name());
 
                         if (DEBUG)
                         {
@@ -378,9 +383,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         {
                             // make the modification in the user repository
                             isComplete = userManager.modifyUserPassword(userAccount.getGuid(),
-                                    PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt.getBytes(),
+                                    PasswordUtils.encryptText(reqSecurity.getNewPassword(), newSalt,
                                     		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
-                                    		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), sysConfig.getEncoding()));
+                                    		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                                    		sysConfig.getEncoding()));
 
                             if (DEBUG)
                             {
@@ -552,61 +558,58 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         	    // we aren't getting the data back here because we don't need it. if the request
                 // fails we'll get an exception and not process further. this might not be the
                 // best flow control, but it does exactly what we need where we need it.
-            	authenticator.performLogon(userAccount.getGuid());
+            	authenticator.performLogon(userAccount.getUsername());
 
-                // ok, thats out of the way. lets keep moving.
-                String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
+                String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
 
-                if (StringUtils.isNotEmpty(newUserSalt))
+                if (StringUtils.isBlank(newSalt))
                 {
-                    // good, move forward
-                    // make the modification in the user repository
-                    boolean isComplete = userManager.modifyUserSecurity(userAccount.getGuid(), 
-                            new ArrayList<String>(
-                                Arrays.asList(
-                                    reqSecurity.getSecQuestionOne(),
-                                    reqSecurity.getSecQuestionTwo(),
-                                    PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt.getBytes(), secConfig.getSecretKeyAlgorithm(),
-                                			secConfig.getIterations(), secConfig.getKeyLength(),
-                                			secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-                                			sysConfig.getEncoding()),
-                                    PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt.getBytes(), secConfig.getSecretKeyAlgorithm(),
-                                			secConfig.getIterations(), secConfig.getKeyLength(),
-                                			secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-                                			sysConfig.getEncoding()))));
+                	throw new AccountChangeException("Failed to generate a salt value for the security operation.");
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
-                    }
+                // good, move forward
+                // make the modification in the user repository
+                boolean isComplete = userManager.modifyUserSecurity(userAccount.getGuid(), 
+                        new ArrayList<String>(
+                            Arrays.asList(
+                                reqSecurity.getSecQuestionOne(),
+                                reqSecurity.getSecQuestionTwo(),
+                                PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newSalt,
+                            			secConfig.getSecretKeyAlgorithm(),
+                            			secConfig.getIterations(), secConfig.getKeyLength(),
+                            			secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                            			sysConfig.getEncoding()),
+                                PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newSalt,
+                            			secConfig.getSecretKeyAlgorithm(),
+                            			secConfig.getIterations(), secConfig.getKeyLength(),
+                            			secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                            			sysConfig.getEncoding()))));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    // now update the salt
+                    isComplete = userSec.updateUserSalt(userAccount.getGuid(), newSalt, SaltType.RESET.name());
 
                     if (isComplete)
                     {
-                        // now update the salt
-                        isComplete = userSec.updateUserSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
-
-                        if (isComplete)
-                        {
-                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        }
-                        else
-                        {
-                            ERROR_RECORDER.error("Failed to add the new user salt information to the database.");
-
-                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        }
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     }
-	                else
-	                {
-                        ERROR_RECORDER.error("Failed to modify the account in the user repository.");
-                    	
+                    else
+                    {
+                        ERROR_RECORDER.error("Failed to add the new user salt information to the database.");
+
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-	                }
+                    }
                 }
                 else
                 {
-                    ERROR_RECORDER.error("Unable to obtain existing user salt for authentication. Cannot continue");
-
+                    ERROR_RECORDER.error("Failed to modify the account in the user repository.");
+                	
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }

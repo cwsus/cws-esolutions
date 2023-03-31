@@ -31,9 +31,9 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  */
 public class KeyManagementException extends SecurityServiceException
 {
-    private static final long serialVersionUID = -6006500480862957327L;
+    private static final long serialVersionUID = 8277195562516314492L;
 
-    /**
+	/**
      * @param message - The thrown exception message
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
      */

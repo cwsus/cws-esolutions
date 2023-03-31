@@ -26,7 +26,6 @@ package com.cws.esolutions.core.config.xml;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import jakarta.xml.bind.annotation.XmlType;
@@ -43,7 +42,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
  */
 @XmlType(name = "application-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class ApplicationConfig implements Serializable
+public final class ApplicationConfig
 {
     private String appName = null;
     private String encoding = null;
@@ -56,7 +55,6 @@ public final class ApplicationConfig implements Serializable
     private String virtualManagerClass = null;
     private List<ServiceAccount> serviceAccount = null;
 
-    private static final long serialVersionUID = -2125011070971484380L;
     private static final String CNAME = ApplicationConfig.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
