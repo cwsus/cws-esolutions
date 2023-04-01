@@ -41,7 +41,7 @@ import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
-import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
+import com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * API allowing account reset processing, if enabled.
@@ -56,7 +56,7 @@ public interface IAccountResetProcessor
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
-    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
+    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new SQLUserSecurityInformationDAOImpl();
     static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secBean.getConfigData().getSecurityConfig().getUserManager());
 

@@ -28,6 +28,7 @@ package com.cws.esolutions.security.utils;
 import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import java.security.spec.KeySpec;
 import java.security.SecureRandom;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
@@ -43,11 +44,7 @@ import javax.crypto.IllegalBlockSizeException;
 import java.security.NoSuchAlgorithmException;
 import org.apache.commons.lang3.RandomStringUtils;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.InvalidParameterSpecException;
-
 import org.apache.commons.codec.digest.DigestUtils;
-
-import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -73,47 +70,52 @@ public final class PasswordUtils
      * @param secretInstance - The cryptographic instance to use for the SecretKeyFactory
      * @param iterations - The number of times to loop through the keyspec
      * @param keyBits - The size of the key, in bits
-     * @param algorithm - The algorithm to encrypt the data with
-     * @param cipherInstance - The cipher instance to utilize
      * @param encoding - The text encoding
      * @return The encrypted string in a reversible format
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final String encryptText(final char[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
+    public static final String encryptText(final char[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String encoding) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#encryptText(final char[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String encoding) throws SecurityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", salt);
             DEBUGGER.debug("Value: {}", secretInstance);
             DEBUGGER.debug("Value: {}", iterations);
             DEBUGGER.debug("Value: {}", keyBits);
             DEBUGGER.debug("Value: {}", encoding);
         }
 
-        System.out.println("provided value: " + new String(value));
-        System.out.println("provided salt: " + salt);
-
         String response = null;
 
         try
         {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(secretInstance);
-            PBEKeySpec keySpec = new PBEKeySpec(value, salt.getBytes(encoding), iterations, keyBits);
-            SecretKey keyTmp = keyFactory.generateSecret(keySpec);
-            Cipher pbeCipher = Cipher.getInstance(cipherInstance);
-            SecretKeySpec sks = new SecretKeySpec(keyTmp.getEncoded(), algorithm);
-            pbeCipher.init(Cipher.ENCRYPT_MODE, sks);
+            KeySpec keySpec = new PBEKeySpec(value, salt.getBytes(encoding), iterations, keyBits);
 
-            AlgorithmParameters parameters = pbeCipher.getParameters();
-            IvParameterSpec ivParameterSpec = parameters.getParameterSpec(IvParameterSpec.class);
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("SecretKeyFactory: {}", keyFactory);
+            	DEBUGGER.debug("KeySpec: {}", keySpec);
+            }
 
-            byte[] cryptoText = pbeCipher.doFinal(new String(value).getBytes(encoding));
-            byte[] iv = ivParameterSpec.getIV();
+            byte[] hashed = keyFactory.generateSecret(keySpec).getEncoded();
 
-            response = DigestUtils.sha512Hex(iv + ":" + cryptoText);
-            System.out.println("response: " + response);
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("byte[]: {}", hashed);
+            }
+
+            response = DigestUtils.sha512Hex(hashed);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("response: {}", response);
+            }
+            
         }
         catch (final NoSuchAlgorithmException nsx)
         {
@@ -126,26 +128,6 @@ public final class PasswordUtils
         catch (UnsupportedEncodingException uex)
         {
         	throw new SecurityException(uex.getMessage(), uex);
-		}
-        catch (NoSuchPaddingException nspx)
-        {
-        	throw new SecurityException(nspx.getMessage(), nspx);
-		}
-        catch (InvalidKeyException ikx)
-        {
-        	throw new SecurityException(ikx.getMessage(), ikx);
-		}
-        catch (InvalidParameterSpecException ipsx)
-        {
-        	throw new SecurityException(ipsx.getMessage(), ipsx);
-		}
-        catch (IllegalBlockSizeException ibsx)
-        {
-			throw new SecurityException(ibsx.getMessage(), ibsx);
-		}
-        catch (BadPaddingException bpx)
-        {
-        	throw new SecurityException(bpx.getMessage(), bpx);
 		}
 
         return response;
@@ -251,6 +233,12 @@ public final class PasswordUtils
 			SecureRandom sRandom = SecureRandom.getInstance(generator);
         	byte[] salt = new byte[length];
         	sRandom.nextBytes(salt);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SecureRandom: {}", sRandom);
+                DEBUGGER.debug("salt: {}", salt);
+            }
 
         	newSalt = DigestUtils.sha512Hex(salt);
 		}

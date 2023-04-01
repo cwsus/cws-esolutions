@@ -155,7 +155,7 @@ public class SQLKeyManager implements KeyManager
         {
             try
             {
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                     stmt = null;
@@ -273,13 +273,13 @@ public class SQLKeyManager implements KeyManager
         {
             try
             {
-                if (resultSet != null)
+                if (!(Objects.isNull(resultSet)))
                 {
                     resultSet.close();
                     resultSet = null;
                 }
 
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                     stmt = null;
@@ -356,7 +356,7 @@ public class SQLKeyManager implements KeyManager
         {
             try
             {
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                     stmt = null;

@@ -60,7 +60,7 @@ public interface IUserSecurityInformationDAO
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
-    boolean addUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException;
+    boolean addOrUpdateUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException;
 
     /**
      * Processes authentication for the selected security question and user. If successful,
@@ -71,16 +71,6 @@ public interface IUserSecurityInformationDAO
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     HashMap<Integer, String> obtainSecurityQuestionList() throws SQLException;
-
-    /**
-     * 
-     * @param guid
-     * @param saltValue
-     * @param saltType
-     * @return
-     * @throws SQLException
-     */
-    boolean updateUserSalt(final String guid, final String saltValue, final String saltType) throws SQLException;
 
     /**
      * Returns the salt value associated with the given user account to process an

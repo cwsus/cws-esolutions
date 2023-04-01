@@ -102,7 +102,7 @@ public interface Authenticator
      * @return String - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<Boolean> getOlrStatus(final String guid) throws AuthenticatorException;
+    List<Boolean> getOlrStatus(final String guid, final String userId) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the

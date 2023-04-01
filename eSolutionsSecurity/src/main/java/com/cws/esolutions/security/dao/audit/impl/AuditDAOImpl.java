@@ -99,12 +99,12 @@ public class AuditDAOImpl implements IAuditDAO
         {
             try
             {
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -215,17 +215,17 @@ public class AuditDAOImpl implements IAuditDAO
         {
             try
             {
-                if (resultSet != null)
+                if (!(Objects.isNull(resultSet)))
                 {
                     resultSet.close();
                 }
 
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }

@@ -44,7 +44,7 @@
         <auditConfig>/opt/cws/eSolutions/etc/audit.properties</auditConfig>
         <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
-        <userSecDAO>com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl</userSecDAO>
+        <userSecDAO>com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl</userSecDAO>
     </security-config>
 
     <password-repository>
@@ -137,7 +137,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;connectionCollation=utf8mb4_0900_ai_ci</datasource>
+            <datasource>jdbc:mysql://localhost/CWSSEC</datasource>
             <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>ALr5lyTkZint7x4bMTCIFA==:m/wuw9yLfzrbN4TbMd9JINeg359H5KHC1bibEwtCJF4=</dsPass>
@@ -147,7 +147,7 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/AUDIT?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;connectionCollation=utf8mb4_0900_ai_ci</datasource>
+            <datasource>jdbc:mysql://localhost/AUDIT</datasource>
             <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>ALr5lyTkZint7x4bMTCIFA==:m/wuw9yLfzrbN4TbMd9JINeg359H5KHC1bibEwtCJF4=</dsPass>

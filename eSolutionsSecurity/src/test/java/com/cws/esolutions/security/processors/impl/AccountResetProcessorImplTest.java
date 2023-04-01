@@ -69,7 +69,7 @@ public class AccountResetProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("5d2eafcd-03b8-43f4-93d4-19e93c8d0ced");
+        account.setGuid("8c6fac90-6c15-4d69-bf08-2f48ec51e8d4");
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -85,6 +85,7 @@ public class AccountResetProcessorImplTest
         }
         catch (final AccountResetException ax)
         {
+        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }
@@ -93,7 +94,7 @@ public class AccountResetProcessorImplTest
     {
 	    UserAccount account = new UserAccount();
 	    account.setUsername("khuntly");
-	    account.setGuid("5d2eafcd-03b8-43f4-93d4-19e93c8d0ced");
+	    account.setGuid("8c6fac90-6c15-4d69-bf08-2f48ec51e8d4");
 	
 	    AccountResetRequest request = new AccountResetRequest();
 	    request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -117,11 +118,11 @@ public class AccountResetProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("205ebd1b-5900-46d0-aabc-94a2e86c3c33");
+        account.setGuid("8c6fac90-6c15-4d69-bf08-2f48ec51e8d4");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setSecAnswerOne("Answer 1".toCharArray());
-        userSecurity.setSecAnswerTwo("Answer 2".toCharArray());
+        userSecurity.setSecAnswerOne("8OHoNs3jd1upwg12NsBRX511F7z83zW1".toCharArray());
+        userSecurity.setSecAnswerTwo("gmnL01azdw3baYviPq70ZnZaNjJFWT7U".toCharArray());
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -138,6 +139,7 @@ public class AccountResetProcessorImplTest
         }
         catch (final AccountResetException ax)
         {
+        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }

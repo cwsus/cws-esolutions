@@ -84,6 +84,7 @@ public class AuthenticationProcessorImplTest
         {
             AuthenticationResponse response = processor.processAgentLogon(request);
 
+            System.out.println(response);
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AuthenticationException ax)

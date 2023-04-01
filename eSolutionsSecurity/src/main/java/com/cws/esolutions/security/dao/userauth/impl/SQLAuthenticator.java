@@ -119,7 +119,7 @@ public class SQLAuthenticator implements Authenticator
         {
             try
             {
-                if (resultSet != null)
+                if (!(Objects.isNull(resultSet)))
                 {
                     resultSet.close();
                 }
@@ -186,7 +186,7 @@ public class SQLAuthenticator implements Authenticator
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareStatement("{ CALL performSuccessfulLogin(?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL performSuccessfulLogin(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
             stmt.setString(2, guid);
 
@@ -208,12 +208,12 @@ public class SQLAuthenticator implements Authenticator
         {
             try
             {
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -228,16 +228,17 @@ public class SQLAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#getOlrStatus(String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#getOlrStatus(java.lang.String, java.lang.String)
      */
-    public List<Boolean> getOlrStatus(final String guid) throws AuthenticatorException
+    public List<Boolean> getOlrStatus(final String guid, final String userId) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#getOlrStatus(final String guid) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#getOlrStatus(final String guid, final String userId) throws AuthenticatorException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", guid);
+            DEBUGGER.debug("Value: {}", userId);
         }
 
         Connection sqlConn = null;
@@ -268,8 +269,9 @@ public class SQLAuthenticator implements Authenticator
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareStatement("{ CALL getOlrStatus(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getOlrStatus(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, guid);
+            stmt.setString(2, userId);
 
             if (DEBUG)
             {
@@ -294,8 +296,8 @@ public class SQLAuthenticator implements Authenticator
 
             	response = new ArrayList<Boolean>(
             			Arrays.asList(
-            					resultSet.getBoolean(1),
-            					resultSet.getBoolean(2)));
+            					resultSet.getBoolean(1), // ISOLRSETUP
+            					resultSet.getBoolean(2))); // ISOLRLOCKED
 
             	if (DEBUG)
             	{
@@ -311,17 +313,17 @@ public class SQLAuthenticator implements Authenticator
         {
             try
             {
-            	if (resultSet != null)
+            	if (!(Objects.isNull(resultSet)))
             	{
             		resultSet.close();
             	}
 
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -419,7 +421,7 @@ public class SQLAuthenticator implements Authenticator
         {
             try
             {
-                if (resultSet != null)
+                if (!(Objects.isNull(resultSet)))
                 {
                     resultSet.close();
                 }

@@ -105,7 +105,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -181,7 +181,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -249,7 +249,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -348,12 +348,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -479,12 +479,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -581,12 +581,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }

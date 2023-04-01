@@ -97,7 +97,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -187,12 +187,12 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -294,12 +294,12 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -401,12 +401,12 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -483,7 +483,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -552,7 +552,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -694,12 +694,12 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }

@@ -26,7 +26,6 @@ package com.cws.esolutions.security.processors.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
@@ -303,7 +302,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("AccountChangeRequest: {}", request);
         }
 
-        String currentPassword = null;
         AccountChangeResponse response = new AccountChangeResponse();
 
         final Calendar calendar = Calendar.getInstance();
@@ -362,17 +360,17 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 	DEBUGGER.debug("newSalt: {}", newSalt);
                 }
 
-                if (!(Objects.isNull(newSalt)))
+                if (StringUtils.isNotBlank(newSalt))
                 {
                     // get rollback information in case something breaks...
                     // we already have the existing expiry and password, all we really need to get here is the salt.
                     String existingSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-                    if (Objects.isNull(existingSalt))
+                    if (StringUtils.isNotBlank(existingSalt))
                     {
                         // good, move forward
                         // put the new salt in the database
-                        boolean isComplete = userSec.addUserSalt(userAccount.getGuid(), newSalt, SaltType.LOGON.name());
+                        boolean isComplete = userSec.addOrUpdateUserSalt(userAccount.getGuid(), newSalt, SaltType.LOGON.name());
 
                         if (DEBUG)
                         {
@@ -382,11 +380,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         if (isComplete)
                         {
                             // make the modification in the user repository
-                            isComplete = userManager.modifyUserPassword(userAccount.getGuid(),
+                            isComplete = userManager.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
                                     PasswordUtils.encryptText(reqSecurity.getNewPassword(), newSalt,
                                     		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
-                                    		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-                                    		sysConfig.getEncoding()));
+                                    		sysConfig.getEncoding()), false);
 
                             if (DEBUG)
                             {
@@ -412,7 +409,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // repository, because we couldnt update the salt value. if we don't
                                     // undo it then the user will never be able to login without admin
                                     // intervention
-                                    boolean isBackedOut = userManager.modifyUserPassword(userAccount.getUsername(), currentPassword);
+                                    boolean isBackedOut = userManager.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
+                                    		PasswordUtils.encryptText(reqSecurity.getPassword(), existingSalt,
+                                            		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+                                            		sysConfig.getEncoding()), false);
 
                                     if (!(isBackedOut))
                                     {
@@ -577,12 +577,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newSalt,
                             			secConfig.getSecretKeyAlgorithm(),
                             			secConfig.getIterations(), secConfig.getKeyLength(),
-                            			secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                             			sysConfig.getEncoding()),
                                 PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newSalt,
                             			secConfig.getSecretKeyAlgorithm(),
                             			secConfig.getIterations(), secConfig.getKeyLength(),
-                            			secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                             			sysConfig.getEncoding()))));
 
                 if (DEBUG)
@@ -593,7 +591,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 if (isComplete)
                 {
                     // now update the salt
-                    isComplete = userSec.updateUserSalt(userAccount.getGuid(), newSalt, SaltType.RESET.name());
+                    isComplete = userSec.addOrUpdateUserSalt(userAccount.getGuid(), newSalt, SaltType.RESET.name());
 
                     if (isComplete)
                     {

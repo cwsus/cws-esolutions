@@ -101,7 +101,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -179,7 +179,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -247,7 +247,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -344,12 +344,12 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -449,12 +449,12 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -545,12 +545,12 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }

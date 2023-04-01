@@ -90,7 +90,7 @@ public class AccountControlProcessorImplTest
     	account.setEmailAddr("kmhuntly@gmail.com");
 
         AuthenticationData authSec = new AuthenticationData();
-        authSec.setNewPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
+        authSec.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
         authSec.setUsername("khuntly");
 
         AccountControlRequest request = new AccountControlRequest();
@@ -144,8 +144,9 @@ public class AccountControlProcessorImplTest
     {
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
-    	account.setSuspended(true);
+    	account.setGuid("d2ddb6f4-b86d-4927-a688-dd0431448abf");
+    	account.setSuspended(false);
+    	account.setUserRole(SecurityUserRole.SITE_ADMIN);
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
@@ -196,15 +197,20 @@ public class AccountControlProcessorImplTest
     {
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
+    	account.setGuid("567e3182-f38b-4f62-a804-e619dab8e9df");
         account.setUserRole(SecurityUserRole.USER_ADMIN);
+
+        AuthenticationData authData = new AuthenticationData();
+        authData.setUsername("khuntly");
+        authData.setNewPassword("F3FbPBZUCrJvNq6RaCsk".toCharArray());
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
         request.setUserAccount(account);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
-        request.setRequestor(userAccount);
+        request.setRequestor(account);
+        request.setUserSecurity(authData);
 
         try
         {

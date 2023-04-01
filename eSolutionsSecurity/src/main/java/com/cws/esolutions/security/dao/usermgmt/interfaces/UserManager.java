@@ -237,12 +237,14 @@ public interface UserManager
      * Allows administrators and users alike to modify their password, either via an Online Reset
      * request or via accounting screens upon request.
      *
+     * @param userGuid - The username to perform the modification against
      * @param userId - The username to perform the modification against
      * @param newPass - The new password associated for the user account
+     * @param isReset
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an exception occurs during processing
      */
-    boolean modifyUserPassword(final String userId, final String newPass) throws UserManagementException;
+    boolean modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws UserManagementException;
 
     /**
      * 

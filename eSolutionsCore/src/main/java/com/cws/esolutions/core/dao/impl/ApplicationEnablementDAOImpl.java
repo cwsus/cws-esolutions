@@ -95,12 +95,12 @@ public class ApplicationEnablementDAOImpl implements IApplicationEnablementDAO
 	    }
 	    finally
 	    {
-	        if (resultSet != null)
+	        if (!(Objects.isNull(resultSet)))
 	        {
 	            resultSet.close();
 	        }
 
-	        if (stmt != null)
+	        if (!(Objects.isNull(stmt)))
 	        {
 	            stmt.close();
 	        }
@@ -186,12 +186,12 @@ public class ApplicationEnablementDAOImpl implements IApplicationEnablementDAO
 	    }
 	    finally
 	    {
-	        if (resultSet != null)
+	        if (!(Objects.isNull(resultSet)))
 	        {
 	            resultSet.close();
 	        }
 
-	        if (stmt != null)
+	        if (!(Objects.isNull(stmt)))
 	        {
 	            stmt.close();
 	        }

@@ -106,7 +106,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -185,7 +185,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -253,7 +253,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         finally
         {
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -350,12 +350,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -480,12 +480,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }
@@ -579,12 +579,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         finally
         {
-            if (resultSet != null)
+            if (!(Objects.isNull(resultSet)))
             {
                 resultSet.close();
             }
 
-            if (stmt != null)
+            if (!(Objects.isNull(stmt)))
             {
                 stmt.close();
             }

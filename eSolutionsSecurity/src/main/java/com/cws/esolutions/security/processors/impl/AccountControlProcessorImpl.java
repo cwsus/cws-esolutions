@@ -155,9 +155,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 DEBUGGER.debug("New user UUID: {}", userGuid);
             }
 
-            int x = 0;
-
-            while (true)
+            for (int x = 0; x < 10; x++)
             {
                 if (x == 10)
                 {
@@ -194,12 +192,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
             }
 
-            char[] newPass = RandomStringUtils.random(secConfig.getPasswordMaxLength()).toCharArray();
             String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getIterations());
-            String newPassword = PasswordUtils.encryptText(newPass, newSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+            String newPassword = PasswordUtils.encryptText(userSecurity.getPassword(), newSalt,
+                    secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+                    //secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                     sysConfig.getEncoding());
 
             if ((StringUtils.isBlank(newSalt) || (StringUtils.isBlank(newPassword))))
@@ -260,7 +256,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         }
         catch (final UserManagementException umx)
         {
-        	umx.printStackTrace();
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
@@ -926,7 +921,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             String tmpPassword = PasswordUtils.encryptText(newPassword, newSalt,
                     secConfig.getSecretKeyAlgorithm(),
                     secConfig.getIterations(), secConfig.getKeyLength(),
-                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                    //secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                     sysConfig.getEncoding());
 
             if ((StringUtils.isBlank(newSalt)) || (StringUtils.isBlank(tmpPassword)))
@@ -938,7 +933,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // we never show the user the password, we're only doing this
             // to prevent unauthorized access (or further unauthorized access)
             // we get a return code back but we aren't going to use it really
-            boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), tmpPassword);
+            boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(), tmpPassword, true);
 
             if (DEBUG)
             {

@@ -44,7 +44,7 @@
         <randomGenerator>SHA1PRNG</randomGenerator>
         <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
-        <userSecDAO>com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl</userSecDAO>
+        <userSecDAO>com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl</userSecDAO>
     </security-config>
 
     <password-repository>

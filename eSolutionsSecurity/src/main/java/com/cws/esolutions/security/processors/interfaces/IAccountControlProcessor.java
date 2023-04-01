@@ -41,7 +41,7 @@ import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
+import com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * API allowing administrative action against user account data
@@ -59,7 +59,7 @@ public interface IAccountControlProcessor
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
     static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
-    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
+    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new SQLUserSecurityInformationDAOImpl();
     
     static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccountControlProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

@@ -122,8 +122,13 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             String returnedPassword = PasswordUtils.encryptText(authSec.getPassword(), userSalt,
                     secConfig.getSecretKeyAlgorithm(),
                     secConfig.getIterations(), secConfig.getKeyLength(),
-                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                    //secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                     sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("returnedPassword: {}", returnedPassword);
+            }
 
             if (!(StringUtils.equals(returnedPassword, userPassword)))
             {
@@ -161,7 +166,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             		response.setUserAccount(userAccount);
             		response.setRequestStatus(SecurityRequestStatus.FAILURE);
 	            }
-	            else if ((Boolean) authObject.get(9))
+	            else if ((Boolean) authObject.get(8))
 	            {
             		userAccount.setStatus(LoginStatus.SUSPENDED);
 
@@ -175,16 +180,17 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	            }
 	            else
 	            {
-		            userAccount.setGuid((String) authObject.get(0)); // CN
-		            userAccount.setUsername((String) authObject.get(1)); // UID
+	            	userAccount.setGuid((String) authObject.get(1)); // UID
+		            userAccount.setUsername((String) authObject.get(0)); // CN
 		            userAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(2))); // USER_ROLE
 		            userAccount.setFailedCount((Integer) authObject.get(3)); // FAILEDCOUNT
 		            userAccount.setLastLogin((Date) authObject.get(4)); // LAST LOGON
 		            userAccount.setSurname((String) authObject.get(5)); // SURNAME
 		            userAccount.setGivenName((String) authObject.get(6)); // GIVEN NAME
-		            userAccount.setDisplayName((String) authObject.get(7)); // DISPLAYNAME
-		            userAccount.setExpiryDate((Date) authObject.get(8)); // EXPIRY
-		            userAccount.setEmailAddr((String) authObject.get(10)); // EMAIL
+		            userAccount.setExpiryDate((Date) authObject.get(7)); // EXPIRY_DATE
+		            userAccount.setSuspended((Boolean) authObject.get(8));  // SUSPENDED
+		            userAccount.setDisplayName((String) authObject.get(11)); // DISPLAYNAME
+		            userAccount.setEmailAddr((String) authObject.get(13)); // EMAIL
 		
 		            if (DEBUG)
 		            {

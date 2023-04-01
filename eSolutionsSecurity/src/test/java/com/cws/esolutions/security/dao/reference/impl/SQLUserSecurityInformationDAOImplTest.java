@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.reference.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.reference.impl
- * File: UserSecurityInformationDAOImplTest.java
+ * File: SQLUserSecurityInformationDAOImplTest.java
  *
  * History
  *
@@ -38,12 +38,12 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class UserSecurityInformationDAOImplTest
+public class SQLUserSecurityInformationDAOImplTest
 {
     private static final String GUID = "99aaefc1-8a2a-4877-bed5-20b73d971e56";
     private static final String resetId = RandomStringUtils.randomAlphanumeric(64);
 
-    private static final IUserSecurityInformationDAO dao = new UserSecurityInformationDAOImpl();
+    private static final IUserSecurityInformationDAO dao = new SQLUserSecurityInformationDAOImpl();
 
     @BeforeAll public void setUp()
     {
@@ -58,27 +58,13 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test public void addUserSalt()
+    @Test public void addOrUpdateUserSalt()
     {
     	String saltValue = RandomStringUtils.randomAlphanumeric(64);
 
         try
         {
-			Assertions.assertThat(dao.addUserSalt(UserSecurityInformationDAOImplTest.GUID, saltValue, SaltType.LOGON.name())).isTrue();
-		}
-        catch (final SQLException sqx)
-        {
-			Assertions.fail(sqx.getMessage());
-		}
-    }
-
-    @Test public void updateUserSalt()
-    {
-    	String saltValue = RandomStringUtils.randomAlphanumeric(64);
-
-    	try
-        {
-			Assertions.assertThat(dao.updateUserSalt(UserSecurityInformationDAOImplTest.GUID, saltValue, SaltType.LOGON.name())).isTrue();
+			Assertions.assertThat(dao.addOrUpdateUserSalt(SQLUserSecurityInformationDAOImplTest.GUID, saltValue, SaltType.LOGON.name())).isTrue();
 		}
         catch (final SQLException sqx)
         {
@@ -90,7 +76,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assertions.assertThat(dao.getUserSalt(UserSecurityInformationDAOImplTest.GUID, SaltType.LOGON.name())).isNotEmpty();
+            Assertions.assertThat(dao.getUserSalt(SQLUserSecurityInformationDAOImplTest.GUID, SaltType.LOGON.name())).isNotEmpty();
         }
         catch (final SQLException sqx)
         {
@@ -102,7 +88,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-        	Assertions.assertThat(dao.insertResetData(UserSecurityInformationDAOImplTest.GUID, resetId)).isTrue();
+        	Assertions.assertThat(dao.insertResetData(SQLUserSecurityInformationDAOImplTest.GUID, resetId)).isTrue();
         }
         catch (final SQLException sqx)
         {
@@ -126,7 +112,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-        	Assertions.assertThat(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, "qBED281bKoFnr8DEelsVPtmpFWfo3wxMhSEubAMrhRWSUkxBRng5tX2FtJHPDI9u")).isTrue();
+        	Assertions.assertThat(dao.removeResetData(SQLUserSecurityInformationDAOImplTest.GUID, "qBED281bKoFnr8DEelsVPtmpFWfo3wxMhSEubAMrhRWSUkxBRng5tX2FtJHPDI9u")).isTrue();
         }
         catch (final SQLException sqx)
         {

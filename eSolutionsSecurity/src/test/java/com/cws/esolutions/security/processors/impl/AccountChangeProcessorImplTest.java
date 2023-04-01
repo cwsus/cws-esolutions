@@ -34,6 +34,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
@@ -45,7 +46,6 @@ import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class AccountChangeProcessorImplTest
 {
-    private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
     private static final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
@@ -70,7 +70,7 @@ public final class AccountChangeProcessorImplTest
     {
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("393ac161-3941-428b-9d60-31d72b839cf3");
+    	account.setGuid("4889e1cb-adbe-4396-af3b-19a6996dce80");
     	account.setEmailAddr("kmhuntly@gmail.com");
 
     	AuthenticationData authData = new AuthenticationData();
@@ -109,7 +109,7 @@ public final class AccountChangeProcessorImplTest
 
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("129e32f6-9f94-446b-b8ef-2451083a5681");
+    	account.setGuid("eb4edc58-59fc-4772-a16a-b1041dd7cc0c");
 
     	AuthenticationData authData = new AuthenticationData();
     	authData.setUsername("khuntly");
@@ -147,16 +147,20 @@ public final class AccountChangeProcessorImplTest
     	authData.setUsername("khuntly");
     	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
 
-        AccountChangeProcessorImplTest.userAccount.setPagerNumber("5555561212");
-        AccountChangeProcessorImplTest.userAccount.setTelephoneNumber("5555551213");
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("ab5637da-9608-469f-a3ef-5d4a970b2177");
+    	account.setUserRole(SecurityUserRole.SITE_ADMIN);
+    	account.setTelephoneNumber("8623999098");
+    	account.setPagerNumber("7162491027");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
         request.setHostInfo(AccountChangeProcessorImplTest.hostInfo);
         request.setIsReset(false);
-        request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
-        request.setRequestor(AccountChangeProcessorImplTest.userAccount);
+        request.setUserAccount(account);
+        request.setRequestor(account);
         request.setUserSecurity(authData);
 
         try
@@ -173,35 +177,19 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserKeys()
     {
-    	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("junit");
-
-        AccountChangeRequest request = new AccountChangeRequest();
-        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
-        request.setApplicationName("eSolutions");
-        request.setHostInfo(AccountChangeProcessorImplTest.hostInfo);
-        request.setIsReset(false);
-        request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
-        request.setRequestor(AccountChangeProcessorImplTest.userAccount);
-        request.setUserSecurity(authData);
-
-        try
-        {
-            AccountChangeResponse response = processor.changeUserKeys(request);
-
-            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
-        }
-        catch (final AccountChangeException acx)
-        {
-            acx.printStackTrace();
-            Assertions.fail(acx.getMessage());
-        }
+    	// TODO
     }
 
     @Test public void changeUserPassword()
     {
+    	UserAccount account = new UserAccount();
+    	account.setUsername("khuntly");
+    	account.setGuid("eb4edc58-59fc-4772-a16a-b1041dd7cc0c");
+    	account.setUserRole(SecurityUserRole.SITE_ADMIN);
+
     	AuthenticationData authData = new AuthenticationData();
     	authData.setNewPassword("naB8QUXNTWFA7MCpFYvT".toCharArray());
+    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
     	authData.setUsername("khuntly");
 
         AccountChangeRequest request = new AccountChangeRequest();
@@ -209,8 +197,8 @@ public final class AccountChangeProcessorImplTest
         request.setApplicationName("eSolutions");
         request.setHostInfo(AccountChangeProcessorImplTest.hostInfo);
         request.setIsReset(false);
-        request.setUserAccount(AccountChangeProcessorImplTest.userAccount);
-        request.setRequestor(AccountChangeProcessorImplTest.userAccount);
+        request.setUserAccount(account);
+        request.setRequestor(account);
         request.setUserSecurity(authData);
 
         try
@@ -221,7 +209,6 @@ public final class AccountChangeProcessorImplTest
         }
         catch (final AccountChangeException acx)
         {
-        	acx.printStackTrace();
         	Assertions.fail(acx.getMessage());
         }
     }

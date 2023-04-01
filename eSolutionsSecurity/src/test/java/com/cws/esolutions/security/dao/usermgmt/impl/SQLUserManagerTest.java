@@ -79,8 +79,8 @@ public class SQLUserManagerTest
                             				bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
                             				bean.getConfigData().getSecurityConfig().getIterations(),
                             				bean.getConfigData().getSecurityConfig().getKeyLength(),
-                            				bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            				bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            				//bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            				//bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                                             bean.getConfigData().getSystemConfig().getEncoding()),
                             		SecurityUserRole.NONE.toString(),
                             		"junit",
@@ -228,7 +228,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assertions.assertThat(manager.modifyUserPassword(SQLUserManagerTest.GUID,
+            Assertions.assertThat(manager.modifyUserPassword(SQLUserManagerTest.GUID, " a user id ", // TODO
             		PasswordUtils.encryptText(
             				RandomStringUtils.randomAlphanumeric(32).toCharArray(),
             				PasswordUtils.returnGeneratedSalt(
@@ -237,9 +237,9 @@ public class SQLUserManagerTest
             					bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
             					bean.getConfigData().getSecurityConfig().getIterations(),
             					bean.getConfigData().getSecurityConfig().getKeyLength(),
-            					bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-            					bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-            					bean.getConfigData().getSystemConfig().getEncoding())));
+            					//bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+            					//bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+            					bean.getConfigData().getSystemConfig().getEncoding()), false));
         }
         catch (final UserManagementException umx)
         {
@@ -263,8 +263,8 @@ public class SQLUserManagerTest
                             			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
                             			bean.getConfigData().getSecurityConfig().getIterations(),
                             			bean.getConfigData().getSecurityConfig().getKeyLength(),
-                            			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            			//bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            			//bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                             			bean.getConfigData().getSystemConfig().getEncoding()),
                             PasswordUtils.encryptText(
                             		RandomStringUtils.randomAlphanumeric(32).toCharArray(),
@@ -274,8 +274,8 @@ public class SQLUserManagerTest
                             			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
                             			bean.getConfigData().getSecurityConfig().getIterations(),
                             			bean.getConfigData().getSecurityConfig().getKeyLength(),
-                            			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            			//bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            			//bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                             			bean.getConfigData().getSystemConfig().getEncoding())))));
         }
         catch (final UserManagementException umx)

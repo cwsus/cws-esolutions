@@ -85,7 +85,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         try
         {
-        	List<Boolean> authList = authenticator.getOlrStatus(reqAccount.getGuid());
+        	List<Boolean> authList = authenticator.getOlrStatus(reqAccount.getGuid(), reqAccount.getUsername());
 
         	if (DEBUG)
         	{
