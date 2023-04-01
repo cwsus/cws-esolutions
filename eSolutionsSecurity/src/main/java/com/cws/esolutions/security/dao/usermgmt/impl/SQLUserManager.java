@@ -136,7 +136,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -230,7 +230,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -308,7 +308,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -463,7 +463,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -603,7 +603,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -725,7 +725,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -837,7 +837,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -949,7 +949,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -1030,7 +1030,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -1108,7 +1108,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -1190,7 +1190,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -1272,7 +1272,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -1350,7 +1350,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -1441,9 +1441,6 @@ public class SQLUserManager implements UserManager
             		DEBUGGER.debug("confPassword: {}", confPassword);
             	}
 
-            	System.out.println("confPassword: " + confPassword);
-            	System.out.println("newPass: " + newPass);
-            	System.out.println(StringUtils.equals(confPassword, newPass));
             	if (StringUtils.equals(confPassword, newPass))
             	{
             		isComplete = true;
@@ -1468,7 +1465,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -1549,7 +1546,7 @@ public class SQLUserManager implements UserManager
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
