@@ -380,7 +380,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         if (isComplete)
                         {
                             // make the modification in the user repository
-                            isComplete = userManager.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
+                            isComplete = userSec.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
                                     PasswordUtils.encryptText(reqSecurity.getNewPassword(), newSalt,
                                     		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
                                     		sysConfig.getEncoding()), false);
@@ -409,7 +409,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // repository, because we couldnt update the salt value. if we don't
                                     // undo it then the user will never be able to login without admin
                                     // intervention
-                                    boolean isBackedOut = userManager.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
+                                    boolean isBackedOut = userSec.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
                                     		PasswordUtils.encryptText(reqSecurity.getPassword(), existingSalt,
                                             		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
                                             		sysConfig.getEncoding()), false);
@@ -569,7 +569,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 // good, move forward
                 // make the modification in the user repository
-                boolean isComplete = userManager.modifyUserSecurity(userAccount.getGuid(), 
+                boolean isComplete = userSec.modifyUserSecurity(userAccount.getGuid(), 
                         new ArrayList<String>(
                             Arrays.asList(
                                 reqSecurity.getSecQuestionOne(),

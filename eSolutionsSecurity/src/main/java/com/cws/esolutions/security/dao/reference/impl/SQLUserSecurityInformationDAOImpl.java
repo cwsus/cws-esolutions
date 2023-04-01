@@ -29,15 +29,14 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
-
-import org.apache.commons.codec.binary.StringUtils;
-
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import org.apache.commons.codec.binary.StringUtils;
 
+import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO
@@ -630,5 +629,204 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         }
 
         return questionMap;
+    }
+
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserPassword(java.lang.String, java.lang.String)
+     */
+    public synchronized boolean modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws UserManagementException
+    {
+        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", isReset);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            // first make sure the existing password is proper
+            // then make sure the new password doesnt match the existing password
+            stmt = sqlConn.prepareStatement("{ CALL modifyUserPassword(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userGuid);
+            stmt.setString(2, newPass);
+            stmt.setBoolean(3, isReset);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            stmt.executeUpdate();
+
+            stmt.close();
+            stmt = null;
+
+            stmt = sqlConn.prepareStatement("{ CALL getUserPassword(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userGuid);
+            stmt.setString(2, userId);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            resultSet = stmt.executeQuery();
+
+            if (!(Objects.isNull(resultSet)))
+            {
+            	resultSet.first();
+            	String confPassword = resultSet.getString(1);
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("confPassword: {}", confPassword);
+            	}
+
+            	if (StringUtils.equals(confPassword, newPass))
+            	{
+            		isComplete = true;
+            	}
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+            	if (!(Objects.isNull(resultSet)))
+            	{
+            		resultSet.close();
+            	}
+
+                if (!(Objects.isNull(stmt)))
+                {
+                    stmt.close();
+                }
+
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new UserManagementException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSecurity(java.lang.String, java.util.List)
+     */
+    public synchronized boolean modifyUserSecurity(final String userGuid, final List<String> values) throws UserManagementException
+    {
+        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#modifyUserSecurity(final String userGuid, final List<String> values) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userGuid: {}", userGuid);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareStatement("{ CALL addOrUpdateSecurityQuestions(?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userGuid);
+            stmt.setString(2, values.get(0));
+            stmt.setString(3, values.get(1));
+            stmt.setString(4, values.get(2));
+            stmt.setString(5, values.get(3));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            stmt.executeUpdate();
+
+            isComplete = true;
+        }
+        catch (final SQLException sqx)
+        {
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (!(Objects.isNull(stmt)))
+                {
+                    stmt.close();
+                }
+
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new UserManagementException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return isComplete;
     }
 }

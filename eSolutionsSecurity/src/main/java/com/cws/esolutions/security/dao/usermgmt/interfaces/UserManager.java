@@ -232,29 +232,4 @@ public interface UserManager
      * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException;
-
-    /**
-     * Allows administrators and users alike to modify their password, either via an Online Reset
-     * request or via accounting screens upon request.
-     *
-     * @param userGuid - The username to perform the modification against
-     * @param userId - The username to perform the modification against
-     * @param newPass - The new password associated for the user account
-     * @param isReset
-     * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException if an exception occurs during processing
-     */
-    boolean modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws UserManagementException;
-
-    /**
-     * 
-     * Allows users to modify their password, either via an Online Reset
-     * request or via accounting screens upon request.
-     *
-     * @param userId - The username to perform the modification against
-     * @param values - The values associated for the new security questions/answers
-     * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException if an exception occurs during processing
-     */
-    boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException;
 }

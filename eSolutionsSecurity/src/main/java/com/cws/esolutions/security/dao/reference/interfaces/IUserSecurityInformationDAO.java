@@ -34,6 +34,7 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * API allowing data access for user security information, such as salt
  * or reset data.
@@ -127,4 +128,30 @@ public interface IUserSecurityInformationDAO
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     boolean removeResetData(final String commonName, final String resetId) throws SQLException;
+
+
+    /**
+     * Allows administrators and users alike to modify their password, either via an Online Reset
+     * request or via accounting screens upon request.
+     *
+     * @param userGuid - The username to perform the modification against
+     * @param userId - The username to perform the modification against
+     * @param newPass - The new password associated for the user account
+     * @param isReset
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
+     * @throws UserManagementException if an exception occurs during processing
+     */
+    boolean modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws UserManagementException;
+
+    /**
+     * 
+     * Allows users to modify their password, either via an Online Reset
+     * request or via accounting screens upon request.
+     *
+     * @param userId - The username to perform the modification against
+     * @param values - The values associated for the new security questions/answers
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
+     * @throws UserManagementException if an exception occurs during processing
+     */
+    boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException;
 }

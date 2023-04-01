@@ -224,66 +224,6 @@ public class SQLUserManagerTest
         }
     }
 
-    @Test public void modifyUserPassword()
-    {
-        try
-        {
-            Assertions.assertThat(manager.modifyUserPassword(SQLUserManagerTest.GUID, " a user id ", // TODO
-            		PasswordUtils.encryptText(
-            				RandomStringUtils.randomAlphanumeric(32).toCharArray(),
-            				PasswordUtils.returnGeneratedSalt(
-            						bean.getConfigData().getSecurityConfig().getRandomGenerator(),
-            						bean.getConfigData().getSecurityConfig().getSaltLength()),
-            					bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-            					bean.getConfigData().getSecurityConfig().getIterations(),
-            					bean.getConfigData().getSecurityConfig().getKeyLength(),
-            					//bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-            					//bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-            					bean.getConfigData().getSystemConfig().getEncoding()), false));
-        }
-        catch (final UserManagementException umx)
-        {
-            Assertions.fail(umx.getMessage());
-        }
-    }
-
-    @Test public void modifyUserSecurity()
-    {
-        try
-        {
-            Assertions.assertThat(manager.modifyUserSecurity(SQLUserManagerTest.GUID, new ArrayList<String>(
-                    Arrays.asList(
-                            "What is your favourite cartoon ?",
-                            "Who was your childhood best friend ?",
-                            PasswordUtils.encryptText(
-                            		RandomStringUtils.randomAlphanumeric(32).toCharArray(),
-                            		PasswordUtils.returnGeneratedSalt(
-                            				bean.getConfigData().getSecurityConfig().getRandomGenerator(),
-                            				bean.getConfigData().getSecurityConfig().getSaltLength()),
-                            			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                            			bean.getConfigData().getSecurityConfig().getIterations(),
-                            			bean.getConfigData().getSecurityConfig().getKeyLength(),
-                            			//bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            			//bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            			bean.getConfigData().getSystemConfig().getEncoding()),
-                            PasswordUtils.encryptText(
-                            		RandomStringUtils.randomAlphanumeric(32).toCharArray(),
-                            		PasswordUtils.returnGeneratedSalt(
-                            				bean.getConfigData().getSecurityConfig().getRandomGenerator(),
-                            				bean.getConfigData().getSecurityConfig().getSaltLength()),
-                            			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                            			bean.getConfigData().getSecurityConfig().getIterations(),
-                            			bean.getConfigData().getSecurityConfig().getKeyLength(),
-                            			//bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            			//bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            			bean.getConfigData().getSystemConfig().getEncoding())))));
-        }
-        catch (final UserManagementException umx)
-        {
-            Assertions.fail(umx.getMessage());
-        }
-    }
-
     @Test public void removeUserAccount()
     {
         try

@@ -26,6 +26,9 @@ package com.cws.esolutions.security.dao.reference.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.AfterAll;
@@ -34,8 +37,11 @@ import org.assertj.core.api.Assertions;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.processors.enums.SaltType;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
+import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
+import com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManagerTest;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SQLUserSecurityInformationDAOImplTest

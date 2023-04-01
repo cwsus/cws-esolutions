@@ -29,7 +29,7 @@ CREATE TABLE CWSSEC.USERS (
     UNIQUE KEY USERID (UID),
     INDEX IDX_USERS (CN, UID),
     FULLTEXT KEY FT_USERS (UID, CWSROLE, GIVENNAME, SN, CN)
-) ENGINE=InnoDB CHARSET=utf8mb4 ROW_FORMAT=COMPACT COLLATE utf8mb4_0900_ai_ci //
+) ENGINE=InnoDB CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COLLATE utf8mb4_0900_ai_ci //
 COMMIT //
 
 GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON CWSSEC.* TO 'appadm'@'appsrv.lan' //
@@ -53,6 +53,7 @@ DROP PROCEDURE IF EXISTS CWSSEC.removeUserAccount //
 DROP PROCEDURE IF EXISTS CWSSEC.getSecurityQuestions //
 DROP PROCEDURE IF EXISTS CWSSEC.getUserPassword //
 DROP PROCEDURE IF EXISTS CWSSEC.getOlrStatus //
+DROP PROCEDURE IF EXISTS CWSSEC.performSuccessfulLogin //
 
 CREATE PROCEDURE CWSSEC.addUserAccount(
     IN commonName VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
@@ -322,6 +323,22 @@ BEGIN
 END //
 COMMIT //
 
+CREATE PROCEDURE CWSSEC.performSuccessfulLogin(
+    IN userId VARCHAR(45),
+    IN userGuid VARCHAR(128)
+)
+BEGIN
+    UPDATE USERS
+    SET 
+        CWSLASTLOGIN = CURRENT_TIMESTAMP(),
+        CWSFAILEDPWDCOUNT = 0
+    WHERE CN = userGuid
+    AND UID = userId;
+
+    COMMIT;
+END //
+COMMIT //
+
 GRANT EXECUTE ON PROCEDURE CWSSEC.addUserAccount TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityAnswers TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getUserByAttribute TO 'appadm'@'localhost' //
@@ -337,6 +354,7 @@ GRANT EXECUTE ON PROCEDURE CWSSEC.removeUserAccount TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityQuestions TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getUserPassword TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getOlrStatus TO 'appadm'@'localhost' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.performSuccessfulLogin TO 'appadm'@'localhost' //
 
 GRANT EXECUTE ON PROCEDURE CWSSEC.addUserAccount TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityAnswers TO 'appadm'@'appsrv.lan' //
@@ -353,5 +371,6 @@ GRANT EXECUTE ON PROCEDURE CWSSEC.removeUserAccount TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityQuestions TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getUserPassword TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getOlrStatus TO 'appadm'@'appsrv.lan' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.performSuccessfulLogin TO 'appadm'@'appsrv.lan' //
 
 DELIMITER ;
