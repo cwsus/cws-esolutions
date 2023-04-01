@@ -101,7 +101,24 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             // we aren't getting the data back here because we don't need it. if the request
             // fails we'll get an exception and not process further. this might not be the
             // best flow control, but it does exactly what we need where we need it.
-            authenticator.performLogon(userAccount.getGuid());
+        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+        		DEBUGGER.debug("authToken: {}", authToken);
+        	}
+
+        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getAuthToken());
+
+        	if (!(isAuthenticated))
+        	{
+        		throw new AccountChangeException("An invalid authentication token was presented.");
+        	}
 
             boolean isComplete = userManager.modifyUserEmail(userAccount.getGuid(), userAccount.getEmailAddr());
 
@@ -136,6 +153,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sx.getMessage(), sx);
         }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountChangeException(sqx.getMessage(), sqx);
+		}
         finally
         {
             // audit
@@ -212,7 +235,24 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-            authenticator.performLogon(userAccount.getGuid());
+        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+        		DEBUGGER.debug("authToken: {}", authToken);
+        	}
+
+        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getAuthToken());
+
+        	if (!(isAuthenticated))
+        	{
+        		throw new AccountChangeException("An invalid authentication token was presented.");
+        	}
 
             boolean isComplete = userManager.modifyUserContact(userAccount.getGuid(),
                     new ArrayList<String>(
@@ -252,6 +292,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sx.getMessage(), sx);
         }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountChangeException(sqx.getMessage(), sqx);
+		}
         finally
         {
             // audit
@@ -350,7 +396,24 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 if (!(request.isReset()))
                 {
                     // ok, authenticate first
-                    authenticator.performLogon(userAccount.getGuid());
+                	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+                	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                            secConfig.getSecretKeyAlgorithm(),
+                            secConfig.getIterations(), secConfig.getKeyLength(),
+                            sysConfig.getEncoding());
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                		DEBUGGER.debug("authToken: {}", authToken);
+                	}
+
+                	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getAuthToken());
+
+                	if (!(isAuthenticated))
+                	{
+                		throw new AccountChangeException("An invalid authentication token was presented.");
+                	}
                 }
 
                 String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
@@ -558,7 +621,24 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         	    // we aren't getting the data back here because we don't need it. if the request
                 // fails we'll get an exception and not process further. this might not be the
                 // best flow control, but it does exactly what we need where we need it.
-            	authenticator.performLogon(userAccount.getUsername());
+            	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                        secConfig.getSecretKeyAlgorithm(),
+                        secConfig.getIterations(), secConfig.getKeyLength(),
+                        sysConfig.getEncoding());
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+            		DEBUGGER.debug("authToken: {}", authToken);
+            	}
+
+            	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getAuthToken());
+
+            	if (!(isAuthenticated))
+            	{
+            		throw new AccountChangeException("An invalid authentication token was presented.");
+            	}
 
                 String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
 

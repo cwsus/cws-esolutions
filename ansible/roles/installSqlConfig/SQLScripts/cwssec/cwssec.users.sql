@@ -20,6 +20,7 @@ CREATE TABLE CWSSEC.USERS (
     GIVENNAME VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Given Name',
     DISPLAYNAME VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Display Name',
     CWSEXPIRYDATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    AUTHTOKEN VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     CWSSECQ1 VARCHAR(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     CWSSECQ2 VARCHAR(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     CWSSECANS1 VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
@@ -54,6 +55,7 @@ DROP PROCEDURE IF EXISTS CWSSEC.getSecurityQuestions //
 DROP PROCEDURE IF EXISTS CWSSEC.getUserPassword //
 DROP PROCEDURE IF EXISTS CWSSEC.getOlrStatus //
 DROP PROCEDURE IF EXISTS CWSSEC.performSuccessfulLogin //
+DROP PROCEDURE IF EXISTS CWSSEC.getAuthToken //
 
 CREATE PROCEDURE CWSSEC.addUserAccount(
     IN commonName VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
@@ -114,6 +116,18 @@ BEGIN
     FROM CWSSEC.USERS
     WHERE MATCH (UID, CWSROLE, GIVENNAME, SN, CN)
     AGAINST (+attributeName IN BOOLEAN MODE);
+END //
+COMMIT //
+
+CREATE PROCEDURE CWSSEC.getAuthToken(
+    IN userGuid VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+    IN authToken VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
+)
+BEGIN
+    SELECT COUNT(AUTHTOKEN)
+    FROM CWSSEC.USERS
+    WHERE CN = userGuid
+    AND AUTHTOKEN = authToken;
 END //
 COMMIT //
 
@@ -325,13 +339,15 @@ COMMIT //
 
 CREATE PROCEDURE CWSSEC.performSuccessfulLogin(
     IN userId VARCHAR(45),
-    IN userGuid VARCHAR(128)
+    IN userGuid VARCHAR(128),
+    IN authToken VARCHAR(128)
 )
 BEGIN
     UPDATE USERS
     SET 
         CWSLASTLOGIN = CURRENT_TIMESTAMP(),
-        CWSFAILEDPWDCOUNT = 0
+        CWSFAILEDPWDCOUNT = 0,
+        AUTHTOKEN = authToken
     WHERE CN = userGuid
     AND UID = userId;
 
@@ -355,6 +371,7 @@ GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityQuestions TO 'appadm'@'localhost' /
 GRANT EXECUTE ON PROCEDURE CWSSEC.getUserPassword TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getOlrStatus TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.performSuccessfulLogin TO 'appadm'@'localhost' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.getAuthToken TO 'appadm'@'localhost' //
 
 GRANT EXECUTE ON PROCEDURE CWSSEC.addUserAccount TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityAnswers TO 'appadm'@'appsrv.lan' //
@@ -372,5 +389,6 @@ GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityQuestions TO 'appadm'@'appsrv.lan' 
 GRANT EXECUTE ON PROCEDURE CWSSEC.getUserPassword TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getOlrStatus TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.performSuccessfulLogin TO 'appadm'@'appsrv.lan' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.getAuthToken TO 'appadm'@'appsrv.lan' //
 
 DELIMITER ;

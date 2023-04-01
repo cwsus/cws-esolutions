@@ -71,7 +71,7 @@ public class AuthenticationProcessorImplTest
         account.setUsername("khuntly");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
+        userSecurity.setPassword("naB8QUXNTWFA7MCpFYvT".toCharArray());
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");

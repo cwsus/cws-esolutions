@@ -61,8 +61,6 @@ BEGIN
 END //
 COMMIT //
 
-ESOLUTIONS.retrAlertMessages
-
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.retrAvailableServices TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.isServiceEnabled TO 'appadm'@'localhost' //
 

@@ -49,6 +49,7 @@ public class UserAccount implements Serializable
     private String emailAddr = null;
     private String givenName = null;
     private String sessionId = null;
+    private String authToken = null;
     private boolean accepted = false;
     private String pagerNumber = null;
     private String displayName = null;
@@ -321,6 +322,22 @@ public class UserAccount implements Serializable
     }
 
     /**
+     * @param value - The SessionID
+     */
+    public final void setAuthToken(final String value)
+    {
+        final String methodName = UserAccount.CNAME + "#setAuthToken(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.authToken = value;
+    }
+
+    /**
      * @return The {@link com.cws.esolutions.security.processors.enums.LoginStatus} for the account
      */
     public final LoginStatus getStatus()
@@ -574,6 +591,22 @@ public class UserAccount implements Serializable
         }
 
         return this.sessionId;
+    }
+
+    /**
+     * @return String
+     */
+    public final String getAuthToken()
+    {
+        final String methodName = UserAccount.CNAME + "#getAuthToken()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.authToken);
+        }
+
+        return this.authToken;
     }
 
     /**

@@ -25,6 +25,7 @@ package com.cws.esolutions.security.dao.userauth.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.Logger;
@@ -63,6 +64,28 @@ public interface Authenticator
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**
+     * 
+     * @param userGuid
+     * @param userName
+     * @param password
+     * @return
+     * @throws AuthenticatorException
+     */
+    boolean performLogon(final String userGuid, final String userName, final String password) throws AuthenticatorException;
+
+    /**
+     * Allows an administrator to lock or unlock a user account as desired.
+     *
+     * @param userId - The username to perform the modification against
+     * @param guid - The Globally Unique Identifier for the account in the repository
+     * @param lockCount - The (current) lock count value for the account
+     * @param timestamp - The timestamp to use for the last login
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
+     * @throws UserManagementException if an exception occurs during processing
+     */
+    boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Date timestamp, final String authToken) throws AuthenticatorException;
+
+    /**
      * Processes an agent logon request via an LDAP user datastore. If the
      * information provided matches an existing record, the user is
      * considered authenticated successfully and further processing
@@ -75,19 +98,7 @@ public interface Authenticator
      * @return String - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    String performLogon(final String guid) throws AuthenticatorException;
-
-    /**
-     * Allows an administrator to lock or unlock a user account as desired.
-     *
-     * @param userId - The username to perform the modification against
-     * @param guid - The Globally Unique Identifier for the account in the repository
-     * @param lockCount - The (current) lock count value for the account
-     * @param timestamp - The timestamp to use for the last login
-     * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException if an exception occurs during processing
-     */
-    boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws AuthenticatorException;
+    boolean validateAuthToken(final String guid, final String authToken) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the

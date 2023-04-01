@@ -87,9 +87,9 @@ CREATE PROCEDURE ESOLUTIONS.listDataCenters(
 BEGIN
     SELECT
         GUID,
-        NAME,
-        STATUS,
-        DESCRIPTION
+        DCNAME,
+        DCSTATUS,
+        DCDESCRIPTION
     FROM ESOLUTIONS.DATACENTERS
     WHERE DCSTATUS = 'ACTIVE'
     LIMIT startRow, 20;
@@ -102,9 +102,9 @@ CREATE PROCEDURE ESOLUTIONS.retrDataCenter(
 BEGIN
     SELECT
         GUID,
-        NAME,
-        STATUS,
-        DESCRIPTION
+        DCNAME,
+        DCSTATUS,
+        DCDESCRIPTION
     FROM ESOLUTIONS.DATACENTERS
     WHERE GUID = datacenterGuid
     AND DCSTATUS = 'ACTIVE';

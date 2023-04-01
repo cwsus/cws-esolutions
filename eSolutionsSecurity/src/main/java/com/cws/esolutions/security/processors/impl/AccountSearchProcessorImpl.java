@@ -106,10 +106,10 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
             	}
 
                 UserAccount foundAccount = new UserAccount();
-            	foundAccount.setGuid((String) accountData.get(0)); // CN
-            	foundAccount.setUsername((String) accountData.get(1)); // UID
-	            foundAccount.setDisplayName((String) accountData.get(7)); // DISPLAYNAME
-	            foundAccount.setEmailAddr((String) accountData.get(10)); // EMAIL
+            	foundAccount.setGuid((String) accountData.get(1)); // CN
+            	foundAccount.setUsername((String) accountData.get(0)); // UID
+	            foundAccount.setDisplayName((String) accountData.get(11)); // DISPLAYNAME
+	            foundAccount.setEmailAddr((String) accountData.get(13)); // EMAIL
 
             	if (DEBUG)
             	{

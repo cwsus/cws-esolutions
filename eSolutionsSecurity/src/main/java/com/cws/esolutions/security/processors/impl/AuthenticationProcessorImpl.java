@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.sql.SQLException;
-import org.apache.commons.codec.binary.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -106,12 +105,10 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             String userSalt = userSec.getUserSalt(userGuid, SaltType.LOGON.name());
-            String userPassword = userSec.getUserPassword(userGuid, userId);
 
             if (DEBUG)
             {
             	DEBUGGER.debug("userSalt: {}", userSalt);
-            	DEBUGGER.debug("userPassword: {}", userPassword);
             }
 
             if (Objects.isNull(userSalt))
@@ -122,7 +119,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             String returnedPassword = PasswordUtils.encryptText(authSec.getPassword(), userSalt,
                     secConfig.getSecretKeyAlgorithm(),
                     secConfig.getIterations(), secConfig.getKeyLength(),
-                    //secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                     sysConfig.getEncoding());
 
             if (DEBUG)
@@ -130,20 +126,24 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             	DEBUGGER.debug("returnedPassword: {}", returnedPassword);
             }
 
-            if (!(StringUtils.equals(returnedPassword, userPassword)))
+            boolean isAuthenticated = authenticator.performLogon(userGuid, userId, returnedPassword);
+
+            if (!(isAuthenticated))
             {
-            	throw new AuthenticationException("The user account was not validated.");
+            	response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+            	return response;
             }
 
             // load the user account here
-            List<Object> authObject = userManager.loadUserAccount(userGuid);
+            List<Object> userObject = userManager.loadUserAccount(userGuid);
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("authObject: {}", authObject);
+            	DEBUGGER.debug("authObject: {}", userObject);
             }
 
-            if (Objects.isNull(authObject))
+            if (Objects.isNull(userObject))
             {
             	// no data was returned
             	response.setRequestStatus(SecurityRequestStatus.FAILURE);
@@ -154,7 +154,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             {
             	userAccount = new UserAccount();
 
-            	if ((Integer) authObject.get(3) >= secConfig.getMaxAttempts())
+            	if ((Integer) userObject.get(3) >= secConfig.getMaxAttempts())
             	{
             		userAccount.setStatus(LoginStatus.LOCKOUT);
 
@@ -166,7 +166,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             		response.setUserAccount(userAccount);
             		response.setRequestStatus(SecurityRequestStatus.FAILURE);
 	            }
-	            else if ((Boolean) authObject.get(8))
+	            else if ((Boolean) userObject.get(8))
 	            {
             		userAccount.setStatus(LoginStatus.SUSPENDED);
 
@@ -180,17 +180,47 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	            }
 	            else
 	            {
-	            	userAccount.setGuid((String) authObject.get(1)); // UID
-		            userAccount.setUsername((String) authObject.get(0)); // CN
-		            userAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(2))); // USER_ROLE
-		            userAccount.setFailedCount((Integer) authObject.get(3)); // FAILEDCOUNT
-		            userAccount.setLastLogin((Date) authObject.get(4)); // LAST LOGON
-		            userAccount.setSurname((String) authObject.get(5)); // SURNAME
-		            userAccount.setGivenName((String) authObject.get(6)); // GIVEN NAME
-		            userAccount.setExpiryDate((Date) authObject.get(7)); // EXPIRY_DATE
-		            userAccount.setSuspended((Boolean) authObject.get(8));  // SUSPENDED
-		            userAccount.setDisplayName((String) authObject.get(11)); // DISPLAYNAME
-		            userAccount.setEmailAddr((String) authObject.get(13)); // EMAIL
+	            	// generate auth token
+	            	String tokenValue = (String) userObject.get(1);
+	            	String tokenSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength()); // salt value for auth token
+	            	String authToken = PasswordUtils.encryptText(tokenValue.toCharArray(), tokenSalt,
+	                        secConfig.getSecretKeyAlgorithm(),
+	                        secConfig.getIterations(), secConfig.getKeyLength(),
+	                        sysConfig.getEncoding());
+
+	            	if (DEBUG)
+	            	{
+	            		DEBUGGER.debug("tokenValue: {}", tokenValue);
+	            		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+	            		DEBUGGER.debug("authToken: {}", authToken);
+	            	}
+
+	            	boolean isLoggedIn = authenticator.performSuccessfulLogin(userId, userGuid, 0, new Date(System.currentTimeMillis()), authToken);
+	            	boolean isAuthTokenInserted = userSec.addOrUpdateUserSalt((String) userObject.get(1), authToken, SaltType.AUTHTOKEN.toString());
+
+	            	if (DEBUG)
+	            	{
+	            		DEBUGGER.debug("isLoggedIn: {}", isLoggedIn);
+	            		DEBUGGER.debug("isAuthTokenInserted: {}", isAuthTokenInserted);
+	            	}
+
+	            	if ((!(isLoggedIn)) || (!(isAuthTokenInserted)))
+	            	{
+	            		throw new AuthenticationException("Unable to complete authentication process: failed to set authToken in datastore.");
+	            	}
+
+	            	userAccount.setGuid((String) userObject.get(1)); // UID
+		            userAccount.setUsername((String) userObject.get(0)); // CN
+		            userAccount.setUserRole(SecurityUserRole.valueOf((String) userObject.get(2))); // USER_ROLE
+		            userAccount.setFailedCount((Integer) userObject.get(3)); // FAILEDCOUNT
+		            userAccount.setLastLogin((Date) userObject.get(4)); // LAST LOGON
+		            userAccount.setSurname((String) userObject.get(5)); // SURNAME
+		            userAccount.setGivenName((String) userObject.get(6)); // GIVEN NAME
+		            userAccount.setExpiryDate((Date) userObject.get(7)); // EXPIRY_DATE
+		            userAccount.setSuspended((Boolean) userObject.get(8));  // SUSPENDED
+		            userAccount.setDisplayName((String) userObject.get(11)); // DISPLAYNAME
+		            userAccount.setEmailAddr((String) userObject.get(13)); // EMAIL
+		            userAccount.setAuthToken(authToken);
 		
 		            if (DEBUG)
 		            {
@@ -207,8 +237,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 		            }
 		            else
 		            {
-		                authenticator.performSuccessfulLogin(userAccount.getUsername(), userAccount.getGuid(), userAccount.getFailedCount(), System.currentTimeMillis());
-		
 		                userAccount.setLastLogin(new Date(System.currentTimeMillis()));
 		                userAccount.setStatus(LoginStatus.SUCCESS);
 		

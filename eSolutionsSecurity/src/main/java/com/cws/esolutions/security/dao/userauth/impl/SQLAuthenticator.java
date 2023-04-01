@@ -26,6 +26,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.Date;
 import java.util.Arrays;
 import java.util.Objects;
 import java.sql.ResultSet;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import org.apache.commons.codec.binary.StringUtils;
 
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -45,20 +47,22 @@ public class SQLAuthenticator implements Authenticator
     private static final String CNAME = SQLAuthenticator.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String)
+     * 
      */
-    public synchronized String performLogon(final String userGuid) throws AuthenticatorException
+    public synchronized boolean performLogon(final String userGuid, final String userName, final String password) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String userGuid) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String userGuid, final String userName, final String password) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userName);
+            DEBUGGER.debug("Value: {}", password);
         }
 
-        String response = null;
         Connection sqlConn = null;
+        boolean isComplete = false;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
 
@@ -83,32 +87,60 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
+            sqlConn.setAutoCommit(true);
             stmt = sqlConn.prepareStatement("{ CALL getUserSalt(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userGuid); // guid
+            stmt.setString(1, userGuid);
             stmt.setString(2, SaltType.LOGON.toString());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
+            resultSet = stmt.executeQuery();
 
-            if (!(stmt.execute()))
+            if (Objects.isNull(resultSet))
             {
-                throw new AuthenticatorException("No user was found for the provided user information");
-            }
-
-            resultSet = stmt.getResultSet();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ResultSet: {}", resultSet);
+            	throw new AuthenticatorException("Unable to load user salt value. Cannot process authentication request.");
             }
 
             if (resultSet.next())
             {
             	resultSet.first();
 
-            	response = resultSet.getString(1);
+            	String userSalt = resultSet.getString(1);
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("userSalt: {}", userSalt);
+            	}
+
+            	resultSet.close();
+            	stmt.close();
+
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareStatement("{ CALL getUserPassword(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                stmt.setString(1, userGuid);
+                stmt.setString(2, userName);
+
+                resultSet = stmt.executeQuery();
+
+                if (Objects.isNull(resultSet))
+                {
+                	throw new AuthenticatorException("Failed to load the user password from the authentication datastore.");
+                }
+
+                if (resultSet.next())
+                {
+                	resultSet.first();
+
+                	String retrievedPassword = resultSet.getString(1);
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("retrievedPassword: {}", retrievedPassword);
+                	}
+
+                	if (StringUtils.equals(retrievedPassword, password))
+                	{
+                		isComplete = true;
+                	}
+                }
             }
         }
         catch (final SQLException sqx)
@@ -140,15 +172,118 @@ public class SQLAuthenticator implements Authenticator
             }
         }
 
-        return response;
+        return isComplete;
+    }
+
+    /**
+     * 
+     */
+    public synchronized boolean validateAuthToken(final String userGuid, final String authToken) throws AuthenticatorException
+    {
+        final String methodName = SQLAuthenticator.CNAME + "#validateAuthToken(final String userGuid, final String authToken) throws AuthenticatorException";
+        
+        if(DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("authToken: {}", authToken);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new AuthenticatorException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareStatement("{ CALL getAuthToken(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userGuid); // guid
+            stmt.setString(2, authToken);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (!(stmt.execute()))
+            {
+                throw new AuthenticatorException("No user was found for the provided user information");
+            }
+
+            resultSet = stmt.getResultSet();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ResultSet: {}", resultSet);
+            }
+
+            if (resultSet.next())
+            {
+            	resultSet.first();
+
+            	if (resultSet.getInt(1) == 1)
+            	{
+            		isComplete = true;
+            	}
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new AuthenticatorException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (!(Objects.isNull(resultSet)))
+                {
+                    resultSet.close();
+                }
+            
+                if (!(Objects.isNull(stmt)))
+                {
+                    stmt.close();
+                }
+
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new AuthenticatorException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return isComplete;
     }
 
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#performSuccessfulLogin(String, String, int, Long)
      */
-    public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws AuthenticatorException
+    public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Date timestamp, final String authToken) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#modifyUserSecurity(final String userId, final String guid, final int lockCount, final Long timestamp) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#modifyUserSecurity(final String userId, final String guid, final int lockCount, final Long timestamp, final String authToken) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -157,6 +292,7 @@ public class SQLAuthenticator implements Authenticator
             DEBUGGER.debug("Value: {}", guid);
             DEBUGGER.debug("Value: {}", lockCount);
             DEBUGGER.debug("Value: {}", timestamp);
+            DEBUGGER.debug("Value: {}", authToken);
         }
 
         Connection sqlConn = null;
@@ -186,9 +322,10 @@ public class SQLAuthenticator implements Authenticator
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareStatement("{ CALL performSuccessfulLogin(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL performSuccessfulLogin(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
             stmt.setString(2, guid);
+            stmt.setString(3, authToken);
 
             if (DEBUG)
             {
@@ -336,7 +473,7 @@ public class SQLAuthenticator implements Authenticator
 
         return response;
     }
-    
+
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String)
      */

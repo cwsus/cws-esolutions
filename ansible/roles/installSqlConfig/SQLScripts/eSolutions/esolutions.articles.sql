@@ -12,7 +12,7 @@ CREATE TABLE ESOLUTIONS.ARTICLES (
     SYMPTOMS VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL default '',
     CAUSE VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL default '',
     RESOLUTION TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-    STATUS VARCHAR(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NEW',
+    ARTICLESTATUS VARCHAR(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NEW',
     REVIEWED_BY VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     REVIEW_DATE TIMESTAMP,
     MODIFIED_DATE TIMESTAMP,
@@ -51,7 +51,7 @@ BEGIN
         SYMPTOMS,
         CAUSE,
         RESOLUTION,
-        STATUS,
+        ARTICLESTATUS,
         REVIEWED_BY,
         REVIEW_DATE,
         MODIFIED_DATE,
@@ -61,7 +61,7 @@ BEGIN
     FROM ESOLUTIONS.articles
     WHERE MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms IN BOOLEAN MODE)
-    AND STATUS = 'APPROVED'
+    AND ARTICLESTATUS = 'APPROVED'
     LIMIT startRow, 20;
 END //
 COMMIT //
@@ -79,14 +79,14 @@ BEGIN
         SYMPTOMS,
         CAUSE,
         RESOLUTION,
-        STATUS,
+        ARTICLESTATUS,
         REVIEWED_BY,
         REVIEW_DATE,
         MODIFIED_DATE,
         MODIFIED_BY
     FROM articles
     WHERE HITS >= 10
-    AND STATUS = 'APPROVED'
+    AND ARTICLESTATUS = 'APPROVED'
     LIMIT 15;
 END //
 COMMIT //
@@ -108,14 +108,14 @@ BEGIN
             SYMPTOMS,
             CAUSE,
             RESOLUTION,
-            STATUS,
+            ARTICLESTATUS,
             REVIEWED_BY,
             REVIEW_DATE,
             MODIFIED_DATE,
             MODIFIED_BY
         FROM ESOLUTIONS.ARTICLES
         WHERE ID = articleId
-        AND STATUS IN ('NEW', 'REVIEW');
+        AND ARTICLESTATUS IN ('NEW', 'REVIEW');
     ELSE
         UPDATE articles
         SET HITS = HITS + 1
@@ -133,14 +133,14 @@ BEGIN
             SYMPTOMS,
             CAUSE,
             RESOLUTION,
-            STATUS,
+            ARTICLESTATUS,
             REVIEWED_BY,
             REVIEW_DATE,
             MODIFIED_DATE,
             MODIFIED_BY
         FROM ESOLUTIONS.ARTICLES
         WHERE ID = articleId
-        AND STATUS = 'APPROVED';
+        AND ARTICLESTATUS = 'APPROVED';
     END IF;
 END //
 COMMIT //
@@ -159,7 +159,7 @@ BEGIN
     (
         HITS, ID, CREATE_DATE, AUTHOR,
         KEYWORDS, TITLE, SYMPTOMS, CAUSE,
-        RESOLUTION, STATUS
+        RESOLUTION, ARTICLESTATUS
     )
     VALUES
     (
@@ -190,7 +190,7 @@ BEGIN
         RESOLUTION = resolution,
         MODIFIED_BY = modifiedBy,
         MODIFIED_DATE = UNIX_TIMESTAMP(),
-        STATUS = 'NEW'
+        ARTICLESTATUS = 'NEW'
     WHERE ID = articleId;
 
     COMMIT;
@@ -205,7 +205,7 @@ CREATE PROCEDURE ESOLUTIONS.updateArticleStatus(
 BEGIN
     UPDATE ESOLUTIONS.ARTICLES
     SET
-        STATUS = articleStatus,
+        ARTICLESTATUS = articleStatus,
         MODIFIED_BY = modifiedBy,
         MODIFIED_DATE = UNIX_TIMESTAMP(),
         REVIEWED_BY = modifiedBy,
@@ -222,7 +222,7 @@ CREATE PROCEDURE ESOLUTIONS.getArticleCount(
 BEGIN
     SELECT COUNT(*)
     FROM ESOLUTIONS.ARTICLES
-    WHERE STATUS = reqType
+    WHERE ARTICLESTATUS = reqType
     AND AUTHOR != requestorId;
 END //
 COMMIT //
@@ -242,13 +242,13 @@ BEGIN
         SYMPTOMS,
         CAUSE,
         RESOLUTION,
-        STATUS,
+        ARTICLESTATUS,
         REVIEWED_BY,
         REVIEW_DATE,
         MODIFIED_DATE,
         MODIFIED_BY
     FROM ESOLUTIONS.ARTICLES
-    WHERE STATUS IN ('NEW', 'REJECTED', 'REVIEW')
+    WHERE ARTICLESTATUS IN ('NEW', 'REJECTED', 'REVIEW')
     AND AUTHOR != requestorId
     ORDER BY CREATE_DATE DESC
     LIMIT startRow, 20;
