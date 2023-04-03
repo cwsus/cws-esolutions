@@ -308,22 +308,6 @@ public class UserAccount implements Serializable
     /**
      * @param value - The SessionID
      */
-    public final void setSessionId(final String value)
-    {
-        final String methodName = UserAccount.CNAME + "#setSessionId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sessionId = value;
-    }
-
-    /**
-     * @param value - The SessionID
-     */
     public final void setAuthToken(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setAuthToken(final String value)";
@@ -335,6 +319,23 @@ public class UserAccount implements Serializable
         }
 
         this.authToken = value;
+    }
+
+    /**
+     * 
+     * @param value
+     */
+    public final void setSessionId(final String value)
+    {
+        final String methodName = UserAccount.CNAME + "#setSessionId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.sessionId = value;
     }
 
     /**
@@ -580,22 +581,6 @@ public class UserAccount implements Serializable
     /**
      * @return String
      */
-    public final String getSessionId()
-    {
-        final String methodName = UserAccount.CNAME + "#getSessionId()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sessionId);
-        }
-
-        return this.sessionId;
-    }
-
-    /**
-     * @return String
-     */
     public final String getAuthToken()
     {
         final String methodName = UserAccount.CNAME + "#getAuthToken()";
@@ -607,6 +592,23 @@ public class UserAccount implements Serializable
         }
 
         return this.authToken;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public final String getSessionId()
+    {
+        final String methodName = UserAccount.CNAME + "#getSessionId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.sessionId);
+        }
+
+        return this.sessionId;
     }
 
     /**
@@ -625,7 +627,6 @@ public class UserAccount implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("userKeys"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

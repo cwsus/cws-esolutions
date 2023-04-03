@@ -8,18 +8,13 @@
 ##
 typeset CATALINA_HOME="/opt/Apache/Tomcat/current";
 typeset CATALINA_BASE="/opt/Apache/Tomcat/current";
-typeset CATALINA_TMPDIR="${CATALINA_HOME}/tmp";
-typeset CATALINA_OUT="${CATALINA_HOME}/logs/stdout";
+typeset CATALINA_TMPDIR="${CATALINA_HOME}/temp";
+typeset CATALINA_OUT="${CATALINA_HOME}/logs/SystemOut.log";
 typeset CATALINA_PID="${CATALINA_HOME}/logs/catalina.pid";
 typeset LOG_ROOT="${CATALINA_HOME}/logs";
-typeset -i JMXREMOTE_PORT=9000;
-typeset -i JDWP_PORT=9001;
+typeset -i JMXREMOTE_PORT=9001;
+typeset -i JDWP_PORT=9002;
 typeset LISTEN_ADDR=$(/sbin/ip addr show | grep inet | grep -v inet6 | awk '{print $2}' | grep -v 127.0.0.1 | cut -d "/" -f 1);
-
-##
-## catalina options
-##
-typeset CATALINA_OPTS="";
 
 ##
 ## Java specifics
@@ -30,8 +25,8 @@ typeset JRE_HOME="/usr/java/latest";
 ##
 ## GC
 ##
-typeset GC_OPTIONS="-XX:+UseG1GC -Xgcpolicy:gencon -verbose:gc -Xverbosegclog:${SERVER_LOG_ROOT}/verbosegc.%Y%m%d.%H%M%S.%pid.txt,20,10000 -XX:+UseGCOverheadLimit -XX:-UseParallelGC";
-typeset GC_OPTIONS="${GC_OPTIONS} -XX:-PrintClassHistogram -Xloggc:${LOG_ROOT}/logs/gclog -XX:-PrintConcurrentLocks -XX:-PrintGC -XX:-PrintGCDetails -XX:+ScavengeBeforeFullGC";
+typeset GC_OPTIONS="-XX:+UseG1GC -verbose:gc -XX:+UseGCOverheadLimit -XX:-UseParallelGC -Xlog:gc*::time";
+typeset GC_OPTIONS="${GC_OPTIONS} -XX:-PrintClassHistogram -Xlog:gc:${LOG_ROOT}/gclog -XX:-PrintConcurrentLocks -XX:-PrintGC -XX:-PrintGCDetails -XX:+ScavengeBeforeFullGC";
 
 ##
 ## LDAP
@@ -41,7 +36,7 @@ typeset LDAP_OPTIONS="-Dcom.sun.jndi.ldap.connect.pool.maxsize=200 -Dcom.sun.jnd
 ##
 ## Newrelic
 ##
-typeset NEWRELIC_OPTIONS="-javaagent:/opt/newrelic/newrelic.jar";
+typeset NEWRELIC_OPTIONS="";
 
 ##
 ## Network config
@@ -51,21 +46,26 @@ typeset NETWORK_OPTIONS="-Djava.net.preferIPv4Stack=true -Dsun.net.inetaddr.ttl=
 ##
 ## JMX
 ##
-typeset JMX_OPTIONS="-Dcom.sun.management.jmxremote.local.only=false -Djava.rmi.server.hostname=$(/usr/bin/env hostname -f) -Dcom.sun.management.jmxremote.local.only=false -Djavax.management.builder.initial= -Dcom.sun.management.jmxremote=true";
-typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=${JMXREMOTE_PORT} -Dcom.sun.management.jmxremote.rmi.port=${JMXREMOTE_PORT} -Dcom.sun.management.jmxremote.authenticate=true";
+typeset JMX_OPTIONS="-Dcom.sun.management.jmxremote.local.only=false -Djava.rmi.server.hostname=$(/usr/bin/env hostname -f) -Dcom.sun.management.jmxremote.local.only=false";
+typeset JMX_OPTIONS="${JMX_OPTIONS} -Djavax.management.builder.initial= -Dcom.sun.management.jmxremote=true";
+typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=${JMXREMOTE_PORT} -Dcom.sun.management.jmxremote.rmi.port=${JMXREMOTE_PORT}";
+typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.authenticate=true";
 typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.access.file=/home/appsrv/etc/jmxremote.access -Dcom.sun.management.jmxremote.password.file=/home/appsrv/etc/jmxremote.password";
 
 typeset DEBUG_OPTS="-Djava.security.debug=all -Djavax.net.debug=all";
 
 ##
+## catalina options
+##
+typeset CATALINA_OPTS="${CATALINA_OPTS} -Xms4096m -Xmx4096m -Dfile.encoding=utf-8 -Djava.awt.headless=true ${JMX_OPTIONS}";
+
+##
 ## Java options
 ##
-typeset JAVA_OPTS="-verbose:jni -Xms4096m -Xmx4096m -Xshareclasses:none -Dfile.encoding=utf-8 -Djava.awt.headless=true";
-typeset JAVA_OPTS="-Xjit:iprofilerMemoryConsumptionLimit=67108864 -Xcodecache20m";
-typeset JAVA_OPTS="${JAVA_OPTS} -Xdump:stack:events=allocation,filter=#10m -Dsun.reflect.inflationThreshold=0 -Djava.security.egd=file:/dev/./urandom -Dlog4j2.formatMsgNoLookups=true -Xlp";
-typeset JAVA_OPTS="${JAVA_OPTS} -DESOLUTIONS_LOG_ROOT=${CATALINA_HOME}/logs -Djava.io.tmpdir=${CATALINA_HOME}/current/tmp -XX:ErrorFile=${LOG_ROOT}/hs_err_pid.log -XX:HeapDumpPath=${LOG_ROOT}/java_pid.hprof";
+typeset JAVA_OPTS="${JAVA_OPTS} -Dsun.reflect.inflationThreshold=0 -Djava.security.egd=file:/dev/./urandom -Dlog4j2.formatMsgNoLookups=true";
+typeset JAVA_OPTS="${JAVA_OPTS} -DESOLUTIONS_LOG_ROOT=${LOG_ROOT} -Djava.io.tmpdir=${CATALINA_TMPDIR} -XX:ErrorFile=${LOG_ROOT}/hs_err_pid.log -XX:HeapDumpPath=${LOG_ROOT}/java_pid.hprof";
 typeset JAVA_OPTS="${JAVA_OPTS} -XX:-HeapDumpOnOutOfMemoryError -XX:+UseLargePages";
-typeset JAVA_OPTS="${JAVA_OPTS} ${GC_OPTIONS} ${LDAP_OPTIONS} ${NEWRELIC_OPTIONS} ${NETWORK_OPTIONS} ${JMX_OPTIONS}";
+typeset JAVA_OPTS="${JAVA_OPTS} ${GC_OPTIONS} ${LDAP_OPTIONS} ${NEWRELIC_OPTIONS} ${NETWORK_OPTIONS}";
 
 
 ##

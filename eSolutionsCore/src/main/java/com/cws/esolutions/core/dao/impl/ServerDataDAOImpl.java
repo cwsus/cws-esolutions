@@ -30,8 +30,10 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
@@ -158,7 +160,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -176,7 +178,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
  
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL updateServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
+            stmt = sqlConn.prepareCall("{ CALL updateServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
             		ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, serverGuid); // systemGuid
             stmt.setString(2, (String) serverData.get(1)); // systemOs
@@ -207,17 +209,24 @@ public class ServerDataDAOImpl implements IServerDataDAO
             stmt.setString(27, (String) serverData.get(26)); // serverRack
             stmt.setString(28, (String) serverData.get(27)); // rackPosition
             stmt.setString(29, (String) serverData.get(28)); // owningDmgr
+            stmt.registerOutParameter(30, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            isComplete = (!(stmt.execute()));
+            stmt.execute();
+            int upateCount = stmt.getInt(30);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isComplete: {}", isComplete);
+                DEBUGGER.debug("upateCount: {}", upateCount);
+            }
+
+            if (upateCount == 1)
+            {
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)

@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
 import java.sql.ResultSet;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.sql.ResultSetMetaData;
 import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
@@ -64,14 +66,14 @@ public class SQLUserManager implements UserManager
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -167,14 +169,14 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         PreparedStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -261,14 +263,14 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         PreparedStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -340,14 +342,14 @@ public class SQLUserManager implements UserManager
         PreparedStatement stmt = null;
         List<String[]> results = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(contactDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = contactDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -361,86 +363,179 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            if (StringUtils.contains(searchData, "@"))
+        	stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, searchData);
+
+            if (DEBUG)
             {
-            	stmt = sqlConn.prepareStatement("{ CALL getUserByEmail(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                stmt.setString(1, searchData);
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
 
-                if (DEBUG)
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (resultSet.next())
                 {
-                    DEBUGGER.debug("PreparedStatement: {}", stmt);
-                }
+                    resultSet.beforeFirst();
+                    results = new ArrayList<String[]>();
 
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
-
-                    if (resultSet.next())
+                    while (resultSet.next())
                     {
-                        resultSet.beforeFirst();
-                        results = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] userData = new String[]
                         {
-                            String[] userData = new String[]
-                            {
-                                resultSet.getString("cn")
-                            };
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Data: {}", (Object) userData);
-                            }
-
-                            results.add(userData);
-                        }
+                        	resultSet.getString("cn"),
+                            resultSet.getString("uid")
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("List: {}", results);
+                            DEBUGGER.debug("Data: {}", (Object) userData);
                         }
+
+                        results.add(userData);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List: {}", results);
                     }
                 }
             }
-            else
+        }
+        catch (final SQLException sqx)
+        {
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
             {
-            	stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                stmt.setString(1, searchData);
+                if (!(Objects.isNull(resultSet)))
+                {
+                    resultSet.close();
+                }
+            
+                if (!(Objects.isNull(stmt)))
+                {
+                    stmt.close();
+                }
+
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new UserManagementException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(java.lang.String)
+     */
+    public synchronized List<String[]> findUsers(final String searchData) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#searchUsers(final String searchData) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", searchData);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        List<String[]> results = null;
+
+        try
+        {
+        	if (StringUtils.contains(searchData, "@"))
+        	{
+                if (Objects.isNull(contactDataSource))
+                {
+                    throw new UserManagementException("A datasource connection could not be obtained.");
+                }
+
+                sqlConn = contactDataSource.getConnection();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PreparedStatement: {}", stmt);
+                    DEBUGGER.debug("sqlConn: {}", sqlConn);
                 }
 
-                if (stmt.execute())
+                if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
                 {
-                    resultSet = stmt.getResultSet();
+                    throw new SQLException("Unable to obtain application datasource connection");
+                }
 
-                    if (resultSet.next())
+                sqlConn.setAutoCommit(true);
+
+                stmt = sqlConn.prepareStatement("{ CALL getUserByEmail(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                stmt.setString(1, searchData);
+        	}
+        	else
+        	{
+                if (Objects.isNull(authDataSource))
+                {
+                    throw new UserManagementException("A datasource connection could not be obtained.");
+                }
+
+                sqlConn = authDataSource.getConnection();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("sqlConn: {}", sqlConn);
+                }
+
+                if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+                {
+                    throw new SQLException("Unable to obtain application datasource connection");
+                }
+
+                sqlConn.setAutoCommit(true);
+
+                stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                stmt.setString(1, searchData);
+        	}
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (resultSet.next())
+                {
+                    resultSet.beforeFirst();
+                    results = new ArrayList<String[]>();
+
+                    while (resultSet.next())
                     {
-                        resultSet.beforeFirst();
-                        results = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] userData = new String[]
                         {
-                            String[] userData = new String[]
-                            {
-                            	resultSet.getString("cn"),
-                                resultSet.getString("uid")
-                            };
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Data: {}", (Object) userData);
-                            }
-
-                            results.add(userData);
-                        }
+                            resultSet.getString("cn")
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("List: {}", results);
+                            DEBUGGER.debug("Data: {}", (Object) userData);
                         }
+
+                        results.add(userData);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List: {}", results);
                     }
                 }
             }
@@ -495,14 +590,14 @@ public class SQLUserManager implements UserManager
         PreparedStatement stmt = null;
         List<Object> userAccount = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -636,14 +731,14 @@ public class SQLUserManager implements UserManager
         PreparedStatement stmt = null;
         List<String> responseList = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -756,14 +851,14 @@ public class SQLUserManager implements UserManager
         PreparedStatement stmt = null;
         List<String[]> results = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -870,14 +965,14 @@ public class SQLUserManager implements UserManager
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(contactDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = contactDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -982,14 +1077,14 @@ public class SQLUserManager implements UserManager
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(contactDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = contactDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -1084,16 +1179,16 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -1107,16 +1202,24 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL modifyUserSuspension(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL modifyUserSuspension(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
             stmt.setBoolean(2, isSuspended);
+            stmt.registerOutParameter(3, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            stmt.executeUpdate();
+            stmt.execute();
+            int resultCount = stmt.getInt(3);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("resultCount: {}", resultCount);
+            }
+
             isComplete = true;
         }
         catch (final SQLException sqx)
@@ -1164,14 +1267,14 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         PreparedStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -1244,16 +1347,16 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -1269,18 +1372,27 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareStatement("{ CALL modifyOlrLock(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL modifyOlrLock(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
             stmt.setBoolean(2, isLocked);
+            stmt.registerOutParameter(3, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            if (stmt.executeUpdate() == 1)
+            stmt.execute();
+            int resultCount = stmt.getInt(3);
+
+            if (DEBUG)
             {
-                isComplete = true;
+                DEBUGGER.debug("resultCount {}", resultCount);
+            }
+
+            if (resultCount == 1)
+            {
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)
@@ -1326,16 +1438,17 @@ public class SQLUserManager implements UserManager
         }
 
         Connection sqlConn = null;
-        PreparedStatement stmt = null;
+        boolean isComplete = false;
+        CallableStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
+        if (Objects.isNull(authDataSource))
         {
         	throw new UserManagementException("A datasource connection could not be obtained.");
         }
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = authDataSource.getConnection();
 
             if (DEBUG)
             {
@@ -1349,17 +1462,29 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL modifyUserLock(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL modifyUserLock(?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
             stmt.setBoolean(2, isLocked);
             stmt.setInt(3, increment);
+            stmt.registerOutParameter(4, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            return (stmt.executeUpdate() == 0);
+            stmt.execute();
+            int updateCount = stmt.getInt(4);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("updateCount: {}", updateCount);
+            }
+
+            if (updateCount == 1)
+            {
+            	isComplete = true;
+            }
         }
         catch (final SQLException sqx)
         {
@@ -1384,5 +1509,7 @@ public class SQLUserManager implements UserManager
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
+
+        return isComplete;
     }
 }

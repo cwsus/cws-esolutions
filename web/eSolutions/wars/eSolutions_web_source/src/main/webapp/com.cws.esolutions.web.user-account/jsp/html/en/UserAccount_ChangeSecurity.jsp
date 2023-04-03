@@ -33,9 +33,71 @@
  */
 --%>
 
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if ((theForm.secQuestionOne.value == 'Select....') || (theForm.secQuestionTwo.value == 'Select....') ||
+        		(theForm.secQuestionTwo.value == '------') || (theForm.secQuestionTwo.value == '------'))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must select security questions.';
+            document.getElementById('txtQuestionOne').style.color = '#FF0000';
+            document.getElementById('txtQuestionOne').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secQuestionOne').focus();
+        }
+        else if ((theForm.secAnswerOne.value == '') || (theForm.secAnswerTwo.value == ''))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must provide answers for the given questions.';
+            document.getElementById('txtAnswerOne').style.color = '#FF0000';
+            document.getElementById('txtAnswerTwo').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secAnswerOne').focus();
+        }
+        else if (theForm.secQuestionOne.value == theForm.secQuestionTwo.value)
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Your security questions must be different.';
+            document.getElementById('txtQuestionOne').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secQuestionOne').focus();
+        }
+        else if (theForm.secAnswerOne.value == theForm.secAnswerTwo.value)
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Your security answers must be different.';
+            document.getElementById('txtAnswerOne').style.color = '#FF0000';
+            document.getElementById('txtAnswerTwo').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secAnswerOne').focus();
+        }
+        else if (theForm.currentPassword.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Your current password must be provided.';
+            document.getElementById('txtPassword').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('currentPassword').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="homecontent">
     <div class="wrapper">
         <div id="error"></div>
+        <div id="validationError" style="color: #FF0000"></div>
 
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
@@ -58,38 +120,40 @@
 
         <h1><spring:message code="user.account.update.security" /></h1>
         <form:form name="submitSecurityInformationChange" id="submitSecurityInformationChange" action="${pageContext.request.contextPath}/ui/user-account/security" method="post" autocomplete="off">
-            <label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label>
-            <form:select path="secQuestionOne">
-                <option><spring:message code="theme.option.select" /></option>
-                <option><spring:message code="theme.option.spacer" /></option>
-                <form:options items="${questionList}" />
-            </form:select>
-            <form:errors path="secQuestionOne" cssClass="error" />
+            <p>
+	            <label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label>
+	            <form:select path="secQuestionOne">
+	                <option><spring:message code="theme.option.select" /></option>
+	                <option><spring:message code="theme.option.spacer" /></option>
+	                <form:options items="${questionList}" />
+	            </form:select>
+                <form:errors path="secQuestionOne" cssClass="error" />
+                <br /><br />
+	            <label id="txtAnswerOne"><spring:message code="user.account.update.security.answer" /></label>
+	            <form:password path="secAnswerOne" />
+	            <form:errors path="secAnswerOne" cssClass="error" />
+                <br /><br />	
+	            <label id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></label>
+	            <form:select path="secQuestionTwo">
+	                <option><spring:message code="theme.option.select" /></option>
+	                <option><spring:message code="theme.option.spacer" /></option>
+	                <form:options items="${questionList}" />
+	            </form:select>
+	            <form:errors path="secQuestionTwo" cssClass="error" />            
+                <br /><br />
+	            <label id="txtAnswerTwo"><spring:message code="user.account.update.security.answer" /></label>
+	            <form:password path="secAnswerTwo" />
+	            <form:errors path="secAnswerTwo" cssClass="error" />
+                <br /><br />
+	            <label id="txtPassword"><spring:message code="user.account.update.password.current" /></label>
+	            <form:password path="currentPassword" />
+	            <form:errors path="currentPassword" cssClass="error" />
 
-            <label id="txtAnswerOne"><spring:message code="user.account.update.security.answer" /></label>
-            <form:password path="secAnswerOne" />
-            <form:errors path="secAnswerOne" cssClass="error" />
-
-            <label id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></label>
-            <form:select path="secQuestionTwo">
-                <option><spring:message code="theme.option.select" /></option>
-                <option><spring:message code="theme.option.spacer" /></option>
-                <form:options items="${questionList}" />
-            </form:select>
-            <form:errors path="secQuestionTwo" cssClass="error" />            
-
-            <label id="txtAnswerTwo"><spring:message code="user.account.update.security.answer" /></label>
-            <form:password path="secAnswerTwo" />
-            <form:errors path="secAnswerTwo" cssClass="error" />
-
-            <label id="txtPassword"><spring:message code="user.account.update.password.current" /></label>
-            <form:password path="currentPassword" />
-            <form:errors path="currentPassword" cssClass="error" />
-
-            <br /><br />
-            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/user-account/default');" />
+                <br /><br />
+                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/user-account/default');" />
+            </p>
         </form:form>
     </div>
 </div>

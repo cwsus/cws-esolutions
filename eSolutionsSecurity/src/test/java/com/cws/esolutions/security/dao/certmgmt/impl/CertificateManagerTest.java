@@ -61,7 +61,6 @@ public class CertificateManagerTest
         }
         catch (final Exception ex)
         {
-            ex.printStackTrace();
             Assertions.fail(ex.getMessage());
 
             System.exit(-1);
@@ -98,7 +97,6 @@ public class CertificateManagerTest
         }
         catch (final Exception ex)
         {
-            ex.printStackTrace();
             Assertions.fail(ex.getMessage());
         }
     }

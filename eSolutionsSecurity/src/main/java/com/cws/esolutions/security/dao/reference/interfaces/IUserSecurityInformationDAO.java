@@ -45,7 +45,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public interface IUserSecurityInformationDAO
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
+    static final DataSource dataSource = svcBean.getDataSources().get("SecurityDataSource");
 
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

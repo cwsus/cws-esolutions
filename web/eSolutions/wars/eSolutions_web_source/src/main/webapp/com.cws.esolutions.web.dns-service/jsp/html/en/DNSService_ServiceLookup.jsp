@@ -37,16 +37,27 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.searchTerms.value == '')
+        if (theForm.recordName.value == '')
         {
             clearText(theForm);
 
             document.getElementById('validationError').innerHTML = 'You must provide a hostname or IP address to perform a query against.';
             document.getElementById('txtServiceName').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('searchTerms').focus();
+            document.getElementById('recordName').focus();
 
 			return;
+        }
+        else if ((theForm.recordType.value == 'Select....') || (theForm.recordType.value == '------'))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must provide a query record type.';
+            document.getElementById('txtLookupType').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('recordName').focus();
+
+            return;
         }
 
 		theForm.submit();
@@ -58,7 +69,8 @@
 	<div class="wrapper">
 	    <h1><spring:message code="dns.lookup.service.name" /></h1>
 	
-	    <div id="error"></div>
+        <div id="error"></div>
+        <div id="validationError" style="color: #FF0000"></div>
 	
 	    <c:if test="${not empty fn:trim(messageResponse)}">
 	        <p id="info">${messageResponse}</p>
@@ -83,10 +95,10 @@
 	        <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/search" method="post">
 	            <p>
 	                <label id="txtServiceName"><spring:message code="dns.service.hostname" /></label>
-	                <form:input path="searchTerms" />
-	                <form:errors path="searchTerms" cssClass="error" />
+	                <form:input path="recordName" />
+	                <form:errors path="recordName" cssClass="error" />
 	                <label id="txtLookupType"><spring:message code="dns.lookup.record.type" /></label>
-	                <form:select path="searchExtras">
+	                <form:select path="recordType">
 	                    <option><spring:message code="theme.option.select" /></option>
 	                    <option><spring:message code="theme.option.spacer" /></option>
 	                    <form:options items="${serviceTypes}" />

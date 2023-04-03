@@ -72,7 +72,6 @@ public class PlatformManagementProcessorImplTest
         }
         catch (final Exception ex)
         {
-            ex.printStackTrace();
             Assertions.fail(ex.getMessage());
 
             System.exit(-1);
@@ -132,7 +131,6 @@ public class PlatformManagementProcessorImplTest
 		}
     	catch (PlatformManagementException pmx)
     	{
-    		pmx.printStackTrace();
 			Assertions.fail(pmx.getMessage());
 		}
     }
@@ -153,7 +151,6 @@ public class PlatformManagementProcessorImplTest
 		}
     	catch (PlatformManagementException pmx)
     	{
-    		pmx.printStackTrace();
 			Assertions.fail(pmx.getMessage());
 		}
     }
@@ -178,7 +175,6 @@ public class PlatformManagementProcessorImplTest
 		}
     	catch (PlatformManagementException pmx)
     	{
-    		pmx.printStackTrace();
 			Assertions.fail(pmx.getMessage());
 		}
     }
@@ -203,7 +199,6 @@ public class PlatformManagementProcessorImplTest
 		}
     	catch (PlatformManagementException pmx)
     	{
-    		pmx.printStackTrace();
 			Assertions.fail(pmx.getMessage());
 		}
     }
@@ -228,7 +223,6 @@ public class PlatformManagementProcessorImplTest
 		}
     	catch (PlatformManagementException pmx)
     	{
-    		pmx.printStackTrace();
 			Assertions.fail(pmx.getMessage());
 		}
     }

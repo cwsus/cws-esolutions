@@ -30,7 +30,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityUserRole;
@@ -64,14 +63,11 @@ public class AccountControlProcessorImplTest
             userAccount.setGuid("1c260aba-5be1-4854-8695-d5ae9309d4e7");
             userAccount.setUsername("junit");
             userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
-            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(128));
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (final Exception ex)
         {
-        	ex.printStackTrace();
-
         	Assertions.fail(ex.getMessage());
             System.exit(-1);
         }
@@ -109,7 +105,6 @@ public class AccountControlProcessorImplTest
         }
         catch (final AccountControlException acx)
         {
-        	acx.printStackTrace();
             Assertions.fail(acx.getMessage());
         }
     }

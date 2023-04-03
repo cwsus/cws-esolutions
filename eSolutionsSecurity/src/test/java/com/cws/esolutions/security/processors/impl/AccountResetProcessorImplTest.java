@@ -69,7 +69,7 @@ public class AccountResetProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("8c6fac90-6c15-4d69-bf08-2f48ec51e8d4");
+        account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -85,7 +85,6 @@ public class AccountResetProcessorImplTest
         }
         catch (final AccountResetException ax)
         {
-        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }
@@ -94,7 +93,7 @@ public class AccountResetProcessorImplTest
     {
 	    UserAccount account = new UserAccount();
 	    account.setUsername("khuntly");
-	    account.setGuid("8c6fac90-6c15-4d69-bf08-2f48ec51e8d4");
+	    account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
 	
 	    AccountResetRequest request = new AccountResetRequest();
 	    request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -105,7 +104,7 @@ public class AccountResetProcessorImplTest
 	    try
 	    {
 	        AccountResetResponse response = processor.obtainUserSecurityConfig(request);
-	
+
 	        Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
 	    }
 	    catch (final AccountResetException ax)
@@ -118,11 +117,11 @@ public class AccountResetProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("8c6fac90-6c15-4d69-bf08-2f48ec51e8d4");
+        account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setSecAnswerOne("8OHoNs3jd1upwg12NsBRX511F7z83zW1".toCharArray());
-        userSecurity.setSecAnswerTwo("gmnL01azdw3baYviPq70ZnZaNjJFWT7U".toCharArray());
+        userSecurity.setSecAnswerOne("L6jD1s8lPAQo7Wd3XPavWOD8YTDYypt1".toCharArray());
+        userSecurity.setSecAnswerTwo("UAv8DxJTHCidbLZKYvbft0AecaF9cB3k".toCharArray());
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -139,7 +138,6 @@ public class AccountResetProcessorImplTest
         }
         catch (final AccountResetException ax)
         {
-        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }
@@ -164,7 +162,6 @@ public class AccountResetProcessorImplTest
         }
         catch (final AccountResetException arx)
         {
-            arx.printStackTrace();
             Assertions.fail(arx.getMessage());
         }
     }

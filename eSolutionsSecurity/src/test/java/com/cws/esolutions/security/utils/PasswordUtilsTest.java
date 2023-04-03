@@ -49,7 +49,6 @@ public class PasswordUtilsTest
         }
         catch (final Exception e)
         {
-            e.printStackTrace();
             Assertions.fail(e.getMessage());
 
             System.exit(1);

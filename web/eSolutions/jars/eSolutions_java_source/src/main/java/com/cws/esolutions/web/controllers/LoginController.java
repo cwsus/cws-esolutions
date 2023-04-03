@@ -516,12 +516,12 @@ public class LoginController
 	                    switch (userAccount.getStatus())
 	                    {
 	                    	case SUCCESS:
+	                    		userAccount.setSessionId(hSession.getId());
+
 	                    		hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
 	                    		mView.setViewName(this.appConfig.getHomePage());
 
-	                    		break;
-	                    	case RESET: // TODO
 	                    		break;
 	                    	case FAILURE:
 	                    		hSession.invalidate();
@@ -549,6 +549,7 @@ public class LoginController
 			                    break;
 	                    	case EXPIRED:
 	                    		// password expired - redirect to change password page
+	                    		userAccount.setSessionId(hSession.getId());
 	                        	hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
 	                        	redirectAttributes.addFlashAttribute("userAccount", userAccount);
@@ -589,14 +590,6 @@ public class LoginController
 	
 	                    break;
 	            	case UNAUTHORIZED:
-	            		hSession.invalidate();
-
-	                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
-	                    mView.addObject(Constants.COMMAND, new AuthenticationData());
-	                    mView.setViewName(this.loginPage);
-	
-	                    break;
-	            	case DISABLED:
 	            		hSession.invalidate();
 
 	                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());

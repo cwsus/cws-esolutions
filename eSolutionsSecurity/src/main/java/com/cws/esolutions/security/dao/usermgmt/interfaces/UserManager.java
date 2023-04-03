@@ -35,7 +35,6 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.config.xml.RepositoryConfig;
 import com.cws.esolutions.security.config.xml.UserReturningAttributes;
-import com.cws.esolutions.security.config.xml.PasswordRepositoryConfig;
 import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
@@ -49,13 +48,12 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public interface UserManager
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
+    static final DataSource authDataSource = svcBean.getDataSources().get("SecurityDataSource");
+    static final DataSource contactDataSource = svcBean.getDataSources().get("ContactDataSource");
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
-    static final PasswordRepositoryConfig passwordConfig = svcBean.getConfigData().getPasswordRepo();
-
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
@@ -118,6 +116,14 @@ public interface UserManager
      * @throws UserManagementException if an exception occurs during processing
      */
     List<String[]> searchUsers(final String searchData) throws UserManagementException;
+
+    /**
+     * Same as above but unauthenticated
+     * @param searchData
+     * @return
+     * @throws UserManagementException
+     */
+    List<String[]> findUsers(final String searchData) throws UserManagementException;
 
     /**
      * Searches for user accounts given provided search data.

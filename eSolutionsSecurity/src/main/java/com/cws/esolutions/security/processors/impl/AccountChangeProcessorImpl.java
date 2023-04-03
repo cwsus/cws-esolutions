@@ -50,7 +50,6 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
-import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
@@ -98,28 +97,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-            // we aren't getting the data back here because we don't need it. if the request
-            // fails we'll get an exception and not process further. this might not be the
-            // best flow control, but it does exactly what we need where we need it.
-        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-        		DEBUGGER.debug("authToken: {}", authToken);
-        	}
-
-        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-        	if (!(isAuthenticated))
-        	{
-        		throw new AccountChangeException("An invalid authentication token was presented.");
-        	}
-
             boolean isComplete = userManager.modifyUserEmail(userAccount.getGuid(), userAccount.getEmailAddr());
 
             if (isComplete)
@@ -135,12 +112,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountChangeException(ax.getMessage(), ax);
-        }
         catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
@@ -153,12 +124,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sx.getMessage(), sx);
         }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountChangeException(sqx.getMessage(), sqx);
-		}
         finally
         {
             // audit
@@ -240,26 +205,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-        		DEBUGGER.debug("authToken: {}", authToken);
-        	}
-
-        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-        	if (!(isAuthenticated))
-        	{
-        		throw new AccountChangeException("An invalid authentication token was presented.");
-        	}
-
-            boolean isComplete = userManager.modifyUserContact(userAccount.getGuid(),
+        	boolean isComplete = userManager.modifyUserContact(userAccount.getGuid(),
                     new ArrayList<String>(
                             Arrays.asList(
                                     userAccount.getTelephoneNumber(),
@@ -279,12 +225,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountChangeException(ax.getMessage(), ax);
-        }
         catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
@@ -297,12 +237,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sx.getMessage(), sx);
         }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountChangeException(sqx.getMessage(), sqx);
-		}
         finally
         {
             // audit
@@ -389,26 +323,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-        		DEBUGGER.debug("authToken: {}", authToken);
-        	}
-
-        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-        	if (!(isAuthenticated))
-        	{
-        		throw new AccountChangeException("An invalid authentication token was presented.");
-        	}
-
-            // otherwise, keep going
+        	// otherwise, keep going
             // make sure the new password isnt the same as the existing
             if (Arrays.equals(reqSecurity.getNewPassword(), reqSecurity.getPassword()))
             {
@@ -461,10 +376,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                             if (isComplete)
                             {
-                                if ((userAccount.getStatus() == LoginStatus.EXPIRED) || (userAccount.getStatus() == LoginStatus.RESET))
+                                userAccount.setStatus(LoginStatus.SUCCESS);
+
+                                if (DEBUG)
                                 {
-                                    // update the account
-                                    userAccount.setStatus(LoginStatus.SUCCESS);
+                                	DEBUGGER.debug("userAccount: {}", userAccount);
                                 }
 
                                 response.setUserAccount(userAccount);
@@ -519,12 +435,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountChangeException(umx.getMessage(), umx);
-        }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountChangeException(ax.getMessage(), ax);
         }
         catch (final SecurityException sx)
         {
@@ -616,27 +526,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-        		DEBUGGER.debug("authToken: {}", authToken);
-        	}
-
-        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-        	if (!(isAuthenticated))
-        	{
-        		throw new AccountChangeException("An invalid authentication token was presented.");
-        	}
-
-            // otherwise, keep going
-            // make sure the two questions and answers arent the same
+        	// make sure the two questions and answers arent the same
             if ((StringUtils.equals(reqSecurity.getSecQuestionOne(), reqSecurity.getSecQuestionTwo())))
             {
                 throw new AccountChangeException("The security questions must be different.");
@@ -710,12 +600,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountChangeException(umx.getMessage(), umx);
-        }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountChangeException(ax.getMessage(), ax);
         }
         catch (final SecurityException sx)
         {
@@ -805,26 +689,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-        		DEBUGGER.debug("authToken: {}", authToken);
-        	}
-
-        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-        	if (!(isAuthenticated))
-        	{
-        		throw new AccountChangeException("An invalid authentication token was presented.");
-        	}
-
-            // delete the existing keys
+        	// delete the existing keys
             boolean keysRemoved = keyManager.removeKeys(userAccount.getGuid());
 
             if (DEBUG)
@@ -862,18 +727,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(kmx.getMessage(), kmx);
         }
-        catch (AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountChangeException(ax.getMessage(), ax);
-		}
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountChangeException(sqx.getMessage(), sqx);
-		}
         finally
         {
             // audit

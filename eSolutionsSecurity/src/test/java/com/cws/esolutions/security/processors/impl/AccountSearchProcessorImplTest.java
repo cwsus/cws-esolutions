@@ -75,7 +75,7 @@ class AccountSearchProcessorImplTest
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
-        request.setSearchTerms("khuntly");
+        request.setSearchTerms("kmhuntly@gmail.com");
 
         try
         {
@@ -85,7 +85,6 @@ class AccountSearchProcessorImplTest
         }
         catch (final AccountSearchException asx)
         {
-        	asx.printStackTrace();
             Assertions.fail(asx.getMessage());
         }
 	}

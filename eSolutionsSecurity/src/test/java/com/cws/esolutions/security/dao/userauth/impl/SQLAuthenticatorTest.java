@@ -78,7 +78,6 @@ public class SQLAuthenticatorTest
         }
         catch (final AuthenticatorException e)
         {
-        	e.printStackTrace();
         	Assertions.fail(e.getMessage());
         }
     }

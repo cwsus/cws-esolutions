@@ -28,12 +28,9 @@ package com.cws.esolutions.security.processors.impl;
 import java.util.List;
 import java.util.Objects;
 import java.util.ArrayList;
-import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
@@ -44,7 +41,6 @@ import com.cws.esolutions.security.processors.dto.AccountSearchResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountSearchException;
 import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
-import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
@@ -68,7 +64,6 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
         AccountSearchResponse response = new AccountSearchResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
@@ -77,26 +72,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountSearchException("An invalid authentication token was presented.");
-            }
-
-        	List<String[]> userList = userManager.searchUsers(request.getSearchTerms());
+            List<String[]> userList = userManager.findUsers(request.getSearchTerms());
 
             if (DEBUG)
             {
@@ -181,18 +157,6 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
             throw new AccountSearchException(umx.getMessage(), umx);
         }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountSearchException(ax.getMessage(), ax);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountSearchException(sqx.getMessage(), sqx);
-        }
         finally
         {
         	if (secConfig.getPerformAudit())
@@ -260,25 +224,6 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountSearchException("An invalid authentication token was presented.");
-            }
-
             List<String[]> userList = userManager.searchUsers(request.getSearchTerms());
 
 	        if (DEBUG)
@@ -337,18 +282,6 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountSearchException(umx.getMessage(), umx);
-        }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountSearchException(ax.getMessage(), ax);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountSearchException(sqx.getMessage(), sqx);
         }
         finally
         {

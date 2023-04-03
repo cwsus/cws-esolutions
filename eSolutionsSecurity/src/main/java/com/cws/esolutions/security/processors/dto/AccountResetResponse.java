@@ -26,6 +26,7 @@ package com.cws.esolutions.security.processors.dto;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.HashMap;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
@@ -47,6 +48,7 @@ public class AccountResetResponse implements Serializable
     private List<String> questionList = null;
     private AuthenticationData userSecurity = null;
     private SecurityRequestStatus requestStatus = null;
+    private HashMap<Integer, String> availableQuestions = null;
 
     private static final long serialVersionUID = 5259716158255929392L;
     private static final String CNAME = AccountResetResponse.class.getName();
@@ -87,6 +89,7 @@ public class AccountResetResponse implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.resetId = value;
@@ -125,9 +128,23 @@ public class AccountResetResponse implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.userSecurity = value;
+    }
+
+    public final void setAvailableQuestions(final HashMap<Integer, String> value)
+    {
+        final String methodName = AccountResetResponse.CNAME + "#setAvailableQuestions(final HashMap<Integer, String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.availableQuestions = value;
     }
 
     public final SecurityRequestStatus getRequestStatus()
@@ -163,6 +180,7 @@ public class AccountResetResponse implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.resetId);
         }
 
         return this.resetId;
@@ -188,6 +206,7 @@ public class AccountResetResponse implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userSecurity);
         }
 
         return this.userSecurity;
@@ -206,6 +225,19 @@ public class AccountResetResponse implements Serializable
         return this.count;
     }
 
+    public final HashMap<Integer, String> getAvailableQuestions()
+    {
+        final String methodName = AccountResetResponse.CNAME + "#getAvailableQuestions()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.availableQuestions);
+        }
+
+        return this.availableQuestions;
+    }
+
     @Override
     public final String toString()
     {
@@ -219,7 +251,6 @@ public class AccountResetResponse implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("resetId"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

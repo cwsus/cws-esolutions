@@ -74,7 +74,6 @@ public class ServerManagementProcessorImplTest
         }
         catch (final Exception ex)
         {
-        	ex.printStackTrace();
             Assertions.fail(ex.getMessage());
 
             System.exit(-1);
@@ -142,7 +141,6 @@ public class ServerManagementProcessorImplTest
             }
             catch (final ServerManagementException smx)
             {
-            	smx.printStackTrace();
                 Assertions.fail(smx.getMessage());
             }
         }

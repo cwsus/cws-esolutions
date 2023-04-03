@@ -143,7 +143,6 @@ public final class CertificateRequestProcessorTest
         }
         catch (final Exception ex)
         {
-            ex.printStackTrace();
             Assertions.fail(ex.getMessage());
         }
     }

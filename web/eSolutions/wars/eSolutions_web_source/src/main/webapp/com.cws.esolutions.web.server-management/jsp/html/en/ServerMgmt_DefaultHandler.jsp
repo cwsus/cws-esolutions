@@ -37,14 +37,14 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.searchTerms.value == '')
+        if (theForm.operHostName.value == '')
         {
             clearText(theForm);
 
             document.getElementById('validationError').innerHTML = 'You must provide a hostname or IP address to perform a query against.';
-            document.getElementById('txtServiceName').style.color = '#FF0000';
+            document.getElementById('txtSearchTerms').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('searchTerms').focus();
+            document.getElementById('operHostName').focus();
 
             return;
         }
@@ -57,6 +57,7 @@
 <div id="homecontent">
     <div class="wrapper">
         <div id="error"></div>
+        <div id="validationError" style="color: #FF0000"></div>
     
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
@@ -81,11 +82,11 @@
         <p>
             <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/server-management/search" method="post">
                 <label id="txtSearchTerms"><spring:message code="theme.search.terms" /><br /></label>
-                <form:input path="searchTerms" />
-                <form:errors path="searchTerms" cssClass="error" />
+                <form:input path="operHostName" />
+                <form:errors path="operHostName" cssClass="error" />
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/server-management/default');" />
                 <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
             </form:form>
         </p>

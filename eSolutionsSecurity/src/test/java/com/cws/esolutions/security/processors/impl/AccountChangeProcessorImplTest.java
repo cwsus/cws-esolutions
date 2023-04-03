@@ -90,7 +90,6 @@ public final class AccountChangeProcessorImplTest
         }
         catch (final AccountChangeException acx)
         {
-        	acx.printStackTrace();
         	Assertions.fail(acx.getMessage());
         }
     }
@@ -106,7 +105,6 @@ public final class AccountChangeProcessorImplTest
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
     	account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
-    	account.setAuthToken("73441317e3014a5deb5e0f8c1a6dfd47c2eed133b6c62b8d940bbac99fb8511a43119660e045f3964964b833629b8bc1c598d3bea1856a513eed61979d8c7203");
 
     	AuthenticationData authData = new AuthenticationData();
     	authData.setUsername("khuntly");
@@ -132,7 +130,6 @@ public final class AccountChangeProcessorImplTest
         }
         catch (final AccountChangeException acx)
         {
-        	acx.printStackTrace();
         	Assertions.fail(acx.getMessage());
         }
     }
@@ -176,7 +173,7 @@ public final class AccountChangeProcessorImplTest
     {
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("eb4edc58-59fc-4772-a16a-b1041dd7cc0c");
+    	account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
     	account.setUserRole(SecurityUserRole.SITE_ADMIN);
 
     	AuthenticationData authData = new AuthenticationData();

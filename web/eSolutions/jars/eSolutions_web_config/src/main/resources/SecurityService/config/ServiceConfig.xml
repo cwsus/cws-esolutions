@@ -143,5 +143,9 @@
             <dsName>AuditDataSource</dsName>
             <datasource>jdbc/audit</datasource>
         </DataSourceManager>
+        <DataSourceManager>
+            <dsName>ContactDataSource</dsName>
+            <datasource>jdbc/contact</datasource>
+        </DataSourceManager>
     </resource-config>
 </configuration>

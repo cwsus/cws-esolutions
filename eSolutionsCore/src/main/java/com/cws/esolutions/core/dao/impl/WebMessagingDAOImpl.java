@@ -28,9 +28,11 @@ package com.cws.esolutions.core.dao.impl;
 import java.util.List;
 import java.util.Objects;
 import java.sql.ResultSet;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
@@ -436,7 +438,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -453,7 +455,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, messageId); // messageId
             stmt.setString(2, (String) messageList.get(0)); // messageTitle
             stmt.setString(3, (String) messageList.get(1)); // messageText
@@ -462,17 +464,24 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             stmt.setBoolean(6, (Boolean) messageList.get(4)); // expiry
             stmt.setLong(7, (messageList.get(5) == null) ? 0 : (Long) messageList.get(5)); // expiry date
             stmt.setString(8, (String) messageList.get(6)); // modifyAuthor
+            stmt.registerOutParameter(9, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            isComplete = (!(stmt.execute()));
+            stmt.execute();
+            int updateCount = stmt.getInt(9);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isComplete: {}", isComplete);
+                DEBUGGER.debug("updateCount: {}", updateCount);
+            }
+
+            if (updateCount == 1)
+            {
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)

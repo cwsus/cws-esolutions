@@ -38,6 +38,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AuthenticationData implements Serializable
 {
+	private String resetKey = null;
 	private String username = null;
     private String userSalt = null;
     private char[] password = null;
@@ -60,6 +61,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.username = value;
@@ -72,6 +74,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.userSalt = value;
@@ -84,6 +87,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.password = value;
@@ -96,6 +100,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.newPassword = value;
@@ -108,6 +113,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secQuestionOne = value;
@@ -120,6 +126,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secQuestionTwo = value;
@@ -132,6 +139,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secAnswerOne = value;
@@ -144,9 +152,23 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secAnswerTwo = value;
+    }
+
+    public final void setResetKey(final String value)
+    {
+        final String methodName = AuthenticationData.CNAME + "#setResetKey(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.resetKey = value;
     }
 
     public final String getUsername()
@@ -169,6 +191,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userSalt);
         }
 
         return this.userSalt;
@@ -181,6 +204,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.password);
         }
 
         return this.password;
@@ -193,6 +217,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.newPassword);
         }
 
         return this.newPassword;
@@ -205,6 +230,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.secQuestionOne);
         }
 
         return this.secQuestionOne;
@@ -217,6 +243,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.secQuestionTwo);
         }
 
         return this.secQuestionTwo;
@@ -229,6 +256,7 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.secAnswerOne);
         }
 
         return this.secAnswerOne;
@@ -241,9 +269,23 @@ public class AuthenticationData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.secAnswerTwo);
         }
 
         return this.secAnswerTwo;
+    }
+
+    public final String getResetKey()
+    {
+        final String methodName = AuthenticationData.CNAME + "#getResetKey()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.resetKey);
+        }
+
+        return this.resetKey;
     }
 
     @Override

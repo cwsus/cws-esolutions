@@ -44,7 +44,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Datacenter;
@@ -323,7 +322,7 @@ public class DatacenterManagementController
 
                     break;
                 case SUCCESS:
-                    mView.addObject(Constants.COMMAND, new SearchRequest());
+                    mView.addObject(Constants.COMMAND, new Datacenter());
                     mView.setViewName(this.homePage);
 
                     break;

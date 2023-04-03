@@ -49,8 +49,9 @@ public final class DataSourceManager
     private String dsPass = null;
     private String dsSalt = null;
     private String datasource = null;
-    private int connectTimeout = 10000; // default to 10 seconds
-    private boolean autoReconnect = true; // default to true
+    private int socketTimeout = 10000;
+    private int connectTimeout = 10000;
+    private boolean autoReconnect = true;
 
     private static final String CNAME = DataSourceManager.class.getName();
 
@@ -146,6 +147,19 @@ public final class DataSourceManager
         }
 
         this.connectTimeout = value;
+    }
+
+    public final void setSocketTimeout(final int value)
+    {
+        final String methodName = DataSourceManager.CNAME + "#setSocketTimeout(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.socketTimeout = value;
     }
 
     public final void setAutoReconnect(final boolean value)
@@ -248,7 +262,7 @@ public final class DataSourceManager
     @XmlElement(name = "connectTimeout")
     public final int getConnectTimeout()
     {
-        final String methodName = DataSourceManager.CNAME + "#getSalt()";
+        final String methodName = DataSourceManager.CNAME + "#getConnectTimeout()";
 
         if (DEBUG)
         {
@@ -257,6 +271,20 @@ public final class DataSourceManager
         }
 
         return this.connectTimeout;
+    }
+
+    @XmlElement(name = "socketTimeout")
+    public final int getSocketTimeout()
+    {
+        final String methodName = DataSourceManager.CNAME + "#getSocketTimeout()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.socketTimeout);
+        }
+
+        return this.socketTimeout;
     }
 
     @XmlElement(name = "autoReconnect")

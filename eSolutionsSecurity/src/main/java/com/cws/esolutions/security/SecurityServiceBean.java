@@ -42,6 +42,7 @@ public class SecurityServiceBean implements Serializable
 {
 	private Object authDataSource = null;
     private Object auditDataSource = null;
+    private Object contactDataSource = null;
     private Map<String, DataSource> dataSources = null;
     private SecurityConfigurationData configData = null;
 
@@ -86,7 +87,7 @@ public class SecurityServiceBean implements Serializable
 
     public final void setAuthDataSource(final Object value)
     {
-        final String methodName = SecurityServiceBean.CNAME + "#setAuthDataSource(final Object value)";
+        final String methodName = SecurityServiceBean.CNAME + "#setAuthDataSource(final DataSource value)";
 
         if (DEBUG)
         {
@@ -99,7 +100,7 @@ public class SecurityServiceBean implements Serializable
 
     public final void setAuditDataSource(final Object value)
     {
-        final String methodName = SecurityServiceBean.CNAME + "#setAuditDataSource(final Object value)";
+        final String methodName = SecurityServiceBean.CNAME + "#setAuditDataSource(final DataSource value)";
 
         if (DEBUG)
         {
@@ -108,6 +109,19 @@ public class SecurityServiceBean implements Serializable
         }
 
         this.auditDataSource = value;
+    }
+
+    public final void setContactDataSource(final Object value)
+    {
+        final String methodName = SecurityServiceBean.CNAME + "#setContactDataSource(final DataSource value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.contactDataSource = value;
     }
 
     public final void setDataSources(final Map<String, DataSource> value)
@@ -160,6 +174,19 @@ public class SecurityServiceBean implements Serializable
         }
 
         return this.auditDataSource;
+    }
+
+    public final Object getContactDataSource()
+    {
+        final String methodName = SecurityServiceBean.CNAME + "#getContactDataSource()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.auditDataSource);
+        }
+
+        return this.contactDataSource;
     }
 
     public final Map<String, DataSource> getDataSources()

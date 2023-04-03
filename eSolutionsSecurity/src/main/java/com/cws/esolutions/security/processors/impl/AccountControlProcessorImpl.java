@@ -94,25 +94,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountControlException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(request.getRequestor());
@@ -290,18 +271,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(sx.getMessage(), sx);
         }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
-		}
-        catch (AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountControlException(ax.getMessage(), ax);
-		}
         finally
         {
             // audit
@@ -372,25 +341,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountControlException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -480,18 +430,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountControlException(ax.getMessage(), ax);
-		}
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
-		}
         finally
         {
             // audit
@@ -562,25 +500,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountControlException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -687,18 +606,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountControlException(ax.getMessage(), ax);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
-        }
         finally
         {
             // audit
@@ -769,25 +676,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountControlException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -930,18 +818,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountControlException(ax.getMessage(), ax);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
-        }
         finally
         {
             // audit
@@ -1016,25 +892,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountControlException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -1158,18 +1015,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountControlException(ax.getMessage(), ax);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
-        }
         catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
@@ -1188,6 +1033,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(sx.getMessage(), sx);
         }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+		}
         finally
         {
             // audit

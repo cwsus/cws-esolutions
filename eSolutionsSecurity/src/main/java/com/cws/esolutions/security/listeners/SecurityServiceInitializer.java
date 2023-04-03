@@ -31,11 +31,9 @@ import java.util.HashMap;
 import java.util.Objects;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.io.FileInputStream;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.JAXBException;
-import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +41,6 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.security.utils.DAOInitializer;
 import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
@@ -93,11 +90,6 @@ public class SecurityServiceInitializer
 
             if (startConnections)
             {
-                DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
-                        false, svcBean);
-                DAOInitializer.configureAndCreateAuditConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuditConfig())),
-                        false, svcBean);
-
                 Map<String, DataSource> dsMap = svcBean.getDataSources();
 
                 if (configData.getResourceConfig() != null)
@@ -138,11 +130,6 @@ public class SecurityServiceInitializer
             jx.printStackTrace();
             throw new SecurityServiceException(jx.getMessage(), jx);
         }
-        catch (final FileNotFoundException fnfx)
-        {
-            fnfx.printStackTrace();
-            throw new SecurityServiceException(fnfx.getMessage(), fnfx);
-        }
         catch (final MalformedURLException mux)
         {
             mux.printStackTrace();
@@ -160,14 +147,10 @@ public class SecurityServiceInitializer
      */
     public static void shutdown()
     {
-        final SecurityConfigurationData config = SecurityServiceInitializer.svcBean.getConfigData();
         Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
 
         try
         {
-            DAOInitializer.closeAuthConnection(new FileInputStream(FileUtils.getFile(config.getSecurityConfig().getAuthConfig())), false, svcBean);
-            DAOInitializer.closeAuditConnection(new FileInputStream(FileUtils.getFile(config.getSecurityConfig().getAuditConfig())), false, svcBean);
-
             if (dsMap != null)
             {
                 for (String key : dsMap.keySet())
@@ -184,10 +167,6 @@ public class SecurityServiceInitializer
         catch (final SQLException sqx)
         {
         	System.err.println("SecurityServiceInitializer#shutdown(): Exception occurred while shutting down: " + sqx.getMessage());
-        }
-        catch (final FileNotFoundException fnfx)
-        {
-            System.err.println("SecurityServiceInitializer#shutdown(): Exception occurred while shutting down: " + fnfx.getMessage());
         }
     }
 }

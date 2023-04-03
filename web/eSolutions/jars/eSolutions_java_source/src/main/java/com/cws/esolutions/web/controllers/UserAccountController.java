@@ -426,14 +426,9 @@ public class UserAccountController
             return redirectView;
         }
 
-        if ((userAccount.getStatus() == LoginStatus.RESET) || (userAccount.getStatus() == LoginStatus.EXPIRED))
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
         {
-            if (userAccount.getStatus() == LoginStatus.RESET)
-            {
-                changeReq.setIsReset(true);
-            }
-
-            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+           mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
         }
 
         if (DEBUG)
@@ -472,6 +467,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountResetProcessor resetProcess = (IAccountResetProcessor) new AccountResetProcessorImpl();
 
         if (DEBUG)
         {
@@ -537,28 +533,35 @@ public class UserAccountController
                 DEBUGGER.debug("AccountResetRequest: {}", request);
             }
 
-            IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
-
-            AccountResetResponse response = resetProcess.obtainUserSecurityConfig(request);
+            AccountResetResponse response = resetProcess.getSecurityQuestionList(request);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("AccountResetResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                mView.addObject("questionList", response.getQuestionList());
-                mView.addObject(Constants.COMMAND, new AccountChangeData());
-                mView.setViewName(this.changeSecurityPage);
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+				case FAILURE:
+					mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
+				case SUCCESS:
+	                mView.addObject("questionList", response.getAvailableQuestions());
+	                mView.addObject(Constants.COMMAND, new AccountChangeData());
+	                mView.setViewName(this.changeSecurityPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+					mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
             }
         }
         catch (final AccountResetException acx)
@@ -709,98 +712,6 @@ public class UserAccountController
 
         mView.addObject(Constants.COMMAND, new AccountChangeData());
         mView.setViewName(this.changeContactPage);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
-    public final ModelAndView doCancelRequest()
-    {
-        final String methodName = UserAccountController.CNAME + "#doCancelRequest()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-        switch (userAccount.getStatus())
-        {
-            case EXPIRED:
-                hSession.removeAttribute(Constants.USER_ACCOUNT);
-                hSession.invalidate();
-
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(this.appConfig.getLogonRedirect());
-
-                break;
-            case RESET:
-                hSession.removeAttribute(Constants.USER_ACCOUNT);
-                hSession.invalidate();
-
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(this.appConfig.getLogonRedirect());
-
-                break;
-            default:
-                break;
-        }
-
-        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageRequestCanceled());
-        mView.setViewName(this.myAccountPage);
 
         if (DEBUG)
         {
@@ -1010,17 +921,9 @@ public class UserAccountController
 
         try
         {
-            if (userAccount.getStatus() == LoginStatus.RESET)
-            {
-                userSecurity = new AuthenticationData();
-                userSecurity.setNewPassword(changeReq.getConfirmPassword().toCharArray());
-            }
-            else
-            {
-                userSecurity = new AuthenticationData();
-                userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
-                userSecurity.setNewPassword(changeReq.getConfirmPassword().toCharArray());
-            }
+            userSecurity = new AuthenticationData();
+            userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
+            userSecurity.setNewPassword(changeReq.getConfirmPassword().toCharArray());
 
             if (DEBUG)
             {

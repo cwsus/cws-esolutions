@@ -43,7 +43,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 public interface IAuditDAO
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final DataSource dataSource = (DataSource) svcBean.getAuditDataSource();
+    static final DataSource dataSource = (DataSource) svcBean.getDataSources().get("AuditDataSource");
 
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -317,7 +317,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
-        UserAccount userAccount = null;
         AuthenticationResponse response = new AuthenticationResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
@@ -333,7 +332,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         {
         	authenticator.performLogoff(authUser.getGuid(), authUser.getUsername(), authUser.getAuthToken());
 
-        	response = new AuthenticationResponse();
         	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
 
         	if (DEBUG)
@@ -358,7 +356,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	                AuditEntry auditEntry = new AuditEntry();
 	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.LOGOFF);
-	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setUserAccount(authUser);
 	                auditEntry.setAuthorized(Boolean.TRUE);
 	                auditEntry.setApplicationId(request.getApplicationId());
 	                auditEntry.setApplicationName(request.getApplicationName());

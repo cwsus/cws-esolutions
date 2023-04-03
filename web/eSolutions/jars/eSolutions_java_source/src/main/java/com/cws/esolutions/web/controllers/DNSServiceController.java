@@ -43,7 +43,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
@@ -60,7 +59,6 @@ import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor
 import com.cws.esolutions.core.processors.impl.ApplicationEnablementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProcessor;
-
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -284,13 +282,13 @@ public class DNSServiceController
                     break;
                 case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
-                    mView.addObject(Constants.COMMAND, new SearchRequest());
+                    mView.addObject(Constants.COMMAND, new DNSRecord());
                     mView.setViewName(this.lookupPage);
 
                     break;
                 case SUCCESS:
                     mView.addObject("serviceTypes", this.serviceTypes);
-                    mView.addObject(Constants.COMMAND, new SearchRequest());
+                    mView.addObject(Constants.COMMAND, new DNSRecord());
                     mView.setViewName(this.lookupPage);
 
                     break;
@@ -300,7 +298,7 @@ public class DNSServiceController
                     break;
                 default:
                     mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
-                    mView.addObject(Constants.COMMAND, new SearchRequest());
+                    mView.addObject(Constants.COMMAND, new DNSRecord());
                     mView.setViewName(this.lookupPage);
 
                     break;
@@ -322,9 +320,9 @@ public class DNSServiceController
     }
 
     @RequestMapping(value = "search", method = RequestMethod.POST)
-    public final ModelAndView submitLookup(@ModelAttribute("entry") final SearchRequest request, final BindingResult bindResult, final Model model)
+    public final ModelAndView submitLookup(@ModelAttribute("entry") final DNSRecord request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = DNSServiceController.CNAME + "#submitLookup(@ModelAttribute(\"entry\") final SearchRequest request, final BindingResult bindResult)";
+        final String methodName = DNSServiceController.CNAME + "#submitLookup(@ModelAttribute(\"entry\") final DNSRecord request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -427,8 +425,8 @@ public class DNSServiceController
                         }
 
                         DNSRecord record = new DNSRecord();
-                        record.setRecordName(request.getSearchTerms());
-                        record.setRecordType(DNSRecordType.valueOf(request.getSearchExtras()));
+                        record.setRecordName(request.getRecordName());
+                        record.setRecordType(DNSRecordType.valueOf(request.getRecordType().toString()));
 
                         if (DEBUG)
                         {
@@ -476,7 +474,7 @@ public class DNSServiceController
                                 }
 
                                 mView.addObject("serviceTypes", this.serviceTypes);
-                                mView.addObject(Constants.COMMAND, new SearchRequest());
+                                mView.addObject(Constants.COMMAND, new DNSRecord());
                                 mView.setViewName(this.lookupPage);
 
                                 break;

@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -52,8 +53,9 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 public interface IAccountResetProcessor
 {
 	static final String CNAME = IAccountResetProcessor.class.getName();
-    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SystemConfig sysConfig = secBean.getConfigData().getSystemConfig();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
     static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new SQLUserSecurityInformationDAOImpl();
@@ -63,6 +65,14 @@ public interface IAccountResetProcessor
     static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccountResetProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws AccountResetException
+     */
+    AccountResetResponse getSecurityQuestionList(final AccountResetRequest request) throws AccountResetException;
 
     /**
      * 

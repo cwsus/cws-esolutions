@@ -114,19 +114,6 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
-        <RollingFile name="responsetime-log" fileName="${APP_LOG_ROOT}/responsetime.log" filePattern="${APP_LOG_ROOT}/responsetime-%d{yyyy-MM-dd}-%i.log">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
-                <SizeBasedTriggeringPolicy size="50MB" />
-            </Policies>
-            <DefaultRolloverStrategy max="10">
-                <Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
-                    <IfFilename glob="*/responsetime*.log.gz" />
-                    <IfLastModified age="P30D" />
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
     </Appenders>
 
     <Loggers>
@@ -147,9 +134,6 @@
         </Logger>
         <Logger name="CORE_DEBUGGER" additivity="false" level="debug">
             <AppenderRef ref="core-debug-logger" />
-        </Logger>
-        <Logger name="RESPONSE_TIME" additivity="false" level="info">
-            <AppenderRef ref="responsetime-log" />
         </Logger>
 
         <!-- eSolutionsWeb loggers -->

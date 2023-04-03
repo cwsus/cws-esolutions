@@ -88,7 +88,6 @@ public class AuthenticationProcessorImplTest
         }
         catch (final AuthenticationException ax)
         {
-        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }
@@ -114,7 +113,6 @@ public class AuthenticationProcessorImplTest
         }
         catch (final AuthenticationException ax)
         {
-        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }

@@ -39,6 +39,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccountSearchRequest implements Serializable
 {
+	private boolean isReset = false;
 	private String searchTerms = null;
     private String applicationId = null;
     private String applicationName = null;
@@ -116,6 +117,19 @@ public class AccountSearchRequest implements Serializable
         this.searchTerms = value;
     }
 
+    public final void setIsReset(final boolean value)
+    {
+        final String methodName = AccountSearchRequest.CNAME + "#setIsReset(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isReset = value;
+    }
+
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AccountSearchRequest.CNAME + "#getHostInfo()";
@@ -181,6 +195,19 @@ public class AccountSearchRequest implements Serializable
         return this.searchTerms;
     }
 
+    public final boolean getIsReset()
+    {
+        final String methodName = AccountSearchRequest.CNAME + "#getIsReset()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isReset);
+        }
+
+        return this.isReset;
+    }
+
     @Override
     public final String toString()
     {
@@ -194,7 +221,6 @@ public class AccountSearchRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("userSecurity"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

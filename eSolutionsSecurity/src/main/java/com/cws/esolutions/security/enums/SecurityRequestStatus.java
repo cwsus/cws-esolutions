@@ -33,9 +33,5 @@ public enum SecurityRequestStatus
 {
     SUCCESS,
     FAILURE,
-    OLRLOCKED,
-    OLRSETUP,
-    UNAUTHORIZED,
-    SUSPENDED,
-    DISABLED;
+    UNAUTHORIZED;
 }

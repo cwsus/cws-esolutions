@@ -36,10 +36,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
@@ -49,7 +47,6 @@ import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
-import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor
@@ -161,25 +158,6 @@ public class AuditProcessorImpl implements IAuditProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(reqAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(reqAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(reqAccount.getGuid(), reqAccount.getUsername(), reqAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AuditServiceException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(reqAccount);
@@ -335,12 +313,6 @@ public class AuditProcessorImpl implements IAuditProcessor
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new AuditServiceException(acsx.getMessage(), acsx);
-        }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AuditServiceException(ax.getMessage(), ax);
         }
         finally
         {

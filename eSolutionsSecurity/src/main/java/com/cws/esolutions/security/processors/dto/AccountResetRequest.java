@@ -56,7 +56,7 @@ public class AccountResetRequest implements Serializable
 
     public final void setHostInfo(final RequestHostInfo value)
     {
-        final String methodName = AccountResetRequest.CNAME + "#setBaseDN(final RequestHostInfo value)";
+        final String methodName = AccountResetRequest.CNAME + "#setHostInfo(final RequestHostInfo value)";
 
         if (DEBUG)
         {
@@ -126,6 +126,7 @@ public class AccountResetRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}}", value);
         }
 
         this.userSecurity = value;
@@ -138,6 +139,7 @@ public class AccountResetRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}}", value);
         }
 
         this.resetRequestId = value;
@@ -228,6 +230,7 @@ public class AccountResetRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}}", this.userSecurity);
         }
 
         return this.userSecurity;
@@ -253,6 +256,7 @@ public class AccountResetRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}}", this.resetRequestId);
         }
 
         return this.resetRequestId;
@@ -271,8 +275,6 @@ public class AccountResetRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("userSecurity"))) &&
-                    (!(field.getName().equals("smsCode"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

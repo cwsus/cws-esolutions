@@ -37,23 +37,14 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.searchTerms.value == '')
+        if (theForm.platformName.value == '')
         {
             clearText(theForm);
 
             document.getElementById('validationError').innerHTML = 'Search terms must be provided.';
             document.getElementById('txtSearchTerms').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('searchTerms').focus();
-        }
-        else if (theForm.searchType.value == '')
-        {
-            clearText(theForm);
-
-            document.getElementById('validationError').innerHTML = 'A Search type must be provided.';
-            document.getElementById('txtSearchType').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('searchTerms').focus();
+            document.getElementById('platformName').focus();
         }
         else
         {
@@ -90,12 +81,12 @@
         <p>
             <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/service-management/search" method="post">
                 <label id="txtSearchTerms"><spring:message code="theme.search.terms" /></label>
-                <form:input path="searchTerms" />
-                <form:errors path="searchTerms" cssClass="error" />
+                <form:input path="platformName" />
+                <form:errors path="platformName" cssClass="error" />
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/platform-management/default');" />
             </form:form>
         </p>
     </div>
@@ -108,8 +99,8 @@
             <ul>
                 <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
                 <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/service-management/list-platforms" title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/service-management/add-platform" title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/platform-management/list-platforms" title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/platform-management/add-platform" title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a></li>
             </ul>
         </div>
         <c:if test="${not empty searchResults}">
@@ -117,7 +108,7 @@
             <table id="searchResults">
                 <c:forEach var="result" items="${searchResults}">
                     <tr>
-                        <td><a href="${pageContext.request.contextPath}/ui/service-management/${searchType}/${result.path}" title="${result.title}">${result.title}</a></td>
+                        <td><a href="${pageContext.request.contextPath}/ui/platform-management/${result.path}" title="${result.title}">${result.title}</a></td>
                     </tr>
                 </c:forEach>
             </table>
@@ -135,7 +126,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/service-management/search/terms/${searchTerms}/type/${searchType}page/${i}" title="{i}">${i}</a>
+                                        <a href="${pageContext.request.contextPath}/platform-management/search/terms/${searchTerms}/type/${searchType}page/${i}" title="{i}">${i}</a>
                                     </td>
                                 </c:otherwise>
                             </c:choose>

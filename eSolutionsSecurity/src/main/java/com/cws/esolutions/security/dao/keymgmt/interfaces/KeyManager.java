@@ -48,11 +48,11 @@ import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 public interface KeyManager
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
     static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
+    static final DataSource dataSource = (DataSource) svcBean.getDataSources().get("SecurityDataSource");
     
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

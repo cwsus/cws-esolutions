@@ -97,7 +97,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE ESOLUTIONS.retrDataCenter(
+CREATE PROCEDURE ESOLUTIONS.getDatacenterData(
     IN datacenterGuid VARCHAR(128)
 )
 BEGIN

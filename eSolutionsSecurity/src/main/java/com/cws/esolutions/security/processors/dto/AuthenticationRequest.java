@@ -219,9 +219,6 @@ public class AuthenticationRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("userSecurity"))) &&
-                    (!(field.getName().equals("resetSmsCode"))) &&
-                    (!(field.getName().equals("resetRequestId"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

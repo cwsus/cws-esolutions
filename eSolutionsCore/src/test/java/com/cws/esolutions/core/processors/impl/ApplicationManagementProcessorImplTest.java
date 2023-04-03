@@ -155,7 +155,6 @@ public class ApplicationManagementProcessorImplTest
         }
         catch (final ApplicationManagementException amx)
         {
-        	amx.printStackTrace();
             Assertions.fail(amx.getMessage());
         }
     }
@@ -181,7 +180,6 @@ public class ApplicationManagementProcessorImplTest
         }
         catch (final ApplicationManagementException amx)
         {
-        	amx.printStackTrace();
             Assertions.fail(amx.getMessage());
         }
     }

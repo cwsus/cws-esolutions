@@ -56,7 +56,6 @@ public class ResponseTimeFilter implements Filter
 
     private static final String CNAME = ResponseTimeFilter.class.getName();
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
-    private static final Logger RESPONSETIME_LOGGER = LogManager.getLogger(CoreServicesConstants.RESPONSE_LOGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
@@ -114,9 +113,6 @@ public class ResponseTimeFilter implements Filter
             	DEBUGGER.debug("Value: {}", time);
             	DEBUGGER.debug("Value: {}", url);
             }
-
-            RESPONSETIME_LOGGER.info("Time taken for request to complete:  " + time + "ms");
-            RESPONSETIME_LOGGER.info("Request url : " + url);
 
             chain.doFilter(request, response);
         }

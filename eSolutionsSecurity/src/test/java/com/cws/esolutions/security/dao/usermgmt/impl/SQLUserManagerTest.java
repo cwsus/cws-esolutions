@@ -57,7 +57,6 @@ public class SQLUserManagerTest
         }
         catch (final Exception e)
         {
-            e.printStackTrace();
             Assertions.fail(e.getMessage());
             System.exit(1);
         }
@@ -92,7 +91,6 @@ public class SQLUserManagerTest
 
         catch (final UserManagementException umx)
         {
-        	umx.printStackTrace();
             Assertions.fail(umx.getMessage());
         }
     }
@@ -167,7 +165,6 @@ public class SQLUserManagerTest
         }
         catch (final UserManagementException umx)
         {
-        	umx.printStackTrace();
             Assertions.fail(umx.getMessage());
         }
     }

@@ -43,7 +43,7 @@
 				</c:if>
 				<br class="clear" />
 			</div>
-			
+
 			<div id="copyright">
 		  		<div class="wrapper">
 		            &copy; <spring:message code="theme.footer.copyright" />

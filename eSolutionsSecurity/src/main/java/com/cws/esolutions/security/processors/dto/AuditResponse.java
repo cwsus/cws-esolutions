@@ -96,7 +96,7 @@ public class AuditResponse implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SecurityRequestStatus: {}", this.requestStatus);
+            DEBUGGER.debug("Value: {}", this.requestStatus);
         }
 
         return this.requestStatus;

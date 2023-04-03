@@ -99,7 +99,6 @@ public class AuditDAOImplTest
         }
         catch (final SQLException sqx)
         {
-        	sqx.printStackTrace();
         	Assertions.fail(sqx.getMessage());
         }
     }

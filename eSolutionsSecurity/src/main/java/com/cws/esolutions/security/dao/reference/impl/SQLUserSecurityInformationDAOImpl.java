@@ -36,7 +36,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.CallableStatement;
-import org.apache.commons.codec.binary.StringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
@@ -299,12 +298,13 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("commonName: {}", commonName);
+            DEBUGGER.debug("Value: {}", commonName);
+            DEBUGGER.debug("Value: {}", resetId);
         }
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -321,15 +321,22 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL insertResetData(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL insertResetData(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, commonName);
             stmt.setString(2, resetId);
+            stmt.registerOutParameter(3, Types.INTEGER);
 
-            isComplete = (!(stmt.execute()));
+            stmt.execute();
+            int resultCount = stmt.getInt(3);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isComplete: {}", isComplete);
+                DEBUGGER.debug("resultCount: {}", resultCount);
+            }
+
+            if (resultCount == 1)
+            {
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)
@@ -624,8 +631,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -650,46 +656,28 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareStatement("{ CALL modifyUserPassword(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL modifyUserPassword(?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid);
             stmt.setString(2, newPass);
             stmt.setBoolean(3, isReset);
+            stmt.registerOutParameter(4, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            stmt.executeUpdate();
-
-            stmt.close();
-            stmt = null;
-
-            stmt = sqlConn.prepareStatement("{ CALL getUserPassword(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userGuid);
-            stmt.setString(2, userId);
+            stmt.execute();
+            int resultCount = stmt.getInt(4);
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("stmt: {}", stmt);
+            	DEBUGGER.debug("resultCount: {}", resultCount);
             }
 
-            resultSet = stmt.executeQuery();
-
-            if (!(Objects.isNull(resultSet)))
+            if (resultCount == 1)
             {
-            	resultSet.first();
-            	String confPassword = resultSet.getString(1);
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("confPassword: {}", confPassword);
-            	}
-
-            	if (StringUtils.equals(confPassword, newPass))
-            	{
-            		isComplete = true;
-            	}
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)
@@ -700,11 +688,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         {
             try
             {
-            	if (!(Objects.isNull(resultSet)))
-            	{
-            		resultSet.close();
-            	}
-
                 if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
@@ -734,7 +717,8 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", values);
         }
 
         Connection sqlConn = null;
@@ -790,6 +774,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         }
         catch (final SQLException sqx)
         {
+        	sqx.printStackTrace();
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
         finally

@@ -99,7 +99,7 @@ public class DatacenterManagementProcessorImplTest
     	}
     	catch (final DatacenterManagementException dmx)
         {
-    		dmx.printStackTrace();
+
     		Assertions.fail(dmx.getMessage());
         }
     }
@@ -129,7 +129,6 @@ public class DatacenterManagementProcessorImplTest
     	}
     	catch (final DatacenterManagementException dmx)
         {
-    		dmx.printStackTrace();
     		Assertions.fail(dmx.getMessage());
         }
     }

@@ -30,8 +30,10 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
@@ -131,7 +133,7 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -149,24 +151,31 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
  
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL updatePlatformData(?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL updatePlatformData(?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, platformGuid); // systemGuid
             stmt.setString(2, platformData.get(1)); // platformName
             stmt.setString(3, platformData.get(2)); // region
             stmt.setString(4, platformData.get(3)); // nwpartition
             stmt.setString(5, platformData.get(4)); // platformstatus
             stmt.setString(6, platformData.get(5)); // description
+            stmt.registerOutParameter(7, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            isComplete = (!(stmt.execute()));
+            stmt.execute();
+            int updateCount = stmt.getInt(7);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isComplete: {}", isComplete);
+            	DEBUGGER.debug("updateCount: {}", updateCount);
+            }
+
+            if (updateCount == 1)
+            {
+                isComplete = true;
             }
         }
         catch (final SQLException sqx)

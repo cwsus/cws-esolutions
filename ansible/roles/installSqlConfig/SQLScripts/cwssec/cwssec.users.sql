@@ -203,7 +203,8 @@ COMMIT //
 CREATE PROCEDURE CWSSEC.modifyUserLock(
     IN commonName VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     IN isLocked BOOLEAN,
-    IN lockCount INTEGER
+    IN lockCount INTEGER,
+    OUT updateCount INTEGER
 )
 BEGIN
     IF (isLocked) THEN
@@ -237,6 +238,19 @@ BEGIN
 
             COMMIT;
         END IF;
+    END IF;
+
+    IF (isLocked)
+    THEN
+        SELECT COUNT(*)
+        FROM CWSSEC.USERS
+        INTO updateCount
+        WHERE CWSFAILEDPWDCOUNT = 3;
+    ELSE
+        SELECT COUNT(*)
+        FROM CWSSEC.USERS
+        INTO updateCount
+        WHERE CWSFAILEDPWDCOUNT = lockCount;
     END IF;
 END //
 COMMIT //
