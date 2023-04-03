@@ -105,7 +105,7 @@ public class LoginValidator implements Validator
             DEBUGGER.debug("errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "loginUser", this.messageLoginUserRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "loginUser", this.messageLoginPasswordRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", this.messageLoginUserRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", this.messageLoginPasswordRequired);
     }
 }

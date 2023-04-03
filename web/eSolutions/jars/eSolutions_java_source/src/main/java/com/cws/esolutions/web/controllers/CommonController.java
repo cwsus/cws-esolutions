@@ -50,7 +50,6 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
@@ -145,7 +144,7 @@ public class CommonController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServiceMessagingProcessor svcMessage = (IServiceMessagingProcessor) new ServiceMessagingProcessorImpl();
+        final IServiceMessagingProcessor processor = (IServiceMessagingProcessor) new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -191,19 +190,30 @@ public class CommonController
 
         try
         {
-            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+            MessagingResponse response = processor.showAlertMessages(new MessagingRequest());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+                DEBUGGER.debug("MessagingResponse: {}", response);
             }
 
-            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                mView.addObject("alertMessages", messageResponse.getSvcMessages());
+				case EXCEPTION:
+					break;
+				case FAILURE:
+					break;
+				case SUCCESS:
+					mView.addObject("alertMessages", response.getSvcMessages());
+
+					break;
+				case UNAUTHORIZED:
+					break;
+				default:
+					break;
             }
         }
-        catch (final MessagingServiceException msx) {} // do nothing with the exception
+        catch (final MessagingServiceException msx) {}
 
         mView.setViewName(this.homePage);
 

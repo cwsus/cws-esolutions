@@ -28,9 +28,12 @@ package com.cws.esolutions.security.processors.impl;
 import java.util.List;
 import java.util.Objects;
 import java.util.ArrayList;
+import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
@@ -38,13 +41,11 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountSearchResponse;
-import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
-import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountSearchException;
 import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
+import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
  */
@@ -67,6 +68,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
         AccountSearchResponse response = new AccountSearchResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
@@ -75,6 +77,25 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountSearchException("An invalid authentication token was presented.");
+            }
+
         	List<String[]> userList = userManager.searchUsers(request.getSearchTerms());
 
             if (DEBUG)
@@ -160,6 +181,18 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
             throw new AccountSearchException(umx.getMessage(), umx);
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountSearchException(ax.getMessage(), ax);
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountSearchException(sqx.getMessage(), sqx);
+        }
         finally
         {
         	if (secConfig.getPerformAudit())
@@ -227,59 +260,23 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
             }
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
 
-            if (DEBUG)
+            if (!(isAuthenticated))
             {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-
-                return response;
+                throw new AccountSearchException("An invalid authentication token was presented.");
             }
 
             List<String[]> userList = userManager.searchUsers(request.getSearchTerms());
@@ -341,42 +338,53 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
             throw new AccountSearchException(umx.getMessage(), umx);
         }
-        catch (final AccessControlServiceException acsx)
+        catch (final AuthenticatorException ax)
         {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+            ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            throw new AccountSearchException(acsx.getMessage(), acsx);
+            throw new AccountSearchException(ax.getMessage(), ax);
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountSearchException(sqx.getMessage(), sqx);
         }
         finally
         {
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 

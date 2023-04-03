@@ -105,10 +105,10 @@
                 <value>classpath:nls/DNSServiceServlet/DNSServiceServlet</value>
                 <value>classpath:nls/LoginServlet/LoginServlet</value>
                 <value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
-                <value>classpath:nls/ServiceManagementServlet/ServiceManagementServlet</value>
+                <value>classpath:nls/PlatformManagementServlet/PlatformManagementServlet</value>
                 <value>classpath:nls/ServiceMessagingServlet/ServiceMessagingServlet</value>
                 <value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>
-                <value>classpath:nls/SystemManagementServlet/SystemManagementServlet</value>
+                <value>classpath:nls/ServerManagementServlet/SystemManagementServlet</value>
                 <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
                 <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
                 <value>classpath:nls/theme/resources</value>

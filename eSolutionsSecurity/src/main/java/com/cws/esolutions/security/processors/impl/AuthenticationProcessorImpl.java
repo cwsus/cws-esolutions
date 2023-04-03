@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.sql.SQLException;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -67,7 +68,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
-        boolean isValid = false;
         UserAccount userAccount = null;
         AuthenticationResponse response = new AuthenticationResponse();
 
@@ -111,7 +111,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             	DEBUGGER.debug("userSalt: {}", userSalt);
             }
 
-            if (Objects.isNull(userSalt))
+            if (StringUtils.isBlank(userSalt))
             {
                 throw new AuthenticationException("Unable to obtain configured user security information. Cannot continue");
             }
@@ -145,7 +145,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (Objects.isNull(userObject))
             {
-            	// no data was returned
             	response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
             	return response;
@@ -195,7 +194,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	            		DEBUGGER.debug("authToken: {}", authToken);
 	            	}
 
-	            	boolean isLoggedIn = authenticator.performSuccessfulLogin(userId, userGuid, 0, new Date(System.currentTimeMillis()), authToken);
+	            	boolean isLoggedIn = authenticator.performSuccessfulLogin(userId, userGuid, authToken);
 	            	boolean isAuthTokenInserted = userSec.addOrUpdateUserSalt((String) userObject.get(1), authToken, SaltType.AUTHTOKEN.toString());
 
 	            	if (DEBUG)
@@ -206,7 +205,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
 	            	if ((!(isLoggedIn)) || (!(isAuthTokenInserted)))
 	            	{
-	            		throw new AuthenticationException("Unable to complete authentication process: failed to set authToken in datastore.");
+	            		throw new AuthenticationException("The authentication process failed. Please review logs.");
 	            	}
 
 	            	userAccount.setGuid((String) userObject.get(1)); // UID
@@ -266,7 +265,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         }
         finally
         {
-        	if ((secConfig.getPerformAudit()) && (isValid))
+        	if (secConfig.getPerformAudit())
         	{
 	            // audit if a valid account. if not valid we cant audit much,
         		// but we should try anyway. not sure how thats going to work
@@ -275,6 +274,90 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	                AuditEntry auditEntry = new AuditEntry();
 	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.LOGON);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (final AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processAgentLogoff(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
+     */
+    public AuthenticationResponse processAgentLogoff(final AuthenticationRequest request) throws AuthenticationException
+    {
+        final String methodName = AuthenticationProcessorImpl.CNAME + "#processAgentLogoff(final AuthenticationRequest request) throws AuthenticationException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AuthenticationRequest: {}", request);
+        }
+
+        UserAccount userAccount = null;
+        AuthenticationResponse response = new AuthenticationResponse();
+
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount authUser = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", authUser);
+        }
+
+        try
+        {
+        	authenticator.performLogoff(authUser.getGuid(), authUser.getUsername(), authUser.getAuthToken());
+
+        	response = new AuthenticationResponse();
+        	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AuthenticationResponse: {}", response);
+        	}
+        }
+        catch (final SecurityServiceException ssx)
+        {
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
+
+            throw new AuthenticationException(ssx.getMessage(), ssx);
+        }
+        finally
+        {
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit if a valid account. if not valid we cant audit much,
+        		// but we should try anyway. not sure how thats going to work
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.LOGOFF);
 	                auditEntry.setUserAccount(userAccount);
 	                auditEntry.setAuthorized(Boolean.TRUE);
 	                auditEntry.setApplicationId(request.getApplicationId());

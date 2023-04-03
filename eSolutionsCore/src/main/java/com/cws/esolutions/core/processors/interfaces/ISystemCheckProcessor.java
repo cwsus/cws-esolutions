@@ -33,6 +33,8 @@ import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
+import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
@@ -51,6 +53,8 @@ public interface ISystemCheckProcessor
     static final String CNAME = IServerManagementProcessor.class.getName();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

@@ -36,6 +36,8 @@ import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
@@ -53,6 +55,8 @@ public interface IServiceMessagingProcessor
     static final IWebMessagingDAO webMessengerDAO = (IWebMessagingDAO)new WebMessagingDAOImpl();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
 
     static final String dateFormat = appConfig.getDateFormat();
     static final String CNAME = IServiceMessagingProcessor.class.getName();

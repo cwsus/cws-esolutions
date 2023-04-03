@@ -37,7 +37,7 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.loginUser.value == '')
+        if (theForm.username.value == '')
         {
             clearText(theForm);
 
@@ -46,7 +46,7 @@
             document.getElementById('execute').disabled = false;
             document.getElementById('username').focus();
         }
-        else if (theForm.loginPass.value == '')
+        else if (theForm.password.value == '')
         {
             clearText(theForm);
 
@@ -94,14 +94,14 @@
 
             <p>
                 <label id="txtUsername"><spring:message code="login.user.name" /></label>
-                <form:input path="loginUser" /> <c:if test="${resetAllowed eq true}"><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username"
+                <form:input path="username" /> <c:if test="${resetAllowed eq true}"><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username"
                 	title="<spring:message code='login.user.forgot_uid' />"><spring:message code="login.user.forgot_uid" /></a></c:if>
-                <form:errors path="loginUser" cssClass="error" />
+                <form:errors path="username" cssClass="error" />
                 <br /><br />
                 <label id="txtPassword"><spring:message code="login.user.pwd" /></label>
-                <form:password path="loginPass" /> <c:if test="${resetAllowed eq true}"><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password"
+                <form:password path="password" /> <c:if test="${resetAllowed eq true}"><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password"
 	            	title="<spring:message code='login.user.forgot_pwd' />"><spring:message code="login.user.forgot_pwd" /></a></c:if>
-                <form:errors path="loginPass" cssClass="error" />
+                <form:errors path="password" cssClass="error" />
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

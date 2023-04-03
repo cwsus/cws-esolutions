@@ -32,6 +32,8 @@ import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
+import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
@@ -47,8 +49,10 @@ import com.cws.esolutions.core.processors.exception.ServerManagementException;
 public interface IServerManagementProcessor
 {
 	static final String CNAME = IServerManagementProcessor.class.getName();
-    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final IServerDataDAO serverDAO = (IServerDataDAO) new ServerDataDAOImpl();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

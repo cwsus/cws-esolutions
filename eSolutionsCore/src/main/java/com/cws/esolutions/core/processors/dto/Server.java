@@ -52,9 +52,9 @@ public class Server implements Serializable
     private String cpuType = null;
     private int installedMemory = 0; // in MB! 1GB = 1024 MB
     private Date onlineDate = null;
-    private Service service = null;
     private Date offlineDate = null;
     private String virtualId = null;
+    private Platform platform = null;
     private String serverGuid = null;
     private String natAddress = null;
     private String bkHostName = null;
@@ -488,9 +488,9 @@ public class Server implements Serializable
         this.networkPartition = value;
     }
 
-    public final void setService(final Service value)
+    public final void setPlatform(final Platform value)
     {
-        final String methodName = Server.CNAME + "#setService(final Service value)";
+        final String methodName = Server.CNAME + "#setPlatform(final Platform value)";
 
         if (DEBUG)
         {
@@ -498,7 +498,7 @@ public class Server implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.service = value;
+        this.platform = value;
     }
 
     public final void setOnlineDate(final Date value)
@@ -930,17 +930,17 @@ public class Server implements Serializable
         return this.networkPartition;
     }
 
-    public final Service getService()
+    public final Platform getPlatform()
     {
-        final String methodName = Server.CNAME + "#getService()";
+        final String methodName = Server.CNAME + "#getPlatform()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.service);
+            DEBUGGER.debug("Value: {}", this.platform);
         }
 
-        return this.service;
+        return this.platform;
     }
 
     public final Date getOnlineDate()

@@ -183,17 +183,5 @@ public class ApplicationValidator implements Validator
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageLocation", this.messagePackageLocationRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageInstaller", this.messagePackageInstallerRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platforms", this.messagePlatformRequired);
-
-        Application request = (Application) target;
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationRequest: {}", request);
-        }
-
-        if (request.getVersion() == 0.0)
-        {
-            errors.reject("version", this.messageVersionRequired);
-        }
     }
 }

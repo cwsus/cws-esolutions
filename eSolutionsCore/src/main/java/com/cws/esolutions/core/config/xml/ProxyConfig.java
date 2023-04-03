@@ -56,7 +56,6 @@ public final class ProxyConfig
     private boolean proxyServiceRequired = false;
 
     private static final String CNAME = ProxyConfig.class.getName();
-    private static final long serialVersionUID = 6029238735313164615L;    
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -25,6 +25,7 @@ package com.cws.esolutions.security.dao.reference.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import org.apache.commons.codec.binary.StringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -62,7 +64,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         Connection sqlConn = null;
         boolean isComplete = false;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -80,46 +82,19 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL addOrUpdateUserSalt(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL addOrUpdateUserSalt(?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, commonName);
             stmt.setString(2, saltValue);
             stmt.setString(3, saltType);
+            stmt.registerOutParameter(4, Types.INTEGER);
 
             stmt.execute();
 
-            stmt.close();
-            stmt = null;
+            int updateCount = stmt.getInt(4);
 
-            stmt = sqlConn.prepareStatement("{ CALL getUserSalt(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, commonName);
-            stmt.setString(2, saltType);
-
-            if (DEBUG)
+            if (updateCount == 1)
             {
-            	DEBUGGER.debug("stmt: {}", stmt);
-            }
-
-            resultSet = stmt.executeQuery();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("resultSet: {}", resultSet);
-            }
-
-            if (resultSet.next())
-            {
-            	resultSet.first();
-            	String response = resultSet.getString(1);
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("response: {}", response);
-            	}
-
-            	if (StringUtils.equals(response, saltValue))
-            	{
-            		isComplete = true;
-            	}
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)
@@ -551,7 +526,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         {
             sqlConn = dataSource.getConnection();
 
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -666,7 +641,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -764,7 +739,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -780,28 +755,38 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL addOrUpdateSecurityQuestions(?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL addOrUpdateSecurityQuestions(?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid);
             stmt.setString(2, values.get(0));
             stmt.setString(3, values.get(1));
             stmt.setString(4, values.get(2));
             stmt.setString(5, values.get(3));
+            stmt.registerOutParameter(6, Types.INTEGER);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
-            stmt.executeUpdate();
+            stmt.execute();
+            int executed = stmt.getInt(6);
 
-            isComplete = true;
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("executed: {}", executed);
+            }
+
+            if (executed == 1)
+            {
+            	isComplete = true;
+            }
         }
         catch (final SQLException sqx)
         {

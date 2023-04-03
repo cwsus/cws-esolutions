@@ -31,10 +31,15 @@ import org.apache.logging.log4j.LogManager;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.dao.audit.impl.AuditDAOImpl;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
+import com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl;
+import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
+import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
+import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
@@ -49,10 +54,13 @@ public interface IAuditProcessor
 	static final String CNAME = IAuditProcessor.class.getName();
     static final IAuditDAO auditDAO = (IAuditDAO) new AuditDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final SystemConfig sysConfig = svcBean.getConfigData().getSystemConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
+    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new SQLUserSecurityInformationDAOImpl();
+    static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
 
-    static final String SERVICE_ID = "360144AC-7234-406A-B152-08CD080459A6";
+//     static final String SERVICE_ID = "360144AC-7234-406A-B152-08CD080459A6";
 
     static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAuditProcessor.CNAME);
     static final Logger AUDIT_RECORDER = LogManager.getLogger(SecurityServiceConstants.AUDIT_LOGGER);

@@ -39,8 +39,6 @@ import com.cws.esolutions.core.processors.enums.SystemCheckType;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
-import com.cws.esolutions.core.processors.dto.ServiceCheckRequest;
-import com.cws.esolutions.core.processors.dto.ServiceCheckResponse;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
@@ -68,13 +66,13 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         CoreServicesResponse agentResponse = null;
         SystemCheckResponse response = new SystemCheckResponse();
 
-        final Server server = request.getSourceServer();
+        final Server hostServer = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Server: {}", server);
+            DEBUGGER.debug("Server: {}", hostServer);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
@@ -103,42 +101,48 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.NETSTAT);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.NETSTAT);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
             }
 
-            ServiceCheckRequest systemReq = new ServiceCheckRequest();
-            systemReq.setRequestType(SystemCheckType.NETSTAT);
+            SystemCheckRequest systemReq = new SystemCheckRequest();
+            systemReq.setCheckType(SystemCheckType.NETSTAT);
             systemReq.setPortNumber(request.getPortNumber());
+            systemReq.setSourceServer(hostServer);
 
             if (DEBUG)
             {
@@ -179,7 +183,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (agentResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
+                SystemCheckResponse systemRes = (SystemCheckResponse) agentResponse.getResponsePayload();
 
                 if (DEBUG)
                 {
@@ -187,7 +191,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 }
 
                 response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                response.setResponseObject(systemRes.getResponseData());
+                response.setResponseObject(systemRes.getResponseObject());
             }
             else
             {
@@ -203,34 +207,39 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.NETSTAT);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.NETSTAT);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -288,43 +297,49 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.TELNET);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.TELNET);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
             }
 
-            ServiceCheckRequest systemReq = new ServiceCheckRequest();
-            systemReq.setRequestType(SystemCheckType.TELNET);
+            SystemCheckRequest systemReq = new SystemCheckRequest();
+            systemReq.setCheckType(SystemCheckType.TELNET);
             systemReq.setPortNumber(request.getPortNumber());
-            systemReq.setTargetHost(request.getTargetServer().getOperHostName());
+            systemReq.setSourceServer(request.getSourceServer());
+            systemReq.setTargetServer(request.getTargetServer());
 
             if (DEBUG)
             {
@@ -365,7 +380,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (agentResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
+                SystemCheckResponse systemRes = (SystemCheckResponse) agentResponse.getResponsePayload();
 
                 if (DEBUG)
                 {
@@ -373,7 +388,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 }
 
                 response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                response.setResponseObject(systemRes.getResponseData());
+                response.setResponseObject(systemRes.getResponseObject());
             }
             else
             {
@@ -389,34 +404,39 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.TELNET);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.TELNET);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -474,46 +494,51 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.REMOTEDATE);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.REMOTEDATE);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
             }
 
-            ServiceCheckRequest systemReq = new ServiceCheckRequest();
-            systemReq.setRequestType(SystemCheckType.REMOTEDATE);
-            systemReq.setPortNumber(request.getPortNumber());
+            SystemCheckRequest systemReq = new SystemCheckRequest();
+            systemReq.setCheckType(SystemCheckType.REMOTEDATE);
+            systemReq.setTargetServer(request.getTargetServer());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ServiceCheckRequest: {}", request);
+                DEBUGGER.debug("SystemCheckRequest: {}", request);
             }
 
             CoreServicesRequest agentRequest = new CoreServicesRequest();
@@ -550,15 +575,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (agentResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
+            	SystemCheckResponse systemRes = (SystemCheckResponse) agentResponse.getResponsePayload();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
+                    DEBUGGER.debug("SystemCheckResponse: {}", systemRes);
                 }
 
                 response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                response.setResponseObject(systemRes.getResponseData());
+                response.setResponseObject(systemRes.getResponseObject());
             }
             else
             {
@@ -574,34 +599,39 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.REMOTEDATE);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.REMOTEDATE);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -659,41 +689,47 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.PROCESSLIST);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.PROCESSLIST);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
             }
 
-            ServiceCheckRequest systemReq = new ServiceCheckRequest();
-            systemReq.setRequestType(SystemCheckType.PROCESSLIST);
+            SystemCheckRequest systemReq = new SystemCheckRequest();
+            systemReq.setCheckType(SystemCheckType.PROCESSLIST);
+            systemReq.setTargetServer(request.getTargetServer());
 
             if (DEBUG)
             {
@@ -734,7 +770,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (agentResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
+                SystemCheckResponse systemRes = (SystemCheckResponse) agentResponse.getResponsePayload();
 
                 if (DEBUG)
                 {
@@ -742,7 +778,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 }
 
                 response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                response.setResponseObject(systemRes.getResponseData());
+                response.setResponseObject(systemRes.getResponseObject());
             }
             else
             {
@@ -758,34 +794,39 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.PROCESSLIST);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.PROCESSLIST);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 

@@ -83,4 +83,12 @@ public interface IAuthenticationProcessor
      * @throws AuthenticationException {@link com.cws.esolutions.security.processors.exception.AuthenticationException} if an exception occurs during processing
      */
     AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException;
+
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws AuthenticationException
+     */
+    AuthenticationResponse processAgentLogoff(final AuthenticationRequest request) throws AuthenticationException;
 }

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%--
 /*
  * Copyright (c) 2009 - 2020 CaspersBox Web Services
@@ -32,10 +33,6 @@
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 --%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 <%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" isThreadSafe="true" errorPage="/theme/cws/html/en/jsp/errHandler.jsp" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -143,10 +140,10 @@
                                 <spring:message code='theme.navbar.application-mgmt' /></a></li>
         					<li><a href="${pageContext.request.contextPath}/ui/dns-service/default" title="<spring:message code='theme.navbar.dns-services' />">
                                 <spring:message code='theme.navbar.dns-services' /></a></li>
-        					<li><a href="${pageContext.request.contextPath}/ui/service-management/default" title="<spring:message code='theme.navbar.service-mgmt' />">
-                                <spring:message code='theme.navbar.service-mgmt' /></a></li>
-                            <li><a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='theme.navbar.system-mgmt' />">
-                                <spring:message code='theme.navbar.system-mgmt' /></a></li>
+        					<li><a href="${pageContext.request.contextPath}/ui/platform-management/default" title="<spring:message code='theme.navbar.platform-mgmt' />">
+                                <spring:message code='theme.navbar.platform-mgmt' /></a></li>
+                            <li><a href="${pageContext.request.contextPath}/ui/server-management/default" title="<spring:message code='theme.navbar.server-mgmt' />">
+                                <spring:message code='theme.navbar.server-mgmt' /></a></li>
 							<li><a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="<spring:message code='theme.navbar.messaging' />">
                                 <spring:message code='theme.navbar.messaging' /></a></li>
                             <li>

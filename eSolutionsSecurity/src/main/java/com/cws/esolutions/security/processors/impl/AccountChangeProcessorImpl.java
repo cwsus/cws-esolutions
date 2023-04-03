@@ -113,7 +113,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         		DEBUGGER.debug("authToken: {}", authToken);
         	}
 
-        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getAuthToken());
+        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
 
         	if (!(isAuthenticated))
         	{
@@ -162,34 +162,39 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.MODIFYUSER);
-                auditEntry.setUserAccount(requestor);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CHANGEEMAIL);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -247,7 +252,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         		DEBUGGER.debug("authToken: {}", authToken);
         	}
 
-        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getAuthToken());
+        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
 
         	if (!(isAuthenticated))
         	{
@@ -301,34 +306,39 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.MODIFYUSER);
-                auditEntry.setUserAccount(requestor);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CHANGECONTACT);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -379,6 +389,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
+        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+        		DEBUGGER.debug("authToken: {}", authToken);
+        	}
+
+        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+        	if (!(isAuthenticated))
+        	{
+        		throw new AccountChangeException("An invalid authentication token was presented.");
+        	}
+
             // otherwise, keep going
             // make sure the new password isnt the same as the existing
             if (Arrays.equals(reqSecurity.getNewPassword(), reqSecurity.getPassword()))
@@ -393,29 +422,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             }
             else
             {
-                if (!(request.isReset()))
-                {
-                    // ok, authenticate first
-                	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-                	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                            secConfig.getSecretKeyAlgorithm(),
-                            secConfig.getIterations(), secConfig.getKeyLength(),
-                            sysConfig.getEncoding());
-
-                	if (DEBUG)
-                	{
-                		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                		DEBUGGER.debug("authToken: {}", authToken);
-                	}
-
-                	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getAuthToken());
-
-                	if (!(isAuthenticated))
-                	{
-                		throw new AccountChangeException("An invalid authentication token was presented.");
-                	}
-                }
-
                 String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
 
                 if (DEBUG)
@@ -529,34 +535,39 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.CHANGEPASS);
-                auditEntry.setUserAccount(requestor);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CHANGEPASS);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -605,6 +616,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
+        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+        		DEBUGGER.debug("authToken: {}", authToken);
+        	}
+
+        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+        	if (!(isAuthenticated))
+        	{
+        		throw new AccountChangeException("An invalid authentication token was presented.");
+        	}
+
             // otherwise, keep going
             // make sure the two questions and answers arent the same
             if ((StringUtils.equals(reqSecurity.getSecQuestionOne(), reqSecurity.getSecQuestionTwo())))
@@ -617,29 +647,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             }
             else
             {
-                // ok, authenticate first
-        	    // we aren't getting the data back here because we don't need it. if the request
-                // fails we'll get an exception and not process further. this might not be the
-                // best flow control, but it does exactly what we need where we need it.
-            	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                        secConfig.getSecretKeyAlgorithm(),
-                        secConfig.getIterations(), secConfig.getKeyLength(),
-                        sysConfig.getEncoding());
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-            		DEBUGGER.debug("authToken: {}", authToken);
-            	}
-
-            	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getAuthToken());
-
-            	if (!(isAuthenticated))
-            	{
-            		throw new AccountChangeException("An invalid authentication token was presented.");
-            	}
-
                 String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
 
                 if (StringUtils.isBlank(newSalt))
@@ -719,34 +726,39 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.ADDSECURITY);
-                auditEntry.setUserAccount(requestor);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CHANGESECURITY);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -793,6 +805,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
+        	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+        	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+        		DEBUGGER.debug("authToken: {}", authToken);
+        	}
+
+        	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+        	if (!(isAuthenticated))
+        	{
+        		throw new AccountChangeException("An invalid authentication token was presented.");
+        	}
+
             // delete the existing keys
             boolean keysRemoved = keyManager.removeKeys(userAccount.getGuid());
 
@@ -831,37 +862,54 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(kmx.getMessage(), kmx);
         }
+        catch (AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountChangeException(ax.getMessage(), ax);
+		}
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountChangeException(sqx.getMessage(), sqx);
+		}
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.CHANGEKEYS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CHANGEKEYS);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 

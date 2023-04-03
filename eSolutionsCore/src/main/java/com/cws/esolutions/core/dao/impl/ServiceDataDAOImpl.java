@@ -78,7 +78,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL addNewService(?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL addNewService(?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, data.get(0)); // guid
             stmt.setString(2, data.get(1)); // serviceType
             stmt.setString(3, data.get(2)); // name
@@ -157,7 +157,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL updateServiceData(?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL updateServiceData(?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, data.get(0)); // guid
             stmt.setString(2, data.get(1)); // serviceType
             stmt.setString(3, data.get(2)); // name
@@ -232,7 +232,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL removeServiceData(? }");
+            stmt = sqlConn.prepareStatement("{ CALL removeServiceData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, datacenter);
 
             if (DEBUG)
@@ -301,7 +301,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL listServices(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL listServices(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, startRow);
 
             if (DEBUG)

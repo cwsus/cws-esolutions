@@ -27,7 +27,6 @@ package com.cws.esolutions.core.processors.dto;
  */
 import java.io.File;
 import java.util.Date;
-import java.util.List;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
@@ -45,26 +44,22 @@ public class Application implements Serializable
 	private double score = 0.0;
     private String name = null;
     private String guid = null;
-    private double version = 1.0;
+    private File basePath = null;
+    private File logsPath = null;
+    private File binaries = null;
     private String scmPath = null;
     private String jvmName = null;
+    private String version = "1.0";
     private Date onlineDate = null;
-    private String basePath = null;
-    private String platform = null;
-    private String logsPath = null;
     private Date offlineDate = null;
+    private Platform platform = null;
     private String clusterName = null;
     private String installPath = null;
     private String pidDirectory = null;
-    private String logsDirectory = null;
     private boolean isScmEnabled = false;
-    private String applicationGuid = null;
-    private String applicationName = null;
-    private File applicationBinary = null;
     private String packageLocation = null;
     private String packageInstaller = null;
     private String installerOptions = null;
-    private List<Service> platforms = null;
     private DeploymentType deploymentType = null;
 
     private static final String CNAME = Application.class.getName();
@@ -73,35 +68,9 @@ public class Application implements Serializable
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setApplicationGuid(final String value)
+    public final void setPlatform(final Platform value)
     {
-        final String methodName = Application.CNAME + "#setApplicationGuid(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.applicationGuid = value;
-    }
-
-    public final void setApplicationName(final String value)
-    {
-        final String methodName = Application.CNAME + "#setApplicationName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.applicationName = value;
-    }
-
-    public final void setPlatform(final String value)
-    {
-        final String methodName = Application.CNAME + "#setPlatform(final String value)";
+        final String methodName = Application.CNAME + "#setPlatform(final Platform value)";
 
         if (DEBUG)
         {
@@ -112,9 +81,9 @@ public class Application implements Serializable
         this.platform = value;
     }
 
-    public final void setApplicationBinary(final File value)
+    public final void setBinaries(final File value)
     {
-        final String methodName = Application.CNAME + "#setApplicationBinary(final File value)";
+        final String methodName = Application.CNAME + "#setBinaries(final File value)";
 
         if (DEBUG)
         {
@@ -122,7 +91,7 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationBinary = value;
+        this.binaries = value;
     }
 
     public final void setClusterName(final String value)
@@ -138,22 +107,22 @@ public class Application implements Serializable
         this.clusterName = value;
     }
 
-    public final void setBasePath(final String value)
+    public final void setBasePath(final File file)
     {
         final String methodName = Application.CNAME + "#setBasePath(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", file);
         }
 
-        this.basePath = value;
+        this.basePath = file;
     }
 
-    public final void setLogsPath(final String value)
+    public final void setLogsPath(final File value)
     {
-        final String methodName = Application.CNAME + "#setLogsPath(final String value)";
+        final String methodName = Application.CNAME + "#setLogsPath(final File value)";
 
         if (DEBUG)
         {
@@ -268,9 +237,9 @@ public class Application implements Serializable
         this.name = value;
     }
 
-    public final void setVersion(final double value)
+    public final void setVersion(final String value)
     {
-        final String methodName = Application.CNAME + "#setVersion(final double value)";
+        final String methodName = Application.CNAME + "#setVersion(final String value)";
 
         if (DEBUG)
         {
@@ -331,32 +300,6 @@ public class Application implements Serializable
         }
 
         this.installerOptions = value;
-    }
-
-    public final void setLogsDirectory(final String value)
-    {
-        final String methodName = Application.CNAME + "#setLogsDirectory(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.logsDirectory = value;
-    }
-
-    public final void setPlatforms(final List<Service> value)
-    {
-        final String methodName = Application.CNAME + "#setPlatforms(final List<Service> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.platforms = value;
     }
 
     public final void setOnlineDate(final Date value)
@@ -463,32 +406,6 @@ public class Application implements Serializable
         return this.installerOptions;
     }
 
-    public final String getLogsDirectory()
-    {
-        final String methodName = Application.CNAME + "#getLogsDirectory()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.logsDirectory);
-        }
-
-        return this.logsDirectory;
-    }
-
-    public final List<Service> getPlatforms()
-    {
-        final String methodName = Application.CNAME + "#getPlatforms()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platforms);
-        }
-
-        return this.platforms;
-    }
-
     public final Date getOnlineDate()
     {
         final String methodName = Application.CNAME + "#getOnlineDate()";
@@ -515,33 +432,7 @@ public class Application implements Serializable
         return this.offlineDate;
     }
 
-    public final String getApplicationGuid()
-    {
-        final String methodName = Application.CNAME + "#getApplicationGuid()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationGuid);
-        }
-
-        return this.applicationGuid;
-    }
-
-    public final String getApplicationName()
-    {
-        final String methodName = Application.CNAME + "#getApplicationName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationName);
-        }
-
-        return this.applicationName;
-    }
-
-    public final String getPlatform()
+    public final Platform getPlatform()
     {
         final String methodName = Application.CNAME + "#getPlatform()";
 
@@ -554,20 +445,20 @@ public class Application implements Serializable
         return this.platform;
     }
 
-    public final File getApplicationBinary()
+    public final File getBinaries()
     {
-        final String methodName = Application.CNAME + "#getApplicationBinary()";
+        final String methodName = Application.CNAME + "#getBinaries()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationBinary);
+            DEBUGGER.debug("Value: {}", this.binaries);
         }
 
-        return this.applicationBinary;
+        return this.binaries;
     }
 
-    public final double getVersion()
+    public final String getVersion()
     {
         final String methodName = Application.CNAME + "#getVersion()";
 
@@ -593,7 +484,7 @@ public class Application implements Serializable
         return this.clusterName;
     }
 
-    public final String getBasePath()
+    public final File getBasePath()
     {
         final String methodName = Application.CNAME + "#getBasePath()";
 
@@ -606,7 +497,7 @@ public class Application implements Serializable
         return this.basePath;
     }
 
-    public final String getLogsPath()
+    public final File getLogsPath()
     {
         final String methodName = Application.CNAME + "#getLogsPath()";
 

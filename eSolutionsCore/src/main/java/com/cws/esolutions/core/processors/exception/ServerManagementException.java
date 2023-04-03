@@ -31,8 +31,9 @@ import com.cws.esolutions.core.exception.CoreServicesException;
  */
 public class ServerManagementException extends CoreServicesException
 {
+    private static final long serialVersionUID = 4795723519984195170L;
 
-    /**
+	/**
      * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
      *
      * @param message - The message for the exception

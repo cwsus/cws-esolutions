@@ -25,6 +25,7 @@ package com.cws.esolutions.core.dao.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
@@ -32,6 +33,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
@@ -77,7 +79,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL addNewDatacenter(?, ?, ?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL addNewDatacenter(?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, data.get(0)); // guid
             stmt.setString(2, data.get(1)); // datacenterName
             stmt.setString(3, data.get(2)); // datacenterStatus
@@ -125,6 +127,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", data);
 
             for (Object str : data)
             {
@@ -134,7 +137,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -150,22 +153,16 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                 throw new SQLException("Unable to obtain application datasource connection");
             }
 
-            sqlConn.setAutoCommit(true);
-
-            stmt = sqlConn.prepareStatement("{ CALL updateDatacenter(?, ?, ?, ?) }");
+            stmt = sqlConn.prepareCall("{ CALL updateDatacenter(?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, data.get(0)); // guid
             stmt.setString(2, data.get(1)); // datacenterName
             stmt.setString(3, data.get(2)); // datacenterStatus
             stmt.setString(4, data.get(3)); // desc
+            stmt.registerOutParameter(5, Types.INTEGER);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
-
-            if (stmt.executeUpdate() == 1)
-            {
-            	isComplete = true;
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (DEBUG)
@@ -226,7 +223,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL removeDatacenter(? }");
+            stmt = sqlConn.prepareStatement("{ CALL removeDatacenter(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, datacenter);
 
             if (DEBUG)
@@ -295,7 +292,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL listDatacenters(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL listDatacenters(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, startRow);
 
             if (DEBUG)

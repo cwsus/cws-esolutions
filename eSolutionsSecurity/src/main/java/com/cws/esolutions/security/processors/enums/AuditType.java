@@ -48,6 +48,7 @@ public enum AuditType
     VERIFYSECURITY,
     VERIFYRESET,
     VALIDATESECURITY,
+    VALIDATETOKEN,
 
     // user management
     CREATEUSER,
@@ -65,6 +66,12 @@ public enum AuditType
     LOADACCOUNT,
     CHANGEKEYS,
     GETAUDITENTRIES,
+    CHANGESECURITY,
+    CHANGECONTACT,
+    CHANGEEMAIL,
+    CHANGEROLE,
+    MODIFYLOCKOUT,
+    VALIDATERESET,
 
     // file security
     DECRYPTFILE,

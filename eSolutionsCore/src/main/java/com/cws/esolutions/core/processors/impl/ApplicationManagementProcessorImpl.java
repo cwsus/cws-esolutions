@@ -25,16 +25,17 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.List;
+import java.io.File;
 import java.util.UUID;
+import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.dto.CoreServicesRequest;
 import com.cws.esolutions.core.dto.CoreServicesResponse;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
@@ -110,34 +111,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.ADDAPP);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -151,7 +157,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             }
 
             List<Object> validator = null;
-            response = new ApplicationManagementResponse();
 
             try
             {
@@ -172,31 +177,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 throw new ApplicationManagementException("Application already exists, cannot duplicate.");
             }
 
-            // project does't already exist. we can add it
+            // project doesn't already exist. we can add it
             // we are NOT adding any applications to the project YET
             // if there are any to add we'll do that later (its a
             // different table in the database)
-            if ((application.getPlatforms() == null) || (application.getPlatforms().size() == 0))
+            if (Objects.isNull(application.getPlatform()))
             {
                 throw new ApplicationManagementException("No platform was provided. Cannot continue.");
-            }
-
-            List<String> platforms = new ArrayList<String>();
-
-            for (Service targetPlatform : application.getPlatforms())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Service: {}", targetPlatform);
-                }
-
-                // make sure its a valid platform
-                if (serviceDao.getService(targetPlatform.getGuid()) == null)
-                {
-                    throw new ApplicationManagementException("An invalid platform was specified. Please try again.");
-                }
-
-                platforms.add(targetPlatform.getGuid());
             }
 
             // ok, good platform. we can add the application in
@@ -209,8 +196,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             application.getPackageLocation(),
                             application.getPackageInstaller(),
                             application.getInstallerOptions(),
-                            application.getLogsDirectory(),
-                            application.getPlatforms().toString()));
+                            application.getLogsPath(),
+                            application.getPlatform().getPlatformGuid()));
 
             if (DEBUG)
             {
@@ -241,34 +228,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.ADDAPP);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.ADDAPP);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -325,34 +317,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.UPDATEAPP);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.UPDATEAPP);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -367,8 +364,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             application.getPackageLocation(),
                             application.getPackageInstaller(),
                             application.getInstallerOptions(),
-                            application.getLogsDirectory(),
-                            application.getPlatforms().toString()));
+                            application.getLogsPath()));
 
             if (DEBUG)
             {
@@ -399,34 +395,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.UPDATEAPP);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.UPDATEAPP);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
         
@@ -483,34 +484,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.DELETEAPP);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.DELETEAPP);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -540,34 +546,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.DELETEAPP);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.DELETEAPP);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
         
@@ -624,34 +635,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LISTAPPS);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.LISTAPPS);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -714,34 +730,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LISTAPPS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.LISTAPPS);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
         
@@ -798,34 +819,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LISTAPPS);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.LISTAPPS);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -889,34 +915,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LISTAPPS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.LISTAPPS);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
         
@@ -973,37 +1004,40 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LOADAPP);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.LOADAPP);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
                 }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-
-                return response;
             }
 
             List<Object> appData = appDAO.getApplication(application.getGuid());
@@ -1027,12 +1061,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             Application resApplication = new Application();
             resApplication.setGuid((String) appData.get(0)); // GUID
             resApplication.setName((String) appData.get(1)); // NAME
-            resApplication.setVersion((Double) appData.get(2)); // VERSION
+            resApplication.setVersion((String) appData.get(2)); // VERSION
             resApplication.setInstallPath((String) appData.get(3)); // INSTALLATION_PATH
             resApplication.setPackageLocation((String) appData.get(4)); // PACKAGE_LOCATION
             resApplication.setPackageInstaller((String) appData.get(5)); // PACKAGE_INSTALLER
+            resApplication.setBasePath(new File((String) appData.get(5)));
             resApplication.setInstallerOptions((String) appData.get(6)); // INSTALLER_OPTIONS
-            resApplication.setLogsDirectory((String) appData.get(7)); // INSTALL_PATH
+            resApplication.setLogsPath(new File((String) appData.get(7))); // INSTALL_PATH
             
             if (DEBUG)
             {
@@ -1062,34 +1097,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOADAPP);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.LOADAPP);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
         
@@ -1149,34 +1189,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.GETFILES);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.GETFILES);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -1301,34 +1346,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.GETFILES);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.GETFILES);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
         
@@ -1385,34 +1435,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.DEPLOYAPP);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.DEPLOYAPP);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -1434,34 +1489,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.DEPLOYAPP);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.DEPLOYAPP);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
         

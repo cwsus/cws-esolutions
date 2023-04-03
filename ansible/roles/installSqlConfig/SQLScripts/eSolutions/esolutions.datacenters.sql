@@ -3,7 +3,7 @@ DELIMITER //
 DROP TABLE IF EXISTS ESOLUTIONS.DATACENTERS //
 
 CREATE TABLE ESOLUTIONS.DATACENTERS (
-    GUID VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    GUID VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL UNIQUE,
     DCNAME VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     DCSTATUS VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'INACTIVE',
     DCDESCRIPTION TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
@@ -24,6 +24,7 @@ DROP PROCEDURE IF EXISTS ESOLUTIONS.listDataCenters //
 DROP PROCEDURE IF EXISTS ESOLUTIONS.removeDataCenter //
 DROP PROCEDURE IF EXISTS ESOLUTIONS.addNewDatacenter //
 DROP PROCEDURE IF EXISTS ESOLUTIONS.getDataCenterByAttribute //
+DROP PROCEDURE IF EXISTS ESOLUTIONS.updateDatacenter //
 
 CREATE PROCEDURE ESOLUTIONS.getDataCenterByAttribute(
     IN attributeName VARCHAR(100),
@@ -111,13 +112,44 @@ BEGIN
 END //
 COMMIT //
 
+CREATE PROCEDURE ESOLUTIONS.updateDatacenter(
+    IN datacenterGuid VARCHAR(128),
+    IN datacenterName VARCHAR(45),
+    IN datacenterStatus VARCHAR(45),
+    IN datacenterDesc TEXT,
+    OUT updateCount INTEGER
+)
+BEGIN
+    UPDATE ESOLUTIONS.DATACENTERS
+    SET
+        DCNAME = datacenterName,
+        DCSTATUS = datacenterStatus,
+        DCDESCRIPTION = datacenterDesc
+    WHERE GUID = datacenterGuid;
+
+    COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM ESOLUTIONS.DATACENTERS
+    WHERE GUID = sGuid
+    AND PLATFORMNAME = plName
+    AND REGION = region
+    AND NWPARTITION = nwpartition
+    AND PLATFORMSTATUS = plStatus
+    AND PLATFORMDESCRIPTION = plDescription;
+END //
+COMMIT //
+
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.getDatacenterCount TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.retrDataCenter TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.listDataCenters TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.removeDataCenter TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.addNewDatacenter TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.getDataCenterByAttribute TO 'appadm'@'localhost' //
+GRANT EXECUTE ON PROCEDURE ESOLUTIONS.updateDatacenter TO 'appadm'@'localhost' //
 
+GRANT EXECUTE ON PROCEDURE ESOLUTIONS.updateDatacenter TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.getDatacenterCount TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.retrDataCenter TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE ESOLUTIONS.listDataCenters TO 'appadm'@'appsrv.lan' //

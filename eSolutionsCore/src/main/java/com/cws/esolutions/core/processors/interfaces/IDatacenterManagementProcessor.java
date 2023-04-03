@@ -31,6 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.dao.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
+import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
@@ -48,6 +50,8 @@ public interface IDatacenterManagementProcessor
 {
     static final String CNAME = IDatacenterManagementProcessor.class.getName();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IDatacenterDataDAO datacenterDao = (IDatacenterDataDAO) new DatacenterDataDAOImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 

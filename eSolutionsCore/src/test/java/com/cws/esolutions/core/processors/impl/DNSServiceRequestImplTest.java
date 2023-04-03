@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
@@ -51,6 +52,7 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DNSServiceRequestImplTest
 {
     private static UserAccount userAccount = new UserAccount();

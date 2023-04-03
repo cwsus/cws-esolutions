@@ -51,11 +51,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-
-            for (Object str : serverData)
-            {
-                DEBUGGER.debug("Value: {}", str);
-            }
+            DEBUGGER.debug("platformData: {}", serverData);
         }
 
         Connection sqlConn = null;
@@ -78,7 +74,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
+            		ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, (String) serverData.get(0)); // systemGuid
             stmt.setString(2, (String) serverData.get(1)); // systemOs
             stmt.setString(3, (String) serverData.get(2)); // systemStatus
@@ -179,7 +176,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
  
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL updateServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL updateServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
+            		ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, serverGuid); // systemGuid
             stmt.setString(2, (String) serverData.get(1)); // systemOs
             stmt.setString(3, (String) serverData.get(2)); // systemStatus
@@ -275,7 +273,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL removeServerFromAssets(? }");
+            stmt = sqlConn.prepareStatement("{ CALL removeServerFromAssets(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, serverGuid);
 
             if (DEBUG)
@@ -344,7 +342,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL retrServerList(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrServerList(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, startRow);
 
             if (DEBUG)

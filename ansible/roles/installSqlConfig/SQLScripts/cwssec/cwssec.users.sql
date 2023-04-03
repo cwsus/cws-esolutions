@@ -6,7 +6,7 @@ DELIMITER //
 DROP TABLE IF EXISTS CWSSEC.USERS //
 
 CREATE TABLE CWSSEC.USERS (
-    CN VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    CN VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL UNIQUE,
     UID VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     USERPASSWORD VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     CWSROLE VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '3517632B-E77F-49FF-BD99-A42EA8335DCC',
@@ -20,7 +20,7 @@ CREATE TABLE CWSSEC.USERS (
     GIVENNAME VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Given Name',
     DISPLAYNAME VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Display Name',
     CWSEXPIRYDATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    AUTHTOKEN VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+    AUTHTOKEN VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     CWSSECQ1 VARCHAR(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     CWSSECQ2 VARCHAR(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     CWSSECANS1 VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
@@ -39,6 +39,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON CWSSEC.* TO 'appadm'@'localhost
 --
 --
 --
+DROP PROCEDURE IF EXISTS CWSSEC.removeSessionData //
+DROP PROCEDURE IF EXISTS CWSSEC.getAuthToken //
 DROP PROCEDURE IF EXISTS CWSSEC.addUserAccount //
 DROP PROCEDURE IF EXISTS CWSSEC.getSecurityAnswers //
 DROP PROCEDURE IF EXISTS CWSSEC.getUserByAttribute //
@@ -119,18 +121,6 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE CWSSEC.getAuthToken(
-    IN userGuid VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-    IN authToken VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
-)
-BEGIN
-    SELECT COUNT(AUTHTOKEN)
-    FROM CWSSEC.USERS
-    WHERE CN = userGuid
-    AND AUTHTOKEN = authToken;
-END //
-COMMIT //
-
 CREATE PROCEDURE CWSSEC.listUserAccounts(
 )
 BEGIN
@@ -172,7 +162,8 @@ COMMIT //
 
 CREATE PROCEDURE CWSSEC.modifyUserSuspension(
     IN commonName VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-    IN isSuspended BOOLEAN
+    IN isSuspended BOOLEAN,
+    OUT updateCount INTEGER
 )
 BEGIN
     UPDATE CWSSEC.USERS
@@ -180,17 +171,32 @@ BEGIN
     WHERE CN = commonName;
 
     COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM CWSSEC.USERS
+    WHERE CN = commonName
+    AND CWSISSUSPENDED = isSuspended;
 END //
 COMMIT //
 
 CREATE PROCEDURE CWSSEC.modifyOlrLock(
     IN reqUserGuid VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-    IN isLocked BOOLEAN
+    IN isLocked BOOLEAN,
+    OUT updateCount INTEGER
 )
 BEGIN
     UPDATE CWSSEC.USERS
     SET CWSISOLRLOCKED = isLocked
     WHERE CN = reqUserGuid;
+
+    COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM CWSSEC.USERS
+    WHERE CN = commonName
+    AND CWSISOLRLOCKED = isLocked;
 END //
 COMMIT //
 
@@ -238,7 +244,8 @@ COMMIT //
 CREATE PROCEDURE CWSSEC.modifyUserPassword(
     IN commonName VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     IN newPassword VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-    IN isReset BOOLEAN
+    IN isReset BOOLEAN,
+    OUT updateCount INTEGER
 )
 BEGIN
     IF (isReset)
@@ -259,6 +266,13 @@ BEGIN
     END IF;
 
     COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM CWSSEC.USERS
+    WHERE CN = commonName
+    AND USERPASSWORD = newPassword
+    AND CWSFAILEDPWDCOUNT = 0;
 END //
 COMMIT //
 
@@ -267,7 +281,8 @@ CREATE PROCEDURE CWSSEC.addOrUpdateSecurityQuestions(
     IN secQuestionOne VARCHAR(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     IN secQuestionTwo VARCHAR(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     IN secAnswerOne VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-    IN secAnswerTwo VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
+    IN secAnswerTwo VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+    OUT updateCount INTEGER
 )
 BEGIN
     UPDATE CWSSEC.USERS
@@ -279,6 +294,15 @@ BEGIN
     WHERE CN = commonName;
 
     COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM CWSSEC.USERS
+    WHERE CN = commonName
+    AND CWSSECQ1 = secQuestionOne
+    AND CWSSECQ2 = secQuestionTwo
+    AND CWSSECANS1 = secAnswerOne
+    AND CWSSECANS2 = secAnswerTwo;
 END //
 COMMIT //
 
@@ -340,11 +364,12 @@ COMMIT //
 CREATE PROCEDURE CWSSEC.performSuccessfulLogin(
     IN userId VARCHAR(45),
     IN userGuid VARCHAR(128),
-    IN authToken VARCHAR(128)
+    IN authToken VARCHAR(255),
+    OUT updateCount INTEGER
 )
 BEGIN
-    UPDATE USERS
-    SET 
+    UPDATE CWSSEC.USERS
+    SET
         CWSLASTLOGIN = CURRENT_TIMESTAMP(),
         CWSFAILEDPWDCOUNT = 0,
         AUTHTOKEN = authToken
@@ -352,9 +377,48 @@ BEGIN
     AND UID = userId;
 
     COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM CWSSEC.USERS
+    WHERE CN = commonName
+    AND CWSSECQ1 = secQuestionOne
+    AND AUTHTOKEN = authToken;
 END //
 COMMIT //
 
+CREATE PROCEDURE CWSSEC.getAuthToken(
+    IN userId VARCHAR(45),
+    IN userGuid VARCHAR(128)
+)
+BEGIN
+    SELECT AUTHTOKEN
+    FROM CWSSEC.USERS
+    WHERE CN = userGuid
+    AND UID = userId;
+END //
+COMMIT //
+
+CREATE PROCEDURE CWSSEC.removeSessionData(
+    IN commonName VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+    IN authToken VARCHAR(128)  CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
+)
+BEGIN
+    UPDATE CWSSEC.USERS
+    SET AUTHTOKEN = ''
+    WHERE CN = commonName
+    AND AUTHTOKEN = authToken;
+
+    DELETE FROM CWSSEC.LOGONDATA
+    WHERE CN = commonName
+    AND SALT = authToken;
+
+    COMMIT;
+END //
+COMMIT //
+
+GRANT EXECUTE ON PROCEDURE CWSSEC.removeSessionData TO 'appadm'@'localhost' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.getAuthToken TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.addUserAccount TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityAnswers TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getUserByAttribute TO 'appadm'@'localhost' //
@@ -373,6 +437,8 @@ GRANT EXECUTE ON PROCEDURE CWSSEC.getOlrStatus TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.performSuccessfulLogin TO 'appadm'@'localhost' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getAuthToken TO 'appadm'@'localhost' //
 
+GRANT EXECUTE ON PROCEDURE CWSSEC.removeSessionData TO 'appadm'@'appsrv.lan' //
+GRANT EXECUTE ON PROCEDURE CWSSEC.getAuthToken TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.addUserAccount TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getSecurityAnswers TO 'appadm'@'appsrv.lan' //
 GRANT EXECUTE ON PROCEDURE CWSSEC.getUserByAttribute TO 'appadm'@'appsrv.lan' //

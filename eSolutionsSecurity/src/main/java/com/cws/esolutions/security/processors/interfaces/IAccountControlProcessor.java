@@ -43,6 +43,8 @@ import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
+import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
+import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 /**
  * API allowing administrative action against user account data
  * housed within the authentication datastore.
@@ -60,6 +62,7 @@ public interface IAccountControlProcessor
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
     static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
     static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new SQLUserSecurityInformationDAOImpl();
+    static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     
     static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccountControlProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

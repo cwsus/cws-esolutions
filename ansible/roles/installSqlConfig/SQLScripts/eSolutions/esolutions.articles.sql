@@ -3,7 +3,7 @@ DELIMITER //
 DROP TABLE IF EXISTS ESOLUTIONS.ARTICLES //
 
 CREATE TABLE ESOLUTIONS.ARTICLES (
-    ID VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    ID VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL UNIQUE,
     HITS TINYINT NOT NULL default 0,
     CREATE_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     AUTHOR VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL default '',
@@ -178,7 +178,8 @@ CREATE PROCEDURE ESOLUTIONS.updateArticle(
     IN symptoms VARCHAR(100),
     IN cause VARCHAR(100),
     IN resolution TEXT,
-    IN modifiedBy VARCHAR(45)
+    IN modifiedBy VARCHAR(45),
+    OUT updateCount INTEGER
 )
 BEGIN
     UPDATE ESOLUTIONS.ARTICLES
@@ -189,18 +190,32 @@ BEGIN
         CAUSE = cause,
         RESOLUTION = resolution,
         MODIFIED_BY = modifiedBy,
-        MODIFIED_DATE = UNIX_TIMESTAMP(),
+        MODIFIED_DATE = CURRENT_TIMESTAMP(),
         ARTICLESTATUS = 'NEW'
     WHERE ID = articleId;
 
     COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM ESOLUTIONS.ARTICLES
+    WHERE ID = articleId
+    AND KEYWORDS = keywords
+    AND TITLE = title
+    AND SYMPTOMS = symptoms
+    AND CAUSE = cause
+    AND RESOLUTION = resolution
+    AND MODIFIED_BY = modifiedBy
+    AND ARTICLESTATUS = 'NEW';
 END //
 COMMIT //
 
 CREATE PROCEDURE ESOLUTIONS.updateArticleStatus(
     IN articleId VARCHAR(45),
     IN modifiedBy VARCHAR(45),
-    IN articleStatus VARCHAR(15)
+    IN reviewedBy VARCHAR(45),
+    IN articleStatus VARCHAR(15),
+    OUT updateCount INTEGER
 )
 BEGIN
     UPDATE ESOLUTIONS.ARTICLES
@@ -208,11 +223,19 @@ BEGIN
         ARTICLESTATUS = articleStatus,
         MODIFIED_BY = modifiedBy,
         MODIFIED_DATE = UNIX_TIMESTAMP(),
-        REVIEWED_BY = modifiedBy,
+        REVIEWED_BY = reviewedBy,
         REVIEW_DATE = UNIX_TIMESTAMP()
     WHERE ID = articleId;
 
     COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM ESOLUTIONS.ARTICLES
+    WHERE ID = articleId
+    AND ARTICLESTATUS = articleStatus
+    AND MODIFIED_BY = modifiedBy
+    AND REVIEWED_BY = reviewedBy;
 END //
 COMMIT //
 

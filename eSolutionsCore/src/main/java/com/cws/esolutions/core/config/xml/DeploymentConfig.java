@@ -51,7 +51,6 @@ public final class DeploymentConfig
     private File archiveDeployDir = null;
     private List<String> deploymentSuffixes = null;
 
-    private static final long serialVersionUID = 3233640981512960130L;
     private static final String CNAME = DeploymentConfig.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

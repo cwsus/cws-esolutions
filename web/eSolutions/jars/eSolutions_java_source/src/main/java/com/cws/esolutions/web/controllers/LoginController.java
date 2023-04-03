@@ -44,7 +44,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.model.LoginRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.LoginValidator;
@@ -259,7 +258,7 @@ public class LoginController
         else
         {
         	mView.addObject(this.allowUserReset);
-        	mView.addObject(Constants.COMMAND, new LoginRequest());
+        	mView.addObject(Constants.COMMAND, new AuthenticationData());
         	mView.setViewName(this.loginPage);
         }
 
@@ -286,6 +285,8 @@ public class LoginController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAuthenticationProcessor authProcessor = (IAuthenticationProcessor) new AuthenticationProcessorImpl();
 
         if (DEBUG)
         {
@@ -328,12 +329,44 @@ public class LoginController
             }
         }
 
+        if (!(Objects.isNull(userAccount)))
+        {
+	        try
+	        {
+	        	RequestHostInfo reqInfo = new RequestHostInfo();
+	        	reqInfo.setHostAddress(hRequest.getRemoteAddr());
+	        	reqInfo.setHostAddress(hRequest.getRemoteHost());
+
+	        	if (DEBUG)
+	        	{
+	        		DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+	        	}
+
+	            AuthenticationRequest request = new AuthenticationRequest();
+	            request.setHostInfo(reqInfo);
+	            request.setUserAccount(userAccount);
+	            request.setApplicationId(this.appConfig.getApplicationId());
+	            request.setApplicationName(this.appConfig.getApplicationName());
+
+	            if (DEBUG)
+	            {
+	            	DEBUGGER.debug("AuthenticationRequest: {}", request);
+	            }
+
+	            authProcessor.processAgentLogoff(request);
+	        }
+	        catch (AuthenticationException ax)
+	        {
+	        	ERROR_RECORDER.error(ax.getMessage(), ax);
+	        }
+        }
+
         hSession.removeAttribute(Constants.USER_ACCOUNT);
         hSession.invalidate();
 
         mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
         mView.addObject(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
-        mView.addObject(Constants.COMMAND, new LoginRequest());
+        mView.addObject(Constants.COMMAND, new AuthenticationData());
         mView.setViewName(this.loginPage);
 
         if (DEBUG)
@@ -345,14 +378,16 @@ public class LoginController
     }
 
     @RequestMapping(value = "submit", method = RequestMethod.POST)
-    public final ModelAndView doLogin(@ModelAttribute("LoginRequest") final LoginRequest loginRequest, final BindingResult bindResult, final Model model, final RedirectAttributes redirectAttributes)
+    public final ModelAndView doLogin(@ModelAttribute("AuthenticationData") final AuthenticationData authData, final BindingResult bindResult, final Model model, final RedirectAttributes redirectAttributes)
     {
-        final String methodName = LoginController.CNAME + "#doLogin(@ModelAttribute(\"AuthenticationData\") final LoginRequest loginRequest, final BindingResult bindResult, final Model model, final RedirectAttributes redirectAttributes)";
+        final String methodName = LoginController.CNAME + "#doLogin(@ModelAttribute(\"AuthenticationData\") final AuthenticationData authData, final BindingResult bindResult, final Model model, final RedirectAttributes redirectAttributes)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("LoginRequest: {}", loginRequest);
+            DEBUGGER.debug("AuthenticationData: {}", authData);
+            DEBUGGER.debug("Model: {}", model);
+            DEBUGGER.debug("RedirectAttributes: {}", redirectAttributes);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -404,7 +439,7 @@ public class LoginController
             }
         }
 
-        this.validator.validate(loginRequest, bindResult);
+        this.validator.validate(authData, bindResult);
 
         if (bindResult.hasErrors())
         {
@@ -414,7 +449,7 @@ public class LoginController
             mView.setViewName(this.loginPage);
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new LoginRequest());
+            mView.addObject(Constants.COMMAND, new AuthenticationData());
         }
         else
         {
@@ -429,27 +464,19 @@ public class LoginController
 	            {
 	                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
 	            }
-	
+
 	            UserAccount reqUser = new UserAccount();
-	            reqUser.setUsername(loginRequest.getLoginUser());
-	
+	            reqUser.setUsername(authData.getUsername());
+
 	            if (DEBUG)
 	            {
-	                DEBUGGER.debug("UserAccount: {}", reqUser);
+	            	DEBUGGER.debug("UserAccount: {}", reqUser);
 	            }
-	
-	            AuthenticationData reqSecurity = new AuthenticationData();
-	            reqSecurity.setPassword(loginRequest.getLoginPass());
-	
-	            if (DEBUG)
-	            {
-	                DEBUGGER.debug("AuthenticationData: {}", reqSecurity);
-	            }
-	
+
 	            AuthenticationRequest authRequest = new AuthenticationRequest();
 	            authRequest.setHostInfo(reqInfo);
 	            authRequest.setUserAccount(reqUser);
-	            authRequest.setUserSecurity(reqSecurity);
+	            authRequest.setUserSecurity(authData);
 	            authRequest.setApplicationId(this.appConfig.getApplicationId());
 	            authRequest.setApplicationName(this.appConfig.getApplicationName());
 
@@ -481,7 +508,7 @@ public class LoginController
 	
 	                    	mView.setViewName(this.loginPage);
 	                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
-	                        mView.addObject(Constants.COMMAND, new LoginRequest());
+	                        mView.addObject(Constants.COMMAND, new AuthenticationData());
 	
 	                        break;
 	                    }
@@ -500,7 +527,7 @@ public class LoginController
 	                    		hSession.invalidate();
 
 	                    		mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-	                    		mView.addObject(Constants.COMMAND, new LoginRequest());
+	                    		mView.addObject(Constants.COMMAND, new AuthenticationData());
 	                    		mView.setViewName(this.loginPage);
 		
 	                    		break;
@@ -508,7 +535,7 @@ public class LoginController
 	                    		hSession.invalidate();
 
 			                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountLocked());
-			                    mView.addObject(Constants.COMMAND, new LoginRequest());
+			                    mView.addObject(Constants.COMMAND, new AuthenticationData());
 			                    mView.setViewName(this.loginPage);
 		
 			                    break;
@@ -516,7 +543,7 @@ public class LoginController
 	                    		hSession.invalidate();
 
 			                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountSuspended());
-			                    mView.addObject(Constants.COMMAND, new LoginRequest());
+			                    mView.addObject(Constants.COMMAND, new AuthenticationData());
 			                    mView.setViewName(this.loginPage);
 			                    
 			                    break;
@@ -546,7 +573,7 @@ public class LoginController
 	                            ERROR_RECORDER.error("An unspecified error occurred during authentication.");
 
 	                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-	                            mView.addObject(Constants.COMMAND, new LoginRequest());
+	                            mView.addObject(Constants.COMMAND, new AuthenticationData());
 	                            mView.setViewName(this.loginPage);
 	
 	                            break;
@@ -557,7 +584,7 @@ public class LoginController
 	            		hSession.invalidate();
 
 	                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-	                    mView.addObject(Constants.COMMAND, new LoginRequest());
+	                    mView.addObject(Constants.COMMAND, new AuthenticationData());
 	                    mView.setViewName(this.loginPage);
 	
 	                    break;
@@ -565,7 +592,7 @@ public class LoginController
 	            		hSession.invalidate();
 
 	                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
-	                    mView.addObject(Constants.COMMAND, new LoginRequest());
+	                    mView.addObject(Constants.COMMAND, new AuthenticationData());
 	                    mView.setViewName(this.loginPage);
 	
 	                    break;
@@ -573,7 +600,7 @@ public class LoginController
 	            		hSession.invalidate();
 
 	                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
-	                    mView.addObject(Constants.COMMAND, new LoginRequest());
+	                    mView.addObject(Constants.COMMAND, new AuthenticationData());
 	                    mView.setViewName(this.loginPage);
 	
 	                    break;
@@ -581,7 +608,7 @@ public class LoginController
 	            		hSession.invalidate();
 
 	                	mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-	                	mView.addObject(Constants.COMMAND, new LoginRequest());
+	                	mView.addObject(Constants.COMMAND, new AuthenticationData());
 	                	mView.setViewName(this.loginPage);
 	                	
 	                	break;
@@ -593,7 +620,7 @@ public class LoginController
 	
 	            ERROR_RECORDER.error(ax.getMessage(), ax);
 	
-	            mView.addObject(Constants.COMMAND, new LoginRequest());
+	            mView.addObject(Constants.COMMAND, new AuthenticationData());
 	            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 	            mView.setViewName(this.loginPage);
 	        }

@@ -3,7 +3,7 @@ DELIMITER //
 DROP TABLE IF EXISTS ESOLUTIONS.SYSTEMS //
 
 CREATE TABLE ESOLUTIONS.SYSTEMS (
-    GUID VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    GUID VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL UNIQUE,
     SYSTEM_OSTYPE VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     SYSSTATUS VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     REGION VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -35,11 +35,6 @@ CREATE TABLE ESOLUTIONS.SYSTEMS (
     OWNING_DMGR VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     MGR_ENTRY VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci, -- this could be a port number (for dmgr) or a url (for vmgr)
     PRIMARY KEY (GUID),
-    CONSTRAINT FK_DATACENTER_GUID
-        FOREIGN KEY (DATACENTER_GUID)
-        REFERENCES ESOLUTIONS.DATACENTERS (GUID)
-            ON DELETE RESTRICT
-            ON UPDATE NO ACTION,
     FULLTEXT KEY IDX_SEARCH (GUID, SYSTEM_OSTYPE, SYSSTATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, OPER_HOSTNAME, ASSIGNED_ENGINEER, OWNING_DMGR)
 ) ENGINE=InnoDB CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COLLATE utf8mb4_0900_ai_ci //
 COMMIT //
@@ -100,7 +95,7 @@ CREATE PROCEDURE ESOLUTIONS.insertNewServer(
     IN systemStatus VARCHAR(45),
     IN systemRegion VARCHAR(45),
     IN networkPartition VARCHAR(45),
-    IN datacenter VARCHAR(45),
+    IN datacenter VARCHAR(128),
     IN systemType VARCHAR(45),
     IN domainName VARCHAR(255),
     IN cpuType VARCHAR(255),
@@ -126,7 +121,7 @@ CREATE PROCEDURE ESOLUTIONS.insertNewServer(
     IN owningDmgr VARCHAR(255)
 )
 BEGIN
-    IF dmgrPort = 0
+    IF (dmgrPort = 0)
     THEN
         INSERT INTO ESOLUTIONS.SYSTEMS
         (GUID, SYSTEM_OSTYPE, SYSSTATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, DOMAIN_NAME, CPU_TYPE, CPU_COUNT, SERVER_RACK, RACK_POSITION, SERVER_MODEL, SERIAL_NUMBER, INSTALLED_MEMORY, OPER_IP, OPER_HOSTNAME, MGMT_IP, MGMT_HOSTNAME, BKUP_IP, BKUP_HOSTNAME, NAS_IP, NAS_HOSTNAME, NAT_ADDR, COMMENTS, ASSIGNED_ENGINEER, ADD_DATE, MGR_ENTRY, OWNING_DMGR)
@@ -134,7 +129,7 @@ BEGIN
         (systemGuid, systemOs, systemStatus, systemRegion, networkPartition, datacenter, systemType, domainName, cpuType, cpuCount, serverRack, rackPosition, serverModel, serialNumber, installedMemory, operIp, operHostname, mgmtIp, mgmtHostname, backupIp, backupHostname, nasIp, nasHostname, natAddr, systemComments, engineer, NOW(), mgrEntry, owningDmgr);
     ELSE
         INSERT INTO ESOLUTIONS.SYSTEMS
-        (GUID, SYSTEM_OSTYPE, STATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, DOMAIN_NAME, CPU_TYPE, CPU_COUNT, SERVER_RACK, RACK_POSITION, SERVER_MODEL, SERIAL_NUMBER, INSTALLED_MEMORY, OPER_IP, OPER_HOSTNAME, MGMT_IP, MGMT_HOSTNAME, BKUP_IP, BKUP_HOSTNAME, NAS_IP, NAS_HOSTNAME, NAT_ADDR, COMMENTS, ASSIGNED_ENGINEER, ADD_DATE, MGR_ENTRY, DMGR_PORT, OWNING_DMGR)
+        (GUID, SYSTEM_OSTYPE, SYSSTATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, DOMAIN_NAME, CPU_TYPE, CPU_COUNT, SERVER_RACK, RACK_POSITION, SERVER_MODEL, SERIAL_NUMBER, INSTALLED_MEMORY, OPER_IP, OPER_HOSTNAME, MGMT_IP, MGMT_HOSTNAME, BKUP_IP, BKUP_HOSTNAME, NAS_IP, NAS_HOSTNAME, NAT_ADDR, COMMENTS, ASSIGNED_ENGINEER, ADD_DATE, MGR_ENTRY, DMGR_PORT, OWNING_DMGR)
         VALUES
         (systemGuid, systemOs, systemStatus, systemRegion, networkPartition, datacenter, systemType, domainName, cpuType, cpuCount, serverRack, rackPosition, serverModel, serialNumber, installedMemory, operIp, operHostname, mgmtIp, mgmtHostname, backupIp, backupHostname, nasIp, nasHostname, natAddr, systemComments, engineer, NOW(), mgrEntry, dmgrPort, owningDmgr);
     END IF;
@@ -172,7 +167,8 @@ CREATE PROCEDURE ESOLUTIONS.updateServerData(
     IN dmgrPort INT,
     IN serverRack VARCHAR(255),
     IN rackPosition VARCHAR(255),
-    IN owningDmgr VARCHAR(255)
+    IN owningDmgr VARCHAR(255),
+    OUT updateCount INTEGER
 )
 BEGIN
     UPDATE ESOLUTIONS.SYSTEMS
@@ -208,6 +204,39 @@ BEGIN
     WHERE GUID = systemGuid;
 
     COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM ESOLUTIONS.SYSTEMS
+    WHERE GUID = systemGuid
+    AND SYSTEM_OSTYPE = systemOs
+    AND SYSSTATUS = systemStatus
+    AND REGION = systemRegion
+    AND NWPARTITION = networkPartition
+    AND DATACENTER_GUID = datacenter
+    AND SYSTYPE = systemType
+    AND DOMAIN_NAME = domainName
+    AND CPU_TYPE = cpuType
+    AND CPU_COUNT = cpuCount
+    AND SERVER_RACK = serverRack
+    AND RACK_POSITION = rackPosition
+    AND SERVER_MODEL = serverModel
+    AND SERIAL_NUMBER = serialNumber
+    AND INSTALLED_MEMORY = installedMemory
+    AND OPER_IP = operIp
+    AND OPER_HOSTNAME = operHostname
+    AND MGMT_IP = mgmtIp
+    AND MGMT_HOSTNAME = mgmtHostname
+    AND BKUP_IP = backupIp
+    AND BKUP_HOSTNAME = backupHostname
+    AND NAS_IP = nasIp
+    AND NAS_HOSTNAME = nasHostname
+    AND NAT_ADDR = natAddr
+    AND COMMENTS = systemComments
+    AND ASSIGNED_ENGINEER = engineer
+    AND MGR_ENTRY = mgrEntry
+    AND DMGR_PORT = dmgrPort
+    AND OWNING_DMGR = owningDmgr;
 END //
 COMMIT //
 
@@ -298,7 +327,7 @@ CREATE PROCEDURE ESOLUTIONS.retireServer(
     IN guid VARCHAR(128)
 )
 BEGIN
-    INSERT INTO eSolutionsArchive.SYSTEMS
+    INSERT INTO ESOLUTIONSARCHIVE.SYSTEMS
     SELECT *
     FROM ESOLUTIONS.SYSTEMS
     WHERE GUID = guid

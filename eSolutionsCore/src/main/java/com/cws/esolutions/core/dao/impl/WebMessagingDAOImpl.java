@@ -72,7 +72,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL submitSvcMessage(?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL submitSvcMessage(?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, (String) messageList.get(0)); // message id
             stmt.setString(2, (String) messageList.get(1)); // message title
             stmt.setString(3, (String) messageList.get(2)); // message text
@@ -144,7 +144,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL retrServiceMessage(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrServiceMessage(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, messageId);
 
             if (DEBUG)
@@ -238,7 +238,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
             
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL retrServiceMessages()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrServiceMessages() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
@@ -345,7 +345,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
             
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL retrAlertMessages()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL retrAlertMessages() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
@@ -453,7 +453,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, messageId); // messageId
             stmt.setString(2, (String) messageList.get(0)); // messageTitle
             stmt.setString(3, (String) messageList.get(1)); // messageText
@@ -529,7 +529,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL removeSvcMessage(? }");
+            stmt = sqlConn.prepareStatement("{ CALL removeSvcMessage(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, messageId);
 
             if (DEBUG)
@@ -623,7 +623,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 sBuilder.append("+" + value);
             }
 
-            stmt = sqlConn.prepareStatement("{ CALL getMessagesByAttribute(? }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getMessagesByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, sBuilder.toString().trim());
 
             if (DEBUG)

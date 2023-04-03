@@ -53,6 +53,7 @@ import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -93,6 +94,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountControlException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(request.getRequestor());
@@ -115,34 +135,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEUSER);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -195,7 +220,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getIterations());
             String newPassword = PasswordUtils.encryptText(userSecurity.getPassword(), newSalt,
                     secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
-                    //secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                     sysConfig.getEncoding());
 
             if ((StringUtils.isBlank(newSalt) || (StringUtils.isBlank(newPassword))))
@@ -266,37 +290,54 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(sx.getMessage(), sx);
         }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+		}
+        catch (AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountControlException(ax.getMessage(), ax);
+		}
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.CREATEUSER);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEUSER);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -331,6 +372,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountControlException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -353,34 +413,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.DELETEUSER);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.DELETEUSER);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -415,37 +480,54 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
+        catch (AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountControlException(ax.getMessage(), ax);
+		}
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+		}
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.DELETEUSER);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.DELETEUSER);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -480,6 +562,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountControlException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -502,34 +603,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.SUSPENDUSER);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.SUSPENDUSER);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -581,40 +687,56 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountControlException(ax.getMessage(), ax);
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+        }
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.SUSPENDUSER);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.SUSPENDUSER);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
-
 
         return response;
     }
@@ -647,6 +769,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountControlException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -669,34 +810,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.MODIFYUSER);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.CHANGEROLE);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -784,40 +930,56 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountControlException(ax.getMessage(), ax);
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+        }
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.MODIFYUSER);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CHANGEROLE);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
-
 
         return response;
     }
@@ -854,6 +1016,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountControlException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -876,34 +1057,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CHANGEPASS);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.CHANGEPASS);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -972,6 +1158,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountControlException(ax.getMessage(), ax);
+        }
         catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
@@ -999,34 +1191,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.RESETPASS);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.RESETPASS);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -1061,6 +1258,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountControlException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -1083,34 +1299,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LOCKUSER);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.MODIFYLOCKOUT);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -1157,37 +1378,54 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountControlException(ax.getMessage(), ax);
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+        }
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOCKUSER);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.FALSE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.MODIFYLOCKOUT);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -1223,6 +1461,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountControlException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -1245,34 +1502,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LOADACCOUNT);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.LOADACCOUNT);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -1331,37 +1593,54 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountControlException(ax.getMessage(), ax);
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+        }
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOADACCOUNT);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.LOADACCOUNT);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -1396,6 +1675,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AccountControlException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
@@ -1418,34 +1716,39 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LISTUSERS);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setHostInfo(reqInfo);
+                        auditEntry.setAuditType(AuditType.LISTUSERS);
+                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
+                    catch (final AuditServiceException asx)
                     {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
 
                 return response;
@@ -1512,37 +1815,54 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountControlException(ax.getMessage(), ax);
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+        }
         finally
         {
             // audit
-            try
+            if (secConfig.getPerformAudit())
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LISTUSERS);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.LISTUSERS);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (final AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 

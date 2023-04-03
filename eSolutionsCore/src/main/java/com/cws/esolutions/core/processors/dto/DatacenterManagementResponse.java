@@ -17,7 +17,7 @@ package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
- * File: ServiceManagementResponse.java
+ * File: PlatformManagementResponse.java
  *
  * History
  *

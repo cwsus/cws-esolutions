@@ -81,7 +81,7 @@ public class SQLKeyManager implements KeyManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -203,7 +203,7 @@ public class SQLKeyManager implements KeyManager
         {
             sqlConn = dataSource.getConnection();
 
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -326,7 +326,7 @@ public class SQLKeyManager implements KeyManager
         {
             sqlConn = dataSource.getConnection();
 
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }

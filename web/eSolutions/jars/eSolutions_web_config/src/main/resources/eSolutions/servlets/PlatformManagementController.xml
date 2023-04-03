@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+        http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/jee https://www.springframework.org/schema/jee/spring-jee-4.3.xsd">
+
+    <bean id="platformRequestValidator" class="com.cws.esolutions.web.validators.PlatformValidator">
+        <property name="messageNameRequired" value="svc.mgmt.name.required" />
+        <property name="messageDescriptionRequired" value="svc.mgmt.description.required" />
+        <property name="messageStatusRequired" value="svc.mgmt.status.required" />
+        <property name="messageRegionRequired" value="svc.mgmt.region.required" />
+        <property name="messagePartitionRequired" value="svc.mgmt.partition.required" />
+    </bean>
+
+    <bean id="platformManagementController" class="com.cws.esolutions.web.controllers.PlatformManagementController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="validator">
+            <ref bean="platformRequestValidator" />
+        </property>
+        <property name="serviceName" value="PlatformMgmt" />
+        <property name="serviceId" value="2B58DC01-E63D-4125-B55F-D407A17EA4B5" />
+        <property name="recordsPerPage" value="20" />
+        <property name="defaultPage" value=".platform-management/jsp/html/en/PlatformMgmt_DefaultHandler" />
+        <property name="addPlatformPage" value=".platform-management/jsp/html/en/PlatformMgmt_AddPlatform" />
+        <property name="viewPlatformPage" value=".platform-management/jsp/html/en/PlatformMgmt_ViewPlatform" />
+        <property name="viewPlatformList" value=".platform-management/jsp/html/en/PlatformMgmt_ViewPlatforms" />
+        <property name="messageNoPlatformFound" value="platform.mgmt.no.platforms" />
+        <property name="addPlatformRedirect" value="redirect:/ui/platform-management/add-platform" />
+        <property name="messagePlatformAddSuccess" value="platform.mgmt.add.success" />
+        <property name="messagePlatformAddFailure" value="platform.mgmt.add.failure" />
+    </bean>
+</beans>

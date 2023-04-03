@@ -25,6 +25,7 @@ package com.cws.esolutions.core.dao.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
@@ -33,6 +34,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
@@ -76,16 +78,16 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?) }");
-            stmt.setString(1, (String) value.get(0));
-            stmt.setString(2, (String) value.get(1));
-            stmt.setDouble(3, (Double) value.get(2));
-            stmt.setString(4, (String) value.get(3));
-            stmt.setString(5, (String) value.get(4));
-            stmt.setString(6, (String) value.get(5));
-            stmt.setString(7, (String) value.get(6));
-            stmt.setString(8, (String) value.get(7));
-            stmt.setString(9, (String) value.get(8));
+            stmt = sqlConn.prepareStatement("{ CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, (String) value.get(0)); // appguid
+            stmt.setString(2, (String) value.get(1)); // appname
+            stmt.setDouble(3, (Double) value.get(2)); // appversion
+            stmt.setString(4, (String) value.get(3)); // installpath
+            stmt.setString(5, (String) value.get(4)); // packagelocation
+            stmt.setString(6, (String) value.get(5)); // packageinstaller
+            stmt.setString(7, (String) value.get(6)); // installerOptions
+            stmt.setString(8, (String) value.get(7)); // logs directory
+            stmt.setString(9, (String) value.get(8)); // platform guid
 
             if (DEBUG)
             {
@@ -134,7 +136,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -152,7 +154,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt = sqlConn.prepareCall("{ CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, (String) value.get(0));
             stmt.setString(2, (String) value.get(1));
             stmt.setDouble(3, (Double) value.get(2));
@@ -162,6 +164,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             stmt.setString(7, (String) value.get(6));
             stmt.setString(8, (String) value.get(7));
             stmt.setString(9, (String) value.get(8));
+            stmt.registerOutParameter(10, Types.INTEGER);
 
             if (DEBUG)
             {
@@ -228,7 +231,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL removeApplicationData(? }");
+            stmt = sqlConn.prepareStatement("{ CALL removeApplicationData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, value);
 
             if (DEBUG)
@@ -297,7 +300,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL listApplications(?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL listApplications(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, startRow);
 
             if (DEBUG)
@@ -426,7 +429,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 sBuilder.append("+" + value);
             }
 
-            stmt = sqlConn.prepareStatement("{ CALL getApplicationByAttribute(?, ?) }");
+            stmt = sqlConn.prepareStatement("{ CALL getApplicationByAttribute(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, sBuilder.toString().trim());
             stmt.setInt(2, startRow);
 
@@ -531,7 +534,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL getApplicationData(? }");
+            stmt = sqlConn.prepareStatement("{ CALL getApplicationData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, value);
 
             if (DEBUG)

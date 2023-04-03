@@ -256,34 +256,36 @@ public class DNSServiceController
             }
         }
 
-        ApplicationEnablementRequest request = new ApplicationEnablementRequest();
-        request.setApplicationId(this.appConfig.getApplicationId());
-        request.setApplicationName(this.appConfig.getApplicationName());
-        request.setServiceGuid(this.serviceId);
-        request.setServiceName(this.serviceName);
+        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
+        enableRequest.setApplicationId(this.appConfig.getApplicationId());
+        enableRequest.setApplicationName(this.appConfig.getApplicationName());
+        enableRequest.setServiceGuid(this.serviceId);
+        enableRequest.setServiceName(this.serviceName);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", request);
+            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
         }
 
         try
         {
-            ApplicationEnablementResponse response = enabler.isServiceEnabled(request);
+            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", response);
+                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
             }
 
-            switch (response.getRequestStatus())
+            switch (enableResponse.getRequestStatus())
             {
                 case EXCEPTION:
                     mView.setViewName(this.appConfig.getErrorResponsePage());
 
                     break;
                 case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
+                    mView.addObject(Constants.COMMAND, new SearchRequest());
+                    mView.setViewName(this.lookupPage);
 
                     break;
                 case SUCCESS:
@@ -297,7 +299,9 @@ public class DNSServiceController
 
                     break;
                 default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
+                    mView.addObject(Constants.COMMAND, new SearchRequest());
+                    mView.setViewName(this.lookupPage);
 
                     break;
             }

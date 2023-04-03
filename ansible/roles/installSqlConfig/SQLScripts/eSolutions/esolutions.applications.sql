@@ -3,9 +3,9 @@ DELIMITER //
 DROP TABLE IF EXISTS ESOLUTIONS.APPLICATIONS //
 
 CREATE TABLE ESOLUTIONS.APPLICATIONS (
-    GUID VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL UNIQUE,
+    GUID VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL UNIQUE UNIQUE,
     APPNAME VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-    VERSION DECIMAL(30, 2) NOT NULL DEFAULT 1.0,
+    VERSION VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT "1.0",
     INSTALLATION_PATH TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL, -- where do files get installed to ?
     PACKAGE_LOCATION TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci, -- package location, either provided or scm'd or whatnot
     PACKAGE_INSTALLER TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci, -- installer file for standalones
@@ -54,7 +54,7 @@ COMMIT //
 CREATE PROCEDURE ESOLUTIONS.insertNewApplication(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
-    IN appVersion DECIMAL(30, 2),
+    IN appVersion VARCHAR(45),
     IN installPath TEXT,
     IN packageLocation TEXT,
     IN packageInstaller TEXT,
@@ -81,13 +81,14 @@ COMMIT //
 CREATE PROCEDURE ESOLUTIONS.updateApplicationData(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
-    IN appVersion DECIMAL(30, 2),
+    IN appVersion VARCHAR(45),
     IN installPath TEXT,
     IN packageLocation TEXT,
     IN packageInstaller TEXT,
     IN installerOptions TEXT,
     IN logsDirectory TEXT,
-    IN platformGuid TEXT
+    IN platformGuid TEXT,
+    OUT updateCount INTEGER
 )
 BEGIN
     UPDATE ESOLUTIONS.APPLICATIONS
@@ -103,6 +104,19 @@ BEGIN
     WHERE GUID = appGuid;
 
     COMMIT;
+
+    SELECT COUNT(*)
+    INTO updateCount
+    FROM ESOLUTIONS.APPLICATIONS
+    WHERE GUID = appGuid
+    AND APPNAME = appName
+    AND VERSION = appVersion
+    AND INSTALLATION_PATH = installPath
+    AND PACKAGE_LOCATION = packageLocation
+    AND PACKAGE_INSTALLER = packageInstaller
+    AND INSTALLER_OPTIONS = installerOptions
+    AND LOGS_DIRECTORY = logsDirectory
+    AND PLATFORM_GUID = platformGuid;
 END //
 COMMIT //
 

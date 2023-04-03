@@ -32,15 +32,16 @@ import java.util.ArrayList;
 import java.net.InetAddress;
 import java.sql.SQLException;
 import java.net.UnknownHostException;
-
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -48,6 +49,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor
@@ -144,19 +146,40 @@ public class AuditProcessorImpl implements IAuditProcessor
 
         AuditResponse response = new AuditResponse();
 
+        final UserAccount reqAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getHostInfo();
         final AuditEntry auditEntry = request.getAuditEntry();
-        final UserAccount reqAccount = request.getUserAccount();
+        final UserAccount targetAccount = request.getUserAccount();
 
         if (DEBUG)
         {
+        	DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("AuditEntry: {}", auditEntry);
-            DEBUGGER.debug("UserAccount: {}", reqAccount);
+            DEBUGGER.debug("UserAccount: {}", targetAccount);
         }
 
         try
         {
+            String tokenSalt = userSec.getUserSalt(reqAccount.getGuid(), SaltType.AUTHTOKEN.toString());
+            String authToken = PasswordUtils.encryptText(reqAccount.getGuid().toCharArray(), tokenSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
+                DEBUGGER.debug("authToken: {}", authToken);
+            }
+
+            boolean isAuthenticated = authenticator.validateAuthToken(reqAccount.getGuid(), reqAccount.getUsername(), reqAccount.getAuthToken());
+
+            if (!(isAuthenticated))
+            {
+                throw new AuditServiceException("An invalid authentication token was presented.");
+            }
+
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(reqAccount);
@@ -257,13 +280,13 @@ public class AuditProcessorImpl implements IAuditProcessor
                         }
 
                         // capture
-                        UserAccount userAccount = new UserAccount();
-                        userAccount.setUsername((String) array[1]); // resultSet.getString(3), // USERNAME
-                        userAccount.setGuid((String) array[2]); // resultSet.getString(4), // CN
+                        UserAccount resAccount = new UserAccount();
+                        resAccount.setUsername((String) array[1]); // resultSet.getString(3), // USERNAME
+                        resAccount.setGuid((String) array[2]); // resultSet.getString(4), // CN
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("UserAccount: {}", userAccount);
+                            DEBUGGER.debug("UserAccount: {}", resAccount);
                         }
 
                         AuditEntry resEntry = new AuditEntry();
@@ -272,7 +295,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                         resEntry.setAuditDate((Date) array[5]); // resultSet.getTimestamp(7), // REQUEST_TIMESTAMP
                         resEntry.setAuditType(AuditType.valueOf((String) array[6])); // resultSet.getString(8), // ACTION
                         resEntry.setHostInfo(hostInfo);
-                        resEntry.setUserAccount(userAccount);
+                        resEntry.setUserAccount(resAccount);
 
                         if (DEBUG)
                         {
@@ -312,6 +335,12 @@ public class AuditProcessorImpl implements IAuditProcessor
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new AuditServiceException(acsx.getMessage(), acsx);
+        }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AuditServiceException(ax.getMessage(), ax);
         }
         finally
         {

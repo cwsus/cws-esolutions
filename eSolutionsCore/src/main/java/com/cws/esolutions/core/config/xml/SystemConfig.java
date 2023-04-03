@@ -45,7 +45,6 @@ public final class SystemConfig
 {
     private String encoding = null;
 
-    private static final long serialVersionUID = 666732518640762786L;
     private static final String CNAME = SystemConfig.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

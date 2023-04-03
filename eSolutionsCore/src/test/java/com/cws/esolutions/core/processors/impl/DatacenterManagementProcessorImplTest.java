@@ -79,9 +79,9 @@ public class DatacenterManagementProcessorImplTest
     @Test public void addNewDatacenter()
     {
     	Datacenter datacenter = new Datacenter();
-    	datacenter.setName("VH1");
+    	datacenter.setName("MYDC17");
     	datacenter.setStatus(ServiceStatus.ACTIVE);
-    	datacenter.setDescription("Test Datacenter");
+    	datacenter.setDescription("17 test datacenter");
 
     	DatacenterManagementRequest request = new DatacenterManagementRequest();
     	request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -107,10 +107,11 @@ public class DatacenterManagementProcessorImplTest
     @Test public void updateDatacenter()
     {
     	Datacenter datacenter = new Datacenter();
-    	datacenter.setGuid("ada799db-624b-4204-be9b-dba45005736a"); // get a value out of the db to use
-    	datacenter.setName("CH4");
+    	datacenter.setGuid("0f44783c-b618-4440-a4cf-0c271748a47a"); // get a value out of the db to use
+    	datacenter.setName("CH27");
     	datacenter.setStatus(ServiceStatus.ACTIVE);
-    	datacenter.setDescription("Test Datacenter");
+    	datacenter.setDescription("MyTestDatacenter");
+    	datacenter.setDescription("my description");
 
     	DatacenterManagementRequest request = new DatacenterManagementRequest();
     	request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -128,6 +129,7 @@ public class DatacenterManagementProcessorImplTest
     	}
     	catch (final DatacenterManagementException dmx)
         {
+    		dmx.printStackTrace();
     		Assertions.fail(dmx.getMessage());
         }
     }

@@ -70,12 +70,9 @@ public final class AccountChangeProcessorImplTest
     {
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("4889e1cb-adbe-4396-af3b-19a6996dce80");
+    	account.setGuid("34538095-df16-445d-8690-e0f09f2d91e6");
     	account.setEmailAddr("kmhuntly@gmail.com");
-
-    	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("khuntly");
-    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
+    	account.setAuthToken("e932b80430c4e3a6c8e84be88d2b2fe7cbe4596f98b86e116db8e4a83b40667306d3b69b9ac833d988fcb473cb45cb027fe293ea068e4012074d321a0aff6613");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -84,7 +81,6 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(account);
         request.setRequestor(account);
-        request.setUserSecurity(authData);
 
         try
         {
@@ -109,11 +105,11 @@ public final class AccountChangeProcessorImplTest
 
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("eb4edc58-59fc-4772-a16a-b1041dd7cc0c");
+    	account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
+    	account.setAuthToken("73441317e3014a5deb5e0f8c1a6dfd47c2eed133b6c62b8d940bbac99fb8511a43119660e045f3964964b833629b8bc1c598d3bea1856a513eed61979d8c7203");
 
     	AuthenticationData authData = new AuthenticationData();
     	authData.setUsername("khuntly");
-    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
         authData.setSecQuestionOne("What is your mother's maiden name ?");
         authData.setSecQuestionTwo("What is your favourite cartoon ?");
         authData.setSecAnswerOne(secAnsOne.toCharArray());
@@ -143,13 +139,10 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserContact()
     {
-    	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("khuntly");
-    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
-
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("ab5637da-9608-469f-a3ef-5d4a970b2177");
+    	account.setGuid("34538095-df16-445d-8690-e0f09f2d91e6");
+    	account.setAuthToken("e932b80430c4e3a6c8e84be88d2b2fe7cbe4596f98b86e116db8e4a83b40667306d3b69b9ac833d988fcb473cb45cb027fe293ea068e4012074d321a0aff6613");
     	account.setUserRole(SecurityUserRole.SITE_ADMIN);
     	account.setTelephoneNumber("8623999098");
     	account.setPagerNumber("7162491027");
@@ -161,7 +154,6 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(account);
         request.setRequestor(account);
-        request.setUserSecurity(authData);
 
         try
         {

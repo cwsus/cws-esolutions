@@ -47,7 +47,6 @@ public final class ServiceAccount
     private String accountGuid = null;
     private String accountRole = null;
 
-    private static final long serialVersionUID = 2734979100570986564L;
     private static final String CNAME = ServiceAccount.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

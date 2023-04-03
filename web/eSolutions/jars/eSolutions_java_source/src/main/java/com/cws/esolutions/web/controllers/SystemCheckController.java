@@ -428,27 +428,27 @@ public class SystemCheckController
             }
         }
 
-        ApplicationEnablementRequest request = new ApplicationEnablementRequest();
-        request.setApplicationId(this.appConfig.getApplicationId());
-        request.setApplicationName(this.appConfig.getApplicationName());
-        request.setServiceGuid(this.serviceId);
-        request.setServiceName(this.serviceName);
+        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
+        enableRequest.setApplicationId(this.appConfig.getApplicationId());
+        enableRequest.setApplicationName(this.appConfig.getApplicationName());
+        enableRequest.setServiceGuid(this.serviceId);
+        enableRequest.setServiceName(this.serviceName);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", request);
+            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
         }
 
         try
         {
-            ApplicationEnablementResponse response = enabler.isServiceEnabled(request);
+            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", response);
+                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
             }
 
-            switch (response.getRequestStatus())
+            switch (enableResponse.getRequestStatus())
             {
                 case EXCEPTION:
                     mView.setViewName(this.appConfig.getErrorResponsePage());
@@ -567,27 +567,27 @@ public class SystemCheckController
             }
         }
 
-        ApplicationEnablementRequest request = new ApplicationEnablementRequest();
-        request.setApplicationId(this.appConfig.getApplicationId());
-        request.setApplicationName(this.appConfig.getApplicationName());
-        request.setServiceGuid(this.serviceId);
-        request.setServiceName(this.serviceName);
+        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
+        enableRequest.setApplicationId(this.appConfig.getApplicationId());
+        enableRequest.setApplicationName(this.appConfig.getApplicationName());
+        enableRequest.setServiceGuid(this.serviceId);
+        enableRequest.setServiceName(this.serviceName);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", request);
+            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
         }
 
         try
         {
-            ApplicationEnablementResponse response = enabler.isServiceEnabled(request);
+            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", response);
+                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
             }
 
-            switch (response.getRequestStatus())
+            switch (enableResponse.getRequestStatus())
             {
                 case EXCEPTION:
                     mView.setViewName(this.appConfig.getErrorResponsePage());
@@ -697,27 +697,27 @@ public class SystemCheckController
             }
         }
 
-        ApplicationEnablementRequest request = new ApplicationEnablementRequest();
-        request.setApplicationId(this.appConfig.getApplicationId());
-        request.setApplicationName(this.appConfig.getApplicationName());
-        request.setServiceGuid(this.serviceId);
-        request.setServiceName(this.serviceName);
+        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
+        enableRequest.setApplicationId(this.appConfig.getApplicationId());
+        enableRequest.setApplicationName(this.appConfig.getApplicationName());
+        enableRequest.setServiceGuid(this.serviceId);
+        enableRequest.setServiceName(this.serviceName);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", request);
+            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
         }
 
         try
         {
-            ApplicationEnablementResponse response = enabler.isServiceEnabled(request);
+            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", response);
+                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
             }
 
-            switch (response.getRequestStatus())
+            switch (enableResponse.getRequestStatus())
             {
                 case EXCEPTION:
                     mView.setViewName(this.appConfig.getErrorResponsePage());
@@ -826,6 +826,7 @@ public class SystemCheckController
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
+
         ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
         enableRequest.setApplicationId(this.appConfig.getApplicationId());
         enableRequest.setApplicationName(this.appConfig.getApplicationName());
@@ -834,7 +835,7 @@ public class SystemCheckController
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", request);
+            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
         }
 
         try

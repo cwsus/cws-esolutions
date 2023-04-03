@@ -71,7 +71,7 @@ public class AuthenticationProcessorImplTest
         account.setUsername("khuntly");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("naB8QUXNTWFA7MCpFYvT".toCharArray());
+        userSecurity.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
@@ -84,7 +84,32 @@ public class AuthenticationProcessorImplTest
         {
             AuthenticationResponse response = processor.processAgentLogon(request);
 
-            System.out.println(response);
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
+        }
+        catch (final AuthenticationException ax)
+        {
+        	ax.printStackTrace();
+            Assertions.fail(ax.getMessage());
+        }
+    }
+
+    @Test public void processAgentLogoff()
+    {
+        UserAccount account = new UserAccount();
+        account.setUsername("khuntly");
+        account.setGuid("98a7414b-e4d8-40f3-a8a5-f516cde049c3");
+        account.setAuthToken("cca9e0226f8b9c45ffc53b34a0ef0bb7198081afcc615c0221472710744f1a32d27cb4d2c023e62cd03d666b53a14cdd5a05c5294c5eddb37a7c2601829d588f");
+
+        AuthenticationRequest request = new AuthenticationRequest();
+        request.setApplicationName("esolutions");
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setUserAccount(account);
+        request.setHostInfo(hostInfo);
+
+        try
+        {
+            AuthenticationResponse response = processor.processAgentLogoff(request);
+
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AuthenticationException ax)

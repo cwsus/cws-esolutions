@@ -61,7 +61,6 @@ public final class HTTPConfig
     private String httpVersion = "HTTP_1_0";
 
     private static final String CNAME = HTTPConfig.class.getName();
-    private static final long serialVersionUID = 1351165475299389034L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

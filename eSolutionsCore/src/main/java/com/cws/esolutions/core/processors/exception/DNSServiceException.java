@@ -31,8 +31,9 @@ import com.cws.esolutions.core.exception.CoreServicesException;
  */
 public class DNSServiceException extends CoreServicesException
 {
+    private static final long serialVersionUID = -5178853363384759580L;
 
-    /**
+	/**
      * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
      *
      * @param message - The message for the exception

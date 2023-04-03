@@ -25,7 +25,6 @@ package com.cws.esolutions.security.dao.userauth.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
-import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.Logger;
@@ -78,12 +77,19 @@ public interface Authenticator
      *
      * @param userId - The username to perform the modification against
      * @param guid - The Globally Unique Identifier for the account in the repository
-     * @param lockCount - The (current) lock count value for the account
-     * @param timestamp - The timestamp to use for the last login
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an exception occurs during processing
      */
-    boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Date timestamp, final String authToken) throws AuthenticatorException;
+    boolean performSuccessfulLogin(final String userId, final String guid, final String authToken) throws AuthenticatorException;
+
+    /**
+     * 
+     * @param userGuid
+     * @param userName
+     * @param authToken
+     * @throws AuthenticatorException
+     */
+    void performLogoff(final String userGuid, final String userName, final String authToken) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the
@@ -95,10 +101,12 @@ public interface Authenticator
      * handling.
      *
      * @param guid - The user's UUID
+     * @param userId
+     * @param authToken
      * @return String - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    boolean validateAuthToken(final String guid, final String authToken) throws AuthenticatorException;
+    boolean validateAuthToken(final String guid, final String userId, final String authToken) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the

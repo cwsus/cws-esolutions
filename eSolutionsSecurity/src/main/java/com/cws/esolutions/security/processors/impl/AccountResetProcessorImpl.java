@@ -618,6 +618,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         final Calendar cal = Calendar.getInstance();
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
@@ -671,25 +672,25 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 throw new AccountResetException("Unable to load user account information. Cannot continue.");
             }
 
-            UserAccount userAccount = new UserAccount();
-            userAccount.setGuid((String) userList.get(0)); // CN
-            userAccount.setUsername((String) userList.get(1)); // UID
-            userAccount.setGivenName((String) userList.get(2)); // GIVENNAME
-            userAccount.setSurname((String) userList.get(3)); // sn
-            userAccount.setDisplayName((String) userList.get(4)); // displayName
-            userAccount.setEmailAddr((String) userList.get(5)); // email
-            userAccount.setUserRole(SecurityUserRole.valueOf((String) userList.get(6))); //cwsrole
-            userAccount.setFailedCount(Integer.parseInt(userList.get(7).toString())); // cwsfailedpwdcount            
-            userAccount.setLastLogin((Timestamp) userList.get(8)); // cwslastlogin
-            userAccount.setExpiryDate((Timestamp) userList.get(9)); // cwsexpirydate
-            userAccount.setSuspended(Boolean.valueOf(userList.get(10).toString())); // cwsissuspended
-            userAccount.setAccepted(Boolean.valueOf(userList.get(13).toString())); // cwsistcaccepted
-            userAccount.setTelephoneNumber((String) userList.get(15)); // telephoneNumber
-            userAccount.setPagerNumber((String) userList.get(16)); // pager
+            UserAccount foundAccount = new UserAccount();
+            foundAccount.setGuid((String) userList.get(0)); // CN
+            foundAccount.setUsername((String) userList.get(1)); // UID
+            foundAccount.setGivenName((String) userList.get(2)); // GIVENNAME
+            foundAccount.setSurname((String) userList.get(3)); // sn
+            foundAccount.setDisplayName((String) userList.get(4)); // displayName
+            foundAccount.setEmailAddr((String) userList.get(5)); // email
+            foundAccount.setUserRole(SecurityUserRole.valueOf((String) userList.get(6))); //cwsrole
+            foundAccount.setFailedCount(Integer.parseInt(userList.get(7).toString())); // cwsfailedpwdcount            
+            foundAccount.setLastLogin((Timestamp) userList.get(8)); // cwslastlogin
+            foundAccount.setExpiryDate((Timestamp) userList.get(9)); // cwsexpirydate
+            foundAccount.setSuspended(Boolean.valueOf(userList.get(10).toString())); // cwsissuspended
+            foundAccount.setAccepted(Boolean.valueOf(userList.get(13).toString())); // cwsistcaccepted
+            foundAccount.setTelephoneNumber((String) userList.get(15)); // telephoneNumber
+            foundAccount.setPagerNumber((String) userList.get(16)); // pager
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
+                DEBUGGER.debug("UserAccount: {}", foundAccount);
             }
 
             // remove the reset request
@@ -724,6 +725,42 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountResetException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.VALIDATERESET);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (final AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;

@@ -25,16 +25,17 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.List;
-import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+
+import java.io.File;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.processors.dto.Service;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
@@ -43,6 +44,8 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
+import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.core.processors.enums.DeploymentType;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
 
@@ -60,8 +63,9 @@ public class ApplicationManagementProcessorImplTest
         hostInfo.setHostName("junit");
 
         userAccount.setStatus(LoginStatus.SUCCESS);
-        userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+        userAccount.setGuid("98a7414b-e4d8-40f3-a8a5-f516cde049c3");
         userAccount.setUsername("khuntly");
+        userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
         try
         {
@@ -78,27 +82,18 @@ public class ApplicationManagementProcessorImplTest
 
     @Test public void addNewApplication()
     {
-        String[] platforms = { "09571c2c-dd88-4d57-b418-dbbd35deb653", "16d15529-2e28-4beb-873c-eb5fba452feb", "54c10a53-5d77-4c54-8041-eb90c33e7c1d" };
-
-        List<Service> platformList = new ArrayList<Service>();
-
-        for (String str : platforms)
-        {
-            Service platform = new Service();
-            platform.setGuid(str);
-
-            platformList.add(platform);
-        }
+    	Platform platform = new Platform();
+    	platform.setPlatformGuid("7f73819d-7963-4051-9c6d-aa6d82b95382");
 
         Application application = new Application();
-        application.setName("Test eSolutions");
-        application.setVersion(1.0);
+        application.setName("My Application Name");
+        application.setVersion("1.0-SNAPSHOT");
         application.setInstallPath("/opt/cws/eSolutions");
-        application.setPackageLocation("/installs/cws/eSolutionsAgent");
-        application.setPackageInstaller("install.sh");
-        application.setInstallerOptions(null);
-        application.setLogsDirectory("/opt/cws/eSolutions/logs");
-        application.setPlatforms(platformList);
+        application.setPackageLocation("/opt/installs");
+        application.setPackageInstaller("/opt/installs/eSolutions.app");
+        application.setInstallerOptions("none");
+        application.setLogsPath(new File("/opt/cws/logs"));
+        application.setPlatform(platform);
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(application);
@@ -116,6 +111,51 @@ public class ApplicationManagementProcessorImplTest
         }
         catch (final ApplicationManagementException amx)
         {
+            Assertions.fail(amx.getMessage());
+        }
+    }
+
+    @Test public void updateApplicationData()
+    {
+    	Platform platform = new Platform();
+    	platform.setPlatformGuid("815eff28-faab-40a2-9b0a-cdd95ead1e58");
+
+        Application app = new Application();
+        app.setGuid("74b2cfad-ee63-486b-a0a4-ac862ef2e876");
+        app.setBasePath(new File("/opt/cws/eSolutions"));
+        app.setBinaries(new File("/opt/cws/installer"));
+        app.setClusterName("cluster1");
+        app.setDeploymentType(DeploymentType.APP);
+        app.setInstallerOptions("none");
+        app.setInstallPath("/opt/cws/eSolutions");
+        app.setIsScmEnabled(true);
+        app.setJvmName("AppSrv01");
+        app.setLogsPath(new File("/opt/cws/logs"));
+        app.setName("My Application Name");
+        app.setPackageInstaller("/opt/installs/eSolutions.app");
+        app.setPackageLocation("/opt/installs");
+        app.setPidDirectory("/run/esolutions/app.pid");
+        app.setPlatform(platform);
+        app.setScmPath("/");
+        app.setVersion("1.0-SNAPSHOT");
+
+        ApplicationManagementRequest request = new ApplicationManagementRequest();
+        request.setApplication(app);
+        request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
+        request.setRequestInfo(hostInfo);
+        request.setUserAccount(userAccount);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
+
+        try
+        {
+            ApplicationManagementResponse response = processor.updateApplicationData(request);
+
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
+        }
+        catch (final ApplicationManagementException amx)
+        {
+        	amx.printStackTrace();
             Assertions.fail(amx.getMessage());
         }
     }
@@ -141,6 +181,7 @@ public class ApplicationManagementProcessorImplTest
         }
         catch (final ApplicationManagementException amx)
         {
+        	amx.printStackTrace();
             Assertions.fail(amx.getMessage());
         }
     }
@@ -169,7 +210,7 @@ public class ApplicationManagementProcessorImplTest
     @Test public void getApplicationData()
     {
         Application app = new Application();
-        app.setGuid("93128772-94b6-49b0-bac7-d16ef42a0794");
+        app.setGuid("74b2cfad-ee63-486b-a0a4-ac862ef2e876");
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServicesConstants;
+import com.cws.esolutions.core.processors.enums.SystemCheckType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 /**
  * @author cws-khuntly
@@ -48,6 +49,7 @@ public class SystemCheckRequest implements Serializable
     private String applicationId = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
+    private SystemCheckType checkType = null;
     private RequestHostInfo requestInfo = null;
 
     private static final long serialVersionUID = -2220217709344312463L;
@@ -173,6 +175,19 @@ public class SystemCheckRequest implements Serializable
         this.targetServer = value;
     }
 
+    public final void setCheckType(final SystemCheckType value)
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#setCheckType(final SystemCheckType value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.checkType = value;
+    }
+
     public final UserAccount getUserAccount()
     {
         final String methodName = SystemCheckRequest.CNAME + "#getUserAccount()";
@@ -288,6 +303,19 @@ public class SystemCheckRequest implements Serializable
         }
 
         return this.targetServer;
+    }
+
+    public final SystemCheckType getCheckType()
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#getCheckType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.checkType);
+        }
+
+        return this.checkType;
     }
 
     @Override

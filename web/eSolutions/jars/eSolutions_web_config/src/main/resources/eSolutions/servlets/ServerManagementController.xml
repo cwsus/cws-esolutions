@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+        http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/jee https://www.springframework.org/schema/jee/spring-jee-4.3.xsd">
+
+    <bean id="serverValidator" class="com.cws.esolutions.web.validators.ServerValidator">
+        <property name="messageOsNameRequired" value="system.os.name.required" />
+        <property name="messageServerTypeRequired" value="system.server.type.required" />
+        <property name="messageServerStatusRequired" value="system.server.status.required" />
+        <property name="messageServerRegionRequired" value="system.server.region.required" />
+        <property name="messageManagementHostnameRequired" value="system.mgmt.host.name.required" />
+        <property name="messageManagementHostAddressRequired" value="system.mgmt.host.address.required" />
+        <property name="messageBackupHostnameRequired" value="system.backup.host.name.required" />
+        <property name="messageBackupHostAddressRequired" value="system.backup.host.address.required" />
+        <property name="messageNasHostnameRequired" value="system.nas.host.name.required" />
+        <property name="messageNasHostAddressRequired" value="system.nas.host.address.required" />
+        <property name="messageServerAddressInvalid" value="system.server.address.invalid" />
+        <property name="messageManagerUrlRequired" value="system.vbox.manager.url.required" />
+        <property name="messageOperAddressRequired" value="system.oper.addr.required" />
+        <property name="messageOperHostnameRequired" value="system.oper.name.required" />
+        <property name="messageSerialNumberRequired" value="system.server.serial.number.required" />
+        <property name="messageServerModelRequired" value="system.server.model.required" />
+        <property name="messageDatacenterRequired" value="system.server.datacenter.required" />
+        <property name="messageDomainNameRequired" value="system.server.domain.name.required" />
+        <property name="messageInstalledMemoryRequired" value="system.server.installed.memory.required" />
+        <property name="messageCpuTypeRequired" value="system.server.cpu.type.required" />
+        <property name="messageCpuCountRequired" value="system.server.cpu.count.required" />
+        <property name="messageNetworkPartitionRequired" value="system.server.network.partition.required" />
+    </bean>
+
+    <bean id="serverManagementController" class="com.cws.esolutions.web.controllers.ServerManagementController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="validator">
+            <ref bean="serverValidator" />
+        </property>
+        <property name="availableDomains">
+            <list>
+                <value>caspersbox.corp</value>
+            </list>
+        </property>
+        <property name="recordsPerPage" value="20" />
+        <property name="addDatacenterRedirect" value="redirect:/ui/datacenter-management/add-datacenter" />
+        <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
+        <property name="serviceName" value="serverMgmt" />
+        <property name="addServerPage" value=".server-management/jsp/html/en/ServerMgmt_AddServer" />
+        <property name="viewServerPage" value=".server-management/jsp/html/en/ServerMgmt_ViewServer" />
+        <property name="defaultPage" value=".server-management/jsp/html/en/ServerMgmt_DefaultHandler" />
+        <property name="adminConsolePage" value=".server-management/jsp/html/en/ServerMgmt_AdminConsoles" />
+        <property name="messageServerAdded" value="server.mgmt.server.successfully.added" />
+        <property name="messageNoDmgrsFound" value="server.mgmt.no.dmgrs" />
+        <property name="addServerRedirect" value="redirect:/ui/server-management/add-server" />
+        <property name="messageAddServerSuccess" value="system.mgmt.add.server.success" />
+    </bean>
+</beans>
