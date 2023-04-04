@@ -53,7 +53,6 @@ public final class CoreConfigurationData
     private SystemConfig systemConfig = null;
     private ApplicationConfig appConfig = null;
     private ResourceConfig resourceConfig = null;
-    private ExceptionConfig exceptionConfig = null;
     private DeploymentConfig deploymentConfig = null;
 
     private static final String CNAME = CoreConfigurationData.class.getName();
@@ -163,19 +162,6 @@ public final class CoreConfigurationData
         }
 
         this.ftpConfig = value;
-    }
-
-    public final void setExceptionConfig(final ExceptionConfig value)
-    {
-        final String methodName = CoreConfigurationData.CNAME + "#setExceptionConfig(final ExceptionConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.exceptionConfig = value;
     }
 
     public final void setDeploymentConfig(final DeploymentConfig value)
@@ -327,20 +313,6 @@ public final class CoreConfigurationData
         }
 
         return this.ftpConfig;
-    }
-
-    @XmlElement(name = "exception-config")
-    public final ExceptionConfig getExceptionConfig()
-    {
-        final String methodName = CoreConfigurationData.CNAME + "#getExceptionConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.exceptionConfig);
-        }
-
-        return this.exceptionConfig;
     }
 
     @XmlElement(name = "deployment-config")

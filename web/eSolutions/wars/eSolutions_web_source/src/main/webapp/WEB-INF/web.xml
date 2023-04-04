@@ -101,6 +101,16 @@
         	<param-value>SecurityService/filters/SSLEnforcementFilter</param-value>
         </init-param>
     </filter>
+    <filter id="ApplicationEnablementFilter">
+        <description>Application Enablement Filter</description>
+        <display-name>Application Enablement Filter</display-name>
+        <filter-name>ApplicationEnablementFilter</filter-name>
+        <filter-class>com.cws.esolutions.core.filters.ApplicationEnablementFilter</filter-class>
+        <init-param>
+            <param-name>filter-config</param-name>
+            <param-value>eSolutionsCore/filters/ApplicationEnablementFilter</param-value>
+        </init-param>
+    </filter>
     <filter id="SpringEncodingFilter">
         <description>Spring Encoding Filter</description>
         <display-name>SpringEncodingFilter</display-name>
@@ -118,6 +128,10 @@
     </filter-mapping>
     <filter-mapping id="SessionFixationFilter_mapping">
         <filter-name>SessionFixationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping id="ApplicationEnablementFilter_mapping">
+        <filter-name>ApplicationEnablementFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping id="SpringEncodingFilter_mapping">

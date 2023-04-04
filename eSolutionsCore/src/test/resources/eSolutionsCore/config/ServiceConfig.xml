@@ -83,10 +83,6 @@
         <sshProperties /> <!-- password for key, if required -->
     </ssh-config>
 
-    <exception-config>
-        <sendExceptionNotifications>false</sendExceptionNotifications>
-    </exception-config>
-
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>

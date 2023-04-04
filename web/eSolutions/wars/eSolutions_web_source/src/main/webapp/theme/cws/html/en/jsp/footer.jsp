@@ -35,11 +35,10 @@
 		<div id="footer">
 			<div class="wrapper">
 				<c:if test="${not empty fn:trim(sessionScope.userAccount)}">
-					<spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}; ${sessionScope.userAccount.lastLogin}" argumentSeparator=";" /><br />
-					<a href="${pageContext.request.contextPath}/ui/auth/logout" title="<spring:message code='theme.navbar.logoff' />">
-					<spring:message code='theme.navbar.logoff' /></a> |
-					<a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
-					<spring:message code="theme.navbar.myaccount" /></a>
+				    <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}; ${sessionScope.userAccount.lastLogin}" argumentSeparator=";" /><br /><br />
+                    <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.homepage' />"><spring:message code='theme.navbar.homepage' /></a> |
+					<a href="${pageContext.request.contextPath}/ui/auth/logout" title="<spring:message code='theme.navbar.logoff' />"><spring:message code='theme.navbar.logoff' /></a> |
+					<a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />"><spring:message code="theme.navbar.myaccount" /></a>
 				</c:if>
 				<br class="clear" />
 			</div>

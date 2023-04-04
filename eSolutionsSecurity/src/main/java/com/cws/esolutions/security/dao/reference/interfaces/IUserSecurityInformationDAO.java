@@ -50,6 +50,8 @@ public interface IUserSecurityInformationDAO
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    List<String> getUserGroups(final String commonName, final String userId) throws SQLException;
+
     /**
      * Inserts a salt value for the provided user into the security information datastore.
      * The salt value is used during the authentication process, in conjunction with the

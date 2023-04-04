@@ -54,5 +54,5 @@ public interface IApplicationEnablementDAO
 
     HashMap<String, String> obtainAvailableServices() throws SQLException;
 
-    boolean isServiceEnabled(final String guid) throws SQLException;
+    boolean isServiceEnabled(final String requestURI) throws SQLException;
 }

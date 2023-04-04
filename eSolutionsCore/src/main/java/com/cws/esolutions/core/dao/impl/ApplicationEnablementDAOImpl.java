@@ -38,9 +38,9 @@ import com.cws.esolutions.core.dao.interfaces.IApplicationEnablementDAO;
  */
 public class ApplicationEnablementDAOImpl implements IApplicationEnablementDAO
 {
-	public synchronized boolean isServiceEnabled(final String guid) throws SQLException
+	public synchronized boolean isServiceEnabled(final String requestURI) throws SQLException
 	{
-	    final String methodName = IApplicationEnablementDAO.CNAME + "#isServiceEnabled(final String guid) throws SQLException";
+	    final String methodName = IApplicationEnablementDAO.CNAME + "#isServiceEnabled(final String requestURI) throws SQLException";
 
 	    if (DEBUG)
 	    {
@@ -68,7 +68,7 @@ public class ApplicationEnablementDAOImpl implements IApplicationEnablementDAO
 
 	        sqlConn.setAutoCommit(true);
 	        stmt = sqlConn.prepareStatement("{ CALL isServiceEnabled(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-	        stmt.setString(1, guid);
+	        stmt.setString(1, requestURI);
 
 	        if (DEBUG)
 	        {

@@ -53,12 +53,8 @@ import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
-import com.cws.esolutions.core.processors.dto.ApplicationEnablementResponse;
 import com.cws.esolutions.core.processors.impl.DNSServiceRequestProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
-import com.cws.esolutions.core.processors.impl.ApplicationEnablementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
-import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -210,7 +206,6 @@ public class DNSServiceController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -254,62 +249,9 @@ public class DNSServiceController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
-        try
-        {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
-            }
-
-            switch (enableResponse.getRequestStatus())
-            {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    break;
-                case FAILURE:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
-                    mView.addObject(Constants.COMMAND, new DNSRecord());
-                    mView.setViewName(this.lookupPage);
-
-                    break;
-                case SUCCESS:
-                    mView.addObject("serviceTypes", this.serviceTypes);
-                    mView.addObject(Constants.COMMAND, new DNSRecord());
-                    mView.setViewName(this.lookupPage);
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
-                    mView.addObject(Constants.COMMAND, new DNSRecord());
-                    mView.setViewName(this.lookupPage);
-
-                    break;
-            }
-        }
-        catch (final ApplicationEnablementException aex)
-        {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
+        mView.addObject("serviceTypes", this.serviceTypes);
+        mView.addObject(Constants.COMMAND, new DNSRecord());
+        mView.setViewName(this.lookupPage);
 
         if (DEBUG)
         {
@@ -337,7 +279,6 @@ public class DNSServiceController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IDNSServiceRequestProcessor processor = (IDNSServiceRequestProcessor) new DNSServiceRequestProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -394,111 +335,76 @@ public class DNSServiceController
 
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            // ensure authenticated access
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            DNSRecord record = new DNSRecord();
+            record.setRecordName(request.getRecordName());
+            record.setRecordType(DNSRecordType.valueOf(request.getRecordType().toString()));
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("DNSRecord: {}", record);
+            }
+
+            DNSServiceRequest dnsRequest = new DNSServiceRequest();
+            dnsRequest.setRecord(record);
+            dnsRequest.setRequestInfo(reqInfo);
+            dnsRequest.setUserAccount(userAccount);
+            dnsRequest.setServiceId(this.serviceId);
+            dnsRequest.setSearchURL(this.serviceHost);
+            dnsRequest.setSearchPath(this.searchSuffix);
+            dnsRequest.setRequestType(DNSRequestType.LOOKUP);
+            dnsRequest.setApplicationId(this.appConfig.getApplicationId());
+            dnsRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("DNSServiceRequest: {}", dnsRequest);
+            }
+
+            DNSServiceResponse response = processor.performLookup(dnsRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("DNSServiceResponse: {}", response);
+            }
+
+            switch (response.getRequestStatus())
+            {
+                case SUCCESS:
+                    if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
+                    {
+                        // multiple records were returned
+                        mView.addObject("dnsEntries", response.getDnsRecords());
+                    }
+                    else if (response.getDnsRecord() != null)
+                    {
+                        mView.addObject("dnsEntry", response.getDnsRecord());
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
+                    }
+
+                    mView.addObject("serviceTypes", this.serviceTypes);
+                    mView.addObject(Constants.COMMAND, new DNSRecord());
+                    mView.setViewName(this.lookupPage);
 
                     break;
                 case FAILURE:
                     mView.setViewName(this.appConfig.getErrorResponsePage());
 
                     break;
-                case SUCCESS:
-                    try
-                    {
-                        // ensure authenticated access
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
-
-                        DNSRecord record = new DNSRecord();
-                        record.setRecordName(request.getRecordName());
-                        record.setRecordType(DNSRecordType.valueOf(request.getRecordType().toString()));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("DNSRecord: {}", record);
-                        }
-
-                        DNSServiceRequest dnsRequest = new DNSServiceRequest();
-                        dnsRequest.setRecord(record);
-                        dnsRequest.setRequestInfo(reqInfo);
-                        dnsRequest.setUserAccount(userAccount);
-                        dnsRequest.setServiceId(this.serviceId);
-                        dnsRequest.setSearchURL(this.serviceHost);
-                        dnsRequest.setSearchPath(this.searchSuffix);
-                        dnsRequest.setRequestType(DNSRequestType.LOOKUP);
-                        dnsRequest.setApplicationId(this.appConfig.getApplicationId());
-                        dnsRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("DNSServiceRequest: {}", dnsRequest);
-                        }
-
-                        DNSServiceResponse response = processor.performLookup(dnsRequest);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("DNSServiceResponse: {}", response);
-                        }
-
-                        switch (response.getRequestStatus())
-                        {
-                            case SUCCESS:
-                                if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
-                                {
-                                    // multiple records were returned
-                                    mView.addObject("dnsEntries", response.getDnsRecords());
-                                }
-                                else if (response.getDnsRecord() != null)
-                                {
-                                    mView.addObject("dnsEntry", response.getDnsRecord());
-                                }
-                                else
-                                {
-                                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
-                                }
-
-                                mView.addObject("serviceTypes", this.serviceTypes);
-                                mView.addObject(Constants.COMMAND, new DNSRecord());
-                                mView.setViewName(this.lookupPage);
-
-                                break;
-                            case FAILURE:
-                                mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                                break;
-                            case EXCEPTION:
-                                mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                                break;
-                            case UNAUTHORIZED:
-                                mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                                break;
-                            default:
-                        }
-                    }
-                    catch (final DNSServiceException dsx)
-                    {
-                        ERROR_RECORDER.error(dsx.getMessage(), dsx);
-
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
+                case EXCEPTION:
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
 
                     break;
                 case UNAUTHORIZED:
@@ -506,14 +412,11 @@ public class DNSServiceController
 
                     break;
                 default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final DNSServiceException dsx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(dsx.getMessage(), dsx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }

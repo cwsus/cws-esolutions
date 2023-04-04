@@ -34,14 +34,14 @@
 --%>
 
 <div id="sidebar">
-    <h1><spring:message code="svc.mgmt.header" /></h1>
+    <h1><spring:message code="platform.mgmt.header" /></h1>
     <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/platform-management/add-service" title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/platform-management/add-service" title="<spring:message code='platform.mgmt.add.platform' />"><spring:message code="platform.mgmt.add.platform" /></a></li>
     </ul>
 </div>
 
 <div id="main">
-    <h1><spring:message code="svc.mgmt.list.platforms" /></h1>
+    <h1><spring:message code="platform.mgmt.list.platforms" /></h1>
 
     <c:if test="${not empty fn:trim(messageResponse)}">
         <p id="info">${messageResponse}</p>
@@ -65,8 +65,8 @@
     <p>
         <table id="viewPlatformList">
             <tr>
-                <td><label id="platformName"><spring:message code="svc.mgmt.service.name" /></label></td>
-                <td><label id="platformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
+                <td><label id="platformName"><spring:message code="platform.mgmt.name" /></label></td>
+                <td><label id="platformRegion"><spring:message code="platform.mgmt.region" /></label></td>
             </tr>
             <c:forEach var="platform" items="${platformList}">
                 <tr>

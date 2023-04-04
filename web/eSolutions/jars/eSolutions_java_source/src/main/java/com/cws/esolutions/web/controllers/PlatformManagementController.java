@@ -51,14 +51,9 @@ import com.cws.esolutions.web.validators.PlatformValidator;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
-import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
-import com.cws.esolutions.core.processors.dto.ApplicationEnablementResponse;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
-import com.cws.esolutions.core.processors.impl.ApplicationEnablementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
-import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -273,7 +268,6 @@ public class PlatformManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -317,57 +311,8 @@ public class PlatformManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
-        try
-        {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
-            }
-
-            switch (enableResponse.getRequestStatus())
-            {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    break;
-                case SUCCESS:
-                    mView.addObject(Constants.COMMAND, new Platform());
-                    mView.setViewName(this.defaultPage);
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
-            }
-        }
-        catch (final ApplicationEnablementException aex)
-        {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
+        mView.addObject(Constants.COMMAND, new Platform());
+        mView.setViewName(this.defaultPage);
 
         if (DEBUG)
         {
@@ -397,7 +342,6 @@ public class PlatformManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IPlatformManagementProcessor processor = (IPlatformManagementProcessor) new PlatformManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -441,132 +385,83 @@ public class PlatformManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            Platform platform = new Platform();
+            platform.setPlatformName(terms);
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("Platform: {}", platform);
+            }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+            PlatformManagementRequest svcRequest = new PlatformManagementRequest();
+            svcRequest.setApplicationId(this.appConfig.getApplicationId());
+            svcRequest.setApplicationName(this.appConfig.getApplicationName());
+            svcRequest.setRequestInfo(reqInfo);
+            svcRequest.setPlatform(platform);
+            svcRequest.setServiceId(this.serviceId);
+            svcRequest.setStartPage(page);
+            svcRequest.setUserAccount(userAccount);
 
-                    break;
-                case SUCCESS:
-                    try
-                    {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
-            
-                        Platform platform = new Platform();
-                        platform.setPlatformName(terms);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Platform: {}", platform);
-                        }
-            
-                        PlatformManagementRequest svcRequest = new PlatformManagementRequest();
-                        svcRequest.setApplicationId(this.appConfig.getApplicationId());
-                        svcRequest.setApplicationName(this.appConfig.getApplicationName());
-                        svcRequest.setRequestInfo(reqInfo);
-                        svcRequest.setPlatform(platform);
-                        svcRequest.setServiceId(this.serviceId);
-                        svcRequest.setStartPage(page);
-                        svcRequest.setUserAccount(userAccount);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
-                        }
-            
-                        PlatformManagementResponse svcResponse = processor.getPlatformByAttribute(svcRequest);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
-                        }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
+            }
 
-                        switch (svcResponse.getRequestStatus())
-                        {
-							case EXCEPTION:
-								mView.setViewName(this.appConfig.getErrorResponsePage());
+            PlatformManagementResponse svcResponse = processor.getPlatformByAttribute(svcRequest);
 
-								break;
-							case FAILURE:
-                                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                                mView.addObject(Constants.COMMAND, new Platform());
-                                mView.setViewName(this.defaultPage);
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
+            }
 
-								break;
-							case SUCCESS:
-                                mView.addObject("pages", (int) Math.ceil(svcResponse.getEntryCount() * 1.0 / this.recordsPerPage));
-                                mView.addObject("page", page);
-                                mView.addObject("searchTerms", terms);
-                                mView.addObject("searchType", type);
-                                mView.addObject(Constants.SEARCH_RESULTS, svcResponse.getPlatformList());
-                                mView.addObject(Constants.COMMAND, new Platform());
-                                mView.setViewName(this.defaultPage);
+            switch (svcResponse.getRequestStatus())
+            {
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
 
-								break;
-							case UNAUTHORIZED:
-								mView.setViewName(this.appConfig.getUnauthorizedPage());
+					break;
+				case FAILURE:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.addObject(Constants.COMMAND, new Platform());
+                    mView.setViewName(this.defaultPage);
 
-								break;
-							default:
-                                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                                mView.addObject(Constants.COMMAND, new Platform());
-                                mView.setViewName(this.defaultPage);
+					break;
+				case SUCCESS:
+                    mView.addObject("pages", (int) Math.ceil(svcResponse.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", page);
+                    mView.addObject("searchTerms", terms);
+                    mView.addObject("searchType", type);
+                    mView.addObject(Constants.SEARCH_RESULTS, svcResponse.getPlatformList());
+                    mView.addObject(Constants.COMMAND, new Platform());
+                    mView.setViewName(this.defaultPage);
 
-								break;
-                        }
-                    }
-                    catch (final PlatformManagementException smx)
-                    {
-                        ERROR_RECORDER.error(smx.getMessage(), smx);
-            
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+					break;
+				default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.addObject(Constants.COMMAND, new Platform());
+                    mView.setViewName(this.defaultPage);
 
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
+					break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final PlatformManagementException smx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(smx.getMessage(), smx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -596,7 +491,6 @@ public class PlatformManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IPlatformManagementProcessor processor = (IPlatformManagementProcessor) new PlatformManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -640,125 +534,76 @@ public class PlatformManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            PlatformManagementRequest svcRequest = new PlatformManagementRequest();
+            svcRequest.setRequestInfo(reqInfo);
+            svcRequest.setUserAccount(userAccount);
+            svcRequest.setServiceId(this.serviceId);
+            svcRequest.setApplicationId(this.appConfig.getApplicationId());
+            svcRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
+            }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+            PlatformManagementResponse svcResponse = processor.listPlatforms(svcRequest);
 
-                    break;
-                case SUCCESS:
-                    try
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
+            }
+
+            switch (svcResponse.getRequestStatus())
+            {
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
+				case FAILURE:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.setViewName(this.addPlatformRedirect);
+
+					break;
+				case SUCCESS:
+                    List<Platform> platformList = svcResponse.getPlatformList();
+
+                    if (DEBUG)
                     {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
-
-                        PlatformManagementRequest svcRequest = new PlatformManagementRequest();
-                        svcRequest.setRequestInfo(reqInfo);
-                        svcRequest.setUserAccount(userAccount);
-                        svcRequest.setServiceId(this.serviceId);
-                        svcRequest.setApplicationId(this.appConfig.getApplicationId());
-                        svcRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
-                        }
-
-                        PlatformManagementResponse svcResponse = processor.listPlatforms(svcRequest);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
-                        }
-
-                        switch (svcResponse.getRequestStatus())
-                        {
-							case EXCEPTION:
-								mView.setViewName(this.appConfig.getErrorResponsePage());
-	
-								break;
-							case FAILURE:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.setViewName(this.addPlatformRedirect);
-	
-								break;
-							case SUCCESS:
-	                            List<Platform> platformList = svcResponse.getPlatformList();
-	
-	                            if (DEBUG)
-	                            {
-	                                DEBUGGER.debug("platformList: {}", platformList);
-	                            }
-	
-	                            mView.addObject("pages", (int) Math.ceil(svcResponse.getEntryCount() * 1.0 / this.recordsPerPage));
-	                            mView.addObject("page", 1);
-	                            mView.addObject("platformList", platformList);
-	
-	                            mView.setViewName(this.viewPlatformList);
-	
-								break;
-							case UNAUTHORIZED:
-								mView.setViewName(this.appConfig.getUnauthorizedPage());
-	
-								break;
-							default:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.setViewName(this.addPlatformRedirect);
-	
-								break;
-                        }
-                    }
-                    catch (final PlatformManagementException smx)
-                    {
-                        ERROR_RECORDER.error(smx.getMessage(), smx);
-
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
+                        DEBUGGER.debug("platformList: {}", platformList);
                     }
 
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                    mView.addObject("pages", (int) Math.ceil(svcResponse.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", 1);
+                    mView.addObject("platformList", platformList);
 
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
+                    mView.setViewName(this.viewPlatformList);
 
-                    break;
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.setViewName(this.addPlatformRedirect);
+
+					break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final PlatformManagementException smx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(smx.getMessage(), smx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -789,7 +634,6 @@ public class PlatformManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IPlatformManagementProcessor processor = (IPlatformManagementProcessor) new PlatformManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -833,115 +677,66 @@ public class PlatformManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            PlatformManagementRequest svcRequest = new PlatformManagementRequest();
+            svcRequest.setRequestInfo(reqInfo);
+            svcRequest.setUserAccount(userAccount);
+            svcRequest.setServiceId(this.serviceId);
+            svcRequest.setApplicationId(this.appConfig.getApplicationId());
+            svcRequest.setApplicationName(this.appConfig.getApplicationName());
+            svcRequest.setStartPage((page - 1) * this.recordsPerPage);
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
+            }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+            PlatformManagementResponse svcResponse = processor.listPlatforms(svcRequest);
 
-                    break;
-                case SUCCESS:
-                    try
-                    {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
-            
-                        PlatformManagementRequest svcRequest = new PlatformManagementRequest();
-                        svcRequest.setRequestInfo(reqInfo);
-                        svcRequest.setUserAccount(userAccount);
-                        svcRequest.setServiceId(this.serviceId);
-                        svcRequest.setApplicationId(this.appConfig.getApplicationId());
-                        svcRequest.setApplicationName(this.appConfig.getApplicationName());
-                        svcRequest.setStartPage((page - 1) * this.recordsPerPage);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
-                        }
-            
-                        PlatformManagementResponse svcResponse = processor.listPlatforms(svcRequest);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
-                        }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
+            }
 
-                        switch (svcResponse.getRequestStatus())
-                        {
-							case EXCEPTION:
-								mView.setViewName(this.appConfig.getErrorResponsePage());
+            switch (svcResponse.getRequestStatus())
+            {
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
 
-								break;
-							case FAILURE:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getErrorResponsePage());
-	                            mView.setViewName(this.defaultPage);
+					break;
+				case FAILURE:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getErrorResponsePage());
+                    mView.setViewName(this.defaultPage);
 
-								break;
-							case SUCCESS:
-	                            mView.addObject("pages", (int) Math.ceil(svcResponse.getEntryCount() * 1.0 / this.recordsPerPage));
-	                            mView.addObject("page", page);
-	                            mView.addObject("platformList", svcResponse.getPlatformList());
+					break;
+				case SUCCESS:
+                    mView.addObject("pages", (int) Math.ceil(svcResponse.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", page);
+                    mView.addObject("platformList", svcResponse.getPlatformList());
 
-								break;
-							case UNAUTHORIZED:
-								break;
-							default:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.setViewName(this.defaultPage);
+					break;
+				case UNAUTHORIZED:
+					break;
+				default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.setViewName(this.defaultPage);
 
-								break;
-                        }
-                    }
-                    catch (final PlatformManagementException smx)
-                    {
-                        ERROR_RECORDER.error(smx.getMessage(), smx);
-            
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
+					break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final PlatformManagementException smx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(smx.getMessage(), smx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -972,7 +767,6 @@ public class PlatformManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IPlatformManagementProcessor platformMgr = (IPlatformManagementProcessor) new PlatformManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1016,133 +810,84 @@ public class PlatformManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            Platform reqPlatform = new Platform();
+            reqPlatform.setPlatformGuid(guid);
+
+            if (DEBUG)
             {
-                case EXCEPTION:
+                DEBUGGER.debug("Platform: {}", reqPlatform);
+            }
+
+            // get a list of available servers
+            PlatformManagementRequest svcRequest = new PlatformManagementRequest();
+            svcRequest.setRequestInfo(reqInfo);
+            svcRequest.setUserAccount(userAccount);
+            svcRequest.setServiceId(this.serviceId);
+            svcRequest.setPlatform(reqPlatform);
+            svcRequest.setApplicationId(this.appConfig.getApplicationId());
+            svcRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
+            }
+
+            PlatformManagementResponse svcResponse = platformMgr.getPlatformData(svcRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
+            }
+
+            switch (svcResponse.getRequestStatus())
+            {
+				case EXCEPTION:
                     mView.setViewName(this.appConfig.getErrorResponsePage());
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+					break;
+				case FAILURE:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.setViewName(this.defaultPage);
 
-                    break;
-                case SUCCESS:
-                    try
+					break;
+				case SUCCESS:
+                    Platform resPlatform = svcResponse.getPlatform();
+                    
+                    if (DEBUG)
                     {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
-            
-                        Platform reqPlatform = new Platform();
-                        reqPlatform.setPlatformGuid(guid);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Platform: {}", reqPlatform);
-                        }
-            
-                        // get a list of available servers
-                        PlatformManagementRequest svcRequest = new PlatformManagementRequest();
-                        svcRequest.setRequestInfo(reqInfo);
-                        svcRequest.setUserAccount(userAccount);
-                        svcRequest.setServiceId(this.serviceId);
-                        svcRequest.setPlatform(reqPlatform);
-                        svcRequest.setApplicationId(this.appConfig.getApplicationId());
-                        svcRequest.setApplicationName(this.appConfig.getApplicationName());
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
-                        }
-            
-                        PlatformManagementResponse svcResponse = platformMgr.getPlatformData(svcRequest);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
-                        }
-
-                        switch (svcResponse.getRequestStatus())
-                        {
-							case EXCEPTION:
-	                            mView.setViewName(this.appConfig.getErrorResponsePage());
-	
-								break;
-							case FAILURE:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.setViewName(this.defaultPage);
-
-								break;
-							case SUCCESS:
-	                            Platform resPlatform = svcResponse.getPlatform();
-	                            
-	                            if (DEBUG)
-	                            {
-	                                DEBUGGER.debug("Service: {}", resPlatform);
-	                            }
-	            
-	                            mView.addObject("platform", resPlatform);
-	                            mView.setViewName(this.viewPlatformPage);
-	
-								break;
-							case UNAUTHORIZED:
-								mView.setViewName(this.appConfig.getUnauthorizedPage());
-	
-								break;
-							default:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.setViewName(this.defaultPage);
-	
-								break;
-                        
-                        }
+                        DEBUGGER.debug("Service: {}", resPlatform);
                     }
-                    catch (final PlatformManagementException smx)
-                    {
-                        ERROR_RECORDER.error(smx.getMessage(), smx);
+    
+                    mView.addObject("platform", resPlatform);
+                    mView.setViewName(this.viewPlatformPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.setViewName(this.defaultPage);
+
+					break;
             
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final PlatformManagementException smx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(smx.getMessage(), smx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -1171,7 +916,6 @@ public class PlatformManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1215,58 +959,8 @@ public class PlatformManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
-        try
-        {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
-            }
-
-            switch (enableResponse.getRequestStatus())
-            {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    break;
-                case SUCCESS:
-                    // TODO: build in getting the list of servers here
-                	mView.addObject(Constants.COMMAND, new Platform());
-                	mView.setViewName(this.addPlatformPage);
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
-            }
-        }
-        catch (final ApplicationEnablementException aex)
-        {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
+    	mView.addObject(Constants.COMMAND, new Platform());
+    	mView.setViewName(this.addPlatformPage);
 
         if (DEBUG)
         {
@@ -1294,7 +988,6 @@ public class PlatformManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IPlatformManagementProcessor processor = (IPlatformManagementProcessor) new PlatformManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1338,123 +1031,73 @@ public class PlatformManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            PlatformManagementRequest svcRequest = new PlatformManagementRequest();
+            svcRequest.setApplicationId(this.appConfig.getApplicationId());
+            svcRequest.setApplicationName(this.appConfig.getApplicationName());
+            svcRequest.setRequestInfo(reqInfo);
+            svcRequest.setPlatform(platform);
+            svcRequest.setServiceId(this.serviceId);
+            svcRequest.setUserAccount(userAccount);
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
+            }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+            PlatformManagementResponse svcResponse = processor.getPlatformByAttribute(svcRequest);
 
-                    break;
-                case SUCCESS:
-                    // TODO: build in getting the list of servers here
-                    try
-                    {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
+            }
 
-                        PlatformManagementRequest svcRequest = new PlatformManagementRequest();
-                        svcRequest.setApplicationId(this.appConfig.getApplicationId());
-                        svcRequest.setApplicationName(this.appConfig.getApplicationName());
-                        svcRequest.setRequestInfo(reqInfo);
-                        svcRequest.setPlatform(platform);
-                        svcRequest.setServiceId(this.serviceId);
-                        svcRequest.setUserAccount(userAccount);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
-                        }
-            
-                        PlatformManagementResponse svcResponse = processor.getPlatformByAttribute(svcRequest);
-            
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
-                        }
+            switch (svcResponse.getRequestStatus())
+            {
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
 
-                        switch (svcResponse.getRequestStatus())
-                        {
-							case EXCEPTION:
-								mView.setViewName(this.appConfig.getErrorResponsePage());
+					break;
+				case FAILURE:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.addObject(Constants.COMMAND, new Platform());
+                    mView.setViewName(this.defaultPage);
 
-								break;
-							case FAILURE:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.addObject(Constants.COMMAND, new Platform());
-	                            mView.setViewName(this.defaultPage);
+					break;
+				case SUCCESS:
+                    mView.addObject("pages", (int) Math.ceil(svcResponse.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", 1);
+                    mView.addObject("searchTerms", platform.getPlatformName());
+                    mView.addObject(Constants.SEARCH_RESULTS, svcResponse.getPlatformList());
+                    mView.addObject(Constants.COMMAND, new Platform());
+                    mView.setViewName(this.defaultPage);
 
-								break;
-							case SUCCESS:
-	                            mView.addObject("pages", (int) Math.ceil(svcResponse.getEntryCount() * 1.0 / this.recordsPerPage));
-	                            mView.addObject("page", 1);
-	                            mView.addObject("searchTerms", platform.getPlatformName());
-	                            mView.addObject(Constants.SEARCH_RESULTS, svcResponse.getPlatformList());
-	                            mView.addObject(Constants.COMMAND, new Platform());
-	                            mView.setViewName(this.defaultPage);
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-								break;
-							case UNAUTHORIZED:
-								mView.setViewName(this.appConfig.getUnauthorizedPage());
+					break;
+				default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.addObject(Constants.COMMAND, new Platform());
+                    mView.setViewName(this.defaultPage);
 
-								break;
-							default:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.addObject(Constants.COMMAND, new Platform());
-	                            mView.setViewName(this.defaultPage);
-
-								break;
-                        }
-                    }
-                    catch (final PlatformManagementException smx)
-                    {
-                        ERROR_RECORDER.error(smx.getMessage(), smx);
-            
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
+					break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final PlatformManagementException smx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(smx.getMessage(), smx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }

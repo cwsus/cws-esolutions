@@ -135,7 +135,6 @@ public class CertificateManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -179,57 +178,8 @@ public class CertificateManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
-        try
-        {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
-            }
-
-            switch (enableResponse.getRequestStatus())
-            {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    break;
-                case SUCCESS:
-                    mView.addObject(Constants.COMMAND, new Application());
-                    mView.setViewName(this.defaultPage);
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
-            }
-        }
-        catch (final ApplicationEnablementException aex)
-        {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
+        mView.addObject(Constants.COMMAND, new Application());
+        mView.setViewName(this.defaultPage);
 
         if (DEBUG)
         {

@@ -55,18 +55,13 @@ import com.cws.esolutions.web.validators.ApplicationValidator;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
-import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
-import com.cws.esolutions.core.processors.dto.ApplicationEnablementResponse;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.impl.ApplicationManagementProcessorImpl;
-import com.cws.esolutions.core.processors.impl.ApplicationEnablementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
-import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProcessor;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
 /**
  * @author cws-khuntly
@@ -349,7 +344,6 @@ public class ApplicationManagementController
 
         ModelAndView mView = new ModelAndView();
 
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -397,57 +391,8 @@ public class ApplicationManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-        	DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
-        try
-        {
-        	ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
-
-	        if (DEBUG)
-	        {
-	        	DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
-	        }
-
-	        switch (enableResponse.getRequestStatus())
-	        {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
-				case FAILURE:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
-				case SUCCESS:
-					mView.addObject(Constants.COMMAND, new Application());
-					mView.setViewName(this.defaultPage);
-
-					break;
-				case UNAUTHORIZED:
-					mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-					break;
-				default:
-					mView.setViewName(this.appConfig.getUnavailablePage());
-
-					break;
-	        }
-        }
-        catch (final ApplicationEnablementException aex)
-        {
-        	ERROR_RECORDER.error(aex.getMessage(), aex);
-
-			mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
+        mView.addObject(Constants.COMMAND, new Application());
+		mView.setViewName(this.defaultPage);
 
         if (DEBUG)
         {
@@ -476,7 +421,6 @@ public class ApplicationManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor appProcessor = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -520,115 +464,64 @@ public class ApplicationManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
+		try
         {
-        	DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
-        try
-        {
-        	ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
 
-	        if (DEBUG)
-	        {
-	        	DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
-	        }
+            Application application = new Application();
+            application.setName(terms);
 
-	        switch (enableResponse.getRequestStatus())
-	        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", application);
+            }
+
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setApplication(application);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setUserAccount(userAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
+
+            ApplicationManagementResponse appResponse = appProcessor.listApplications(appRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
+
+            switch (appResponse.getRequestStatus())
+            {
 				case EXCEPTION:
 					mView.setViewName(this.appConfig.getErrorResponsePage());
 
 					break;
 				case FAILURE:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+	            	mView.addObject(Constants.COMMAND, new Application());
+	            	mView.setViewName(this.defaultPage);
 
 					break;
 				case SUCCESS:
-					try
-			        {
-			            RequestHostInfo reqInfo = new RequestHostInfo();
-			            reqInfo.setHostName(hRequest.getRemoteHost());
-			            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-			
-			            if (DEBUG)
-			            {
-			                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-			            }
-			
-			            Application application = new Application();
-			            application.setName(terms);
-			
-			            if (DEBUG)
-			            {
-			                DEBUGGER.debug("Application: {}", application);
-			            }
-			
-			            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-			            appRequest.setApplication(application);
-			            appRequest.setApplicationId(this.appConfig.getApplicationId());
-			            appRequest.setApplicationName(this.appConfig.getApplicationName());
-			            appRequest.setRequestInfo(reqInfo);
-			            appRequest.setServiceId(this.serviceId);
-			            appRequest.setUserAccount(userAccount);
-			
-			            if (DEBUG)
-			            {
-			                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-			            }
-			
-			            ApplicationManagementResponse appResponse = appProcessor.listApplications(appRequest);
-			
-			            if (DEBUG)
-			            {
-			                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-			            }
-
-			            switch (appResponse.getRequestStatus())
-			            {
-							case EXCEPTION:
-								mView.setViewName(this.appConfig.getErrorResponsePage());
-
-								break;
-							case FAILURE:
-				            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-				            	mView.addObject(Constants.COMMAND, new Application());
-				            	mView.setViewName(this.defaultPage);
-
-								break;
-							case SUCCESS:
-				                mView.addObject("pages", (int) Math.ceil(appResponse.getEntryCount() * 1.0 / this.recordsPerPage));
-				                mView.addObject("page", page);
-				                mView.addObject("searchTerms", terms);
-				                mView.addObject(Constants.SEARCH_RESULTS, appResponse.getApplicationList());
-				                mView.addObject(Constants.COMMAND, new Application());
-				                mView.setViewName(this.defaultPage);
-
-								break;
-							case UNAUTHORIZED:
-								mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-								break;
-							default:
-				            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-				            	mView.addObject(Constants.COMMAND, new Application());
-				            	mView.setViewName(this.defaultPage);
-
-								break;
-			            }
-			        }
-			        catch (final ApplicationManagementException amx)
-			        {
-			            ERROR_RECORDER.error(amx.getMessage(), amx);
-			
-			            mView.setViewName(this.appConfig.getErrorResponsePage());
-			        }
+	                mView.addObject("pages", (int) Math.ceil(appResponse.getEntryCount() * 1.0 / this.recordsPerPage));
+	                mView.addObject("page", page);
+	                mView.addObject("searchTerms", terms);
+	                mView.addObject(Constants.SEARCH_RESULTS, appResponse.getApplicationList());
+	                mView.addObject(Constants.COMMAND, new Application());
+	                mView.setViewName(this.defaultPage);
 
 					break;
 				case UNAUTHORIZED:
@@ -636,16 +529,18 @@ public class ApplicationManagementController
 
 					break;
 				default:
-					mView.setViewName(this.appConfig.getUnavailablePage());
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+	            	mView.addObject(Constants.COMMAND, new Application());
+	            	mView.setViewName(this.defaultPage);
 
 					break;
-	        }
+            }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final ApplicationManagementException amx)
         {
-        	ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(amx.getMessage(), amx);
 
-			mView.setViewName(this.appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -673,7 +568,6 @@ public class ApplicationManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -717,131 +611,82 @@ public class ApplicationManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+            ApplicationManagementResponse appResponse = appMgr.listApplications(appRequest);
 
-                    break;
-                case SUCCESS:
-                    try
-                    {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
+            switch (appResponse.getRequestStatus())
+            {
+			case EXCEPTION:
+				mView.setViewName(this.appConfig.getErrorResponsePage());
 
-                        ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                        appRequest.setRequestInfo(reqInfo);
-                        appRequest.setServiceId(this.serviceId);
-                        appRequest.setUserAccount(userAccount);
-                        appRequest.setApplicationId(this.appConfig.getApplicationId());
-                        appRequest.setApplicationName(this.appConfig.getApplicationName());
+				break;
+			case FAILURE:
+                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                mView.setViewName(this.addApplicationRedirect);
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                        }
+				break;
+			case SUCCESS:
+                List<Application> applicationList = appResponse.getApplicationList();
 
-                        ApplicationManagementResponse appResponse = appMgr.listApplications(appRequest);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<Application>: {}", applicationList);
+                }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-                        }
+                if ((applicationList != null) && (applicationList.size() != 0))
+                {
+                    mView.addObject("applicationList", applicationList);
+                    mView.setViewName(this.viewApplicationsPage);
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
+                    mView.setViewName(this.defaultPage);
+                }
 
-                        switch (appResponse.getRequestStatus())
-                        {
-						case EXCEPTION:
-							mView.setViewName(this.appConfig.getErrorResponsePage());
+				break;
+			case UNAUTHORIZED:
+				mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-							break;
-						case FAILURE:
-                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                            mView.setViewName(this.addApplicationRedirect);
+				break;
+			default:
+                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                mView.setViewName(this.addApplicationRedirect);
 
-							break;
-						case SUCCESS:
-                            List<Application> applicationList = appResponse.getApplicationList();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("List<Application>: {}", applicationList);
-                            }
-
-                            if ((applicationList != null) && (applicationList.size() != 0))
-                            {
-                                mView.addObject("applicationList", applicationList);
-                                mView.setViewName(this.viewApplicationsPage);
-                            }
-                            else
-                            {
-                                mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
-                                mView.setViewName(this.defaultPage);
-                            }
-
-							break;
-						case UNAUTHORIZED:
-							mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-							break;
-						default:
-                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                            mView.setViewName(this.addApplicationRedirect);
-
-							break;
-                        
-                        }
-                    }
-                    catch (final ApplicationManagementException amx)
-                    {
-                        ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
+				break;
+            
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final ApplicationManagementException amx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(amx.getMessage(), amx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -872,7 +717,6 @@ public class ApplicationManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -916,120 +760,71 @@ public class ApplicationManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse response = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", response);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (response.getRequestStatus())
+            Application reqApplication = new Application();
+            reqApplication.setGuid(request);
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("Application: {}", reqApplication);
+            }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+            // get a list of available servers
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setApplication(reqApplication);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
 
-                    break;
-                case SUCCESS:
-                    try
-                    {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
+            ApplicationManagementResponse appResponse = appMgr.getApplicationData(appRequest);
 
-                        Application reqApplication = new Application();
-                        reqApplication.setGuid(request);
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Application: {}", reqApplication);
-                        }
+            if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                Application resApplication = appResponse.getApplication();
 
-                        // get a list of available servers
-                        ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                        appRequest.setRequestInfo(reqInfo);
-                        appRequest.setUserAccount(userAccount);
-                        appRequest.setServiceId(this.serviceId);
-                        appRequest.setApplication(reqApplication);
-                        appRequest.setApplicationId(this.appConfig.getApplicationId());
-                        appRequest.setApplicationName(this.appConfig.getApplicationName());
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Application: {}", resApplication);
+                }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                        }
-
-                        ApplicationManagementResponse appResponse = appMgr.getApplicationData(appRequest);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-                        }
-
-                        if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                        {
-                            Application resApplication = appResponse.getApplication();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Application: {}", resApplication);
-                            }
-
-                            mView.addObject("application", resApplication);
-                            mView.setViewName(this.viewAppPage);
-                        }
-                        else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                        {
-                            mView.setViewName(this.appConfig.getUnauthorizedPage());
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                            mView.setViewName(this.defaultPage);
-                        }
-                    }
-                    catch (final ApplicationManagementException amx)
-                    {
-                        ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
+                mView.addObject("application", resApplication);
+                mView.setViewName(this.viewAppPage);
+            }
+            else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
+                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                mView.setViewName(this.defaultPage);
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final ApplicationManagementException amx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(amx.getMessage(), amx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -1058,7 +853,6 @@ public class ApplicationManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
         final IPlatformManagementProcessor platformProcessor = (IPlatformManagementProcessor) new PlatformManagementProcessorImpl();
 
         if (DEBUG)
@@ -1103,143 +897,94 @@ public class ApplicationManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
+        RequestHostInfo reqInfo = new RequestHostInfo();
+        reqInfo.setHostName(hRequest.getRemoteHost());
+        reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        PlatformManagementRequest platformReq = new PlatformManagementRequest();
+        platformReq.setRequestInfo(reqInfo);
+        platformReq.setServiceId(this.platformMgmt);
+        platformReq.setUserAccount(userAccount);
+        platformReq.setApplicationId(this.appConfig.getApplicationId());
+        platformReq.setApplicationName(this.appConfig.getApplicationName());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("PlatformManagementRequest: {}", platformReq);
         }
 
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            PlatformManagementResponse platformResponse = platformProcessor.listPlatforms(platformReq);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
             }
 
-            switch (enableResponse.getRequestStatus())
+            switch (platformResponse.getRequestStatus())
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+					break;
+				case FAILURE:
+					mView.setViewName(this.addPlatformRedirect);
+					mView.addObject(Constants.COMMAND, new Application());
 
-                    break;
-                case SUCCESS:
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    PlatformManagementRequest platformReq = new PlatformManagementRequest();
-                    platformReq.setRequestInfo(reqInfo);
-                    platformReq.setServiceId(this.platformMgmt);
-                    platformReq.setUserAccount(userAccount);
-                    platformReq.setApplicationId(this.appConfig.getApplicationId());
-                    platformReq.setApplicationName(this.appConfig.getApplicationName());
+					break;
+				case SUCCESS:
+                    List<Platform> platformList = platformResponse.getPlatformList();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("PlatformManagementRequest: {}", platformReq);
+                        DEBUGGER.debug("platformList: {}", platformList);
                     }
 
-                    try
+                    if ((platformList != null) && (platformList.size() != 0))
                     {
-                        PlatformManagementResponse platformResponse = platformProcessor.listPlatforms(platformReq);
+                        Map<String, String> platformListing = new HashMap<String, String>();
+
+                        for (Platform resPlatform : platformList)
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Service: {}", resPlatform);
+                            }
+
+                            platformListing.put(resPlatform.getPlatformGuid(), resPlatform.getPlatformName());
+                        }
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
+                            DEBUGGER.debug("platformListing: {}", platformListing);
                         }
 
-                        switch (platformResponse.getRequestStatus())
-                        {
-							case EXCEPTION:
-								mView.setViewName(this.appConfig.getErrorResponsePage());
-	
-								break;
-							case FAILURE:
-								mView.setViewName(this.addPlatformRedirect);
-								mView.addObject(Constants.COMMAND, new Application());
-
-								break;
-							case SUCCESS:
-	                            List<Platform> platformList = platformResponse.getPlatformList();
-	
-	                            if (DEBUG)
-	                            {
-	                                DEBUGGER.debug("platformList: {}", platformList);
-	                            }
-	
-	                            if ((platformList != null) && (platformList.size() != 0))
-	                            {
-	                                Map<String, String> platformListing = new HashMap<String, String>();
-	
-	                                for (Platform resPlatform : platformList)
-	                                {
-	                                    if (DEBUG)
-	                                    {
-	                                        DEBUGGER.debug("Service: {}", resPlatform);
-	                                    }
-	
-	                                    platformListing.put(resPlatform.getPlatformGuid(), resPlatform.getPlatformName());
-	                                }
-	
-	                                if (DEBUG)
-	                                {
-	                                    DEBUGGER.debug("platformListing: {}", platformListing);
-	                                }
-	
-	                                mView.addObject("platformListing", platformListing);
-	                                mView.addObject(Constants.COMMAND, new Application());
-	                                mView.setViewName(this.addAppPage);
-	                            }
-	
-								break;
-							case UNAUTHORIZED:
-								mView.setViewName(this.appConfig.getUnauthorizedPage());
-	
-								break;
-							default:
-								mView.setViewName(this.addPlatformRedirect);
-								mView.addObject(Constants.COMMAND, new Application());
-	
-								break;
-                        }
-                    }
-                    catch (final PlatformManagementException smx)
-                    {
-                        ERROR_RECORDER.error(smx.getMessage(), smx);
-
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
+                        mView.addObject("platformListing", platformListing);
+                        mView.addObject(Constants.COMMAND, new Application());
+                        mView.setViewName(this.addAppPage);
                     }
 
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
+					break;
+				default:
+					mView.setViewName(this.addPlatformRedirect);
+					mView.addObject(Constants.COMMAND, new Application());
 
-                    break;
+					break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final PlatformManagementException smx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(smx.getMessage(), smx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -1270,7 +1015,6 @@ public class ApplicationManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1314,123 +1058,74 @@ public class ApplicationManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            Application reqApplication = new Application();
+            reqApplication.setGuid(application);
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("Application: {}", reqApplication);
+            }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+            // get a list of available servers
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setApplication(reqApplication);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
 
-                    break;
-                case SUCCESS:
-                    try
-                    {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
+            ApplicationManagementResponse appRes = appMgr.deleteApplicationData(appRequest);
 
-                        Application reqApplication = new Application();
-                        reqApplication.setGuid(application);
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appRes);
+            }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Application: {}", reqApplication);
-                        }
+            switch (appRes.getRequestStatus())
+            {
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
 
-                        // get a list of available servers
-                        ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                        appRequest.setRequestInfo(reqInfo);
-                        appRequest.setUserAccount(userAccount);
-                        appRequest.setServiceId(this.serviceId);
-                        appRequest.setApplication(reqApplication);
-                        appRequest.setApplicationId(this.appConfig.getApplicationId());
-                        appRequest.setApplicationName(this.appConfig.getApplicationName());
+					break;
+				case FAILURE:
+					mView.setViewName(this.defaultPage);
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                        }
+					break;
+				case SUCCESS:
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationRetired);
+                    mView.setViewName(this.defaultPage);
 
-                        ApplicationManagementResponse appRes = appMgr.deleteApplicationData(appRequest);
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementResponse: {}", appRes);
-                        }
+					break;
+				default:
+					mView.setViewName(this.defaultPage);
 
-                        switch (appRes.getRequestStatus())
-                        {
-							case EXCEPTION:
-								mView.setViewName(this.appConfig.getErrorResponsePage());
-
-								break;
-							case FAILURE:
-								mView.setViewName(this.defaultPage);
-
-								break;
-							case SUCCESS:
-	                            mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationRetired);
-	                            mView.setViewName(this.defaultPage);
-
-								break;
-							case UNAUTHORIZED:
-								mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-								break;
-							default:
-								mView.setViewName(this.defaultPage);
-
-								break;
-                        }
-                    }
-                    catch (final ApplicationManagementException amx)
-                    {
-                        ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
+					break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final ApplicationManagementException amx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(amx.getMessage(), amx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -1461,7 +1156,6 @@ public class ApplicationManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor processor = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1505,122 +1199,73 @@ public class ApplicationManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
-        }
-
         try
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            switch (enableResponse.getRequestStatus())
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setApplication(application);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setUserAccount(userAccount);
+
+            if (DEBUG)
             {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+            ApplicationManagementResponse appResponse = processor.listApplications(appRequest);
 
-                    break;
-                case SUCCESS:
-                    try
-                    {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
+            switch (appResponse.getRequestStatus())
+            {
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
 
-                        ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                        appRequest.setApplication(application);
-                        appRequest.setApplicationId(this.appConfig.getApplicationId());
-                        appRequest.setApplicationName(this.appConfig.getApplicationName());
-                        appRequest.setRequestInfo(reqInfo);
-                        appRequest.setServiceId(this.serviceId);
-                        appRequest.setUserAccount(userAccount);
+					break;
+				case FAILURE:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.addObject(Constants.COMMAND, new Application());
+                    mView.setViewName(this.defaultPage);
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                        }
+					break;
+				case SUCCESS:
+                    mView.addObject("pages", (int) Math.ceil(appResponse.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", 1);
+                    mView.addObject("searchTerms", application.getName());
+                    mView.addObject(Constants.SEARCH_RESULTS, appResponse.getApplicationList());
+                    mView.addObject(Constants.COMMAND, new Application());
+                    mView.setViewName(this.defaultPage);
 
-                        ApplicationManagementResponse appResponse = processor.listApplications(appRequest);
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-                        }
+					break;
+				default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.addObject(Constants.COMMAND, new Application());
+                    mView.setViewName(this.defaultPage);
 
-                        switch (appResponse.getRequestStatus())
-                        {
-							case EXCEPTION:
-								mView.setViewName(this.appConfig.getErrorResponsePage());
-
-								break;
-							case FAILURE:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.addObject(Constants.COMMAND, new Application());
-	                            mView.setViewName(this.defaultPage);
-
-								break;
-							case SUCCESS:
-	                            mView.addObject("pages", (int) Math.ceil(appResponse.getEntryCount() * 1.0 / this.recordsPerPage));
-	                            mView.addObject("page", 1);
-	                            mView.addObject("searchTerms", application.getName());
-	                            mView.addObject(Constants.SEARCH_RESULTS, appResponse.getApplicationList());
-	                            mView.addObject(Constants.COMMAND, new Application());
-	                            mView.setViewName(this.defaultPage);
-
-								break;
-							case UNAUTHORIZED:
-								mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-								break;
-							default:
-	                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-	                            mView.addObject(Constants.COMMAND, new Application());
-	                            mView.setViewName(this.defaultPage);
-
-								break;
-                        }
-                    }
-                    catch (final ApplicationManagementException amx)
-                    {
-                        ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
-
-                    break;
-                case UNAUTHORIZED:
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
+					break;
             }
         }
-        catch (final ApplicationEnablementException aex)
+        catch (final ApplicationManagementException amx)
         {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            ERROR_RECORDER.error(amx.getMessage(), amx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -1651,7 +1296,6 @@ public class ApplicationManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor processor = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
-        final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1695,121 +1339,72 @@ public class ApplicationManagementController
             }
         }
 
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
+        this.validator.validate(request, bindResult);
 
-        if (DEBUG)
+        if (bindResult.hasErrors())
         {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new Application());
+            mView.setViewName(this.addAppPage);
         }
-
-        try
+        else
         {
-            ApplicationEnablementResponse enableResponse = enabler.isServiceEnabled(enableRequest);
-
-            if (DEBUG)
+            try
             {
-                DEBUGGER.debug("ApplicationEnablementResponse: {}", enableResponse);
-            }
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
-            switch (enableResponse.getRequestStatus())
-            {
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
 
-                    break;
-                case FAILURE:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+                appRequest.setApplication(request);
+                appRequest.setServiceId(this.serviceId);
+                appRequest.setRequestInfo(reqInfo);
+                appRequest.setUserAccount(userAccount);
+                appRequest.setApplicationId(this.appConfig.getApplicationId());
+                appRequest.setApplicationName(this.appConfig.getApplicationName());
 
-                    break;
-                case SUCCESS:
-                    this.validator.validate(request, bindResult);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ApplicationManagementRequest: {}", request);
+                }
 
-                    if (bindResult.hasErrors())
-                    {
-                        // validation failed
-                        ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+                ApplicationManagementResponse response = processor.addNewApplication(appRequest);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-                        mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-                        mView.addObject(Constants.COMMAND, new Application());
-                        mView.setViewName(this.addAppPage);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            RequestHostInfo reqInfo = new RequestHostInfo();
-                            reqInfo.setHostName(hRequest.getRemoteHost());
-                            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                }
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                            }
-
-                            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                            appRequest.setApplication(request);
-                            appRequest.setServiceId(this.serviceId);
-                            appRequest.setRequestInfo(reqInfo);
-                            appRequest.setUserAccount(userAccount);
-                            appRequest.setApplicationId(this.appConfig.getApplicationId());
-                            appRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ApplicationManagementRequest: {}", request);
-                            }
-
-                            ApplicationManagementResponse response = processor.addNewApplication(appRequest);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
-                            }
-
-                            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                            {
-                                // app added
-                                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationAdded);
-                                mView.setViewName(this.addApplicationRedirect);
-                            }
-                            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                            {
-                                mView.setViewName(this.appConfig.getUnauthorizedPage());
-                            }
-                            else
-                            {
-                                mView.setViewName(this.appConfig.getErrorResponsePage());
-                            }
-                        }
-                        catch (final ApplicationManagementException amx)
-                        {
-                            ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                            mView.setViewName(this.appConfig.getErrorResponsePage());
-                        }
-                    }
-
-                    break;
-                case UNAUTHORIZED:
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    // app added
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationAdded);
+                    mView.setViewName(this.addApplicationRedirect);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
                     mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    break;
-                default:
-                    mView.setViewName(this.appConfig.getUnavailablePage());
-
-                    break;
+                }
+                else
+                {
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                }
             }
-        }
-        catch (final ApplicationEnablementException aex)
-        {
-            ERROR_RECORDER.error(aex.getMessage(), aex);
+            catch (final ApplicationManagementException amx)
+            {
+                ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
+            }
         }
 
         if (DEBUG)

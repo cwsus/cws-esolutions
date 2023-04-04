@@ -115,27 +115,15 @@
 	<body id="top">
 		<div id="header">
 			<div class="wrapper">
-    			<div class="fl_left">
-      				<h1><a href="#"><spring:message code="theme.title" /></a></h1>
-    			</div>
   				<br class="clear" />
   			</div>
 		</div>
 
 		<div id="topbar">
   			<div class="wrapper">
-  				<c:if test="${empty fn:trim(sessionScope.userAccount)}">
-    				<div id="topnav">
-      					<ul>
-        					<li><a href="${pageContext.request.contextPath}/ui/auth/default">Login</a></li>
-        				</ul>
-    				</div>
-    			</c:if>
     			<c:if test="${not empty fn:trim(sessionScope.userAccount)}">
     				<div id="topnav">
     					<ul>
-        					<li><a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.homepage' />">
-        						<spring:message code='theme.navbar.homepage' /></a></li>
         					<li><a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='theme.navbar.application-mgmt' />">
                                 <spring:message code='theme.navbar.application-mgmt' /></a></li>
         					<li><a href="${pageContext.request.contextPath}/ui/dns-service/default" title="<spring:message code='theme.navbar.dns-services' />">

@@ -73,16 +73,17 @@
 </script>
 
 <div id="sidebar">
-    <h1><spring:message code="svc.mgmt.header" /></h1>
+    <h1><spring:message code="platform.mgmt.header" /></h1>
     <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters" title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter" title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/list-platforms" title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='platform.mgmt.list.datacenters' />"><spring:message code="platform.mgmt.list.datacenters" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" title="<spring:message code='platform.mgmt.add.datacenter' />"><spring:message code="platform.mgmt.add.datacenter" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/platform-management/list-platforms" title="<spring:message code='platform.mgmt.list.platforms' />"><spring:message code="platform.mgmt.list.platforms" /></a></li>
     </ul>
 </div>
 
 <div id="main">
-    <h1><spring:message code="svc.mgmt.add.platform" /></h1>
+    <h1><spring:message code="platform.mgmt.add.platform" /></h1>
+    <div id="validationError" style="color: #FF0000"></div>
 
     <div id="validationError"></div>
 
@@ -107,19 +108,19 @@
 
     <p>
         <form:form id="submitPlatformData" name="submitPlatformData" action="${pageContext.request.contextPath}/ui/platform-management/submit-platform" method="post">
-            <label id="txtPlatformName"><spring:message code="svc.mgmt.platform.name" /></label>
+            <label id="txtPlatformName"><spring:message code="platform.mgmt.name" /></label>
             <form:input path="platformName" />
-            <form:errors path="name" cssClass="error" />
+            <form:errors path="platformName" cssClass="error" />
 
-            <label id="txtPlatformStatus"><spring:message code="svc.mgmt.platform.status" /></label>
-            <form:select path="status" multiple="false">
+            <label id="txtPlatformStatus"><spring:message code="platform.mgmt.status" /></label>
+            <form:select path="platformStatus" multiple="false">
                 <option><spring:message code="theme.option.select" /></option>
                 <option><spring:message code="theme.option.spacer" /></option>
                 <form:options items="${statusList}" />
-            </form:select>
+            </form:select>  
             <form:errors path="platformStatus" cssClass="error" />
 
-            <label id="txtPlatformDescription"><spring:message code="svc.mgmt.platform.description" /></label>
+            <label id="txtPlatformDescription"><spring:message code="platform.mgmt.description" /></label>
             <form:textarea path="platformDescription" />
             <form:errors path="description" cssClass="error" />
 

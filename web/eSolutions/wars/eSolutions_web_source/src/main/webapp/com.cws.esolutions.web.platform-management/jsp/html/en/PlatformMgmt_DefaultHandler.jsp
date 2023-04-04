@@ -57,6 +57,7 @@
 <div id="homecontent">
     <div class="wrapper">   
         <div id="error"></div>
+        <div id="validationError" style="color: #FF0000"></div>
     
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
@@ -79,7 +80,7 @@
 
         <h1><spring:message code="theme.search.header" /></h1>
         <p>
-            <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/service-management/search" method="post">
+            <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/platform-management/search" method="post">
                 <label id="txtSearchTerms"><spring:message code="theme.search.terms" /></label>
                 <form:input path="platformName" />
                 <form:errors path="platformName" cssClass="error" />
@@ -95,7 +96,7 @@
 <div id="container">
     <div class="wrapper">
         <div id="content">
-            <h1><spring:message code="svc.mgmt.header" /></h1>
+            <h1><spring:message code="platform.mgmt.header" /></h1>
             <ul>
                 <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
                 <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>

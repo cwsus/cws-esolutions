@@ -40,10 +40,9 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class ApplicationEnablementRequest implements Serializable
 {
+	private String requestURI = null;
     private String serviceGuid = null;
     private String serviceName = null;
-    private String serviceDesc = null;
-    private boolean isEnabled = false;
     private String applicationId = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
@@ -133,9 +132,9 @@ public class ApplicationEnablementRequest implements Serializable
         this.serviceName = value;
     }
 
-    public final void setServiceDesc(final String value)
+    public final void setRequestURI(final String value)
     {
-        final String methodName = ApplicationEnablementRequest.CNAME + "#setServiceDesc(final String value)";
+        final String methodName = ApplicationEnablementRequest.CNAME + "#setRequestURI(final String value)";
 
         if (DEBUG)
         {
@@ -143,20 +142,7 @@ public class ApplicationEnablementRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.serviceDesc = value;
-    }
-
-    public final void setIsEnabled(final boolean value)
-    {
-        final String methodName = ApplicationEnablementRequest.CNAME + "#setIsEnabled(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.isEnabled = value;
+        this.requestURI = value;
     }
 
     public final UserAccount getUserAccount()
@@ -237,30 +223,17 @@ public class ApplicationEnablementRequest implements Serializable
         return this.serviceName;
     }
 
-    public final String getServiceDesc()
+    public final String getRequestURI()
     {
-        final String methodName = ApplicationEnablementRequest.CNAME + "#getServiceDesc()";
+        final String methodName = ApplicationEnablementRequest.CNAME + "#getRequestURI()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceDesc);
+            DEBUGGER.debug("Value: {}", this.requestURI);
         }
 
-        return this.serviceDesc;
-    }
-
-    public final boolean isEnabled()
-    {
-        final String methodName = ApplicationEnablementRequest.CNAME + "#isEnabled()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.isEnabled);
-        }
-
-        return this.isEnabled;
+        return this.requestURI;
     }
 
     @Override

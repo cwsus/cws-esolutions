@@ -130,10 +130,6 @@
         <encryptionAlgorithm>RSA</encryptionAlgorithm> <!-- file encryption algorithm -->
     </file-security-config>
 
-    <exception-config>
-        <sendExceptionNotifications>false</sendExceptionNotifications> <!-- if true, configure mail props -->
-    </exception-config>
-
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>

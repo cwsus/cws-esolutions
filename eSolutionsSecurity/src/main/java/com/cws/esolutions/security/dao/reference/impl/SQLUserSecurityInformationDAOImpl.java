@@ -613,7 +613,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         return questionMap;
     }
 
-
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserPassword(java.lang.String, java.lang.String)
      */
@@ -798,5 +797,108 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         }
 
         return isComplete;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#obtainSecurityQuestionList()
+     */
+    public synchronized List<String> getUserGroups(final String commonName, final String userId) throws SQLException
+    {
+        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#getUserGroups(final String commonName, final String userId) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        List<String> responseList = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareStatement("{ CALL getUserGroups(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, commonName);
+            stmt.setString(2, userId);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                	DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                	resultSet.first();
+
+                	responseList = new ArrayList<String>();
+
+                	for (String str : resultSet.getString(1).split(","))
+                	{
+                		if (DEBUG)
+                		{
+                			DEBUGGER.debug("Value: {}", str);
+                		}
+
+                		responseList.add(str);
+
+                		if (DEBUG)
+                    	{
+                    		DEBUGGER.debug("responseList: {}", responseList);
+                    	}
+                	}
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("responseList: {}", responseList);
+                	}
+                }
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (!(Objects.isNull(resultSet)))
+            {
+                resultSet.close();
+            }
+
+            if (!(Objects.isNull(stmt)))
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return responseList;
     }
 }

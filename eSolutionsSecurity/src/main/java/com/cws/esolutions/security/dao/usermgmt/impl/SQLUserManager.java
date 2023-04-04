@@ -963,7 +963,7 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         boolean isComplete = false;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(contactDataSource))
         {
@@ -988,43 +988,21 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareStatement("{ CALL updateUserEmail(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL updateUserEmail(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
             stmt.setString(2, value);
+            stmt.registerOutParameter(3, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            stmt.executeUpdate();
+            int updateCount = stmt.getInt(4);
 
-            // check if the change was actually made
-            stmt.close();
-            stmt = null;
-
-            stmt = sqlConn.prepareStatement("{ CALL validateEmailUpdate(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userId);
-            stmt.setString(2, value);
-
-            if (DEBUG)
+            if (updateCount == 1)
             {
-            	DEBUGGER.debug("stmt: {}", stmt);
-            }
-
-            resultSet = stmt.executeQuery();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("resultSet: {}", resultSet);
-            }
-
-            if ((resultSet.next()))
-            {
-            	if (resultSet.getInt(1) == 1)
-            	{
-            		isComplete = true;
-            	}
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)

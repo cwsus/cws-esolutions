@@ -39,7 +39,7 @@
         <property name="messageApplicationAdded" value="app.mgmt.application.added" />
         <property name="messageNoApplicationsFound" value="app.mgmt.no.applications" />
         <property name="messageApplicationRetired" value="app.mgmt.application.retired" />
-        <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
+        <property name="addPlatformRedirect" value="redirect:/ui/platform-management/add-platform" />
         <property name="addApplicationRedirect" value="redirect:/ui/application-management/add-application" />
     </bean>
 </beans>

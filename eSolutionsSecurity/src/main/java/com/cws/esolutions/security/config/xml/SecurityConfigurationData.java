@@ -53,7 +53,6 @@ public final class SecurityConfigurationData
     private CertificateConfig certConfig = null;
     private SecurityConfig securityConfig = null;
     private ResourceConfig resourceConfig = null;
-    private ExceptionConfig exceptionConfig = null;
     private PasswordRepositoryConfig passwordRepo = null;
     private FileSecurityConfig fileSecurityConfig = null;
 
@@ -125,19 +124,6 @@ public final class SecurityConfigurationData
         }
 
         this.keyConfig = value;
-    }
-
-    public final void setExceptionConfig(final ExceptionConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setExceptionConfig(final ExceptionConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.exceptionConfig = value;
     }
 
     public final void setPasswordRepo(final PasswordRepositoryConfig value)
@@ -247,20 +233,6 @@ public final class SecurityConfigurationData
         }
 
         return this.keyConfig;
-    }
-
-    @XmlElement(name = "exception-config")
-    public final ExceptionConfig getExceptionConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getExceptionConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.exceptionConfig);
-        }
-
-        return this.exceptionConfig;
     }
 
     @XmlElement(name = "file-security-config")

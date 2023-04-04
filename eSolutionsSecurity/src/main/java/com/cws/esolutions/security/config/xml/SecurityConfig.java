@@ -61,7 +61,6 @@ public final class SecurityConfig
     private String applicationId = null;
     private boolean performAudit = true;
     private String randomGenerator = null;
-    private boolean enableSecurity = true;
     private String applicationName = null;
     private String encryptionAlgorithm = "AES";
     private String secretKeyAlgorithm = "PBKDF2WithHmacSHA512";
@@ -334,19 +333,6 @@ public final class SecurityConfig
         this.auditConfig = value;
     }
 
-    public final void setEnableSecurity(final boolean value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setEnableSecurity(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.enableSecurity = value;
-    }
-
     public final void setKeyLength(final int value)
     {
         final String methodName = SecurityConfig.CNAME + "#setKeyLength(final int value)";
@@ -415,20 +401,6 @@ public final class SecurityConfig
         }
 
         return this.applicationName;
-    }
-
-    @XmlElement(name = "enableSecurity")
-    public final boolean getEnableSecurity()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getEnableSecurity()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.enableSecurity);
-        }
-
-        return this.enableSecurity;
     }
 
     @XmlElement(name = "maxAttempts")

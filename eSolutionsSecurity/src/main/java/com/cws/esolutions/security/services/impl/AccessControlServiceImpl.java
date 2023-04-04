@@ -25,6 +25,9 @@ package com.cws.esolutions.security.services.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.List;
+import java.sql.SQLException;
+
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
@@ -44,6 +47,8 @@ public class AccessControlServiceImpl implements IAccessControlService
     {
         final String methodName = AccessControlServiceImpl.CNAME + "#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException";
 
+        AccessControlServiceResponse response = new AccessControlServiceResponse();
+
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
@@ -57,29 +62,36 @@ public class AccessControlServiceImpl implements IAccessControlService
         	DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
-        AccessControlServiceResponse response = new AccessControlServiceResponse();
+    	switch (userAccount.getUserRole())
+    	{
+        	case SITE_ADMIN:
+        		response.setIsUserAuthorized(Boolean.TRUE);
 
-        if (secConfig.getEnableSecurity())
-        {
-        	switch (userAccount.getUserRole())
-        	{
-	        	case SITE_ADMIN:
-	        		response.setIsUserAuthorized(Boolean.TRUE);
+        		break;
+        	default:
+                try
+                {
+                	List<String> groupList = userSec.getUserGroups(userAccount.getGuid(), userAccount.getUsername());
 
-	        		break;
-	        	case ADMIN:
-	        		response.setIsUserAuthorized(Boolean.TRUE);
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("groupList: {}", groupList);
+                	}
 
-	        		break;
-	        	default:
-					response.setIsUserAuthorized(Boolean.FALSE);
+                	for (String group : groupList)
+                	{
+                		if (DEBUG)
+                		{
+                			DEBUGGER.debug("group: {}", group);
+                		}
+                	}
+                }
+                catch (SQLException sqx)
+                {
+                	ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                }
 
-					break;
-            }
-        }
-        else
-        {
-            response.setIsUserAuthorized(Boolean.TRUE);
+				break;
         }
 
         return response;
