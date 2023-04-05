@@ -171,10 +171,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 		Arrays.asList(
                 				UUID.randomUUID().toString(),
                 				platform.getPlatformName(),
-                				platform.getPlatformRegion().toString(),
-                				platform.getPlatformPartition().toString(),
-                				platform.getPlatformStatus().toString(),
-                				platform.getPlatformDescription()));
+                				platform.getPlatformStatus().toString()));
 
                 if (DEBUG)
                 {

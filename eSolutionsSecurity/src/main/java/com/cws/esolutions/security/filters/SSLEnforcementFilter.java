@@ -106,7 +106,7 @@ public class SSLEnforcementFilter implements Filter
                     ? rBundle.getString(SSLEnforcementFilter.IGNORE_HOST_LIST).trim().split(",") : null;
             this.ignoreURIs = (
                     StringUtils.isNotEmpty(rBundle.getString(SSLEnforcementFilter.IGNORE_URI_LIST)))
-                    ? rBundle.getString(SSLEnforcementFilter.IGNORE_HOST_LIST).trim().split(",") : null;
+                    ? rBundle.getString(SSLEnforcementFilter.IGNORE_URI_LIST).trim().split(",") : null;
 
             if (DEBUG)
             {

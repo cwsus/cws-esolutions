@@ -34,8 +34,6 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.config.xml.RepositoryConfig;
-import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 /**
  * API allowing user key management tasks. Used in conjunction with the
@@ -50,8 +48,6 @@ public interface KeyManager
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
-    static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
-    static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
     static final DataSource dataSource = (DataSource) svcBean.getDataSources().get("SecurityDataSource");
     
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);

@@ -47,57 +47,6 @@
         <userSecDAO>com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl</userSecDAO>
     </security-config>
 
-    <password-repository>
-        <passwordFile>F:/mytest.txt</passwordFile>
-        <saltFile>F:/mysalt.txt</saltFile>
-    </password-repository>
-
-    <!-- this should correlate back to the data obtained from -->
-    <!-- the authentication repository. the objects below -->
-    <!-- are the *minimum* required to populate the user object -->
-    <repository-config>
-        <baseObjectClass>userProxy</baseObjectClass>
-        <repositoryBaseDN>organizationName=CWS US,dc=caspersbox,dc=com</repositoryBaseDN>
-        <repositoryUserBase>organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
-        <repositoryRoleBase>organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase>
-        <userReturningAttributes>
-            <commonName>cn</commonName>
-            <userId>uid</userId>
-            <surname>sn</surname>
-            <givenName>givenName</givenName>
-            <emailAddr>mail</emailAddr>
-            <displayName>displayName</displayName>
-            <telephoneNumber>telephoneNumber</telephoneNumber>
-            <userRole>cwsrole</userRole>
-            <returningAttributes>
-                <attributeName>cn</attributeName>
-                <attributeName>uid</attributeName>
-                <attributeName>sn</attributeName>
-                <attributeName>givenName</attributeName>
-                <attributeName>displayName</attributeName>
-                <attributeName>cwsrole</attributeName>
-                <attributeName>cwsfailedpwdcount</attributeName>
-                <attributeName>cwslastlogin</attributeName>
-                <attributeName>cwsexpirydate</attributeName>
-                <attributeName>cwsissuspended</attributeName>
-                <attributeName>cwsisolrsetup</attributeName>
-                <attributeName>cwsisolrlocked</attributeName>
-                <attributeName>cwsistcaccepted</attributeName>
-                <attributeName>telephoneNumber</attributeName>
-                <attributeName>pager</attributeName>
-            </returningAttributes>
-        </userReturningAttributes>
-
-        <securityReturningAttributes>
-            <userPassword>userPassword</userPassword>
-            <secret>secret</secret>
-            <secQuestionOne>secQuestionOne</secQuestionOne>
-            <secQuestionTwo>secQuestionTwo</secQuestionTwo>
-            <secAnswerOne>secAnswerOne</secAnswerOne>
-            <secAnswerTwo>secAnswerTwo</secAnswerTwo>
-        </securityReturningAttributes>
-    </repository-config>
-
     <!-- only required if file-based signing is used. the keys arent used for anything else. -->
     <key-config>
         <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->

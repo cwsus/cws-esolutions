@@ -71,10 +71,12 @@ public class AccessControlServiceImpl implements IAccessControlService
         	default:
                 try
                 {
+                	List<String> accessGroups = userSec.getAccessGroups();
                 	List<String> groupList = userSec.getUserGroups(userAccount.getGuid(), userAccount.getUsername());
 
                 	if (DEBUG)
                 	{
+                		DEBUGGER.debug("accessGroups: {}", accessGroups);
                 		DEBUGGER.debug("groupList: {}", groupList);
                 	}
 
@@ -83,6 +85,11 @@ public class AccessControlServiceImpl implements IAccessControlService
                 		if (DEBUG)
                 		{
                 			DEBUGGER.debug("group: {}", group);
+                		}
+
+                		if (accessGroups.contains(group))
+                		{
+                			response.setIsUserAuthorized(Boolean.TRUE);
                 		}
                 	}
                 }

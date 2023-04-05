@@ -97,12 +97,12 @@
 <div id="container">
     <div class="wrapper">
         <div id="content">
-            <h1><spring:message code="system.mgmt.header" /></h1>
+            <h1><spring:message code="server.mgmt.header" /></h1>
             <ul>
-                <li><a href="${pageContext.request.contextPath}/ui/server-management/add-server" title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/server-management/service-consoles" title="<spring:message code='system.mgmt.service.consoles' />"><spring:message code='system.mgmt.service.consoles' /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/server-management/install-software" title="<spring:message code='system.mgmt.install.software.header' />"><spring:message code="system.mgmt.install.software.header" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/server-management/server-control" title="<spring:message code='system.mgmt.server.control.header' />"><spring:message code='system.mgmt.server.control.header' /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/server-management/add-server" title="<spring:message code='server.mgmt.add.server' />"><spring:message code="server.mgmt.add.server" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/server-management/service-consoles" title="<spring:message code='server.mgmt.service.consoles' />"><spring:message code='server.mgmt.service.consoles' /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/server-management/install-software" title="<spring:message code='server.mgmt.install.software.header' />"><spring:message code="server.mgmt.install.software.header" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/server-management/server-control" title="<spring:message code='server.mgmt.server.control.header' />"><spring:message code='server.mgmt.server.control.header' /></a></li>
             </ul>
 
             <c:if test="${not empty searchResults}">

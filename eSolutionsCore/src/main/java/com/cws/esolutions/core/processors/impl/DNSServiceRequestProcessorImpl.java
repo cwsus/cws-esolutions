@@ -126,7 +126,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             else
             {
                 // this will run through the available slave servers
-                List<Object[]> serverList = dao.getServersByAttribute(ServerType.DNSSLAVE.name(), 0);
+                List<String[]> serverList = dao.getServersByAttribute(ServerType.DNSSLAVE.name(), 0);
 
                 if (DEBUG)
                 {

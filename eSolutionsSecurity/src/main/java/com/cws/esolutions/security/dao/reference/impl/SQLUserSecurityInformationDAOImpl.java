@@ -124,6 +124,93 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#getUserSalt(java.lang.String, java.lang.String)
      */
+    public synchronized List<String> getAccessGroups() throws SQLException
+    {
+        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#getAccessGroups() throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        List<String> responseList = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareStatement("{ CALL getAvailableGroups(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (resultSet.next())
+                {
+                    resultSet.beforeFirst();
+
+                    while (resultSet.next())
+                    {
+                    	responseList = new ArrayList<String>(
+                    			Arrays.asList(
+                    					resultSet.getString(1),
+                    					resultSet.getString(2)));
+                    }
+                }
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (!(Objects.isNull(resultSet)))
+            {
+                resultSet.close();
+            }
+
+            if (!(Objects.isNull(stmt)))
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return responseList;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#getUserSalt(java.lang.String, java.lang.String)
+     */
     public synchronized String getUserSalt(final String commonName, final String saltType) throws SQLException
     {
         final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#getUserSalt(final String commonName, final String saltType) throws SQLException";

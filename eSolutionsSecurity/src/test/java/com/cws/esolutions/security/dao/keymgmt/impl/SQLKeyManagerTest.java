@@ -52,7 +52,7 @@ public class SQLKeyManagerTest
 
             userAccount.setStatus(LoginStatus.SUCCESS);
             userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-            userAccount.setUsername("junit");
+            userAccount.setUsername("khuntly");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }

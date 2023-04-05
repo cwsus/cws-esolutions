@@ -60,7 +60,7 @@ public interface IServerDataDAO
 
     List<String[]> listServers(final int startRow) throws SQLException;
 
-    List<Object[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
+    List<String[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
 
     List<Object> getServer(final String serverGuid) throws SQLException;
 }

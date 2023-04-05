@@ -164,7 +164,7 @@
                                     </form:select>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/ui/application-management/add-platform"
+                                    <a href="${pageContext.request.contextPath}/ui/platform-management/add-platform"
                                         title="<spring:message code='select.request.add.platform' />"><spring:message code='select.request.add.platform' /></a>
                                 </c:otherwise>
                             </c:choose>

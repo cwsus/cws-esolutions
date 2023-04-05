@@ -50,6 +50,8 @@ public interface IUserSecurityInformationDAO
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    List<String> getAccessGroups() throws SQLException;
+
     List<String> getUserGroups(final String commonName, final String userId) throws SQLException;
 
     /**

@@ -34,30 +34,18 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.config.xml.RepositoryConfig;
-import com.cws.esolutions.security.config.xml.UserReturningAttributes;
-import com.cws.esolutions.security.config.xml.PasswordRepositoryConfig;
-import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
- * API allowing user authentication tasks. Used in conjunction with the
- * {@link com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory}
- * to provide functionality for LDAP and SQL datastores.
- *
  * @author cws-khuntly
  * @version 1.0
  */
 public interface Authenticator
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final SystemConfig systemConfig = svcBean.getConfigData().getSystemConfig();
-    static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
     static final DataSource dataSource = svcBean.getDataSources().get("SecurityDataSource");
-    static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
-    static final PasswordRepositoryConfig passwordConfig = svcBean.getConfigData().getPasswordRepo();
 
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

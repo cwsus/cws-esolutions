@@ -58,7 +58,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -76,7 +76,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
+            stmt = sqlConn.prepareCall("{ CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
             		ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, (String) serverData.get(0)); // systemGuid
             stmt.setString(2, (String) serverData.get(1)); // systemOs
@@ -107,17 +107,24 @@ public class ServerDataDAOImpl implements IServerDataDAO
             stmt.setString(27, (String) serverData.get(26)); // serverRack
             stmt.setString(28, (String) serverData.get(27)); // rackPosition
             stmt.setString(29, (String) serverData.get(28)); // owningDmgr
+            stmt.registerOutParameter(30, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            isComplete = (!(stmt.execute()));
+            stmt.execute();
+            int updateCount = stmt.getInt(30);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isComplete: {}", isComplete);
+                DEBUGGER.debug("updateCount: {}", updateCount);
+            }
+
+            if (updateCount == 1)
+            {
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)
@@ -433,7 +440,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServerDataDAO#getServersByAttribute(java.lang.String, int)
      */
-    public synchronized List<Object[]> getServersByAttribute(final String value, final int startRow) throws SQLException
+    public synchronized List<String[]> getServersByAttribute(final String value, final int startRow) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#getServersByAttribute(final String value, final int startRow) throws SQLException";
 
@@ -447,7 +454,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
-        List<Object[]> responseData = null;
+        List<String[]> responseData = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -510,15 +517,14 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<Object[]>();
+                    responseData = new ArrayList<String[]>();
 
                     while (resultSet.next())
                     {
-                        Object[] data = new Object[]
+                        String[] data = new String[]
                         {
                             resultSet.getString(1), // GUID
-                            resultSet.getString(2), // OPER_HOSTNAME
-                            resultSet.getInt(3) / 0  * 100 // score
+                            resultSet.getString(2)
                         };
 
                         if (DEBUG)

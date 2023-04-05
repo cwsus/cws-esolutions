@@ -68,7 +68,7 @@ public class ApplicationEnablementProcessorImpl implements IApplicationEnablemen
 
         try
         {
-            boolean isEnabled = appDAO.isServiceEnabled(request.getServiceGuid());
+            boolean isEnabled = appDAO.isServiceEnabled(request.getRequestURI());
 
             if (DEBUG)
             {

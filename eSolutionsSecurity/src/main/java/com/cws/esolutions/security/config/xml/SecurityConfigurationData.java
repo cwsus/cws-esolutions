@@ -49,11 +49,9 @@ public final class SecurityConfigurationData
 {
     private KeyConfig keyConfig = null;
     private SystemConfig systemConfig = null;
-    private RepositoryConfig repoConfig = null;
     private CertificateConfig certConfig = null;
     private SecurityConfig securityConfig = null;
     private ResourceConfig resourceConfig = null;
-    private PasswordRepositoryConfig passwordRepo = null;
     private FileSecurityConfig fileSecurityConfig = null;
 
     private static final String CNAME = SecurityConfigurationData.class.getName();
@@ -87,19 +85,6 @@ public final class SecurityConfigurationData
         this.securityConfig = value;
     }
 
-    public final void setRepoConfig(final RepositoryConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setRepoConfig(final RepositoryConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.repoConfig = value;
-    }
-
     public final void setResourceConfig(final ResourceConfig value)
     {
         final String methodName = SecurityConfigurationData.CNAME + "#setResourceConfig(final ResourceConfig value)";
@@ -124,19 +109,6 @@ public final class SecurityConfigurationData
         }
 
         this.keyConfig = value;
-    }
-
-    public final void setPasswordRepo(final PasswordRepositoryConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setPasswordRepo(final PasswordRepositoryConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.passwordRepo = value;
     }
 
     public final void setFileSecurityConfig(final FileSecurityConfig value)
@@ -193,20 +165,6 @@ public final class SecurityConfigurationData
         return this.securityConfig;
     }
 
-    @XmlElement(name = "repository-config")
-    public final RepositoryConfig getRepoConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getRepoConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.repoConfig);
-        }
-
-        return this.repoConfig;
-    }
-
     @XmlElement(name = "resource-config")
     public final ResourceConfig getResourceConfig()
     {
@@ -247,20 +205,6 @@ public final class SecurityConfigurationData
         }
 
         return this.fileSecurityConfig;
-    }
-
-    @XmlElement(name = "password-repository")
-    public final PasswordRepositoryConfig getPasswordRepo()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getPasswordRepo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.passwordRepo);
-        }
-
-        return this.passwordRepo;
     }
 
     @XmlElement(name = "certificate-config")

@@ -33,9 +33,6 @@ import org.apache.logging.log4j.LogManager;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.config.xml.RepositoryConfig;
-import com.cws.esolutions.security.config.xml.UserReturningAttributes;
-import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * API allowing user user management tasks. Used in conjunction with the
@@ -50,10 +47,7 @@ public interface UserManager
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final DataSource authDataSource = svcBean.getDataSources().get("SecurityDataSource");
     static final DataSource contactDataSource = svcBean.getDataSources().get("ContactDataSource");
-    static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
-    static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
-    static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 

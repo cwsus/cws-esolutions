@@ -15,7 +15,6 @@
  *
  */
 package com.cws.esolutions.web.validators;
-import java.util.Objects;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators
@@ -27,6 +26,7 @@ import java.util.Objects;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Objects;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
@@ -44,9 +44,7 @@ import com.cws.esolutions.core.processors.dto.Platform;
 public class PlatformValidator implements Validator
 {
 	private String messageNameRequired = null;
-	private String messageRegionRequired = null;
 	private String messageStatusRequired = null;
-	private String messagePartitionRequired = null;
 	private String messageDescriptionRequired = null;
 
     private static final String CNAME = PlatformValidator.class.getName();
@@ -67,19 +65,6 @@ public class PlatformValidator implements Validator
         this.messageNameRequired = value;
     }
 
-    public final void setMessageRegionRequired(final String value)
-    {
-        final String methodName = PlatformValidator.CNAME + "#setMessageRegionRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageRegionRequired = value;
-    }
-
     public final void setMessageStatusRequired(final String value)
     {
         final String methodName = PlatformValidator.CNAME + "#setMessageStatusRequired(final String value)";
@@ -91,19 +76,6 @@ public class PlatformValidator implements Validator
         }
 
         this.messageStatusRequired = value;
-    }
-
-    public final void setMessagePartitionRequired(final String value)
-    {
-        final String methodName = PlatformValidator.CNAME + "#setMessagePartitionRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messagePartitionRequired = value;
     }
 
     public final void setMessageDescriptionRequired(final String value)
@@ -150,11 +122,9 @@ public class PlatformValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "region", this.messageRegionRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messageStatusRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "partition", this.messagePartitionRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", this.messageDescriptionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platformName", this.messageNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platformStatus", this.messageStatusRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platformDescription", this.messageDescriptionRequired);
 
         final Platform platform = (Platform) target;
 
@@ -167,21 +137,9 @@ public class PlatformValidator implements Validator
         {
         	errors.reject("platformName", this.messageNameRequired);
         }
-        else if (Objects.isNull(platform.getPlatformRegion()))
-        {
-        	errors.reject("platformRegion", this.messageRegionRequired);
-        }
         else if (Objects.isNull(platform.getPlatformStatus()))
         {
         	errors.reject("platformStatus", this.messageStatusRequired);
-        }
-        else if (Objects.isNull(platform.getPlatformPartition()))
-        {
-        	errors.reject("platformPartition", this.messagePartitionRequired);
-        }
-        else if (StringUtils.isBlank(platform.getPlatformDescription()))
-        {
-        	errors.reject("platformDescription", this.messageDescriptionRequired);
         }
     }
 }

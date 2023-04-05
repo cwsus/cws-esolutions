@@ -108,7 +108,7 @@
                 <value>classpath:nls/PlatformManagementServlet/PlatformManagementServlet</value>
                 <value>classpath:nls/ServiceMessagingServlet/ServiceMessagingServlet</value>
                 <value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>
-                <value>classpath:nls/ServerManagementServlet/SystemManagementServlet</value>
+                <value>classpath:nls/ServerManagementServlet/ServerManagementServlet</value>
                 <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
                 <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
                 <value>classpath:nls/theme/resources</value>

@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
@@ -38,12 +39,13 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FileKeyManagerTest
 {
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final KeyManager processor = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.FileKeyManager");
+    KeyManager keyManager = (KeyManager) KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.FileKeyManager");
 
     @BeforeAll public void setUp()
     {
@@ -54,7 +56,7 @@ public class FileKeyManagerTest
 
             userAccount.setStatus(LoginStatus.SUCCESS);
             userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-            userAccount.setUsername("junit");
+            userAccount.setUsername("khuntly");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
@@ -73,7 +75,7 @@ public class FileKeyManagerTest
     {
         try
         {
-        	Assertions.assertThat(processor.createKeys(userAccount.getGuid())).isTrue();
+        	Assertions.assertThat(keyManager.createKeys(userAccount.getGuid())).isTrue();
         }
         catch (final Exception kmx)
         {
@@ -85,7 +87,7 @@ public class FileKeyManagerTest
     {
         try
         {
-        	Assertions.assertThat(processor.returnKeys(userAccount.getGuid())).isNotNull();
+        	Assertions.assertThat(keyManager.returnKeys(userAccount.getGuid())).isNotNull();
         }
         catch (final KeyManagementException kmx)
         {
@@ -97,7 +99,7 @@ public class FileKeyManagerTest
     {
         try
         {
-        	Assertions.assertThat(processor.removeKeys(userAccount.getGuid())).isTrue();
+        	Assertions.assertThat(keyManager.removeKeys(userAccount.getGuid())).isTrue();
         }
         catch (final KeyManagementException kmx)
         {

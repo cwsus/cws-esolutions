@@ -12,10 +12,7 @@
 
     <bean id="platformRequestValidator" class="com.cws.esolutions.web.validators.PlatformValidator">
         <property name="messageNameRequired" value="svc.mgmt.name.required" />
-        <property name="messageDescriptionRequired" value="svc.mgmt.description.required" />
         <property name="messageStatusRequired" value="svc.mgmt.status.required" />
-        <property name="messageRegionRequired" value="svc.mgmt.region.required" />
-        <property name="messagePartitionRequired" value="svc.mgmt.partition.required" />
     </bean>
 
     <bean id="platformManagementController" class="com.cws.esolutions.web.controllers.PlatformManagementController">

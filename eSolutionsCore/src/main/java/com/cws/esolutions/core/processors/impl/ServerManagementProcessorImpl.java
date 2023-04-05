@@ -159,7 +159,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             try
             {
-                List<Object[]> validator = serverDAO.getServersByAttribute(requestServer.getOperHostName(), request.getStartPage());
+                List<String[]> validator = serverDAO.getServersByAttribute(requestServer.getOperHostName(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -933,7 +933,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 return response;
             }
 
-            List<Object[]> serverData = serverDAO.getServersByAttribute(request.getAttribute(), request.getStartPage());
+            List<String[]> serverData = serverDAO.getServersByAttribute(request.getAttribute(), request.getStartPage());
 
             if (DEBUG)
             {
@@ -949,7 +949,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     Server server = new Server();
                     server.setServerGuid((String) data[0]); // SYSTEM_GUID
                     server.setOperHostName((String) data[1]); // OPER_HOSTNAME
-                    server.setScore((Double) data[2]);
 
                     if (DEBUG)
                     {

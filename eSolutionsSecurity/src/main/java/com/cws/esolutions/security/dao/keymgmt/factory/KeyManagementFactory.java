@@ -25,21 +25,9 @@ package com.cws.esolutions.security.dao.keymgmt.factory;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.lang.reflect.InvocationTargetException;
-
-/*
- * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.dao.keymgmt.factory
- * File: KeyManagementFactory.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * cws-khuntly          11/23/2008 22:39:20             Created.
- */
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import java.lang.reflect.InvocationTargetException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
@@ -82,8 +70,7 @@ public class KeyManagementFactory
         {
             try
             {
-                keyManager = KeyManager.class.getDeclaredConstructor(Class.forName(className)).newInstance();
-                // keyManager = (KeyManager) Class.forName(className).newInstance();
+            	keyManager = (KeyManager) Class.forName(className).getDeclaredConstructor().newInstance();
 
                 if (DEBUG)
                 {
