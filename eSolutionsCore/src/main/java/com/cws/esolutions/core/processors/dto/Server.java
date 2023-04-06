@@ -48,6 +48,7 @@ public class Server implements Serializable
     private int dmgrPort = 0; // only used when the servertype is dmgr
     private String mgrUrl = null; // this is used for both vmgr and dmgr - the access url
     private String osName = null;
+    private String domain = null;
     private String cpuType = null;
     private int installedMemory = 0; // in MB! 1GB = 1024 MB
     private Date onlineDate = null;
@@ -513,6 +514,19 @@ public class Server implements Serializable
         this.offlineDate = value;
     }
 
+    public final void setDomain(final String value)
+    {
+        final String methodName = Server.CNAME + "#setDomain(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.domain = value;
+    }
+
     public final String getDatacenter()
     {
         final String methodName = Server.CNAME + "#getDatacenter()";
@@ -940,6 +954,19 @@ public class Server implements Serializable
         }
 
         return this.offlineDate;
+    }
+
+    public final String getDomain()
+    {
+        final String methodName = Server.CNAME + "#getDomain()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.domain);
+        }
+
+        return this.domain;
     }
 
     @Override

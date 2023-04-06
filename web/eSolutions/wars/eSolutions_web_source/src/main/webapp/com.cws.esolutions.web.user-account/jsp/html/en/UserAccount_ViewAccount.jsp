@@ -76,15 +76,15 @@
             </tr>
             <tr>
                 <td><label><spring:message code="user.account.telephone" /></label></td>
-                <td>${sessionScope.userAccount.telephoneNumber}</td>
+                <td><a href="tel:${sessionScope.userAccount.telephoneNumber}" title="${sessionScope.userAccount.telephoneNumber}">${sessionScope.userAccount.telephoneNumber}</a></td>
             </tr>
             <tr>
                 <td><label><spring:message code="user.account.pager" /></label></td>
-                <td>${sessionScope.userAccount.pagerNumber}</td>
+                <td><a href="tel:${sessionScope.userAccount.pagerNumber}" title="${sessionScope.userAccount.pagerNumber}">${sessionScope.userAccount.pagerNumber}</a></td>
             </tr>
             <tr>
                 <td><label><spring:message code="user.account.email.addr" /></label></td>
-                <td>${sessionScope.userAccount.emailAddr}</td>
+                <td><a href="mailto:${sessionScope.userAccount.emailAddr}" title="${sessionScope.userAccount.emailAddr}">${sessionScope.userAccount.emailAddr}</a></td>
             </tr>
         </table>
     </div>

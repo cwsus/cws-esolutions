@@ -63,7 +63,6 @@ import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
 public class SystemCheckController
 {
     private String serviceId = null;
-    private String serviceName = null;
     private String netstatPage = null;
     private String remoteDatePage = null;
     private String testTelnetPage = null;
@@ -88,19 +87,6 @@ public class SystemCheckController
         }
 
         this.serviceId = value;
-    }
-
-    public final void setServiceName(final String value)
-    {
-        final String methodName = SystemCheckController.CNAME + "#setServiceName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceName = value;
     }
 
     public final void setValidator(final SystemCheckValidator value)

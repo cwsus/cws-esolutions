@@ -57,7 +57,6 @@ import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProce
 public class CertificateManagementController
 {
 	private String serviceId = null;
-    private String serviceName = null;
     private String defaultPage = null;
     private ApplicationServiceBean appConfig = null;
 
@@ -78,19 +77,6 @@ public class CertificateManagementController
         }
 
         this.appConfig = value;
-    }
-
-    public final void setServiceName(final String value)
-    {
-        final String methodName = CertificateManagementController.CNAME + "#setServiceName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceName = value;
     }
 
     public final void setServiceId(final String value)

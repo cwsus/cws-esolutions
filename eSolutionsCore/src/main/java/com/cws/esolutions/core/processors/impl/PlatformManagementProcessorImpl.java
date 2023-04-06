@@ -37,10 +37,8 @@ import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
-import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
@@ -171,7 +169,8 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 		Arrays.asList(
                 				UUID.randomUUID().toString(),
                 				platform.getPlatformName(),
-                				platform.getPlatformStatus().toString()));
+                				platform.getPlatformStatus().toString(),
+                				platform.getPlatformDescription()));
 
                 if (DEBUG)
                 {
@@ -901,10 +900,8 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 Platform responsePlatform = new Platform();
                 responsePlatform.setPlatformGuid(platformData.get(0)); // GUID
                 responsePlatform.setPlatformName(platformData.get(1)); // NAME
-                responsePlatform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2))); // REGION
-                responsePlatform.setPlatformPartition(NetworkPartition.valueOf(platformData.get(3))); // PARTITION
-                responsePlatform.setPlatformStatus(ServiceStatus.valueOf(platformData.get(4))); // STATUS
-                responsePlatform.setPlatformDescription(platformData.get(5)); // DESCRIPTION
+                responsePlatform.setPlatformStatus(ServiceStatus.valueOf(platformData.get(2))); // STATUS
+                responsePlatform.setPlatformDescription(platformData.get(3)); // DESCRIPTION
 
                 if (DEBUG)
                 {

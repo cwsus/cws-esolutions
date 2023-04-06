@@ -67,7 +67,6 @@ public class DatacenterManagementController
     private String homePage = null;
     private String serviceId = null;
     private int recordsPerPage = 20;
-    private String serviceName = null;
     private String addDatacenterPage = null;
     private String viewDatacenterPage = null;
     private String listDatacentersPage = null;
@@ -108,19 +107,6 @@ public class DatacenterManagementController
         }
 
         this.serviceId = value;
-    }
-
-    public final void setServiceName(final String value)
-    {
-        final String methodName = DatacenterManagementController.CNAME + "#setServiceName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceName = value;
     }
 
     public final void setHomePage(final String value)

@@ -34,81 +34,80 @@
 --%>
 
 <script>
-    <!--
-    function showScmData(box)
-    {
-        if (box.checked)
-        {
-            document.getElementById('scmData').style.display = 'block';
-        }
-        else
-        {
-            document.getElementById('scmData').style.display = 'none';
-        }
-    }
-
+<!--
     function validateForm(theForm)
     {
-        if (theForm.applicationName.value == '')
+        if (theForm.name.value == '')
         {
             clearText(theForm);
 
             document.getElementById('validationError').innerHTML = 'An application name must be provided.';
             document.getElementById('txtApplicationName').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('applicationName').focus();
+            document.getElementById('name').focus();
         }
         else if (theForm.version.value == '')
         {
-            // default to 1.0
-            document.getElementById('applicationName').value = '1.0';
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'An application version must be provided.';
+            document.getElementById('txtApplicationVersion').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('version').focus();
         }
-        else if (theForm.clusterName.value == '')
+        else if (theForm.basePath.value == '')
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'A target application cluster must be provided.';
-            document.getElementById('txtApplicationCluster').style.color = '#FF0000';
+            document.getElementById('validationError').innerHTML = 'A base path must be provided for installation purposes.';
+            document.getElementById('txtBasePath').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('applicationName').focus();
-        }
-        else if (theForm.platform.value == '')
-        {
-            clearText(theForm);
-
-            document.getElementById('validationError').innerHTML = 'The application must be associated with a platform.';
-            document.getElementById('txtApplicationPlatform').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('applicationPlatform').focus();
+            document.getElementById('basePath').focus();
         }
         else if (theForm.logsPath.value == '')
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'A valid path must be provided for application logs.';
-            document.getElementById('txtApplicationLogsPath').style.color = '#FF0000';
+            document.getElementById('validationError').innerHTML = 'A path for logs must be provided. This path is relative to the base path provided.';
+            document.getElementById('"txtApplicationLogsPath"').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('applicationName').focus();
+            document.getElementById('logsPath').focus();
         }
         else if (theForm.installPath.value == '')
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'A valid path for application binaries must be provided.';
-            document.getElementById('txtApplicationInstallPath').style.color = '#FF0000';
+            document.getElementById('validationError').innerHTML = 'A path for installation must be provided. This path is relative to the base path provided.';
+            document.getElementById('"txtApplicationInstallPath"').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('applicationName').focus();
+            document.getElementById('installPath').focus();
         }
         else
         {
-            theForm.submit();
+            selectElement = document.getElementById('platformListing');
+
+            if ((selectElement.text == 'Select....') || (selectElement.text == '------'))
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'A platform status must be provided.';
+                document.getElementById('txtPlatformStatus').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('platformName').focus();
+            }
+            else
+            {
+                theForm.submit();
+            }
         }
     }
-    //-->
+//-->
 </script>
 
 <div id="homecontent">
     <div class="wrapper">
+        <div id="validationError" style="color: #FF0000"></div>
+
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
         </c:if>
@@ -128,77 +127,98 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
-        <h1><spring:message code="app.mgmt.header" /></h1>
-        <ul>
-            <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
-            <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
-        </ul>
+        <div id="validationError" style="color: #FF0000"></div>
+
+        <h2><spring:message code="app.mgmt.add.application" /></h2>
+        <form:form id="createNewApplication" name="createNewApplication" action="${pageContext.request.contextPath}/ui/application-management/add-application" method="post">
+            <table id="addNewApplication">
+                <tr>
+                    <td><label id="txtApplicationName"><spring:message code="app.mgmt.application.name" /></label></td>
+                    <td>
+                        <form:input path="name" />
+                        <form:errors path="name" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtApplicationVersion"><spring:message code="app.mgmt.application.version" /></label></td>
+                    <td>
+                        <form:input path="version" />
+                        <form:errors path="version" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label></td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${not empty platformListing}">
+                                <form:select id="platformListing" path="platformGuid">
+                                    <option><spring:message code="theme.option.select" /></option>
+                                    <option><spring:message code="theme.option.spacer" /></option>
+                                    <c:forEach var="platform" items="${platformListing}">
+                                            <form:option value="${platform.key}" label="${platform.value}" />
+                                    </c:forEach>
+                                </form:select>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/ui/platform-management/add-platform"title="<spring:message code='select.request.add.platform' />"><spring:message code='select.request.add.platform' /></a>
+                            </c:otherwise>
+                        </c:choose>
+                        <form:errors path="platform" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtBasePath"><spring:message code="app.mgmt.base.path" /></label></td>
+                    <td>
+                        <form:input path="basePath" />
+                        <form:errors path="basePath" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtApplicationLogsPath"><spring:message code="app.mgmt.application.applogs.path" /></label></td>
+                    <td>
+                        <form:input path="logsPath" />
+                        <form:errors path="logsPath" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtApplicationInstallPath"><spring:message code="app.mgmt.application.install.path" /></label></td>
+                    <td>
+                        <form:input path="installPath" />
+                        <form:errors path="installPath" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtIsScmEnabled"><spring:message code="app.mgmt.application.scm.enabled" /></label></td>
+                    <td>
+                        <form:checkbox path="isScmEnabled" name="isScmEnabled" id="isScmEnabled" onclick="showScmData(this);" />
+                        <form:errors path="isScmEnabled" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label></td>
+                    <td>
+                        <form:input path="scmPath" />
+                        <form:errors path="scmPath" cssClass="error" />
+                    </td>
+                </tr>
+            </table>
+            <br /><br />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/application-management/default');" />
+        </form:form>
     </div>
+    <br class="clear" />
 </div>
 
 <div id="container">
     <div class="wrapper">
         <div id="holder">
-            <div id="validationError" style="color: #FF0000"></div>
-
-            <h2><spring:message code="app.mgmt.search.applications" /></h2>
-            <ul id="latestnews">
-                <li>
-                    <p>
-                        <form:form id="createNewApplication" name="createNewApplication" action="${pageContext.request.contextPath}/ui/application-management/add-application" method="post">
-                            <label id="txtApplicationName"><spring:message code="app.mgmt.application.name" /></label>
-                            <form:input path="name" />
-                            <form:errors path="name" cssClass="error" />
-
-                            <label id="txtApplicationVersion"><spring:message code="app.mgmt.application.version" /></label>
-                            <form:input path="version" />
-                            <form:errors path="version" cssClass="error" />
-
-                            <label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label>
-                            <c:choose>
-                                <c:when test="${not empty platformListing}">
-                                    <form:select path="platform" multiple="true">
-                                        <c:forEach var="platform" items="${platformListing}">
-                                            <form:option value="${platform.key}" label="${platform.value}" />
-                                        </c:forEach>
-                                    </form:select>
-                                </c:when>
-                                <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/ui/platform-management/add-platform"
-                                        title="<spring:message code='select.request.add.platform' />"><spring:message code='select.request.add.platform' /></a>
-                                </c:otherwise>
-                            </c:choose>
-                            <form:errors path="platform" cssClass="error" />
-
-                            <label id="txtBasePath"><spring:message code="app.mgmt.base.path" /></label>
-                            <form:input path="basePath" />
-                            <form:errors path="basePath" cssClass="error" />
-
-                            <label id="txtApplicationLogsPath"><spring:message code="app.mgmt.application.applogs.path" /></label>
-                            <form:input path="logsPath" />
-                            <form:errors path="logsPath" cssClass="error" />
-
-                            <label id="txtApplicationInstallPath"><spring:message code="app.mgmt.application.install.path" /></label>
-                            <form:input path="installPath" />
-                            <form:errors path="installPath" cssClass="error" />
-
-                            <label id="txtIsScmEnabled"><spring:message code="app.mgmt.application.scm.enabled" /></label>
-                            <form:checkbox path="isScmEnabled" name="isScmEnabled" id="isScmEnabled" onclick="showScmData(this);" />
-                            <form:errors path="isScmEnabled" cssClass="error" />
-
-                            <label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label>
-                            <form:input path="scmPath" />
-                            <form:errors path="scmPath" cssClass="error" />
-
-                            <br /><br />
-                            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/application-management/default');" />
-                        </form:form>
-                    </p>
-                </li>
+            <h1><spring:message code="app.mgmt.header" /></h1>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
             </ul>
         </div>
-        <br class="clear" />
     </div>
 </div>

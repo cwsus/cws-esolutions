@@ -34,8 +34,10 @@ import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
+import com.cws.esolutions.core.dao.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
+import com.cws.esolutions.core.dao.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -60,6 +62,7 @@ public interface IApplicationManagementProcessor
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final IServiceDataDAO serviceDao = (IServiceDataDAO) new ServiceDataDAOImpl();
     static final IApplicationDataDAO appDAO = (IApplicationDataDAO) new ApplicationDataDAOImpl();
+    static final IPlatformDataDAO platformDAO = (IPlatformDataDAO) new PlatformDataDAOImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

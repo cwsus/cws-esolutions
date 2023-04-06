@@ -52,7 +52,6 @@ import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
-import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
 import com.cws.esolutions.core.processors.impl.DNSServiceRequestProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
 /**
@@ -66,7 +65,6 @@ public class DNSServiceController
 {
     private String serviceId = null;
     private String lookupPage = null;
-    private String serviceName = null;
     private String serviceHost = null;
     private String[] searchSuffix = null;
     private List<String> serviceTypes = null;
@@ -90,19 +88,6 @@ public class DNSServiceController
         }
 
         this.lookupPage = value;
-    }
-
-    public final void setServiceName(final String value)
-    {
-        final String methodName = DNSServiceController.CNAME + "#setServiceName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceName = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)
@@ -320,17 +305,6 @@ public class DNSServiceController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
-        enableRequest.setApplicationId(this.appConfig.getApplicationId());
-        enableRequest.setApplicationName(this.appConfig.getApplicationName());
-        enableRequest.setServiceGuid(this.serviceId);
-        enableRequest.setServiceName(this.serviceName);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationEnablementRequest: {}", enableRequest);
         }
 
         try

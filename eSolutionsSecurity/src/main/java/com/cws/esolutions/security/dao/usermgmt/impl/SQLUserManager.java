@@ -998,7 +998,13 @@ public class SQLUserManager implements UserManager
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            int updateCount = stmt.getInt(4);
+            stmt.execute();
+            int updateCount = stmt.getInt(3);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("updateCount: {}", updateCount);
+            }
 
             if (updateCount == 1)
             {
@@ -1052,8 +1058,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(contactDataSource))
         {
@@ -1076,10 +1081,11 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL updateUserContact(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL updateUserContact(?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
             stmt.setString(2, values.get(0));
             stmt.setString(3, values.get(1));
+            stmt.registerOutParameter(4, Types.INTEGER);
 
             if (DEBUG)
             {
@@ -1087,31 +1093,16 @@ public class SQLUserManager implements UserManager
             }
 
             stmt.executeUpdate();
-
-            stmt.close();
-            stmt = null;
-
-            stmt = sqlConn.prepareStatement("{ CALL getContactData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1,  userId);
+            int updateCount = stmt.getInt(4);
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("stmt: {}", stmt);
+            	DEBUGGER.debug("updateCount: {}", updateCount);
             }
 
-            resultSet = stmt.executeQuery();
-
-            if (!(Objects.isNull(resultSet)))
+            if (updateCount == 1)
             {
-            	resultSet.first();
-
-            	String telNumber = resultSet.getString(1);
-            	String pagerNumber = resultSet.getString(2);
-
-            	if ((StringUtils.equals(telNumber, values.get(0))) && (StringUtils.equals(pagerNumber, values.get(1))))
-            	{
-            		isComplete = true;
-            	}
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)

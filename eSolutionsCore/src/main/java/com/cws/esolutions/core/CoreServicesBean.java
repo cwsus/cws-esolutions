@@ -26,6 +26,7 @@ package com.cws.esolutions.core;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
+import java.util.Objects;
 import javax.sql.DataSource;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -67,7 +68,7 @@ public class CoreServicesBean implements Serializable
             DEBUGGER.debug("instance: {}", CoreServicesBean.instance);
         }
 
-        if (CoreServicesBean.instance == null)
+        if (Objects.isNull(CoreServicesBean.instance))
         {
             CoreServicesBean.instance = new CoreServicesBean();
         }

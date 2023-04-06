@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.utils;
+package com.cws.esolutions.utility.coreutils;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.utils
@@ -30,6 +30,7 @@ import java.net.URI;
 import java.util.List;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.Objects;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
 import java.util.Hashtable;
@@ -656,7 +657,7 @@ public final class NetworkUtils
         {
             synchronized(new Object())
             {
-                if (InetAddress.getByName(hostName) == null)
+                if (Objects.isNull(InetAddress.getByName(hostName)))
                 {
                     throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
                 }
@@ -1157,7 +1158,7 @@ public final class NetworkUtils
 
             response = new ArrayList<List<String>>();
 
-            if ((recordList == null) || (recordList.length == 0))
+            if ((Objects.isNull(recordList)) || (recordList.length == 0))
             {
                 throw new UtilityException("No results were found for the provided information.");
             }

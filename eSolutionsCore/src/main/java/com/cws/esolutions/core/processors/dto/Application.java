@@ -41,7 +41,6 @@ import com.cws.esolutions.core.processors.enums.DeploymentType;
  */
 public class Application implements Serializable
 {
-	private double score = 0.0;
     private String name = null;
     private String guid = null;
     private File basePath = null;
@@ -54,11 +53,12 @@ public class Application implements Serializable
     private Date offlineDate = null;
     private Platform platform = null;
     private String clusterName = null;
-    private String installPath = null;
-    private String pidDirectory = null;
+    private File installPath = null;
+    private String platformGuid = null;
+    private File pidDirectory = null;
     private boolean isScmEnabled = false;
-    private String packageLocation = null;
-    private String packageInstaller = null;
+    private File packageLocation = null;
+    private File packageInstaller = null;
     private String installerOptions = null;
     private DeploymentType deploymentType = null;
 
@@ -133,9 +133,9 @@ public class Application implements Serializable
         this.logsPath = value;
     }
 
-    public final void setPidDirectory(final String value)
+    public final void setPidDirectory(final File value)
     {
-        final String methodName = Application.CNAME + "#setPidDirectory(final String value)";
+        final String methodName = Application.CNAME + "#setPidDirectory(final File value)";
 
         if (DEBUG)
         {
@@ -198,19 +198,6 @@ public class Application implements Serializable
         this.isScmEnabled = value;
     }
 
-    public final void setScore(final double value)
-    {
-        final String methodName = Application.CNAME + "#setScore(final double value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.score = value;
-    }
-
     public final void setGuid(final String value)
     {
         final String methodName = Application.CNAME + "#setGuid(final String value)";
@@ -250,9 +237,9 @@ public class Application implements Serializable
         this.version = value;
     }
 
-    public final void setInstallPath(final String value)
+    public final void setInstallPath(final File value)
     {
-        final String methodName = Application.CNAME + "#setInstallPath(final String value)";
+        final String methodName = Application.CNAME + "#setInstallPath(final File value)";
 
         if (DEBUG)
         {
@@ -263,9 +250,9 @@ public class Application implements Serializable
         this.installPath = value;
     }
 
-    public final void setPackageLocation(final String value)
+    public final void setPackageLocation(final File value)
     {
-        final String methodName = Application.CNAME + "#setPackageLocation(final String value)";
+        final String methodName = Application.CNAME + "#setPackageLocation(final File value)";
 
         if (DEBUG)
         {
@@ -276,9 +263,9 @@ public class Application implements Serializable
         this.packageLocation = value;
     }
 
-    public final void setPackageInstaller(final String value)
+    public final void setPackageInstaller(final File value)
     {
-        final String methodName = Application.CNAME + "#setPackageInstaller(final String value)";
+        final String methodName = Application.CNAME + "#setPackageInstaller(final File value)";
 
         if (DEBUG)
         {
@@ -328,17 +315,17 @@ public class Application implements Serializable
         this.offlineDate = value;
     }
 
-    public final double getScore()
+    public final void setPlatformGuid(final String value)
     {
-        final String methodName = Application.CNAME + "#getScore()";
+        final String methodName = Application.CNAME + "#setPlatformGuid(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.score);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return this.score;
+        this.platformGuid = value;
     }
 
     public final String getGuid()
@@ -367,7 +354,7 @@ public class Application implements Serializable
         return this.name;
     }
 
-    public final String getPackageLocation()
+    public final File getPackageLocation()
     {
         final String methodName = Application.CNAME + "#getPackageLocation()";
 
@@ -380,7 +367,7 @@ public class Application implements Serializable
         return this.packageLocation;
     }
 
-    public final String getPackageInstaller()
+    public final File getPackageInstaller()
     {
         final String methodName = Application.CNAME + "#getPackageInstaller()";
 
@@ -510,7 +497,7 @@ public class Application implements Serializable
         return this.logsPath;
     }
 
-    public final String getInstallPath()
+    public final File getInstallPath()
     {
         final String methodName = Application.CNAME + "#getInstallPath()";
 
@@ -523,7 +510,7 @@ public class Application implements Serializable
         return this.installPath;
     }
 
-    public final String getPidDirectory()
+    public final File getPidDirectory()
     {
         final String methodName = Application.CNAME + "#getPidDirectory()";
 
@@ -599,6 +586,19 @@ public class Application implements Serializable
         }
 
         return this.isScmEnabled;
+    }
+
+    public final String getPlatformGuid()
+    {
+        final String methodName = Application.CNAME + "#getPlatformGuid()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.platformGuid);
+        }
+
+        return this.platformGuid;
     }
 
     @Override

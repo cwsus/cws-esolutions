@@ -91,47 +91,51 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
-        <h1><spring:message code="platform.mgmt.header" /></h1>
-        <ul>
-            <li><a href="${pageContext.request.contextPath}/ui/platform-management/list-platforms" title="<spring:message code='platform.mgmt.list.platforms' />"><spring:message code="platform.mgmt.list.platforms" /></a></li>
-        </ul>
-    </div>
-</div>
-
-<div id="container">
-    <div class="wrapper">
-        <div id="holder">
-            <div id="validationError" style="color: #FF0000"></div>
-
-            <h2><spring:message code="datacenter.mgmt.add.datacenter" /></h2>
-            <ul id="latestnews">
-                <li>
-                    <p>
-                        <form:form id="submitPlatformData" name="submitPlatformData" action="${pageContext.request.contextPath}/ui/platform-management/add-platform" method="post">
-                            <label id="txtPlatformName"><spring:message code="platform.mgmt.name" /></label>
+        <h2><spring:message code="datacenter.mgmt.add.datacenter" /></h2>
+        <p>
+            <form:form id="submitPlatformData" name="submitPlatformData" action="${pageContext.request.contextPath}/ui/platform-management/add-platform" method="post">
+                <table>
+                    <tr>
+                        <td><label id="txtPlatformName"><spring:message code="platform.mgmt.name" /></label></td>
+                        <td>
                             <form:input path="platformName" />
                             <form:errors path="platformName" cssClass="error" />
-
-                            <label id="txtPlatformStatus"><spring:message code="platform.mgmt.status" /></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label id="txtPlatformStatus"><spring:message code="platform.mgmt.status" /></label></td>
+                        <td>
                             <form:select id="platformStatus" path="platformStatus" multiple="false">
                                 <option><spring:message code="theme.option.select" /></option>
                                 <option><spring:message code="theme.option.spacer" /></option>
                                 <form:options items="${statusList}" />
                             </form:select>  
                             <form:errors path="platformStatus" cssClass="error" />
-
-                            <label id="txtPlatformDescription"><spring:message code="platform.mgmt.description" /></label>
+                         </td>
+                    </tr>
+                    <tr>
+                       <td><label id="txtPlatformDescription"><spring:message code="platform.mgmt.description" /></label></td>
+                       <td>
                             <form:textarea path="platformDescription" />
                             <form:errors path="platformDescription" cssClass="error" />
+                       </td>
+                </table>
+                <br /><br />
+                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/platform-management/default');" />
+            </form:form>
+        </p>
+    </div>
+</div>
 
-                            <br /><br />
-                            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/platform-management/default');" />
-                        </form:form>
-                    </p>
-                </li>
-            </ul>
+<div id="container">
+    <div class="wrapper">
+        <div id="holder">
+	        <h1><spring:message code="platform.mgmt.header" /></h1>
+	        <ul>
+	            <li><a href="${pageContext.request.contextPath}/ui/platform-management/list-platforms" title="<spring:message code='platform.mgmt.list.platforms' />"><spring:message code="platform.mgmt.list.platforms" /></a></li>
+	        </ul>
         </div>
         <br class="clear" />
     </div>

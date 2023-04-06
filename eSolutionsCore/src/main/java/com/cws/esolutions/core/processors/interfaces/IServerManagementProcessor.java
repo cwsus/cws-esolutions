@@ -29,11 +29,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
-import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
-import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
+import com.cws.esolutions.core.dao.impl.DatacenterDataDAOImpl;
+import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
+import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
@@ -53,6 +55,7 @@ public interface IServerManagementProcessor
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
+    static final IDatacenterDataDAO datacenterDAO = (IDatacenterDataDAO) new DatacenterDataDAOImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

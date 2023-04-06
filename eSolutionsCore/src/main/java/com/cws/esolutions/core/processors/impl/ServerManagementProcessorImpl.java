@@ -27,6 +27,7 @@ package com.cws.esolutions.core.processors.impl;
  */
 import java.util.UUID;
 import java.util.List;
+import java.util.Objects;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.CoreServicesConstants;
+import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.enums.ServerType;
@@ -152,30 +154,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 return response;
             }
 
-            if (requestServer == null)
+            if (Objects.isNull(requestServer))
             {
                 throw new ServerManagementException("No server was provided. Cannot continue.");
-            }
-
-            try
-            {
-                List<String[]> validator = serverDAO.getServersByAttribute(requestServer.getOperHostName(), request.getStartPage());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Validator: {}", validator);
-                }
-
-                if ((validator != null) && (validator.size() != 0))
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                    return response;
-                }
-            }
-            catch (final SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
 
             // valid server
@@ -198,7 +179,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             requestServer.getServerStatus().name(),
                             requestServer.getServerRegion().name(),
                             requestServer.getNetworkPartition().name(),
-                            UUID.randomUUID().toString(),
+                            UUID.randomUUID().toString(), // FIX ME FUCKING HELL
                             requestServer.getServerType().name(),
                             requestServer.getDomainName(),
                             requestServer.getCpuType(),

@@ -74,6 +74,11 @@ public class FileKeyManager implements KeyManager
 
         final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + "/" + guid);
 
+        if (DEBUG)
+        {
+        	DEBUGGER.debug("keyDirectory: {}", keyDirectory);
+        }
+
         try
         {
             if (!(keyDirectory.exists()))
@@ -162,6 +167,11 @@ public class FileKeyManager implements KeyManager
         OutputStream privateStream = null;
 
         final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + "/" + guid);
+
+        if (DEBUG)
+        {
+        	DEBUGGER.debug("keyDirectory: {}", keyDirectory);
+        }
 
         try
         {

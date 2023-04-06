@@ -36,18 +36,18 @@ import java.sql.Types;
 import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 
-import com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO;
+import com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO;
 /**
- * @see com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO
+ * @see com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO
  */
-public class WebMessagingDAOImpl implements IWebMessagingDAO
+public class ServiceMessagingDAOImpl implements IServiceMessagingDAO
 {
     /**
-     * @see com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO#insertMessage(List)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO#insertMessage(List)
      */
     public synchronized boolean insertMessage(final List<Object> messageList) throws SQLException
     {
-        final String methodName = IWebMessagingDAO.CNAME + "#insertMessage(final List<Object> messageList) throws SQLException";
+        final String methodName = IServiceMessagingDAO.CNAME + "#insertMessage(final List<Object> messageList) throws SQLException";
 
         if (DEBUG)
         {
@@ -114,11 +114,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO#retrieveMessage(String)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO#retrieveMessage(String)
      */
     public synchronized List<Object> retrieveMessage(final String messageId) throws SQLException
     {
-        final String methodName = IWebMessagingDAO.CNAME + "#retrieveMessage(final String messageId) throws SQLException";
+        final String methodName = IServiceMessagingDAO.CNAME + "#retrieveMessage(final String messageId) throws SQLException";
 
         if (DEBUG)
         {
@@ -209,11 +209,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO#retrieveMessages()
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO#retrieveMessages()
      */
     public synchronized List<Object[]> retrieveMessages() throws SQLException
     {
-        final String methodName = IWebMessagingDAO.CNAME + "#retrieveMessages() throws SQLException";
+        final String methodName = IServiceMessagingDAO.CNAME + "#retrieveMessages() throws SQLException";
 
         if (DEBUG)
         {
@@ -240,7 +240,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
             }
             
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL retrServiceMessages() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getServiceMessages() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
@@ -316,11 +316,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO#retrieveAlertMessages()
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO#retrieveAlertMessages()
      */
     public synchronized List<Object[]> retrieveAlertMessages() throws SQLException
     {
-        final String methodName = IWebMessagingDAO.CNAME + "#retrieveAlertMessages() throws SQLException";
+        final String methodName = IServiceMessagingDAO.CNAME + "#retrieveAlertMessages() throws SQLException";
 
         if (DEBUG)
         {
@@ -423,11 +423,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO#updateMessage(String, List)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO#updateMessage(String, List)
      */
     public synchronized boolean updateMessage(final String messageId, final List<Object> messageList) throws SQLException
     {
-        final String methodName = IWebMessagingDAO.CNAME + "#updateMessage(final String messageId, final List<Object> messageList) throws SQLException";
+        final String methodName = IServiceMessagingDAO.CNAME + "#updateMessage(final String messageId, final List<Object> messageList) throws SQLException";
 
         if (DEBUG)
         {
@@ -507,11 +507,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO#deleteMessage(String)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO#deleteMessage(String)
      */
     public synchronized boolean deleteMessage(final String messageId) throws SQLException
     {
-        final String methodName = IWebMessagingDAO.CNAME + "#deleteMessage(final String messageId) throws SQLException";
+        final String methodName = IServiceMessagingDAO.CNAME + "#deleteMessage(final String messageId) throws SQLException";
 
         if (DEBUG)
         {
@@ -576,11 +576,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO#getMessagesByAttribute(String)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO#getMessagesByAttribute(String)
      */
     public synchronized List<Object[]> getMessagesByAttribute(final String value) throws SQLException
     {
-        final String methodName = IWebMessagingDAO.CNAME + "#getMessagesByAttribute(final String value) throws SQLException";
+        final String methodName = IServiceMessagingDAO.CNAME + "#getMessagesByAttribute(final String value) throws SQLException";
 
         if (DEBUG)
         {

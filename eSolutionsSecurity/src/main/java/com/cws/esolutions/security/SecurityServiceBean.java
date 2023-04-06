@@ -26,6 +26,7 @@ package com.cws.esolutions.security;
  * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 import java.util.Map;
+import java.util.Objects;
 import javax.sql.DataSource;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -64,7 +65,7 @@ public class SecurityServiceBean implements Serializable
             DEBUGGER.debug("instance: {}", SecurityServiceBean.instance);
         }
 
-        if (SecurityServiceBean.instance == null)
+        if (Objects.isNull(SecurityServiceBean.instance))
         {
             SecurityServiceBean.instance = new SecurityServiceBean();
         }

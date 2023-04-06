@@ -242,7 +242,7 @@
                         <td><form:errors path="osName" cssClass="error" /></td>
                         <%-- domain name --%>
                         <c:choose>
-                            <c:when test="${fn:length(domainList) gt 1}">
+                            <c:when test="${fn:length(domainList) >= 1}">
                                 <td id="domainName" style="display: none;"><label id="txtDomainName"><spring:message code="server.mgmt.domain.name" /></label></td>
                                 <td id="domainNameSelect" style="display: none;">
                                     <form:select path="domainName">
@@ -344,7 +344,7 @@
                                     </form:select>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/ui/systems/add-server"
+                                    <a href="${pageContext.request.contextPath}/ui/server-management/add-server"
                                         title="<spring:message code='server.mgmt.add.server' />"><spring:message code='server.mgmt.add.server' /></a>
                                 </c:otherwise>
                             </c:choose>

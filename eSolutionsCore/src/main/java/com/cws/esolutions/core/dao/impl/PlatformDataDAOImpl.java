@@ -25,17 +25,16 @@ package com.cws.esolutions.core.dao.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
-import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IPlatformDataDAO;
 /**
@@ -58,7 +57,7 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -76,21 +75,31 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL addNewPlatform(?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL addNewPlatform(?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             stmt.setString(1, platformData.get(0)); // guid
             stmt.setString(2, platformData.get(1)); // name
-            stmt.setString(3, platformData.get(2)); // region
-            stmt.setString(4, platformData.get(3)); // partition
-            stmt.setString(5, platformData.get(4)); // status
-            stmt.setString(6, platformData.get(5)); // servers
+            stmt.setString(3, platformData.get(2)); // status
+            stmt.setString(4, platformData.get(3)); // description
+            stmt.registerOutParameter(5, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            isComplete = (!(stmt.execute()));
+            stmt.execute();
+            int updateCount = stmt.getInt(5);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("updateCount: {}", updateCount);
+            }
+
+            if (updateCount == 1)
+            {
+            	isComplete = true;
+            }
 
             if (DEBUG)
             {
@@ -151,14 +160,12 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
  
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL updatePlatformData(?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL updatePlatformData(?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, platformGuid); // systemGuid
-            stmt.setString(2, platformData.get(1)); // platformName
-            stmt.setString(3, platformData.get(2)); // region
-            stmt.setString(4, platformData.get(3)); // nwpartition
-            stmt.setString(5, platformData.get(4)); // platformstatus
-            stmt.setString(6, platformData.get(5)); // description
-            stmt.registerOutParameter(7, Types.INTEGER);
+            stmt.setString(2, platformData.get(0)); // platformName
+            stmt.setString(3, platformData.get(1)); // platformstatus
+            stmt.setString(4, platformData.get(2)); // description
+            stmt.registerOutParameter(5, Types.INTEGER);
 
             if (DEBUG)
             {
@@ -166,7 +173,7 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             }
 
             stmt.execute();
-            int updateCount = stmt.getInt(7);
+            int updateCount = stmt.getInt(5);
 
             if (DEBUG)
             {
@@ -342,33 +349,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             }
 
             sqlConn.setAutoCommit(true);
-            StringBuilder sBuilder = new StringBuilder();
-
-            if (StringUtils.split(value, " ").length >= 2)
-            {
-                for (String str : StringUtils.split(value, " "))
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Value: {}", str);
-                    }
-
-                    sBuilder.append("+" + str);
-                    sBuilder.append(" ");
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("StringBuilder: {}", sBuilder);
-                }
-            }
-            else
-            {
-                sBuilder.append("+" + value);
-            }
 
             stmt = sqlConn.prepareStatement("{ CALL getPlatformByAttribute(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, sBuilder.toString().trim());
+            stmt.setString(1, value);
             stmt.setInt(2, startRow);
 
             if (DEBUG)
@@ -499,10 +482,8 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                             Arrays.asList(
                                     resultSet.getString(1), // GUID
                                     resultSet.getString(2), // PLATFORMNAME
-                                    resultSet.getString(3), // REGION
-                                    resultSet.getString(4), // NWPARTITION
-                                    resultSet.getString(5), // PLATFORMSTATUS
-                                    resultSet.getString(6)));
+                                    resultSet.getString(3), // PLATFORMSTATUS
+                                    resultSet.getString(4)));
 
                     if (DEBUG)
                     {

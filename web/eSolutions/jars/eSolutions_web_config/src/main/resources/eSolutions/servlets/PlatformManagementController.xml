@@ -22,7 +22,6 @@
         <property name="validator">
             <ref bean="platformRequestValidator" />
         </property>
-        <property name="serviceName" value="PlatformMgmt" />
         <property name="serviceId" value="2B58DC01-E63D-4125-B55F-D407A17EA4B5" />
         <property name="recordsPerPage" value="20" />
         <property name="defaultPage" value=".platform-management/jsp/html/en/PlatformMgmt_DefaultHandler" />

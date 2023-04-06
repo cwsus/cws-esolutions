@@ -198,7 +198,6 @@ public class OnlineResetController
         this.messageAccountExpired = value;
     }
 
-
     public final void setMessageAccountSuspended(final String value)
     {
         final String methodName = OnlineResetController.CNAME + "#setMessageAccountSuspended(final String value)";
@@ -224,7 +223,6 @@ public class OnlineResetController
 
         this.messageAccountLocked = value;
     }
-
 
     public final void setMessageRequestFailure(final String value)
     {
@@ -742,7 +740,7 @@ public class OnlineResetController
 	            {
 					case FAILURE:
 	            		mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
-	            		mView.setViewName(this.appConfig.getErrorResponsePage());
+	            		mView.setViewName(this.submitEmailAddrPage);
 	
 	            		break;
 					case SUCCESS:
@@ -1379,7 +1377,6 @@ public class OnlineResetController
 
         return mView;
     }
-
 
     @RequestMapping(value = "forgot-password/change-password", method = RequestMethod.POST)
     public final ModelAndView submitPasswordChange(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)

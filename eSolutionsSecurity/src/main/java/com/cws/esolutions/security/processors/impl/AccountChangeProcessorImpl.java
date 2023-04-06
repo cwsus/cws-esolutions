@@ -27,7 +27,9 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.ArrayList;
+import java.security.KeyPair;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -689,36 +691,44 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
+        	KeyPair keyPair = null;
+
         	// delete the existing keys
-            boolean keysRemoved = keyManager.removeKeys(userAccount.getGuid());
+        	try
+        	{
+        		keyPair = keyManager.returnKeys(userAccount.getGuid());
+        	}
+        	catch (KeyManagementException kmx) {} // do nothing with it, we dont care
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("KeyPair: {}", keyPair);
+        	}
+
+        	if (!(Objects.isNull(keyPair)))
+        	{
+        		boolean keysRemoved = keyManager.removeKeys(userAccount.getGuid());
+
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("keysRemoved: {}", keysRemoved);
+	            }
+        	}
+
+            boolean keysAdded = keyManager.createKeys(userAccount.getGuid());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("keysRemoved: {}", keysRemoved);
+            	DEBUGGER.debug("keysAdded: {}", keysAdded);
             }
 
-            if (keysRemoved)
+            if (keysAdded)
             {
-                // good, now re-generate
-                boolean keysAdded = keyManager.createKeys(userAccount.getGuid());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("keysAdded: {}", keysAdded);
-                }
-
-                if (keysAdded)
-                {
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
+            	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            	response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (final KeyManagementException kmx)

@@ -65,11 +65,11 @@ public class ApplicationDataDAOImplTest
 
     @Test public void addNewApplication()
     {
-        List<Object> appData = new ArrayList<Object>(
+        List<String> appData = new ArrayList<String>(
                 Arrays.asList(
                         this.appGuid,
                         "eSolutions",
-                        1.0,
+                        "1.0",
                         "/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war",
                         "/nas/installer/eSolutions_web_source-1.0.war",
                         "/nas/installer/runAppInstall.sh",
@@ -88,11 +88,11 @@ public class ApplicationDataDAOImplTest
 
     @Test public void updateApplication()
     {
-        List<Object> appData = new ArrayList<Object>(
+        List<String> appData = new ArrayList<String>(
                 Arrays.asList(
                         this.appGuid,
                         "eSolutions",
-                        2.0,
+                        "2.0",
                         "/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war",
                         "/nas/installer/eSolutions_web_source-1.0.war",
                         "/nas/installer/runAppInstall.sh",

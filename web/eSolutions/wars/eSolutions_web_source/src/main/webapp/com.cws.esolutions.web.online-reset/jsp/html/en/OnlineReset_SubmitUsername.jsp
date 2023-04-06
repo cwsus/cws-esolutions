@@ -56,6 +56,8 @@
 
 <div id="homecontent">
     <div class="wrapper">
+        <div id="validationError" style="color: #FF0000"></div>
+
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
         </c:if>
@@ -75,34 +77,34 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
-        <h1><spring:message code="login.user.forgot.info" /></h1>
-        <ul>
-            <li><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />"><spring:message code="login.user.forgot_uid" /></a></li>
-        </ul>
+        <h1><spring:message code="olr.user.provide.username" /></h1>
+        <form:form id="submitUsernameForSearch" name="submitUsernameForSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-password" method="post" autocomplete="off">
+            <form:hidden path="resetType" value="${resetType}" />
+
+            <table>
+                <tr>
+                    <td><label id="txtEmailAddr"><spring:message code="olr.username" /></label></td>
+                    <td>
+                        <form:input path="username" />
+                        <form:errors path="username" cssClass="error" />
+                    </td>
+                </tr>
+            </table>
+            <br class="clear" /><br class="clear" />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/auth/logout');" />
+        </form:form>
     </div>
 </div>
 
 <div id="container">
     <div class="wrapper">
         <div id="holder">
-            <div id="validationError" style="color: #FF0000"></div>
-
-            <h1><spring:message code="olr.user.provide.username" /></h1>
-            <ul id="latestnews">
-                <li>
-                    <form:form id="submitUsernameForSearch" name="submitUsernameForSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-password" method="post" autocomplete="off">
-                        <form:hidden path="resetType" value="${resetType}" />
-
-                        <label id="txtEmailAddr"><spring:message code="olr.username" /></label>
-                        <form:input path="username" />
-                        <form:errors path="username" cssClass="error" />
-                        <br /><br />
-                        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/auth/logout');" />
-                    </form:form>
-                </li>
-            </ul>
+	        <h1><spring:message code="login.user.forgot.info" /></h1>
+	        <ul>
+	            <li><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />"><spring:message code="login.user.forgot_uid" /></a></li>
+	        </ul>
         </div>
         <br class="clear" />
     </div>

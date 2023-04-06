@@ -25,17 +25,16 @@ package com.cws.esolutions.core.dao.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.sql.PreparedStatement;
-import org.apache.commons.lang3.StringUtils;
+import java.sql.CallableStatement;
 
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 /**
@@ -76,7 +75,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
+            stmt = sqlConn.prepareCall("{ CALL addNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
             		ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, (String) serverData.get(0)); // systemGuid
             stmt.setString(2, (String) serverData.get(1)); // systemOs
@@ -471,33 +470,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
             }
 
             sqlConn.setAutoCommit(true);
-            StringBuilder sBuilder = new StringBuilder();
-
-            if (StringUtils.split(value, " ").length >= 2)
-            {
-                for (String str : StringUtils.split(value, " "))
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Value: {}", str);
-                    }
-
-                    sBuilder.append("+" + str);
-                    sBuilder.append(" ");
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("StringBuilder: {}", sBuilder);
-                }
-            }
-            else
-            {
-                sBuilder.append("+" + value);
-            }
 
             stmt = sqlConn.prepareStatement("{ CALL getServerByAttribute(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, sBuilder.toString().trim());
+            stmt.setString(1, value);
             stmt.setInt(2, startRow);
 
             if (DEBUG)
@@ -529,7 +504,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Value: {}", data);
+                            DEBUGGER.debug("Value: {}", (Object) data);
                         }
 
                         responseData.add(data);
@@ -570,14 +545,14 @@ public class ServerDataDAOImpl implements IServerDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServerDataDAO#getServer(java.lang.String)
      */
-    public synchronized List<Object> getServer(final String attribute) throws SQLException
+    public synchronized List<Object> getServer(final String serverGuid) throws SQLException
     {
-        final String methodName = IServerDataDAO.CNAME + "#getServer(final String attribute) throws SQLException";
+        final String methodName = IServerDataDAO.CNAME + "#getServer(final String serverGuid) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("attribute: {}", attribute);
+            DEBUGGER.debug("attribute: {}", serverGuid);
         }
 
         Connection sqlConn = null;
@@ -603,8 +578,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             // we dont know what we have here - it could be a guid or it could be a hostname
             // most commonly it'll be a guid, but we're going to search anyway
-            stmt = sqlConn.prepareStatement("{ CALL retrServerData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, attribute);
+            stmt = sqlConn.prepareStatement("{ CALL getServerData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, serverGuid);
 
             if (DEBUG)
             {

@@ -15,7 +15,6 @@
             <ref bean="appConfig" />
         </property>
         <property name="messageNoSearchResults" value="theme.search.no.results" />
-        <property name="serviceName" value="dnsAdmin" />
         <property name="lookupPage" value=".dns-service/jsp/html/en/DNSService_ServiceLookup" />
         <property name="serviceId" value="B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD" />
         <property name="searchSuffix" value="caspersbox.corp, caspersbox.com" /> <!-- dns search suffix (not required) -->

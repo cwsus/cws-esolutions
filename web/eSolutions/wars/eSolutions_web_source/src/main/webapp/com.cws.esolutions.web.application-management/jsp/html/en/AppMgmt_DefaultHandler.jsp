@@ -57,6 +57,7 @@
 <div id="homecontent">
 	<div class="wrapper">	
 	    <div id="error"></div>
+	    <div id="validationError" style="color: #FF0000"></div>
 	
 	    <c:if test="${not empty fn:trim(messageResponse)}">
 	        <p id="info">${messageResponse}</p>
@@ -88,24 +89,14 @@
 	            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	        </form:form>
 	    </p>
-	</div>
-</div>
-
-<div id="container">
-    <div class="wrapper">
-        <div id="content">
-            <h1><spring:message code="app.mgmt.header" /></h1>
-            <ul>
-                <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
-            </ul>
-        </div>
+	    <br class="clear" />
+	    <br class="clear" />
         <c:if test="${not empty searchResults}">
             <h1><spring:message code="theme.search.results" /></h1>
             <table id="searchResults">
                 <c:forEach var="result" items="${searchResults}">
                     <tr>
-                        <td><a href="${pageContext.request.contextPath}/ui/application-management/application/${result.path}" title="${result.title}">${result.title}</a></td>
+                        <td><a href="${pageContext.request.contextPath}/ui/application-management/application/${result.guid}" title="${result.name}">${result.name}</a></td>
                     </tr>
                 </c:forEach>
             </table>
@@ -132,6 +123,18 @@
                 </table>
             </c:if>
         </c:if>
+	</div>
+</div>
+
+<div id="container">
+    <div class="wrapper">
+        <div id="content">
+            <h1><spring:message code="app.mgmt.header" /></h1>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
+            </ul>
+        </div>
         <br class="clear" />
     </div>
 </div>

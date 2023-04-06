@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.utils.exception;
+package com.cws.esolutions.utility.exception;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.utils.exception
@@ -25,15 +25,14 @@ package com.cws.esolutions.core.utils.exception;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import com.cws.esolutions.core.exception.CoreServicesException;
 /**
  * @see com.cws.esolutions.core.exception.CoreServicesException
  */
-public class UtilityException extends CoreServicesException
+public class UtilityException extends Exception
 {
-    private static final long serialVersionUID = 8068749942395150034L;
+    private static final long serialVersionUID = 8161186052808490837L;
 
-    /**
+	/**
      * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServicesException(java.lang.String)
      *
      * @param message - The message for the exception

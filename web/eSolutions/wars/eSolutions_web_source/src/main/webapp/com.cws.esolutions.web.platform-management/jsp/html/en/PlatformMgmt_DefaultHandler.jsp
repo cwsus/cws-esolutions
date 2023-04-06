@@ -90,18 +90,8 @@
                 <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/platform-management/default');" />
             </form:form>
         </p>
-    </div>
-</div>
-
-<div id="container">
-    <div class="wrapper">
-        <div id="content">
-            <h1><spring:message code="platform.mgmt.header" /></h1>
-            <ul>
-                <li><a href="${pageContext.request.contextPath}/ui/platform-management/list-platforms" title="<spring:message code='platform.mgmt.list.platforms' />"><spring:message code="platform.mgmt.list.platforms" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/platform-management/add-platform" title="<spring:message code='platform.mgmt.add.platform' />"><spring:message code="platform.mgmt.add.platform" /></a></li>
-            </ul>
-        </div>
+        <br class="clear" />
+        <br class="clear" />
         <c:if test="${not empty searchResults}">
             <h1><spring:message code="theme.search.results" /></h1>
             <table id="searchResults">
@@ -134,6 +124,18 @@
                 </table>
             </c:if>
         </c:if>
+    </div>
+</div>
+
+<div id="container">
+    <div class="wrapper">
+        <div id="content">
+            <h1><spring:message code="platform.mgmt.header" /></h1>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/ui/platform-management/list-platforms" title="<spring:message code='platform.mgmt.list.platforms' />"><spring:message code="platform.mgmt.list.platforms" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/platform-management/add-platform" title="<spring:message code='platform.mgmt.add.platform' />"><spring:message code="platform.mgmt.add.platform" /></a></li>
+            </ul>
+        </div>
         <br class="clear" />
     </div>
 </div>

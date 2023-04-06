@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.utils;
+package com.cws.esolutions.utility.coreutils;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.utils
@@ -61,7 +61,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.MailConfig;
-import com.cws.esolutions.core.utils.dto.EmailMessage;
+import com.cws.esolutions.utility.dto.EmailMessage;
+import com.cws.esolutions.utility.UtilityConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -74,9 +75,9 @@ public final class EmailUtils
 {
     private static final String CNAME = EmailUtils.class.getName();
 
-    static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(UtilityConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(UtilityConstants.ERROR_LOGGER + CNAME);
 
     /**
      * eSolutionsCore
@@ -222,7 +223,7 @@ public final class EmailUtils
                 DEBUGGER.debug("Session: {}", mailSession);
             }
 
-            if (mailSession == null)
+            if (Objects.isNull(mailSession))
             {
                 throw new MessagingException("Unable to configure email services");
             }
@@ -344,7 +345,7 @@ public final class EmailUtils
                 DEBUGGER.debug("mailSession: {}", mailSession);
             }
 
-            if (mailSession == null)
+            if (Objects.isNull(mailSession))
             {
                 throw new MessagingException("Unable to configure email services");
             }

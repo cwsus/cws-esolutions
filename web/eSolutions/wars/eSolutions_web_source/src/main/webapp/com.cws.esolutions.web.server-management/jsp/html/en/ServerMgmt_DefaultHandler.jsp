@@ -78,21 +78,60 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
-        <h1><spring:message code="theme.search.header" /></h1>
-        <p>
-            <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/server-management/search" method="post">
-                <label id="txtSearchTerms"><spring:message code="theme.search.terms" /><br /></label>
-                <form:input path="operHostName" />
-                <form:errors path="operHostName" cssClass="error" />
-                <br /><br />
-                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/server-management/default');" />
-                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-            </form:form>
-        </p>
+        <h1><spring:message code="server.mgmt.lookup.host" /></h1>
+        <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/search" method="post">
+            <table>
+                <tr>
+                    <td><label id="txtSearchTerms"><spring:message code="theme.search.terms" /><br /></label></td>
+                    <td>
+                        <form:input path="operHostName" />
+                        <form:errors path="operHostName" cssClass="error" />
+                    </td>
+                </tr>
+            </table>
+            <br class="clear" /><br class="clear" />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/server-management/default');" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+        </form:form>
+
+
+        <c:if test="${not empty searchResults}">
+            <h1><spring:message code="theme.search.results" /></h1>
+            <p>
+                <table id="searchResults">
+                    <c:forEach var="result" items="${searchResults}">
+                        <tr>
+                            <td><a href="${pageContext.request.contextPath}/ui/server-management/server/${result.serverGuid}" title="${result.operHostName}">${result.operHostName}</a></td>
+                        </tr>
+                    </c:forEach>
+                </table>
+
+                <c:if test="${pages gt 1}">
+                    <br />
+                    <hr />
+                    <br />
+                    <table>
+                        <tr>
+                            <c:forEach begin="1" end="${pages}" var="i">
+                                <c:choose>
+                                    <c:when test="${page eq i}">
+                                        <td>${i}</td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td>
+                                            <a href="${pageContext.request.contextPath}/server-management/search/terms/${searchTerms}/page/${i}" title="{i}">${i}</a>
+                                        </td>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </tr>
+                    </table>
+                </c:if>
+            </p>
+        </c:if>
     </div>
 </div>
-
 
 <div id="container">
     <div class="wrapper">
@@ -104,41 +143,6 @@
                 <li><a href="${pageContext.request.contextPath}/ui/server-management/install-software" title="<spring:message code='server.mgmt.install.software.header' />"><spring:message code="server.mgmt.install.software.header" /></a></li>
                 <li><a href="${pageContext.request.contextPath}/ui/server-management/server-control" title="<spring:message code='server.mgmt.server.control.header' />"><spring:message code='server.mgmt.server.control.header' /></a></li>
             </ul>
-
-            <c:if test="${not empty searchResults}">
-                <h1><spring:message code="theme.search.results" /></h1>
-                <p>
-                    <table id="searchResults">
-                        <c:forEach var="result" items="${searchResults}">
-                            <tr>
-                                <td><a href="${pageContext.request.contextPath}/ui/server-management/server/${result.path}" title="${result.title}">${result.title}</a></td>
-                            </tr>
-                        </c:forEach>
-                    </table>
-
-                    <c:if test="${pages gt 1}">
-                        <br />
-                        <hr />
-                        <br />
-                        <table>
-                            <tr>
-                                <c:forEach begin="1" end="${pages}" var="i">
-                                    <c:choose>
-                                        <c:when test="${page eq i}">
-                                            <td>${i}</td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td>
-                                                <a href="${pageContext.request.contextPath}/server-management/search/terms/${searchTerms}/page/${i}" title="{i}">${i}</a>
-                                            </td>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </tr>
-                        </table>
-                    </c:if>
-                </p>
-            </c:if>
         </div>
         <br class="clear" />
     </div>

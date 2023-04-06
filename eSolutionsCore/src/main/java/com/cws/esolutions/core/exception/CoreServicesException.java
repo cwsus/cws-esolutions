@@ -36,8 +36,9 @@ package com.cws.esolutions.core.exception;
  */
 public class CoreServicesException extends Exception
 {
+    private static final long serialVersionUID = 3174420227519108655L;
 
-    /**
+	/**
      * @see java.lang.Exception#Exception(java.lang.String)
      *
      * @param message - The message for the exception

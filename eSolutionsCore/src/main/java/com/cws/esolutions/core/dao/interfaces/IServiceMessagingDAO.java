@@ -37,9 +37,9 @@ import com.cws.esolutions.core.CoreServicesConstants;
  * @author cws-khuntly
  * @version 1.0
  */
-public interface IWebMessagingDAO
+public interface IServiceMessagingDAO
 {
-    static final String CNAME = IWebMessagingDAO.class.getName();
+    static final String CNAME = IServiceMessagingDAO.class.getName();
 
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");

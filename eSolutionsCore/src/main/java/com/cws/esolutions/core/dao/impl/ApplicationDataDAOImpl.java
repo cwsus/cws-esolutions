@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.CallableStatement;
-import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
 /**
@@ -48,9 +47,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#addApplication(java.util.List)
      */
-    public synchronized boolean addApplication(final List<Object> value) throws SQLException
+    public synchronized boolean addApplication(final List<String> value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#addApplication(final List<Object> value) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#addApplication(final List<String> value) throws SQLException";
         
         if (DEBUG)
         {
@@ -60,7 +59,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -78,27 +77,32 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, (String) value.get(0)); // appguid
-            stmt.setString(2, (String) value.get(1)); // appname
-            stmt.setDouble(3, (Double) value.get(2)); // appversion
-            stmt.setString(4, (String) value.get(3)); // installpath
-            stmt.setString(5, (String) value.get(4)); // packagelocation
-            stmt.setString(6, (String) value.get(5)); // packageinstaller
-            stmt.setString(7, (String) value.get(6)); // installerOptions
-            stmt.setString(8, (String) value.get(7)); // logs directory
-            stmt.setString(9, (String) value.get(8)); // platform guid
+            stmt = sqlConn.prepareCall("{ CALL addNewApplcation(?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, value.get(0)); // appguid
+            stmt.setString(2, value.get(1)); // appname
+            stmt.setString(3, value.get(2)); // appversion
+            stmt.setString(4, value.get(3)); // platform guid
+            stmt.setString(5, value.get(4)); // basepath
+            stmt.setString(6, value.get(5)); // logspath
+            stmt.setString(7, value.get(6)); // install path
+            stmt.registerOutParameter(8, Types.INTEGER);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("PreparedStatement: {}", stmt);
             }
 
-            isComplete = (!(stmt.execute()));
+            stmt.execute();
+            int updateCount = stmt.getInt(8);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isComplete: {}", isComplete);
+                DEBUGGER.debug("updateCount: {}", updateCount);
+            }
+
+            if (updateCount == 1)
+            {
+            	isComplete = true;
             }
         }
         catch (final SQLException sqx)
@@ -404,33 +408,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             }
 
             sqlConn.setAutoCommit(true);
-            StringBuilder sBuilder = new StringBuilder();
-
-            if (StringUtils.split(value, " ").length >= 2)
-            {
-                for (String str : StringUtils.split(value, " "))
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Value: {}", str);
-                    }
-
-                    sBuilder.append("+" + str);
-                    sBuilder.append(" ");
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("StringBuilder: {}", sBuilder);
-                }
-            }
-            else
-            {
-                sBuilder.append("+" + value);
-            }
 
             stmt = sqlConn.prepareStatement("{ CALL getApplicationByAttribute(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, sBuilder.toString().trim());
+            stmt.setString(1, value);
             stmt.setInt(2, startRow);
 
             if (DEBUG)
@@ -457,8 +437,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                         Object[] data = new Object[]
                         {
                             resultSet.getString(1), // GUID
-                            resultSet.getString(2), // NAME
-                            resultSet.getInt(3) / 0  * 100 // score
+                            resultSet.getString(2) // NAME
                         };
 
                         if (DEBUG)
@@ -559,15 +538,14 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     (
                         Arrays.asList
                         (
-                            resultSet.getString(1), // APPLICATION_GUID
-                            resultSet.getString(2), // APPLICATION_NAME
-                            resultSet.getDouble(3), // APPLICATION_VERSION
-                            resultSet.getString(4), // INSTALLATION_PATH
-                            resultSet.getString(5), // PACKAGE_LOCATION
-                            resultSet.getString(6), // PACKAGE_INSTALLER
-                            resultSet.getString(7), // INSTALLER_OPTIONS
-                            resultSet.getString(8), // LOGS_DIRECTORY
-                            resultSet.getString(9) // PLATFORM_GUID
+                        		resultSet.getString(1), // GUID 
+                        		resultSet.getString(2), // APPNAME
+                        		resultSet.getString(3), // APPVERSION
+                        		resultSet.getString(4), // PLATFORM_GUID
+                        		resultSet.getString(5), // INSTALLATION_PATH
+                        		resultSet.getString(6), // LOGS_DIRECTORY
+                        		resultSet.getString(7), // PACKAGE_LOCATION
+                        		resultSet.getTimestamp(8) // APP_ONLINE_DATE
                         )
                     );
 

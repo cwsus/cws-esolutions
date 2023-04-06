@@ -100,15 +100,25 @@
 
         <h1><spring:message code="user.account.update.email.address" /></h1>
         <form:form name="submitEmailChange" id="submitEmailChange" action="${pageContext.request.contextPath}/ui/user-account/email" method="post">
-            <label id="txtEmailAddr"><spring:message code="user.account.change.email.address" /></label>
-            <form:input path="emailAddr" />
-            <form:errors path="emailAddr" cssClass="error" />
+            <table>
+                <tr>
+                    <td><label id="txtEmailAddr"><spring:message code="user.account.change.email.address" /></label></td>
+                    <td>
+			            <form:input path="emailAddr" />
+			            <form:errors path="emailAddr" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtPassword"><spring:message code="login.user.pwd" /><br /></label></td>
+                    <td>
+			            <form:password path="currentPassword" />
+			            <form:errors path="currentPassword" cssClass="error" />
+                    </td>
+            </table>
+            
+            <br class="clear" />
+            <br class="clear" />
 
-            <label id="txtPassword"><spring:message code="login.user.pwd" /><br /></label>
-            <form:password path="currentPassword" />
-            <form:errors path="currentPassword" cssClass="error" />
-
-            <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
             <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/user-account/default');" />

@@ -65,6 +65,8 @@
 
 <div id="homecontent">
     <div class="wrapper">
+        <div id="validationError" style="color: #FF0000"></div>
+
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
         </c:if>
@@ -84,38 +86,32 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
     </div>
-</div>
 
-<div id="container">
-    <div class="wrapper">
-        <div id="holder">
-            <h1><spring:message code="olr.change.password" /></h1>
-            <div id="validationError" style="color: #FF0000"></div>
+	<h1><spring:message code="olr.change.password" /></h1>
+	<form:form id="submitPasswordChange" name="submitPasswordChange" action="${pageContext.request.contextPath}/ui/online-reset/forgot-password/change-password" method="post" autocomplete="off">
+	    <form:hidden path="guid" value="${resetGuid}" />
+	    <form:hidden path="username" value="${resetUsername}" />
+	    <form:hidden path="isReset" value="true" />
 
-            <ul id="latestnews">
-                <li>
-                    <form:form id="submitPasswordChange" name="submitPasswordChange" action="${pageContext.request.contextPath}/ui/online-reset/forgot-password/change-password" method="post" autocomplete="off">
-                        <form:hidden path="guid" value="${resetGuid}" />
-                        <form:hidden path="username" value="${resetUsername}" />
-                        <form:hidden path="isReset" value="true" />
-
-                        <label id="txtNewPassword"><spring:message code="olr.change.password.new" /></label>
-                        <form:password path="newPassword" />
-                        <form:errors path="newPassword" cssClass="error" />
-                        <br /><br />
-
-                        <label id="txtConfirmPassword"><spring:message code="olr.change.password.confirm" /></label>
-                        <form:password path="confirmPassword" />
-                        <form:errors path="confirmPassword" cssClass="error" />
-                        <br /><br />
-
-                        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/auth/logout');" />
-                    </form:form>
-                </li>
-            </ul>
-        </div>
-        <br class="clear" />
-    </div>
+        <table>
+            <tr>
+                <td><label id="txtNewPassword"><spring:message code="olr.change.password.new" /></label></td>
+                <td>
+			        <form:password path="newPassword" />
+			        <form:errors path="newPassword" cssClass="error" />
+                </td>
+            </tr>
+            <tr>
+                <td><label id="txtConfirmPassword"><spring:message code="olr.change.password.confirm" /></label></td>
+                <td>
+			        <form:password path="confirmPassword" />
+			        <form:errors path="confirmPassword" cssClass="error" />
+                </td>
+            </tr>
+        </table>
+	    <br class="clear" /><br class="clear" />
+	    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/auth/logout');" />
+	</form:form>
 </div>

@@ -62,7 +62,6 @@
     }
 //-->
 </script>
-<c:set var="resetAllowed" value="${allowUserReset}" />
 
 <div id="homecontent">
 	<div class="wrapper">
@@ -90,23 +89,34 @@
 	    </c:if>
 
         <form:form id="submitCombinedLogin" name="submitCombinedLogin" action="${pageContext.request.contextPath}/ui/auth/submit" method="post">
-            <input type="hidden" name="vpath" id="vpath" value="${param.vpath}" />
-
-            <p>
-                <label id="txtUsername"><spring:message code="login.user.name" /></label>
-                <form:input path="username" /> <c:if test="${resetAllowed eq true}"><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username"
-                	title="<spring:message code='login.user.forgot_uid' />"><spring:message code="login.user.forgot_uid" /></a></c:if>
-                <form:errors path="username" cssClass="error" />
-                <br /><br />
-                <label id="txtPassword"><spring:message code="login.user.pwd" /></label>
-                <form:password path="password" /> <c:if test="${resetAllowed eq true}"><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password"
-	            	title="<spring:message code='login.user.forgot_pwd' />"><spring:message code="login.user.forgot_pwd" /></a></c:if>
-                <form:errors path="password" cssClass="error" />
-                <br /><br />
-                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-            </p>
+            <table>
+                <tr>
+                    <td><label id="txtUsername"><spring:message code="login.user.name" /></label></td>
+                    <td>
+                        <form:input path="username" />
+                        <form:errors path="username" cssClass="error" />
+                    </td>
+                    <td>
+                        <c:if test="${allowUserReset eq true}">
+                            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />"><spring:message code="login.user.forgot_uid" /></a>
+                        </c:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtPassword"><spring:message code="login.user.pwd" /></label></td>
+                    <td>
+                        <form:password path="password" />
+                        <form:errors path="password" cssClass="error" />
+                    </td>
+                    <td>
+                        <c:if test="${allowUserReset eq true}">
+                            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />"><spring:message code="login.user.forgot_pwd" /></a>
+                        </c:if>
+                    </td>
+            </table>
+            <br class="clear" /><br class="clear" />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
         </form:form>
-  		<br class="clear" />
 	</div>
 </div>

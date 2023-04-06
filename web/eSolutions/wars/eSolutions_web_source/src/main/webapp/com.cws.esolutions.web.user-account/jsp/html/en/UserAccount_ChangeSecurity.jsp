@@ -120,40 +120,55 @@
 
         <h1><spring:message code="user.account.update.security" /></h1>
         <form:form name="submitSecurityInformationChange" id="submitSecurityInformationChange" action="${pageContext.request.contextPath}/ui/user-account/security" method="post" autocomplete="off">
-            <p>
-	            <label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label>
-	            <form:select path="secQuestionOne">
-	                <option><spring:message code="theme.option.select" /></option>
-	                <option><spring:message code="theme.option.spacer" /></option>
-	                <form:options items="${questionList}" />
-	            </form:select>
-                <form:errors path="secQuestionOne" cssClass="error" />
-                <br /><br />
-	            <label id="txtAnswerOne"><spring:message code="user.account.update.security.answer" /></label>
-	            <form:password path="secAnswerOne" />
-	            <form:errors path="secAnswerOne" cssClass="error" />
-                <br /><br />	
-	            <label id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></label>
-	            <form:select path="secQuestionTwo">
-	                <option><spring:message code="theme.option.select" /></option>
-	                <option><spring:message code="theme.option.spacer" /></option>
-	                <form:options items="${questionList}" />
-	            </form:select>
-	            <form:errors path="secQuestionTwo" cssClass="error" />            
-                <br /><br />
-	            <label id="txtAnswerTwo"><spring:message code="user.account.update.security.answer" /></label>
-	            <form:password path="secAnswerTwo" />
-	            <form:errors path="secAnswerTwo" cssClass="error" />
-                <br /><br />
-	            <label id="txtPassword"><spring:message code="user.account.update.password.current" /></label>
-	            <form:password path="currentPassword" />
-	            <form:errors path="currentPassword" cssClass="error" />
+            <table>
+                <tr>
+                    <td><label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label></td>
+                </tr>
+                <tr>
+                    <td>
+                        <form:select path="secQuestionOne">
+                            <option><spring:message code="theme.option.select" /></option>
+        	                <option><spring:message code="theme.option.spacer" /></option>
+        	                <form:options items="${questionList}" />
+                        </form:select>
+                        <form:errors path="secQuestionOne" cssClass="error" />
+                    </td>
+                    <td><label id="txtAnswerOne"><spring:message code="user.account.update.security.answer" /></label></td>
+                    <td>
+                        <form:password path="secAnswerOne" />
+                        <form:errors path="secAnswerOne" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></label></td>
+                    <td>
+                        <form:select path="secQuestionTwo">
+                            <option><spring:message code="theme.option.select" /></option>
+                            <option><spring:message code="theme.option.spacer" /></option>
+                            <form:options items="${questionList}" />
+                        </form:select>
+                        <form:errors path="secQuestionTwo" cssClass="error" />
+                    </td>
+                    <td><label id="txtAnswerTwo"><spring:message code="user.account.update.security.answer" /></label></td>
+                    <td>
+                        <form:password path="secAnswerTwo" />
+                        <form:errors path="secAnswerTwo" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtPassword"><spring:message code="user.account.update.password.current" /></label></td>
+                    <td>
+                        <form:password path="currentPassword" />
+                        <form:errors path="currentPassword" cssClass="error" />
+                    </td>
+                </tr>
+            </table>
 
-                <br /><br />
-                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/user-account/default');" />
-            </p>
+            <br class="clear" /><br class="clear" />
+
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/user-account/default');" />
         </form:form>
     </div>
 </div>

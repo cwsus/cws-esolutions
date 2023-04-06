@@ -84,6 +84,7 @@ public class UserAccountController
     private String messageEmailChangeSuccess = null;
     private String messageKeyGenerationSuccess = null;
     private String messageContactChangeSuccess = null;
+    private String messageKeyGenerationFailure = null;
     private String messagePasswordChangeSuccess = null;
     private String messageSecurityChangeSuccess = null;
     private PasswordValidator passwordValidator = null;
@@ -275,6 +276,19 @@ public class UserAccountController
         }
 
         this.messageSecurityChangeSuccess = value;
+    }
+
+    public final void setMessageKeyGenerationFailure(final String value)
+    {
+        final String methodName = UserAccountController.CNAME + "#setMessageKeyGenerationFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageKeyGenerationFailure = value;
     }
 
     @RequestMapping(value = "default", method = RequestMethod.GET)
@@ -812,17 +826,27 @@ public class UserAccountController
                 DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageKeyGenerationSuccess);
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+				case FAILURE:
+					mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
+				case SUCCESS:
+					mView.addObject(Constants.RESPONSE_MESSAGE, this.messageKeyGenerationSuccess);
+					mView.setViewName(this.myAccountPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+					mView.addObject(Constants.RESPONSE_MESSAGE, this.messageKeyGenerationFailure);
+					mView.setViewName(this.myAccountPage);
+
+					break;
             }
         }
         catch (final AccountChangeException acx)

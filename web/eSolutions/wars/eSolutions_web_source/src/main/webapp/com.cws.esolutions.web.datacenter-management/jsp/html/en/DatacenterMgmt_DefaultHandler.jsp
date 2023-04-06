@@ -98,18 +98,8 @@
                 <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/datacenter-management/default');" />
             </form:form>
         </p>
-    </div>
-</div>
-
-<div id="container">
-    <div class="wrapper">
-        <div id="content">
-            <h1><spring:message code="svc.mgmt.header" /></h1>
-            <ul>
-                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='datacenter.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" title="<spring:message code='datacenter.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
-            </ul>
-        </div>
+        <br class="clear" />
+        <br class="clear" />
         <c:if test="${not empty searchResults}">
             <h1><spring:message code="theme.search.results" /></h1>
             <table id="searchResults">
@@ -142,6 +132,18 @@
                 </table>
             </c:if>
         </c:if>
+    </div>
+</div>
+
+<div id="container">
+    <div class="wrapper">
+        <div id="content">
+            <h1><spring:message code="svc.mgmt.header" /></h1>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='datacenter.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" title="<spring:message code='datacenter.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
+            </ul>
+        </div>
         <br class="clear" />
     </div>
 </div>

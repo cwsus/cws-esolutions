@@ -75,7 +75,6 @@ public class ApplicationManagementController
     private String serviceId = null;
     private int recordsPerPage = 20; // default to 20
     private String addAppPage = null;
-    private String serviceName = null;
     private String defaultPage = null;
     private String viewAppPage = null;
     private String viewFilePage = null;
@@ -148,19 +147,6 @@ public class ApplicationManagementController
         }
 
         this.recordsPerPage = value;
-    }
-
-    public final void setServiceName(final String value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setServiceName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceName = value;
     }
 
     public final void setDefaultPage(final String value)
@@ -1245,10 +1231,8 @@ public class ApplicationManagementController
 				case SUCCESS:
                     mView.addObject("pages", (int) Math.ceil(appResponse.getEntryCount() * 1.0 / this.recordsPerPage));
                     mView.addObject("page", 1);
-                    mView.addObject("searchTerms", application.getName());
                     mView.addObject(Constants.SEARCH_RESULTS, appResponse.getApplicationList());
-                    mView.addObject(Constants.COMMAND, new Application());
-                    mView.setViewName(this.defaultPage);
+                    mView.setViewName(this.viewApplicationsPage);
 
 					break;
 				case UNAUTHORIZED:
@@ -1362,6 +1346,21 @@ public class ApplicationManagementController
                 if (DEBUG)
                 {
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                Platform platform = new Platform();
+                platform.setPlatformGuid(request.getPlatformGuid());
+
+                if (DEBUG)
+                {
+                	DEBUGGER.debug("Platform: {}", platform);
+                }
+
+                request.setPlatform(platform);
+
+                if (DEBUG)
+                {
+                	DEBUGGER.debug("requestApp: {}", request);
                 }
 
                 ApplicationManagementRequest appRequest = new ApplicationManagementRequest();

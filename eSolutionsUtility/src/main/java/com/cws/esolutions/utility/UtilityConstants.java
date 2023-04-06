@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.utils;
+package com.cws.esolutions.utility;
 /*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.utils
- * File: EmailUtils.java
+ * Project: eSolutionsSecurity
+ * Package: com.cws.esolutions.security
+ * File: SecurityServiceConstants.java
  *
  * History
- *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
-
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author cws-khuntly
  * @version 1.0
  */
-public final class SystemUtils
+public final class UtilityConstants
 {
-	
+	// logging
+    public static final String DEBUGGER = "UTILITY_DEBUGGER";
+    public static final String ERROR_LOGGER = "ERROR_RECORDER.";
+
+    public static final String LINE_BREAK = System.getProperty("line.separator");
 }

@@ -86,47 +86,45 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
-        <h1><spring:message code="datacenter.mgmt.header" /></h1>
-        <ul>
-            <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='datacenter.mgmt.list.datacenters' />"><spring:message code="datacenter.mgmt.list.datacenters" /></a></li>
-        </ul>
+        <h2><spring:message code="datacenter.mgmt.add.datacenter" /></h2>
+		<form:form id="createNewDatacenter" name="createNewDatacenter" action="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" method="post">
+		    <table>
+		        <tr>
+		            <td><label id="txtDatacenterName"><spring:message code="datacenter.mgmt.datacenter.name" /></label></td>
+		            <td>
+		                <form:input path="name" />
+                        <form:errors path="name" cssClass="error" />
+                    </td>
+                    <td><label id="txtDatacenterStatus"><spring:message code="datacenter.mgmt.datacenter.status" /></label></td>
+                    <td>
+					    <form:select path="status" multiple="false">
+					        <option><spring:message code="theme.option.select" /></option>
+					        <option><spring:message code="theme.option.spacer" /></option>
+					        <form:options items="${statusList}" />
+					    </form:select>
+					    <form:errors path="status" cssClass="error" />
+					</td>
+					<td><label id="txtDescription"><spring:message code="datacenter.mgmt.datacenter.description" /></label></td>
+					<td>		    
+            		    <form:textarea path="description" />
+		                <form:errors path="description" cssClass="error" />
+		            </td>
+                </tr>
+            </table>		
+		    <br class="clear" /><br class="clear" />
+		    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+		    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+		    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/datacenter-management/default');" />
+		</form:form>
     </div>
 </div>
 
 <div id="container">
     <div class="wrapper">
         <div id="holder">
-            <div id="validationError" style="color: #FF0000"></div>
-
-            <h2><spring:message code="datacenter.mgmt.add.datacenter" /></h2>
-            <ul id="latestnews">
-                <li>
-                    <p>
-                        <form:form id="createNewDatacenter" name="createNewDatacenter" action="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" method="post">
-                            <label id="txtDatacenterName"><spring:message code="datacenter.mgmt.datacenter.name" /></label>
-                            <form:input path="name" />
-                            <form:errors path="name" cssClass="error" />
-
-                            <label id="txtDatacenterStatus"><spring:message code="datacenter.mgmt.datacenter.status" /></label>
-                            <form:select path="status" multiple="false">
-                                <option><spring:message code="theme.option.select" /></option>
-                                <option><spring:message code="theme.option.spacer" /></option>
-                                <form:options items="${statusList}" />
-                            </form:select>
-                            <form:errors path="status" cssClass="error" />
-                            <br /><br />
-
-                            <label id="txtDescription"><spring:message code="datacenter.mgmt.datacenter.description" /></label>
-                            <form:textarea path="description" />
-                            <form:errors path="description" cssClass="error" />
-
-                            <br /><br />
-                            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/datacenter-management/default');" />
-                        </form:form>
-                    </p>
-                </li>
+            <h1><spring:message code="datacenter.mgmt.header" /></h1>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='datacenter.mgmt.list.datacenters' />"><spring:message code="datacenter.mgmt.list.datacenters" /></a></li>
             </ul>
         </div>
         <br class="clear" />

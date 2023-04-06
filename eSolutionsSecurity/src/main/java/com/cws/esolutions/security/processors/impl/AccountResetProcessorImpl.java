@@ -777,7 +777,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             // we expect back only one
-            if ((userList == null) || (userList.size() == 0))
+            if ((Objects.isNull(userList)) || (userList.size() == 0))
             {
                 throw new AccountResetException("Unable to load user account information. Cannot continue.");
             }

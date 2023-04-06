@@ -54,10 +54,19 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
-        <h1><spring:message code="datacenter.mgmt.header" /></h1>
-        <ul>
-            <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='datacenter.mgmt.list.datacenters' />"><spring:message code="datacenter.mgmt.list.datacenters" /></a></li>
-            <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" title="<spring:message code='datacenter.mgmt.add.datacenter' />"><spring:message code="datacenter.mgmt.add.datacenter" /></a></li>
+        <h2><spring:message code="datacenter.mgmt.list.datacenters" /></h2>
+        <ul id="latestnews">
+            <li>
+                <table id="viewDatacenterList">
+                    <tr>
+                        <td><label id="datacenterName"><spring:message code="datacenter.mgmt.datacenter.name" /></label>${datacenter.name}</td>
+                        <td><label id="datacenterStatus"><spring:message code="datacenter.mgmt.datacenter.status" /></label>${datacenter.status}</td>
+                    </tr>
+                    <tr>
+                        <td><label id="datacenterDesc"><spring:message code="datacenter.mgmt.datacenter.description" /></label>${datacenter.description}</td>
+                    </tr>
+                </table>
+            </li>
         </ul>
     </div>
 </div>
@@ -65,19 +74,10 @@
 <div id="container">
     <div class="wrapper">
         <div id="holder">
-            <h2><spring:message code="datacenter.mgmt.list.datacenters" /></h2>
-            <ul id="latestnews">
-                <li>
-                    <table id="viewDatacenterList">
-                        <tr>
-                            <td><label id="datacenterName"><spring:message code="datacenter.mgmt.datacenter.name" /></label>${datacenter.name}</td>
-                            <td><label id="datacenterStatus"><spring:message code="datacenter.mgmt.datacenter.status" /></label>${datacenter.status}</td>
-                        </tr>
-                        <tr>
-                        	<td><label id="datacenterDesc"><spring:message code="datacenter.mgmt.datacenter.description" /></label>${datacenter.description}</td>
-                        </tr>
-                    </table>
-                </li>
+            <h1><spring:message code="datacenter.mgmt.header" /></h1>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='datacenter.mgmt.list.datacenters' />"><spring:message code="datacenter.mgmt.list.datacenters" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" title="<spring:message code='datacenter.mgmt.add.datacenter' />"><spring:message code="datacenter.mgmt.add.datacenter" /></a></li>
             </ul>
         </div>
         <br class="clear" />

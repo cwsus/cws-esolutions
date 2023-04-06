@@ -46,8 +46,7 @@ public class ApplicationValidator implements Validator
     private String messageLogsPathRequired = null;
     private String messagePlatformRequired = null;
     private String messageInstallPathRequired = null;
-    private String messagePackageLocationRequired = null;
-    private String messagePackageInstallerRequired = null;
+    private String messageBasePathRequired = null;
 
     private static final String CNAME = ApplicationValidator.class.getName();
 
@@ -119,9 +118,9 @@ public class ApplicationValidator implements Validator
         this.messageInstallPathRequired = value;
     }
 
-    public final void setMessagePackageLocationRequired(final String value)
+    public final void setMessageBasePathRequired(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessagePackageLocationRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setMessageBasePathRequired(final String value)";
 
         if (DEBUG)
         {
@@ -129,20 +128,7 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messagePackageLocationRequired = value;
-    }
-
-    public final void setMessagePackageInstallerRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessagePackageInstallerRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messagePackageInstallerRequired = value;
+        this.messageBasePathRequired = value;
     }
 
     public final boolean supports(final Class<?> value)
@@ -178,10 +164,9 @@ public class ApplicationValidator implements Validator
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageNameRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageVersionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platformGuid", this.messagePlatformRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "basePath", this.messageBasePathRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "logsPath", this.messageLogsPathRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "installPath", this.messageInstallPathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "logsDirectory", this.messageLogsPathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageLocation", this.messagePackageLocationRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageInstaller", this.messagePackageInstallerRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platforms", this.messagePlatformRequired);
     }
 }

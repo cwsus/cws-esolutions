@@ -219,6 +219,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 		            userAccount.setSuspended((Boolean) userObject.get(8));  // SUSPENDED
 		            userAccount.setDisplayName((String) userObject.get(11)); // DISPLAYNAME
 		            userAccount.setEmailAddr((String) userObject.get(13)); // EMAIL
+		            userAccount.setPagerNumber((String) userObject.get((14)));
+		            userAccount.setTelephoneNumber((String) userObject.get(15));
 		            userAccount.setAuthToken(authToken);
 		
 		            if (DEBUG)

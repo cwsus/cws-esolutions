@@ -65,7 +65,6 @@ public class PlatformManagementController
 {
     private int recordsPerPage = 20; // default to 20
     private String serviceId = null;
-    private String serviceName = null;
     private String defaultPage = null;
     private String addPlatformPage = null;
     private String viewPlatformPage = null;
@@ -107,19 +106,6 @@ public class PlatformManagementController
         }
 
         this.validator = value;
-    }
-
-    public final void setServiceName(final String value)
-    {
-        final String methodName = PlatformManagementController.CNAME + "#setServiceName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceName = value;
     }
 
     public final void setServiceId(final String value)
@@ -749,7 +735,7 @@ public class PlatformManagementController
         return mView;
     }
 
-    @RequestMapping(value = "platform/{guid}", method = RequestMethod.GET)
+    @RequestMapping(value = "platform/view/{guid}", method = RequestMethod.GET)
     public final ModelAndView showPlatform(@PathVariable("guid") final String guid, final Model model)
     {
         final String methodName = PlatformManagementController.CNAME + "#showPlatform(@PathVariable(\"guid\") final String guid, final Model model)";
@@ -871,6 +857,158 @@ public class PlatformManagementController
     
                     mView.addObject("platform", resPlatform);
                     mView.setViewName(this.viewPlatformPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.setViewName(this.defaultPage);
+
+					break;
+            
+            }
+        }
+        catch (final PlatformManagementException smx)
+        {
+            ERROR_RECORDER.error(smx.getMessage(), smx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "platform/update/{platformGuid}", method = RequestMethod.GET)
+    public final ModelAndView updatePlatform(@PathVariable("platformGuid") final String platformGuid, final Model model)
+    {
+        final String methodName = PlatformManagementController.CNAME + "#updatePlatform(@PathVariable(\"platformGuid\") final String platformGuid, final Model model)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", platformGuid);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IPlatformManagementProcessor platformMgr = (IPlatformManagementProcessor) new PlatformManagementProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = (String) sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = (String) requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = (String) paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            Platform reqPlatform = new Platform();
+            reqPlatform.setPlatformGuid(platformGuid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Platform: {}", reqPlatform);
+            }
+
+            // get a list of available servers
+            PlatformManagementRequest svcRequest = new PlatformManagementRequest();
+            svcRequest.setRequestInfo(reqInfo);
+            svcRequest.setUserAccount(userAccount);
+            svcRequest.setServiceId(this.serviceId);
+            svcRequest.setPlatform(reqPlatform);
+            svcRequest.setApplicationId(this.appConfig.getApplicationId());
+            svcRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementRequest: {}", svcRequest);
+            }
+
+            PlatformManagementResponse svcResponse = platformMgr.getPlatformData(svcRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementResponse: {}", svcResponse);
+            }
+
+            switch (svcResponse.getRequestStatus())
+            {
+				case EXCEPTION:
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
+				case FAILURE:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.setViewName(this.defaultPage);
+
+					break;
+				case SUCCESS:
+                    Platform resPlatform = svcResponse.getPlatform();
+                    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Service: {}", resPlatform);
+                    }
+    
+                    mView.addObject(Constants.COMMAND, new Platform());
+                    mView.addObject("platform", resPlatform);
+                    mView.setViewName(this.addPlatformPage);
 
 					break;
 				case UNAUTHORIZED:
@@ -1211,6 +1349,156 @@ public class PlatformManagementController
             }
 
             PlatformManagementResponse response = processor.addNewPlatform(request);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("PlatformManagementResponse: {}", response);
+            }
+
+            switch (response.getRequestStatus())
+            {
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+
+					break;
+				case FAILURE:
+					mView.addObject(Constants.ERROR_MESSAGE, this.messagePlatformAddFailure);
+					mView.setViewName(this.addPlatformPage);
+
+					break;
+				case SUCCESS:
+					mView.addObject(Constants.RESPONSE_MESSAGE, this.messagePlatformAddSuccess);
+					mView.setViewName(this.addPlatformPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+					// we dont know what happened tbh
+					mView.addObject(Constants.ERROR_MESSAGE, this.messagePlatformAddFailure);
+					mView.setViewName(this.addPlatformPage);
+
+					break;
+            }
+        }
+        catch (PlatformManagementException pmx)
+        {
+        	ERROR_RECORDER.error(pmx.getMessage(), pmx);
+
+        	mView.setViewName(this.appConfig.getErrorResponsePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/update-platform", method = RequestMethod.POST)
+    public final ModelAndView updatePlatform(@ModelAttribute("request") final Platform platform, final BindingResult bindResult)
+    {
+        final String methodName = PlatformManagementController.CNAME + "#updatePlatform(@ModelAttribute(\"request\") final Platform platform, final BindingResult bindResult)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Platform: {}", platform);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IPlatformManagementProcessor processor = (IPlatformManagementProcessor) new PlatformManagementProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = (String) sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = (String) requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = (String) paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+        this.validator.validate(platform, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new Platform());
+            mView.setViewName(this.addPlatformPage);
+
+            return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            PlatformManagementRequest request = new PlatformManagementRequest();
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setPlatform(platform);
+            request.setRequestInfo(reqInfo);
+            request.setServiceId(this.serviceId);
+            request.setUserAccount(userAccount);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("PlatformManagementRequest: {}", request);
+            }
+
+            PlatformManagementResponse response = processor.updatePlatformData(request);
 
             if (DEBUG)
             {

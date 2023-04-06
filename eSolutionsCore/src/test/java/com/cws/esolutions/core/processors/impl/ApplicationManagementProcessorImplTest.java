@@ -25,27 +25,25 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.io.File;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-
-import java.io.File;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.core.enums.CoreServicesStatus;
-import com.cws.esolutions.core.listeners.CoreServicesInitializer;
+import com.cws.esolutions.core.processors.enums.DeploymentType;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
-import com.cws.esolutions.core.processors.dto.Platform;
-import com.cws.esolutions.core.processors.enums.DeploymentType;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
 

@@ -226,7 +226,7 @@ public class LoginController
                     DEBUGGER.debug("UserAccount: {}", sessionAccount);
                 }
 
-                if (sessionAccount.getStatus() == null)
+                if (Objects.isNull(sessionAccount.getStatus()))
                 {
                     hSession.invalidate();
 

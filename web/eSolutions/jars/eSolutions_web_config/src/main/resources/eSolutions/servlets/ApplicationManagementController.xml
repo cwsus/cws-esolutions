@@ -12,12 +12,11 @@
 
     <bean id="applicationValidatorBean" class="com.cws.esolutions.web.validators.ApplicationValidator">
         <property name="messageNameRequired" value="app.mgmt.app.name.required" />
-        <property name="messageLogsPathRequired" value="app.mgmt.app.logs.required" />
         <property name="messageVersionRequired" value="app.mgmt.app.version.required" />
-        <property name="messagePackageLocationRequired" value="app.mgmt.app.cluster.required" />
         <property name="messagePlatformRequired" value="app.mgmt.app.platform.required" />
+        <property name="messageBasePathRequired" value="app.mgmt.basepath.required" />
+        <property name="messageLogsPathRequired" value="app.mgmt.app.logs.required" />
         <property name="messageInstallPathRequired" value="app.mgmt.app.install.required" />
-        <property name="messagePackageInstallerRequired" value="app.mgmt.jvm.name.required" />
     </bean>
 
     <bean id="applicationManagementController" class="com.cws.esolutions.web.controllers.ApplicationManagementController">
@@ -27,7 +26,6 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="serviceName" value="appMgmt" />
         <property name="serviceId" value="96E4E53E-FE87-446C-AF03-0F5BC6527B9D" />
         <property name="viewFilePage" value=".application-management/jsp/html/en/AppMgmt_ViewFile" />
         <property name="addAppPage" value=".application-management/jsp/html/en/AppMgmt_AddApplication" />

@@ -38,7 +38,8 @@
 				    <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}; ${sessionScope.userAccount.lastLogin}" argumentSeparator=";" /><br /><br />
                     <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.homepage' />"><spring:message code='theme.navbar.homepage' /></a> |
 					<a href="${pageContext.request.contextPath}/ui/auth/logout" title="<spring:message code='theme.navbar.logoff' />"><spring:message code='theme.navbar.logoff' /></a> |
-					<a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />"><spring:message code="theme.navbar.myaccount" /></a>
+					<a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />"><spring:message code="theme.navbar.myaccount" /></a> |
+                    <a href="${pageContext.request.contextPath}/ui/common/contact" title="<spring:message code='theme.contact.us' />"><spring:message code='theme.contact.us' /></a>
 				</c:if>
 				<br class="clear" />
 			</div>
@@ -47,8 +48,8 @@
 		  		<div class="wrapper">
 		            &copy; <spring:message code="theme.footer.copyright" />
 		            <br class="clear" />
-		            <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
-		                title="<spring:message code="theme.contact.us" />" target="_blank"><spring:message code="theme.contact.us" /></a><br />
+		            <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/home/default"
+		                title="<spring:message code="theme.footer.homepage" />" target="_blank"><spring:message code="theme.footer.homepage" /></a><br />
 				    <br class="clear" />
 				</div>
 			</div>

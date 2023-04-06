@@ -27,6 +27,7 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -771,12 +772,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         resAccount.setSurname((String) userData.get(3));
                         resAccount.setDisplayName((String) userData.get(4));
                         resAccount.setEmailAddr((String) userData.get(5));
-                        resAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(6));
-                        resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(7));
-                        resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
-                        resAccount.setLastLogin(((userData.get(10) == null) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(10)));
-                        resAccount.setExpiryDate(((userData.get(11) == null) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(11)));
-                        resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
+                        resAccount.setPagerNumber((Objects.isNull(userData.get(6))) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(6));
+                        resAccount.setTelephoneNumber((Objects.isNull(userData.get(7))) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(7));
+                        resAccount.setFailedCount(((Objects.isNull(userData.get(9))) ? 0 : (Integer) userData.get(9)));
+                        resAccount.setLastLogin(((Objects.isNull(userData.get(10))) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(10)));
+                        resAccount.setExpiryDate(((Objects.isNull(userData.get(11))) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(11)));
+                        resAccount.setSuspended(((Objects.isNull(userData.get(12))) ? Boolean.FALSE : (Boolean) userData.get(12)));
 
                         if (DEBUG)
                         {

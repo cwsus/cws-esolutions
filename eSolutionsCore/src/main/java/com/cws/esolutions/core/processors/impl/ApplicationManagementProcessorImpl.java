@@ -28,8 +28,10 @@ package com.cws.esolutions.core.processors.impl;
 import java.io.File;
 import java.util.UUID;
 import java.util.List;
+import java.util.Date;
 import java.util.Arrays;
 import java.util.Objects;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
@@ -37,11 +39,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.dto.CoreServicesRequest;
+import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.dto.CoreServicesResponse;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
+import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.FileManagerRequest;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -186,18 +190,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 throw new ApplicationManagementException("No platform was provided. Cannot continue.");
             }
 
-            // ok, good platform. we can add the application in
-            List<Object> appDataList = new ArrayList<Object>(
-                    Arrays.asList(
-                            applGuid,
-                            application.getName(),
-                            application.getVersion(),
-                            application.getInstallPath(),
-                            application.getPackageLocation(),
-                            application.getPackageInstaller(),
-                            application.getInstallerOptions(),
-                            application.getLogsPath(),
-                            application.getPlatform().getPlatformGuid()));
+            List<String> appDataList = new ArrayList<String>(
+            		Arrays.asList(
+            				applGuid,
+            				application.getName(),
+            				application.getVersion(),
+            				application.getPlatform().getPlatformGuid(),
+            				application.getBasePath().toString(),
+            				application.getLogsPath().toString(),
+            				application.getInstallPath().toString()));
 
             if (DEBUG)
             {
@@ -876,7 +877,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 Application app = new Application();
                 app.setGuid((String) array[0]); // T1.APPLICATION_GUID
                 app.setName((String) array[1]); // T1.APPLICATION_NAME
-                app.setScore((Double) array[2]);
 
                 if (DEBUG)
                 {
@@ -1057,29 +1057,61 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("List<Object>: {}", appData);
             }
 
-            // then put it all together
-            Application resApplication = new Application();
-            resApplication.setGuid((String) appData.get(0)); // GUID
-            resApplication.setName((String) appData.get(1)); // NAME
-            resApplication.setVersion((String) appData.get(2)); // VERSION
-            resApplication.setInstallPath((String) appData.get(3)); // INSTALLATION_PATH
-            resApplication.setPackageLocation((String) appData.get(4)); // PACKAGE_LOCATION
-            resApplication.setPackageInstaller((String) appData.get(5)); // PACKAGE_INSTALLER
-            resApplication.setBasePath(new File((String) appData.get(5)));
-            resApplication.setInstallerOptions((String) appData.get(6)); // INSTALLER_OPTIONS
-            resApplication.setLogsPath(new File((String) appData.get(7))); // INSTALL_PATH
-            
-            if (DEBUG)
+    		Platform reqPlatform = new Platform();
+    		reqPlatform.setPlatformGuid((String) appData.get(3));
+
+    		if (DEBUG)
+    		{
+    			DEBUGGER.debug("reqPlatform: {}", reqPlatform);
+    		}
+
+    		List<String> platformData = platformDAO.getPlatform((String) appData.get(3));
+
+    		if (DEBUG)
+    		{
+    			DEBUGGER.debug("platformData: {}", platformData);
+    		}
+
+            if ((platformData != null) && (platformData.size() != 0))
             {
-                DEBUGGER.debug("Application: {}", resApplication);
+                Platform resPlatform = new Platform();
+                resPlatform.setPlatformGuid(platformData.get(0)); // GUID
+                resPlatform.setPlatformName(platformData.get(1)); // NAME
+                resPlatform.setPlatformStatus(ServiceStatus.valueOf(platformData.get(2))); // STATUS
+                resPlatform.setPlatformDescription(platformData.get(3)); // DESCRIPTION
+
+                if (DEBUG)
+                {
+                	DEBUGGER.debug("Platform: {}", resPlatform);
+                }
+
+                // then put it all together
+                Application resApplication = new Application();
+                resApplication.setGuid((String) appData.get(0)); // GUID
+                resApplication.setName((String) appData.get(1)); // NAME
+                resApplication.setVersion((String) appData.get(2)); // VERSION
+                resApplication.setPlatform(resPlatform); // PLAFORM
+                resApplication.setInstallPath(new File((String) appData.get(4)));
+                resApplication.setLogsPath(new File((String) appData.get(5)));
+                resApplication.setPackageLocation(new File((String) appData.get(6)));
+                resApplication.setOnlineDate(new Date(((Timestamp) appData.get(7)).getTime()));
+
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("Application: {}", resApplication);
+	            }
+
+	            response.setApplication(resApplication);
+	            response.setRequestStatus(CoreServicesStatus.SUCCESS);
+
+	            if (DEBUG)
+	            {
+	            	DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+	            }
             }
-
-            response.setApplication(resApplication);
-            response.setRequestStatus(CoreServicesStatus.SUCCESS);
-
-            if (DEBUG)
+            else
             {
-                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            	throw new ApplicationManagementException("Unable to obtain platform information for the provided application.");
             }
         }
         catch (final SQLException sqx)

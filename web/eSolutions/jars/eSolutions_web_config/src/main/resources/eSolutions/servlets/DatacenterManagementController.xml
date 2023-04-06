@@ -27,7 +27,6 @@
         </property>
         <property name="messageNoSearchResults" value="theme.search.no.results" />
         <property name="messageDatacenterAddSuccess" value="datacenter.mgmt.datacenter.add.success" />
-        <property name="serviceName" value="dcMgmt" />
         <property name="serviceId" value="FE0261DB-F94B-466D-A7FC-98DC7AC7C2E8" />
         <property name="homePage" value=".datacenter-management/jsp/html/en/DatacenterMgmt_DefaultHandler" />
         <property name="addDatacenterPage" value=".datacenter-management/jsp/html/en/DatacenterMgmt_AddDatacenter" />
