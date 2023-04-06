@@ -27,8 +27,9 @@ package com.cws.esolutions.core.processors.impl;
  */
 import java.util.UUID;
 import java.util.List;
-import java.util.Objects;
+import java.util.Date;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
@@ -36,31 +37,30 @@ import org.apache.commons.lang3.StringUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
-import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor
  */
@@ -96,7 +96,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -123,9 +123,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.ADDSERVER);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -137,6 +140,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -251,9 +255,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.ADDSERVER);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -265,6 +272,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -313,7 +321,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -340,9 +348,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.UPDATESERVER);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -354,6 +365,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -460,9 +472,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.UPDATESERVER);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -474,6 +489,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -522,7 +538,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -549,9 +565,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.DELETESERVER);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -563,6 +582,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -616,9 +636,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.DELETESERVER);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -630,6 +653,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -676,7 +700,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -703,9 +727,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LISTSERVERS);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -717,6 +744,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -796,9 +824,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTSERVERS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -810,6 +841,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -856,7 +888,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -883,9 +915,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LISTSERVERS);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -975,9 +1010,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTSERVERS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1041,7 +1079,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -1068,9 +1106,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.GETSERVER);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -1265,10 +1306,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.GETSERVER);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
     
@@ -1279,6 +1323,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {

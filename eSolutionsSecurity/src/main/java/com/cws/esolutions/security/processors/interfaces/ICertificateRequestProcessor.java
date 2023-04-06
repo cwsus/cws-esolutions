@@ -34,12 +34,13 @@ import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.config.xml.CertificateConfig;
 import com.cws.esolutions.security.processors.dto.CertificateRequest;
 import com.cws.esolutions.security.processors.dto.CertificateResponse;
-import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.dao.certmgmt.impl.CertificateManagerImpl;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.dao.certmgmt.interfaces.ICertificateManager;
+import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.exception.CertificateRequestException;
+import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
 /**
  * API allowing user authentication request processing.
  *

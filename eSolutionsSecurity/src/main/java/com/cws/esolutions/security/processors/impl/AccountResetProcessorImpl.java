@@ -36,24 +36,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.enums.SaltType;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor
  */
@@ -119,12 +119,15 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
-	                auditEntry.setAuditType(AuditType.VALIDATESECURITY);
-	                auditEntry.setUserAccount(reqAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+	                auditEntry.setAuditType(AuditType.GETQUESTIONS);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -133,6 +136,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {
@@ -232,12 +236,15 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
-	                auditEntry.setAuditType(AuditType.VALIDATESECURITY);
-	                auditEntry.setUserAccount(reqAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+	                auditEntry.setAuditType(AuditType.VALIDATEOLR);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -246,6 +253,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {
@@ -280,17 +288,17 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         AccountResetResponse response = new AccountResetResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
+        final UserAccount reqAccount = request.getUserAccount();
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
         }
 
         try
         {
-            List<String> securityData = authenticator.getSecurityQuestions(userAccount.getGuid());
+            List<String> securityData = authenticator.getSecurityQuestions(reqAccount.getGuid());
 
             if (DEBUG)
             {
@@ -307,8 +315,8 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
         	UserAccount resAccount = new UserAccount();
-            resAccount.setGuid(userAccount.getGuid());
-            resAccount.setUsername(userAccount.getUsername());
+            resAccount.setGuid(reqAccount.getGuid());
+            resAccount.setUsername(reqAccount.getUsername());
 
             if (DEBUG)
             {
@@ -347,12 +355,15 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.LOADSECURITY);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -361,6 +372,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {
@@ -533,12 +545,15 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.VERIFYSECURITY);
-	                auditEntry.setUserAccount(reqAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -547,6 +562,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {
@@ -582,7 +598,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         final Calendar calendar = Calendar.getInstance();
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
+        final UserAccount reqAccount = request.getUserAccount();
 
         calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
 
@@ -590,7 +606,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         {
             DEBUGGER.debug("Calendar: {}", calendar);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
         }
 
         try
@@ -599,7 +615,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             if (StringUtils.isNotEmpty(resetId))
             {
-                boolean isComplete = userSec.insertResetData(userAccount.getGuid(), resetId);
+                boolean isComplete = userSec.insertResetData(reqAccount.getGuid(), resetId);
 
                 if (DEBUG)
                 {
@@ -609,7 +625,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 if (isComplete)
                 {
                     // load the user account for the email response
-                    List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+                    List<Object> userData = userManager.loadUserAccount(reqAccount.getGuid());
 
                     if (DEBUG)
                     {
@@ -674,12 +690,15 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
-	                auditEntry.setAuditType(AuditType.RESETPASS);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+	                auditEntry.setAuditType(AuditType.ADDRESETENTRY);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -688,6 +707,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {
@@ -723,14 +743,14 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         final Calendar cal = Calendar.getInstance();
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
+        final UserAccount reqAccount = request.getUserAccount();
         final AuthenticationData authData = request.getUserSecurity();
 
         if (DEBUG)
         {
             DEBUGGER.debug("Calendar: {}", cal);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("AuthenticationData: {}", authData);
         }
 
@@ -804,7 +824,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             // remove the reset request
-            boolean isRemoved = userSec.removeResetData(userAccount.getGuid(), request.getResetRequestId());
+            boolean isRemoved = userSec.removeResetData(reqAccount.getGuid(), request.getResetRequestId());
 
             if (DEBUG)
             {
@@ -817,7 +837,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            response.setUserAccount(userAccount);
+            response.setUserAccount(reqAccount);
 
             if (DEBUG)
             {
@@ -844,20 +864,24 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.VALIDATERESET);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
 	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
 	                }
 	
-	                AuditRequest auditRequest = new AuditRequest();
+	                com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {

@@ -34,12 +34,12 @@ import org.assertj.core.api.Assertions;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.CertificateRequest;
 import com.cws.esolutions.security.processors.dto.CertificateResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 /**
  * @author cws-khuntly
  * @version 1.0

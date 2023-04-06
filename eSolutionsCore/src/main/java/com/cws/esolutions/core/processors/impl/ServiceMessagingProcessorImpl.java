@@ -33,42 +33,42 @@ import java.sql.SQLException;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.core.processors.dto.ServiceMessage;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.dto.MessagingRequest;
+import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.core.processors.dto.MessagingResponse;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingRequest;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor
  */
 public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
 {
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.ServiceMessagingRequest)
      */
-    public MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException
+    public ServiceMessagingResponse addNewMessage(final ServiceMessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IServiceMessagingProcessor.CNAME + "#addNewMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#addNewMessage(final ServiceMessagingRequest request) throws MessagingServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("MessagingRequest: {}", request);
+            DEBUGGER.debug("ServiceMessagingRequest: {}", request);
         }
 
-        MessagingResponse response = new MessagingResponse();
+        ServiceMessagingResponse response = new ServiceMessagingResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -121,7 +121,7 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", response);
+                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
             }
         }
         catch (final SQLException sqx)
@@ -140,9 +140,12 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.ADDSVCMESSAGE);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -154,6 +157,7 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -173,19 +177,19 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.ServiceMessagingRequest)
      */
-    public MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException
+    public ServiceMessagingResponse updateExistingMessage(final ServiceMessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IServiceMessagingProcessor.CNAME + "#updateExistingMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#updateExistingMessage(final ServiceMessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("MessagingRequest: {}", request);
+            DEBUGGER.debug("ServiceMessagingRequest: {}", request);
         }
         
-        MessagingResponse response = new MessagingResponse();
+        ServiceMessagingResponse response = new ServiceMessagingResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -230,12 +234,12 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", response);
+                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
             }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", response);
+                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
             }
         }
         catch (final SQLException sqx)
@@ -254,9 +258,12 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.EDITSVCMESSAGE);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -268,6 +275,7 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -287,19 +295,19 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.ServiceMessagingRequest)
      */
-    public MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException
+    public ServiceMessagingResponse showMessages(final ServiceMessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IServiceMessagingProcessor.CNAME + "#showMessages(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#showMessages(final ServiceMessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("MessagingRequest: {}", request);
+            DEBUGGER.debug("ServiceMessagingRequest: {}", request);
         }
 
-        MessagingResponse response = new MessagingResponse();
+        ServiceMessagingResponse response = new ServiceMessagingResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -431,9 +439,12 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.SHOWMESSAGES);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -445,6 +456,7 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -464,19 +476,19 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.ServiceMessagingRequest)
      */
-    public MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException
+    public ServiceMessagingResponse showAlertMessages(final ServiceMessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IServiceMessagingProcessor.CNAME + "#showAlertMessages(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#showAlertMessages(final ServiceMessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("MessagingRequest: {}", request);
+            DEBUGGER.debug("ServiceMessagingRequest: {}", request);
         }
 
-        MessagingResponse response = new MessagingResponse();
+        ServiceMessagingResponse response = new ServiceMessagingResponse();
 
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
@@ -553,9 +565,12 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.SHOWMESSAGES);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -567,6 +582,7 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -586,19 +602,19 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.ServiceMessagingRequest)
      */
-    public MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException
+    public ServiceMessagingResponse showMessage(final ServiceMessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IServiceMessagingProcessor.CNAME + "#showMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#showMessage(final ServiceMessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("MessagingRequest: {}", request);
+            DEBUGGER.debug("ServiceMessagingRequest: {}", request);
         }
         
-        MessagingResponse response = new MessagingResponse();
+        ServiceMessagingResponse response = new ServiceMessagingResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -701,7 +717,7 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", response);
+                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
             }
         }
         catch (final SQLException sqx)
@@ -720,9 +736,12 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LOADMESSAGE);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -734,6 +753,7 @@ public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {

@@ -32,14 +32,12 @@ import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.dao.impl.ApplicationEnablementDAOImpl;
-import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.dao.interfaces.IApplicationEnablementDAO;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementResponse;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
+import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
 /**
  * API allowing application management functionality
  *
@@ -51,7 +49,6 @@ public interface IApplicationEnablementProcessor
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
-    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
     static final IApplicationEnablementDAO appDAO = (IApplicationEnablementDAO) new ApplicationEnablementDAOImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

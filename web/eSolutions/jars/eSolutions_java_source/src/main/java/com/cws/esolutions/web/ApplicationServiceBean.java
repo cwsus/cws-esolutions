@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.web.validators.EmailAddressValidator;
-import com.cws.esolutions.web.validators.EmailMessageValidator;
+import com.cws.esolutions.web.validators.WebMessageValidator;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -72,7 +72,7 @@ public class ApplicationServiceBean
 	@Autowired private String messageAccountSuspended = null;
 	@Autowired private String messageAccountNotAuthorized = null;
 	@Autowired private EmailAddressValidator emailValidator = null;
-	@Autowired private EmailMessageValidator messageValidator = null;
+	@Autowired private WebMessageValidator messageValidator = null;
 	@Autowired private String messageRequestProcessingFailure = null;
 	@Autowired private String messagePasswordLengthCheckFailed = null;
 
@@ -432,9 +432,9 @@ public class ApplicationServiceBean
         this.messageEmailSentSuccess = value;
     }
 
-    public final void setMessageValidator(final EmailMessageValidator value)
+    public final void setMessageValidator(final WebMessageValidator value)
     {
-        final String methodName = ApplicationServiceBean.CNAME + "#setMessageValidator(final EmailMessageValidator value)";
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageValidator(final WebMessageValidator value)";
 
         if (DEBUG)
         {
@@ -861,9 +861,9 @@ public class ApplicationServiceBean
         return this.messageEmailSentSuccess;
     }
 
-    public final EmailMessageValidator getMessageValidator()
+    public final WebMessageValidator getMessageValidator()
     {
-        final String methodName = ApplicationServiceBean.CNAME + "#getMessageValidator(final EmailMessageValidator value)";
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageValidator(final WebMessageValidator value)";
 
         if (DEBUG)
         {

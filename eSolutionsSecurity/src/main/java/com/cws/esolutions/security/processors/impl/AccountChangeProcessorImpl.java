@@ -25,34 +25,35 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Objects;
+import java.util.Calendar;
 import java.util.ArrayList;
 import java.security.KeyPair;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.processors.enums.SaltType;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
  */
@@ -136,9 +137,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CHANGEEMAIL);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(requestor.getSessionId());
+                    auditEntry.setUserGuid(requestor.getGuid());
+                    auditEntry.setUserName(requestor.getUsername());
+                    auditEntry.setUserRole(requestor.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -150,6 +154,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setDataSource(null); // get ds here
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -249,9 +255,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CHANGECONTACT);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(requestor.getSessionId());
+                    auditEntry.setUserGuid(requestor.getGuid());
+                    auditEntry.setUserName(requestor.getUsername());
+                    auditEntry.setUserRole(requestor.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -263,6 +272,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -454,9 +464,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CHANGEPASS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(requestor.getSessionId());
+                    auditEntry.setUserGuid(requestor.getGuid());
+                    auditEntry.setUserName(requestor.getUsername());
+                    auditEntry.setUserRole(requestor.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -468,6 +481,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -619,9 +633,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CHANGESECURITY);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(requestor.getSessionId());
+                    auditEntry.setUserGuid(requestor.getGuid());
+                    auditEntry.setUserName(requestor.getUsername());
+                    auditEntry.setUserRole(requestor.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -633,6 +650,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -747,9 +765,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CHANGEKEYS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(requestor.getSessionId());
+                    auditEntry.setUserGuid(requestor.getGuid());
+                    auditEntry.setUserName(requestor.getUsername());
+                    auditEntry.setUserRole(requestor.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -761,6 +782,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {

@@ -43,21 +43,21 @@ import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.dto.CoreServicesResponse;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.FileManagerRequest;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.FileManagerResponse;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
-import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
-import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor
  */
@@ -95,7 +95,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -122,9 +122,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.ADDAPP);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -136,6 +139,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -236,9 +240,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.ADDAPP);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -250,6 +257,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -298,7 +306,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -325,9 +333,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.UPDATEAPP);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -339,6 +350,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -403,9 +415,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.UPDATEAPP);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -417,6 +432,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -465,7 +481,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -492,9 +508,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.DELETEAPP);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -506,6 +525,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -554,9 +574,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.DELETEAPP);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -568,6 +591,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -616,7 +640,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -643,9 +667,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LISTAPPS);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -657,6 +684,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -738,9 +766,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTAPPS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -752,6 +783,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -800,7 +832,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -827,9 +859,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LISTAPPS);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -841,6 +876,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -922,9 +958,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTAPPS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -936,6 +975,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -984,7 +1024,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -1011,9 +1051,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LOADAPP);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -1025,6 +1068,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -1136,9 +1180,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LOADAPP);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1150,6 +1197,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -1201,7 +1249,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -1228,9 +1276,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.GETFILES);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -1242,6 +1293,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -1385,9 +1437,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.GETFILES);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1399,6 +1454,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -1447,7 +1503,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -1474,9 +1530,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.DEPLOYAPP);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -1488,6 +1547,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -1528,9 +1588,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.DEPLOYAPP);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1542,6 +1605,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {

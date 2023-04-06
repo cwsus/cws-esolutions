@@ -23,6 +23,7 @@
         <virtualbox.version>4.2.8</virtualbox.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
         <commons-httpclient>5.2.1</commons-httpclient>
+        <eSolutionsUtility.version>1.0-SNAPSHOT</eSolutionsUtility.version>
     </properties>
 
     <dependencies>
@@ -48,6 +49,20 @@
             		<artifactId>slf4j-api</artifactId>
             	</exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.cws</groupId>
+            <artifactId>eSolutionsSecurity</artifactId>
+            <version>${eSolutionsSecurity.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cws</groupId>
+            <artifactId>eSolutionsUtility</artifactId>
+            <version>${eSolutionsUtility.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

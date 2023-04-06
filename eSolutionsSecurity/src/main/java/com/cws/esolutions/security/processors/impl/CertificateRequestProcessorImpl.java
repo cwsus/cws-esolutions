@@ -28,6 +28,7 @@ package com.cws.esolutions.security.processors.impl;
 import java.io.File;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Date;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.FileNotFoundException;
@@ -36,14 +37,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.CertificateRequest;
 import com.cws.esolutions.security.processors.dto.CertificateResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.exception.CertificateRequestException;
 import com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor;
 import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementException;
@@ -172,12 +173,15 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		        try
 		        {
 		            AuditEntry auditEntry = new AuditEntry();
-		            auditEntry.setHostInfo(reqInfo);
 		            auditEntry.setAuditType(AuditType.APPLYCERT);
-		            auditEntry.setUserAccount(authUser);
-		            auditEntry.setAuthorized(Boolean.TRUE);
-		            auditEntry.setApplicationId(request.getApplicationId());
-		            auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(authUser.getSessionId());
+                    auditEntry.setUserGuid(authUser.getGuid());
+                    auditEntry.setUserName(authUser.getUsername());
+                    auditEntry.setUserRole(authUser.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 		
 		            if (DEBUG)
 		            {
@@ -186,6 +190,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		
 		            AuditRequest auditRequest = new AuditRequest();
 		            auditRequest.setAuditEntry(auditEntry);
+		            auditRequest.setHostInfo(reqInfo);
 		
 		            if (DEBUG)
 		            {
@@ -359,12 +364,15 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		        try
 		        {
 		            AuditEntry auditEntry = new AuditEntry();
-		            auditEntry.setHostInfo(reqInfo);
 		            auditEntry.setAuditType(AuditType.APPLYCERT);
-		            auditEntry.setUserAccount(authUser);
-		            auditEntry.setAuthorized(Boolean.TRUE);
-		            auditEntry.setApplicationId(request.getApplicationId());
-		            auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(authUser.getSessionId());
+                    auditEntry.setUserGuid(authUser.getGuid());
+                    auditEntry.setUserName(authUser.getUsername());
+                    auditEntry.setUserRole(authUser.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 		
 		            if (DEBUG)
 		            {
@@ -373,6 +381,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		
 		            AuditRequest auditRequest = new AuditRequest();
 		            auditRequest.setAuditEntry(auditEntry);
+		            auditRequest.setHostInfo(reqInfo);
 		
 		            if (DEBUG)
 		            {
@@ -501,12 +510,15 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		        try
 		        {
 		            AuditEntry auditEntry = new AuditEntry();
-		            auditEntry.setHostInfo(reqInfo);
 		            auditEntry.setAuditType(AuditType.APPLYCERT);
-		            auditEntry.setUserAccount(authUser);
-		            auditEntry.setAuthorized(Boolean.TRUE);
-		            auditEntry.setApplicationId(request.getApplicationId());
-		            auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(authUser.getSessionId());
+                    auditEntry.setUserGuid(authUser.getGuid());
+                    auditEntry.setUserName(authUser.getUsername());
+                    auditEntry.setUserRole(authUser.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 		
 		            if (DEBUG)
 		            {
@@ -515,6 +527,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		
 		            AuditRequest auditRequest = new AuditRequest();
 		            auditRequest.setAuditEntry(auditEntry);
+		            auditRequest.setHostInfo(reqInfo);
 		
 		            if (DEBUG)
 		            {

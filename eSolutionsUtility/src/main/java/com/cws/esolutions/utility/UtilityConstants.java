@@ -33,6 +33,7 @@ public final class UtilityConstants
 {
 	// logging
     public static final String DEBUGGER = "UTILITY_DEBUGGER";
+    public static final String AUDIT_LOGGER = "AUDIT_RECORDER";
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
 
     public static final String LINE_BREAK = System.getProperty("line.separator");

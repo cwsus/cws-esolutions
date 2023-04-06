@@ -30,16 +30,16 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
+import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
 /**
  * API allowing access to system check functionality, such as telnet/netstat
  * against remote hosts.

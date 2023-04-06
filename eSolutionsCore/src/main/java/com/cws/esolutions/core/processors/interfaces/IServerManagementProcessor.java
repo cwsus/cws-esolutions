@@ -36,12 +36,12 @@ import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
-import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
+import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
 /**
  * API allowing server management functionality within the service datastore
  *

@@ -30,19 +30,19 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.config.xml.ServiceAccount;
-import com.cws.esolutions.core.dao.impl.ServiceMessagingDAOImpl;
-import com.cws.esolutions.core.config.xml.ApplicationConfig;
-import com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO;
-import com.cws.esolutions.core.processors.dto.MessagingRequest;
-import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.core.config.xml.ServiceAccount;
+import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.core.dao.impl.ServiceMessagingDAOImpl;
+import com.cws.esolutions.core.dao.interfaces.IServiceMessagingDAO;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingRequest;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingResponse;
+import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -65,13 +65,13 @@ public interface IServiceMessagingProcessor
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException;
+    ServiceMessagingResponse addNewMessage(final ServiceMessagingRequest request) throws MessagingServiceException;
 
-    MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException;
+    ServiceMessagingResponse updateExistingMessage(final ServiceMessagingRequest request) throws MessagingServiceException;
 
-    MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException;
+    ServiceMessagingResponse showAlertMessages(final ServiceMessagingRequest request) throws MessagingServiceException;
 
-    MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException;
+    ServiceMessagingResponse showMessages(final ServiceMessagingRequest request) throws MessagingServiceException;
 
-    MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException;
+    ServiceMessagingResponse showMessage(final ServiceMessagingRequest request) throws MessagingServiceException;
 }

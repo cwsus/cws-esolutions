@@ -25,6 +25,7 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
 import javax.crypto.Cipher;
 import java.io.IOException;
 import java.security.KeyPair;
@@ -41,19 +42,19 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
@@ -170,12 +171,15 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.SIGNFILE);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getAppName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -302,12 +306,15 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.SIGNFILE);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getAppName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -439,12 +446,15 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.SIGNFILE);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getAppName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -565,12 +575,15 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.SIGNFILE);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getAppName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {

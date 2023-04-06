@@ -25,19 +25,20 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProcessor;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.core.exception.CoreServicesException
  */
@@ -90,9 +91,12 @@ public class ApplicationEnablementProcessorImpl implements IApplicationEnablemen
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.GET_SERVICE_STATUS);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                auditEntry.setSessionId(userAccount.getSessionId());
+                auditEntry.setUserGuid(userAccount.getGuid());
+                auditEntry.setUserName(userAccount.getUsername());
+                auditEntry.setUserRole(userAccount.getUserRole().toString());
                 auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -104,6 +108,7 @@ public class ApplicationEnablementProcessorImpl implements IApplicationEnablemen
 
                 AuditRequest auditRequest = new AuditRequest();
                 auditRequest.setAuditEntry(auditEntry);
+                auditRequest.setHostInfo(reqInfo);
 
                 if (DEBUG)
                 {

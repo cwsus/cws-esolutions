@@ -35,7 +35,6 @@ import org.springframework.mail.MailSender;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,10 +48,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.web.validators.EmailMessageValidator;
-import com.cws.esolutions.core.processors.dto.MessagingRequest;
-import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.web.validators.WebMessageValidator;
+import com.cws.esolutions.core.processors.dto.ServiceMessage;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingRequest;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingResponse;
 import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
@@ -190,11 +189,11 @@ public class CommonController
 
         try
         {
-            MessagingResponse response = processor.showAlertMessages(new MessagingRequest());
+            ServiceMessagingResponse response = processor.showAlertMessages(new ServiceMessagingRequest());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", response);
+                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
             }
 
             switch (response.getRequestStatus())
@@ -285,7 +284,7 @@ public class CommonController
         }
 
         mView.addObject("serviceEmail", this.appConfig.getEmailAddress());
-        mView.addObject(Constants.COMMAND, new EmailMessage());
+        mView.addObject(Constants.COMMAND, new ServiceMessage());
         mView.setViewName(this.appConfig.getContactAdminsPage());
 
         if (DEBUG)
@@ -297,14 +296,16 @@ public class CommonController
     }
 
     @RequestMapping(value = "contact", method = RequestMethod.POST)
-    public final ModelAndView doSubmitMessage(@ModelAttribute("message") final EmailMessage message, final Model model, final BindingResult bindResult)
+    public final ModelAndView doSubmitMessage(@ModelAttribute("message") final SimpleMailMessage message, final Model model, final BindingResult bindResult)
     {
-        final String methodName = CommonController.CNAME + "#doSubmitMessage(@ModelAttribute(\"message\") final EmailMessage message, final Model model, final BindingResult bindResult)";
+        final String methodName = CommonController.CNAME + "#doSubmitMessage(@ModelAttribute(\"message\") final SimpleMailMessage message, final Model model, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("EmailMessage: {}", message);
+            DEBUGGER.debug("ServiceMessage: {}", message);
+            DEBUGGER.debug("Model: {}", model);
+            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -312,16 +313,14 @@ public class CommonController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final EmailMessageValidator validator = this.appConfig.getMessageValidator();
-        final String emailId = RandomStringUtils.randomAlphanumeric(16);
+        final WebMessageValidator validator = new WebMessageValidator();
 
         if (DEBUG)
         {
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("EmailMessageValidator: {}", validator);
-            DEBUGGER.debug("emailId: {}", emailId);
+            DEBUGGER.debug("HttpSession: {}", hSession);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
@@ -367,17 +366,18 @@ public class CommonController
             mView.addObject("serviceEmail", this.appConfig.getEmailAddress());
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new EmailMessage());
+            mView.addObject(Constants.COMMAND, new ServiceMessage());
             mView.setViewName(this.appConfig.getContactAdminsPage());
         }
         else
         {
 	        try
 	        {
+	        	
 	        	SimpleMailMessage emailMessage = new SimpleMailMessage();
-	        	emailMessage.setTo(message.getEmailAddr().get(0));
-	        	emailMessage.setSubject(message.getMessageSubject());
-	        	emailMessage.setText(message.getMessageBody());
+	        	emailMessage.setTo(message.getTo());
+	        	emailMessage.setSubject(message.getSubject());
+	        	emailMessage.setText(message.getText());
 	
 	        	if (DEBUG)
 	        	{
@@ -390,17 +390,17 @@ public class CommonController
 	        	autoResponse.setReplyTo(this.contactResponseEmail.getFrom());
 	        	autoResponse.setTo(this.contactResponseEmail.getTo()[0]);
 	        	autoResponse.setSubject(this.contactResponseEmail.getSubject());
-	        	autoResponse.setText(message.getMessageBody());
-	
+	        	autoResponse.setText(message.getText());
+
 	            if (DEBUG)
 	            {
 	                DEBUGGER.debug("EmailMessage: {}", autoResponse);
 	            }
-	
+
 	            mailSender.send(autoResponse);
-	
+
 	            mView.addObject("serviceEmail", this.appConfig.getEmailAddress());
-	            mView.addObject(Constants.COMMAND, new EmailMessage());
+	            mView.addObject(Constants.COMMAND, new SimpleMailMessage());
 	            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageEmailSentSuccess());
 	            mView.setViewName(this.appConfig.getContactAdminsRedirect());
 	        }
@@ -409,7 +409,7 @@ public class CommonController
 	            ERROR_RECORDER.error(mx.getMessage(), mx);
 	
 	            model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
-	            model.addAttribute(Constants.COMMAND, new EmailMessage());
+	            model.addAttribute(Constants.COMMAND, new SimpleMailMessage());
 	            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 	            mView.setViewName(this.appConfig.getContactAdminsPage());
 	        }

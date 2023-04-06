@@ -35,13 +35,13 @@ import org.apache.commons.lang3.RandomStringUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.enums.SecurityUserRole;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class AccountChangeProcessorImplTest

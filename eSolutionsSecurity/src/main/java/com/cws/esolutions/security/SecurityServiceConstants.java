@@ -33,7 +33,6 @@ public final class SecurityServiceConstants
 {
 	// logging
     public static final String DEBUGGER = "SECURITY_DEBUGGER";
-    public static final String AUDIT_LOGGER = "AUDIT_RECORDER";
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
 
     public static final String NOT_SET = "Unconfigured";

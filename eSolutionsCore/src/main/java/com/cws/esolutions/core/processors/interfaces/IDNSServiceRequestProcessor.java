@@ -35,11 +35,11 @@ import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
-import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
+import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
 /**
  * API allowing DNS service management and data retrieval
  *
@@ -60,18 +60,6 @@ public interface IDNSServiceRequestProcessor
     static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
-     * Adds a new record to an existing DNS zone. The record can be a subdomain, CNAME, TXT
-     * or any other valid record type. Additionally, it can be an apex record to the zone
-     * if necessary.
-     *
-     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
-     * housing the necessary data to process
-     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
-     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
-     */
-    DNSServiceResponse addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException;
-
-    /**
      * Performs a simple DNS lookup for the given service name of the provided
      * record type. For example, www.google.com of type A would return 173.194.113.179
      * (among others). Responses are returned to the requestor for utilization. If no
@@ -84,40 +72,4 @@ public interface IDNSServiceRequestProcessor
      * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
      */
     DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException;
-
-    /**
-     * Creates a new zone service file. This is BIND-specific, it will NOT work with other
-     * service implementations at this time.
-     *
-     * Requires a {@link com.cws.esolutions.core.processors.dto.DNSEntry} with associated
-     * {@link com.cws.esolutions.core.processors.dto.DNSRecord}s embedded
-     *
-     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
-     * housing the necessary data to process
-     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
-     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
-     */
-    DNSServiceResponse createNewService(final DNSServiceRequest request) throws DNSServiceException;
-
-    /**
-     * Sends a newly created DNS zone to configured nameservers for public consumption. The file
-     * is generated and transferred to the given servers via SCP.
-     *
-     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
-     * housing the necessary data to process
-     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
-     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
-     */
-    DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException;
-
-    /**
-     * Sends a newly created DNS zone to configured nameservers for public consumption. The file
-     * is generated and transferred to the given servers via SCP.
-     *
-     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
-     * housing the necessary data to process
-     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
-     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
-     */
-    DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException;
 }

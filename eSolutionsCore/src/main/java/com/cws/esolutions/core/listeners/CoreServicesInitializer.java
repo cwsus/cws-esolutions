@@ -40,9 +40,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
+import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 /**

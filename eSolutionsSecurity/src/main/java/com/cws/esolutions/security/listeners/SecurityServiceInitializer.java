@@ -40,7 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;

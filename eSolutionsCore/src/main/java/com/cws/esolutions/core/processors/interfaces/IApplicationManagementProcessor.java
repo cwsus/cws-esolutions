@@ -40,13 +40,13 @@ import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 import com.cws.esolutions.core.dao.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
-import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
+import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
+import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
 /**
  * API allowing application management functionality
  *

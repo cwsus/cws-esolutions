@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @author cws-khuntly
@@ -40,13 +41,13 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class FileSecurityRequest implements Serializable
 {
-	private String appName = null;
     private File signedFile = null;
     private File requestFile = null;
     private File unsignedFile = null;
     private File decryptedFile = null;
     private File encryptedFile = null;
     private String applicationId = null;
+    private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
     private AuthenticationData userSecurity = null;
@@ -96,9 +97,9 @@ public class FileSecurityRequest implements Serializable
         this.userSecurity = value;
     }
 
-    public final void setAppName(final String value)
+    public final void setApplicationName(final String value)
     {
-        final String methodName = FileSecurityRequest.CNAME + "#setAppName(final String value)";
+        final String methodName = FileSecurityRequest.CNAME + "#setApplicationName(final String value)";
 
         if (DEBUG)
         {
@@ -106,7 +107,7 @@ public class FileSecurityRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.appName = value;
+        this.applicationName = value;
     }
 
     public final void setApplicationId(final String value)
@@ -226,17 +227,17 @@ public class FileSecurityRequest implements Serializable
         return this.userSecurity;
     }
 
-    public final String getAppName()
+    public final String getApplicationName()
     {
-        final String methodName = FileSecurityRequest.CNAME + "#getAppName()";
+        final String methodName = FileSecurityRequest.CNAME + "#getApplicationName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
         }
 
-        return this.appName;
+        return this.applicationName;
     }
 
     public final String getApplicationId()

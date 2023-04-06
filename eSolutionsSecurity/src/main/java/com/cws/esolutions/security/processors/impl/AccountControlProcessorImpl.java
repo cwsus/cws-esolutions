@@ -27,9 +27,9 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Calendar;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -38,26 +38,26 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.SaltType;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
-import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
@@ -97,7 +97,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(request.getRequestor());
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -124,10 +125,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.CREATEUSER);
-                        auditEntry.setUserAccount(userAccount);
-                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
         
@@ -138,6 +142,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -282,9 +287,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CREATEUSER);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -296,6 +304,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -344,7 +353,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -371,10 +381,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.DELETEUSER);
-                        auditEntry.setUserAccount(userAccount);
-                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
         
@@ -385,6 +398,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -441,9 +455,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.DELETEUSER);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -455,6 +472,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -503,7 +521,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -530,10 +549,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.SUSPENDUSER);
-                        auditEntry.setUserAccount(userAccount);
-                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
         
@@ -544,6 +566,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -617,9 +640,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.SUSPENDUSER);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -631,6 +657,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -679,7 +706,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -706,10 +734,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.CHANGEROLE);
-                        auditEntry.setUserAccount(userAccount);
-                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
         
@@ -720,6 +751,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -829,9 +861,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CHANGEROLE);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -843,6 +878,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -895,7 +931,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -922,10 +959,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.CHANGEPASS);
-                        auditEntry.setUserAccount(userAccount);
-                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
         
@@ -936,6 +976,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -1050,9 +1091,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.RESETPASS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1064,6 +1108,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -1131,7 +1176,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1158,10 +1204,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.MODIFYLOCKOUT);
-                        auditEntry.setUserAccount(userAccount);
-                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
         
@@ -1172,6 +1221,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -1252,9 +1302,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.MODIFYLOCKOUT);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1266,6 +1319,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -1334,7 +1388,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1361,9 +1416,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LOADACCOUNT);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.TRUE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -1375,6 +1433,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -1467,9 +1526,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LOADACCOUNT);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1481,6 +1543,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -1548,7 +1611,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1575,10 +1639,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LISTUSERS);
-                        auditEntry.setUserAccount(userAccount);
-                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
         
@@ -1589,6 +1656,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -1689,9 +1757,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTUSERS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1703,6 +1774,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {

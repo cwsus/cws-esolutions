@@ -25,6 +25,7 @@
     	<javax.servlet.version>4.0.1</javax.servlet.version>
     	<unboundid-ldapsdk.version>6.0.7</unboundid-ldapsdk.version>
         <bouncycastle.version>1.72</bouncycastle.version>
+        <eSolutionsUtility.version>1.0-SNAPSHOT</eSolutionsUtility.version>
     </properties>
 
     <dependencies>
@@ -86,5 +87,12 @@
 		    <type>jar</type>
 		    <scope>provided</scope>
 		</dependency>
+	        <dependency>
+            <groupId>com.cws</groupId>
+            <artifactId>eSolutionsUtility</artifactId>
+            <version>${eSolutionsUtility.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

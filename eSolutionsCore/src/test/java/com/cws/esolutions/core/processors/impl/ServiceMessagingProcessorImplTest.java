@@ -34,9 +34,9 @@ import org.assertj.core.api.Assertions;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.core.processors.dto.MessagingRequest;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingRequest;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 
@@ -72,7 +72,7 @@ public class ServiceMessagingProcessorImplTest
 
     @Test public void testAddNewMessage()
     {
-        MessagingRequest request = new MessagingRequest();
+        ServiceMessagingRequest request = new ServiceMessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
@@ -88,7 +88,7 @@ public class ServiceMessagingProcessorImplTest
 
     @Test public void testUpdateExistingMessage()
     {
-        MessagingRequest request = new MessagingRequest();
+        ServiceMessagingRequest request = new ServiceMessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
@@ -104,7 +104,7 @@ public class ServiceMessagingProcessorImplTest
 
     @Test public void testShowMessages()
     {
-        MessagingRequest request = new MessagingRequest();
+        ServiceMessagingRequest request = new ServiceMessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
@@ -120,7 +120,7 @@ public class ServiceMessagingProcessorImplTest
 
     @Test public void testShowAlertMessages()
     {
-        MessagingRequest request = new MessagingRequest();
+        ServiceMessagingRequest request = new ServiceMessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
@@ -136,7 +136,7 @@ public class ServiceMessagingProcessorImplTest
 
     @Test public void testShowMessage()
     {
-        MessagingRequest request = new MessagingRequest();
+        ServiceMessagingRequest request = new ServiceMessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 

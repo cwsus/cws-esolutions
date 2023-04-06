@@ -50,12 +50,12 @@ import org.springframework.web.servlet.FlashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.enums.SaltType;
+import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;

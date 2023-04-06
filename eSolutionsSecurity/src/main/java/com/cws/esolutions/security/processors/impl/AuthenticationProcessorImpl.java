@@ -32,22 +32,22 @@ import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.enums.SaltType;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor
  */
@@ -274,12 +274,15 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.LOGON);
-	                auditEntry.setUserAccount(userAccount);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(authUser.getSessionId());
+                    auditEntry.setUserGuid(authUser.getGuid());
+                    auditEntry.setUserName(authUser.getUsername());
+                    auditEntry.setUserRole(authUser.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -288,6 +291,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	
 	                AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {
@@ -356,12 +360,15 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.LOGOFF);
-	                auditEntry.setUserAccount(authUser);
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(authUser.getSessionId());
+                    auditEntry.setUserGuid(authUser.getGuid());
+                    auditEntry.setUserName(authUser.getUsername());
+                    auditEntry.setUserRole(authUser.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -370,6 +377,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	
 	                AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {

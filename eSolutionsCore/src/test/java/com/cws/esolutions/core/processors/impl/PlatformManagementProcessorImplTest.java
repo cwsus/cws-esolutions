@@ -41,9 +41,9 @@ import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 

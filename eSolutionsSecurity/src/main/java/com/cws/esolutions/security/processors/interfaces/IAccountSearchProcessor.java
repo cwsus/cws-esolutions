@@ -36,16 +36,17 @@ import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountSearchResponse;
-import com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl;
-import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
-import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
+import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
+import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
+import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.exception.AccountSearchException;
-import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
+import com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl;
+import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * API allowing processing of account change requests for individual user accounts for
  * select pieces of information. This does not allow full modification of the

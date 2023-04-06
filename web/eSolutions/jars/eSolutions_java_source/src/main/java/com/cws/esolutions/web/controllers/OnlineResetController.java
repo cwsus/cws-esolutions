@@ -53,7 +53,6 @@ import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.PasswordValidator;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
@@ -72,6 +71,7 @@ import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 /**
  * @author cws-khuntly
  * @version 1.0

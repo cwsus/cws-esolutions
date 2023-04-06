@@ -28,6 +28,7 @@ package com.cws.esolutions.core.processors.impl;
 import java.util.UUID;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Objects;
 import java.util.ArrayList;
 import java.sql.SQLException;
@@ -35,19 +36,19 @@ import java.sql.SQLException;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
-import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
-import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor
  */
@@ -83,7 +84,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -110,9 +111,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.ADDPLATFORM);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -124,6 +128,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -220,9 +225,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.ADDPLATFORM);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -234,6 +242,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -282,7 +291,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -309,9 +318,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -323,6 +335,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -400,9 +413,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -414,6 +430,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -460,7 +477,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -487,9 +504,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LISTPLATFORMS);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -501,6 +521,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -583,9 +604,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTPLATFORMS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -597,6 +621,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -645,7 +670,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -672,9 +697,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LISTPLATFORMS);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -686,6 +714,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -768,9 +797,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTPLATFORMS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -782,6 +814,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -830,7 +863,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -857,9 +890,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.LOADPLATFORM);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -871,6 +907,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -943,9 +980,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LOADPLATFORM);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -957,6 +997,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -1005,7 +1046,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -1032,9 +1073,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.DELETEPLATFORM);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -1046,6 +1090,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -1106,9 +1151,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.DELETEPLATFORM);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1120,6 +1168,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {

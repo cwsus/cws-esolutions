@@ -25,23 +25,24 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountSearchResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.exception.AccountSearchException;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
  */
@@ -64,10 +65,12 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
         AccountSearchResponse response = new AccountSearchResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         try
@@ -165,12 +168,15 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.LOADSECURITY);
-	                auditEntry.setUserAccount(request.getUserAccount());
-	                auditEntry.setAuthorized(Boolean.TRUE);
-	                auditEntry.setApplicationId(request.getApplicationId());
-	                auditEntry.setApplicationName(request.getApplicationName());
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 	
 	                if (DEBUG)
 	                {
@@ -179,6 +185,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 	
 	                AuditRequest auditRequest = new AuditRequest();
 	                auditRequest.setAuditEntry(auditEntry);
+	                auditRequest.setHostInfo(reqInfo);
 	
 	                if (DEBUG)
 	                {
@@ -292,9 +299,12 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -306,6 +316,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {

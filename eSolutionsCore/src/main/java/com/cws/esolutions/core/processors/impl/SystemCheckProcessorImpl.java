@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
+import java.util.Arrays;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -25,26 +26,28 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
+import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.dto.CoreServicesRequest;
 import com.cws.esolutions.core.dto.CoreServicesResponse;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.security.processors.dto.AuditEntry;
-import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.SystemCheckType;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
-import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
-import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
+import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
  */
@@ -81,7 +84,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -108,9 +111,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.NETSTAT);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -122,6 +128,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -214,9 +221,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.NETSTAT);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -228,6 +238,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -277,7 +288,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -304,9 +315,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.TELNET);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -318,6 +332,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -411,9 +426,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.TELNET);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -425,6 +443,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -474,7 +493,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -501,9 +520,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.REMOTEDATE);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -513,8 +535,9 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
-                        AuditRequest auditRequest = new AuditRequest();
+                        com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -606,9 +629,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.REMOTEDATE);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -620,6 +646,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
                     {
@@ -669,7 +696,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
 
             if (DEBUG)
             {
@@ -696,9 +723,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setHostInfo(reqInfo);
                         auditEntry.setAuditType(AuditType.PROCESSLIST);
-                        auditEntry.setUserAccount(userAccount);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
                         auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
@@ -710,6 +740,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(reqInfo);
         
                         if (DEBUG)
                         {
@@ -801,9 +832,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.PROCESSLIST);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());

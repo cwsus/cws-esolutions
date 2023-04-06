@@ -44,11 +44,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
-import com.cws.esolutions.core.processors.dto.MessagingRequest;
-import com.cws.esolutions.core.processors.dto.MessagingResponse;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingRequest;
+import com.cws.esolutions.core.processors.dto.ServiceMessagingResponse;
 import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
@@ -237,7 +237,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            MessagingRequest request = new MessagingRequest();
+            ServiceMessagingRequest request = new ServiceMessagingRequest();
             request.setRequestInfo(reqInfo);
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
@@ -246,14 +246,14 @@ public class ServiceMessagingController
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingRequest: {}", request);
+                DEBUGGER.debug("ServiceMessagingRequest: {}", request);
             }
 
-            MessagingResponse response = processor.showMessages(request);
+            ServiceMessagingResponse response = processor.showMessages(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", response);
+                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
             }
 
             switch (response.getRequestStatus())
@@ -440,7 +440,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("ServiceMessage: {}", message);
             }
 
-            MessagingRequest request = new MessagingRequest();
+            ServiceMessagingRequest request = new ServiceMessagingRequest();
             request.setRequestInfo(reqInfo);
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
@@ -450,14 +450,14 @@ public class ServiceMessagingController
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingRequest: {}", request);
+                DEBUGGER.debug("ServiceMessagingRequest: {}", request);
             }
 
-            MessagingResponse response = processor.showMessage(request);
+            ServiceMessagingResponse response = processor.showMessage(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", response);
+                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
             }
 
             switch (response.getRequestStatus())
@@ -582,7 +582,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            MessagingRequest request = new MessagingRequest();
+            ServiceMessagingRequest request = new ServiceMessagingRequest();
             request.setRequestInfo(reqInfo);
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
@@ -592,14 +592,14 @@ public class ServiceMessagingController
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingRequest: {}", request);
+                DEBUGGER.debug("ServiceMessagingRequest: {}", request);
             }
 
-            MessagingResponse response = (message.getIsNewMessage()) ? processor.addNewMessage(request) : processor.updateExistingMessage(request);
+            ServiceMessagingResponse response = (message.getIsNewMessage()) ? processor.addNewMessage(request) : processor.updateExistingMessage(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessagingResponse: {}", response);
+                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
             }
 
             switch (response.getRequestStatus())
