@@ -57,6 +57,7 @@
         <property name="applicationId" value="6236B840-88B0-4230-BCBC-8EC33EE837D9" />
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
         <property name="emailAddress" value="esolutions@caspersbox.com" />
+        <property name="webURL" value="esolutions.caspersbox.com" />
         <property name="homePage" value="/jsp/html/en/CommonLandingPage" />
         <property name="contactAdminsPage" value="/jsp/html/en/System_ContactAdmins" />
         <property name="errorResponsePage" value="/jsp/html/en/System_ErrorHandler" />
@@ -81,7 +82,6 @@
         <property name="messageEmailSentSuccess" value="theme.email.sent.success" />
         <property name="messageAccountLocked" value="theme.error.account.locked" />
         <property name="messageAccountSuspended" value="theme.error.account.suspended" />
-        <property name="messagePasswordLengthCheckFailed" value="theme.password.length.check.failed" />
         <property name="messageOlrSetup" value="theme.olr.setup" />
     </bean>
 

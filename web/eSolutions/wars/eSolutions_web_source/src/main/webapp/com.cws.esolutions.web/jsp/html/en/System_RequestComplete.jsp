@@ -35,8 +35,7 @@
 
 <div id="homecontent">
 	<div class="wrapper">
-	    <h1><spring:message code="request.complete" /></h1>
-	    <spring:message code="system.request.complete" />
+	    <h1><spring:message code="theme.request.complete" /></h1>
 
 	    <c:if test="${not empty fn:trim(messageResponse)}">
 	        <p id="info">${messageResponse}</p>
@@ -57,12 +56,8 @@
 	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
 	    </c:if>
 
-		<c:if test="${not empty exception}">
-			Reported exception:
-			<br />
-			${exception}
-		</c:if>
-	
+        <spring:message code="theme.system.request.complete" />
+
     	<c:choose>
 	        <c:when test="${empty fn:trim(sessionScope.userAccount) or empty fn:trim(sessionScope.userAccount.status)}">
 	            <p>

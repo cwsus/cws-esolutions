@@ -28,7 +28,6 @@ package com.cws.esolutions.web.validators;
  */
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
@@ -44,12 +43,9 @@ public class PasswordValidator implements Validator
 {
 	private int passwordMinLength = 8; // default
 	private int passwordMaxLength = 128; // default
-    private String messagePasswordMatch = null;
     private String messageNewPasswordRequired = null;
     private String messageConfirmPasswordRequired = null;
     private String messageCurrentPasswordRequired = null;
-    private String messagePasswordFailedValidation = null;
-    private String messagePasswordLengthCheckFailed = null;
 
     private static final String CNAME = PasswordValidator.class.getName();
 
@@ -121,45 +117,6 @@ public class PasswordValidator implements Validator
         this.messageConfirmPasswordRequired = value;
     }
 
-    public final void setMessagePasswordMatch(final String value)
-    {
-        final String methodName = PasswordValidator.CNAME + "#setMessagePasswordMatch(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messagePasswordMatch = value;
-    }
-
-    public final void setMessagePasswordFailedValidation(final String value)
-    {
-        final String methodName = PasswordValidator.CNAME + "#setMessagePasswordFailedValidation(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messagePasswordFailedValidation = value;
-    }
-
-    public final void setMessagePasswordLengthCheckFailed(final String value)
-    {
-        final String methodName = PasswordValidator.CNAME + "#setMessagePasswordLengthCheckFailed(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: {}", value);
-        }
-
-    	this.messagePasswordLengthCheckFailed = value;
-    }
-
     public final boolean supports(final Class<?> value)
     {
         final String methodName = PasswordValidator.CNAME + "#supports(final Class<?> value)";
@@ -192,8 +149,6 @@ public class PasswordValidator implements Validator
         }
 
         final AccountChangeData changeReq = (AccountChangeData) target;
-        final String newPassword = changeReq.getNewPassword();
-        final String existingPassword = changeReq.getCurrentPassword();
         final int minLength = this.passwordMinLength;
         final int maxLength = this.passwordMaxLength;
 
@@ -211,18 +166,5 @@ public class PasswordValidator implements Validator
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", this.messageNewPasswordRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", this.messageConfirmPasswordRequired);
-
-        if (!(changeReq.isReset()) && (StringUtils.equals(existingPassword, newPassword)))
-        {
-            errors.reject("currentPassword", this.messagePasswordMatch);
-        }
-        else if (!(StringUtils.isAlphanumeric(newPassword)))
-        {
-        	errors.reject("currentPassword", this.messagePasswordFailedValidation);
-        }
-        else if ((newPassword.length() < minLength) || (newPassword.length() > maxLength))
-        {
-        	errors.reject("currentPassword", this.messagePasswordLengthCheckFailed);
-        }
     }
 }

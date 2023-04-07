@@ -122,18 +122,6 @@ public interface IUserSecurityInformationDAO
     List<Object> getResetData(final String resetId) throws SQLException;
 
     /**
-     * Returns the salt value associated with the given user account to process an
-     * authentication request.
-     *
-     * @param commonName - The commonName associated with the user (also known as GUID)
-     * @param resetId - The reset request identifier provided to the user
-     * @return <code>true</code> if the removal was successful, <code>false</code> otherwise
-     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
-     */
-    boolean removeResetData(final String commonName, final String resetId) throws SQLException;
-
-
-    /**
      * Allows administrators and users alike to modify their password, either via an Online Reset
      * request or via accounting screens upon request.
      *

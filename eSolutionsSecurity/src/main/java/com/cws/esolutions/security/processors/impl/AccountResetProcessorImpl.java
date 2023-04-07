@@ -27,8 +27,9 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.Date;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Objects;
-import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
@@ -40,19 +41,17 @@ import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
-import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
-import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
-import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
+import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor
  */
@@ -73,7 +72,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         AccountResetResponse response = new AccountResetResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount reqAccount = request.getUserAccount();
 
         if (DEBUG)
         {
@@ -109,46 +107,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountResetException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-        	if (secConfig.getPerformAudit())
-        	{
-	            // audit
-	            try
-	            {
-	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setAuditType(AuditType.GETQUESTIONS);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(reqAccount.getSessionId());
-                    auditEntry.setUserGuid(reqAccount.getGuid());
-                    auditEntry.setUserName(reqAccount.getUsername());
-                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-	                }
-	
-	                AuditRequest auditRequest = new AuditRequest();
-	                auditRequest.setAuditEntry(auditEntry);
-	                auditRequest.setHostInfo(reqInfo);
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-	                }
-	
-	                auditor.auditRequest(auditRequest);
-	            }
-	            catch (final AuditServiceException asx)
-	            {
-	                ERROR_RECORDER.error(asx.getMessage(), asx);
-	            }
-        	}
         }
 
         return response;
@@ -232,85 +190,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#obtainUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
-     */
-    public AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
-    {
-        final String methodName = AccountResetProcessorImpl.CNAME + "#obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountResetRequest: {}", request);
-        }
-
-        AccountResetResponse response = new AccountResetResponse();
-
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount reqAccount = request.getUserAccount();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", reqAccount);
-        }
-
-        try
-        {
-            List<String> securityData = authenticator.getSecurityQuestions(reqAccount.getGuid());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<Object>: {}", securityData);
-            }
-
-            if ((Objects.isNull(securityData)) || (securityData.isEmpty()))
-            {
-            	ERROR_RECORDER.error("No user information was returned. Cannot continue.");
-
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                return response;
-            }
-
-        	UserAccount resAccount = new UserAccount();
-            resAccount.setGuid(reqAccount.getGuid());
-            resAccount.setUsername(reqAccount.getUsername());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", resAccount);
-            }
-
-            AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setSecQuestionOne((String) securityData.get(0));
-            userSecurity.setSecQuestionTwo((String) securityData.get(1));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
-            }
-
-            response.setUserAccount(resAccount);
-            response.setUserSecurity(userSecurity);
-            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccountResetResponse: {}", response);
-            }
-        }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountResetException(ax.getMessage(), ax);
-        }
-
-        return response;
-    }
-
-    /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
     public AccountResetResponse verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
@@ -327,12 +206,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount reqAccount  = request.getUserAccount();
-        final AuthenticationData reqSecurity = request.getUserSecurity();
+        final AccountChangeData changeData = request.getChangeData();
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", reqAccount);
+            DEBUGGER.debug("AccountChangeData: {}", changeData);
         }
 
         try
@@ -346,13 +226,11 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             if (!(Objects.isNull(userSalt)))
             {
-                List<String> resultList = authenticator.getSecurityAnswers(reqAccount.getGuid());
-
-                String secAnswerOne = PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), userSalt,
+                String secAnswerOne = PasswordUtils.encryptText(changeData.getSecAnswerOne(), userSalt,
                         secConfig.getSecretKeyAlgorithm(),
                         secConfig.getIterations(), secConfig.getKeyLength(),
                         sysConfig.getEncoding());
-                String secAnswerTwo = PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), userSalt,
+                String secAnswerTwo = PasswordUtils.encryptText(changeData.getSecAnswerTwo(), userSalt,
                         secConfig.getSecretKeyAlgorithm(),
                         secConfig.getIterations(), secConfig.getKeyLength(),
                         sysConfig.getEncoding());
@@ -363,16 +241,23 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 	DEBUGGER.debug("Value: {}", secAnswerOne);
                 }
 
-                boolean answerOneMatches = StringUtils.equals(secAnswerOne, resultList.get(0));
-                boolean answerTwoMatches = StringUtils.equals(secAnswerTwo, resultList.get(1));
+            	HashMap<String, String> responseMap = new HashMap<String, String>();
+            	responseMap.put(changeData.getSecQuestionOne(), secAnswerOne);
+            	responseMap.put(changeData.getSecQuestionTwo(), secAnswerTwo);
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("HashMap<String, String>: {}", responseMap);
+            	}
+
+            	boolean isVerified = authenticator.verifySecurityData(reqAccount.getGuid(), reqAccount.getUsername(), responseMap);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("answerOneMatches: {}", answerOneMatches);
-                    DEBUGGER.debug("answerTwoMatches: {}", answerTwoMatches);
+                    DEBUGGER.debug("boolean: {}", isVerified);
                 }
 
-                if ((answerOneMatches) && (answerTwoMatches))
+                if (isVerified)
                 {
                 	// build a user account object here
                     // load the user account here
@@ -393,8 +278,9 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     }
 
                     UserAccount resAccount = new UserAccount();
-                    resAccount.setGuid(reqAccount.getGuid());
-                    resAccount.setUsername(reqAccount.getUsername());
+                    resAccount.setGuid((String) authObject.get(1));
+                    resAccount.setUsername((String) authObject.get(0));
+                    resAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(2)));
 
                     if ((Integer) authObject.get(3) >= secConfig.getMaxAttempts())
                     {
@@ -610,6 +496,11 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             	DEBUGGER.debug("resetData: {}", resetData);
             }
 
+            if (Objects.isNull(resetData))
+            {
+            	throw new AccountResetException("No reset information was found for the given information. Cannot continue.");
+            }
+
             final String commonName = (String) resetData.get(0);
             final Date resetTimestamp = (Date) resetData.get(1);
 
@@ -642,46 +533,127 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             UserAccount foundAccount = new UserAccount();
-            foundAccount.setGuid((String) userList.get(0)); // CN
-            foundAccount.setUsername((String) userList.get(1)); // UID
-            foundAccount.setGivenName((String) userList.get(2)); // GIVENNAME
-            foundAccount.setSurname((String) userList.get(3)); // sn
-            foundAccount.setDisplayName((String) userList.get(4)); // displayName
-            foundAccount.setEmailAddr((String) userList.get(5)); // email
-            foundAccount.setUserRole(SecurityUserRole.valueOf((String) userList.get(6))); //cwsrole
-            foundAccount.setFailedCount(Integer.parseInt(userList.get(7).toString())); // cwsfailedpwdcount            
-            foundAccount.setLastLogin((Timestamp) userList.get(8)); // cwslastlogin
-            foundAccount.setExpiryDate((Timestamp) userList.get(9)); // cwsexpirydate
-            foundAccount.setSuspended(Boolean.valueOf(userList.get(10).toString())); // cwsissuspended
-            foundAccount.setAccepted(Boolean.valueOf(userList.get(13).toString())); // cwsistcaccepted
-            foundAccount.setTelephoneNumber((String) userList.get(15)); // telephoneNumber
-            foundAccount.setPagerNumber((String) userList.get(16)); // pager
+            foundAccount.setGuid((String) userList.get(1)); // CN
+            foundAccount.setUsername((String) userList.get(0)); // UID
+            foundAccount.setUserRole(SecurityUserRole.valueOf((String) userList.get(2))); //cwsrole
+            foundAccount.setSuspended((Boolean) userList.get(8));  // SUSPENDED
 
             if (DEBUG)
             {
                 DEBUGGER.debug("UserAccount: {}", foundAccount);
             }
 
-            // remove the reset request
-            boolean isRemoved = userSec.removeResetData(reqAccount.getGuid(), request.getResetRequestId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isRemoved: {}", isRemoved);
-            }
-
-            if (!(isRemoved))
-            {
-                ERROR_RECORDER.error("Failed to remove provided reset request from datastore");
-            }
-
             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            response.setUserAccount(reqAccount);
+            response.setUserAccount(foundAccount);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("AccountResetResponse: {}", response);
             }
+        }
+        catch (final SecurityServiceException ssx)
+        {
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
+
+            throw new AccountResetException(ssx.getMessage(), ssx);
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountResetException(sqx.getMessage(), sqx);
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#submitPasswordReset(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
+    public AccountResetResponse submitPasswordReset(final AccountResetRequest request) throws AccountResetException
+    {
+        final String methodName = AccountResetProcessorImpl.CNAME + "#submitPasswordReset(final AccountResetRequest request) throws AccountResetException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountResetRequest: {}", request);
+        }
+
+        AccountResetResponse response = new AccountResetResponse();
+
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getUserAccount();
+        final AccountChangeData changeData = request.getChangeData();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
+            DEBUGGER.debug("AccountChangeData: {}", changeData);
+        }
+
+        try
+        {
+            if (!(Arrays.equals(changeData.getNewPassword(), changeData.getConfirmPassword())))
+            {
+                throw new AccountResetException("The new password and confirmed password must match.");
+            }
+            else if ((changeData.getNewPassword().length < secConfig.getPasswordMinLength()) // less than minimum
+                    || (changeData.getNewPassword().length > secConfig.getPasswordMaxLength())) // greater than maximum
+            {
+                // password doesnt meet requirements, is either too short or too long
+                throw new AccountResetException("The chosen password does not meet the configured length requirements.");
+            }
+
+            String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("newSalt: {}", newSalt);
+            }
+
+            if (StringUtils.isNotBlank(newSalt))
+            {
+                boolean isComplete = userSec.addOrUpdateUserSalt(reqAccount.getGuid(), newSalt, SaltType.LOGON.name());
+
+                if (DEBUG)
+                {
+                	DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    isComplete = userSec.modifyUserPassword(reqAccount.getGuid(), reqAccount.getUsername(),
+                            PasswordUtils.encryptText(changeData.getNewPassword(), newSalt,
+                            		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+                            		sysConfig.getEncoding()), false);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("isComplete: {}", isComplete);
+                    }
+
+                    if (isComplete)
+                    {
+                    	response.setUserAccount(reqAccount);
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    }
+                    else
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    }
+                }
+                else
+                {
+                    throw new AccountChangeException("Unable to obtain existing salt value from datastore. Cannot continue.");
+                }
+            }
+            else
+            {
+            	throw new AccountChangeException("Unable to generate salt for the provided account. Cannot continue.");
+            }
+
         }
         catch (final SecurityServiceException ssx)
         {

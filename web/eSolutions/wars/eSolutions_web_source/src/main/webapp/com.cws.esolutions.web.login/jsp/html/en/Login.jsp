@@ -65,8 +65,6 @@
 
 <div id="homecontent">
 	<div class="wrapper">
-	    <h1><spring:message code="login.user.combined.message" /></h1>
-
 	    <div id="validationError" style="color: #FF0000"></div>
 
 	    <c:if test="${not empty fn:trim(messageResponse)}">
@@ -88,6 +86,7 @@
     	    <p id="error"><spring:message code="${param.errorMessage}" /></p>
 	    </c:if>
 
+        <h1><spring:message code="login.user.combined.message" /></h1>
         <form:form id="submitCombinedLogin" name="submitCombinedLogin" action="${pageContext.request.contextPath}/ui/auth/submit" method="post">
             <table>
                 <tr>

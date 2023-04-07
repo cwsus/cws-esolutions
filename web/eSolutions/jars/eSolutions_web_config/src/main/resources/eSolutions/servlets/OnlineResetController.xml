@@ -18,11 +18,9 @@
         <property name="messageUsernameRequired" value="error.username.empty" />
     </bean>
     <bean id="passwordResetValidator" class="com.cws.esolutions.web.validators.PasswordValidator">
-        <property name="messagePasswordMatch" value="error.passwords.match" />
         <property name="messageNewPasswordRequired" value="error.new.password.required" />
         <property name="messageConfirmPasswordRequired" value="error.confirm.password.required" />
         <property name="messageCurrentPasswordRequired" value="error.current.password.required" />
-        <property name="messagePasswordFailedValidation" value="error.password.failed.validation" />
     </bean>
 
     <bean id="onlineResetController" class="com.cws.esolutions.web.controllers.OnlineResetController">

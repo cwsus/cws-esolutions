@@ -946,8 +946,8 @@ public class UserAccountController
         try
         {
             userSecurity = new AuthenticationData();
-            userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
-            userSecurity.setNewPassword(changeReq.getConfirmPassword().toCharArray());
+            userSecurity.setPassword(changeReq.getCurrentPassword());
+            userSecurity.setNewPassword(changeReq.getConfirmPassword());
 
             if (DEBUG)
             {
@@ -1136,23 +1136,11 @@ public class UserAccountController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setSecQuestionOne(changeReq.getSecQuestionOne());
-            userSecurity.setSecQuestionTwo(changeReq.getSecQuestionTwo());
-            userSecurity.setSecAnswerOne(changeReq.getSecQuestionOne().toCharArray());
-            userSecurity.setSecAnswerTwo(changeReq.getSecAnswerTwo().toCharArray());
-            userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
-            }
-
             AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
-            request.setUserSecurity(userSecurity);
+            request.setChangeData(changeReq);
             request.setApplicationId(this.appConfig.getApplicationId());
             request.setApplicationName(this.appConfig.getApplicationName());
 
@@ -1285,7 +1273,7 @@ public class UserAccountController
             }
 
             AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
+            userSecurity.setPassword(changeReq.getCurrentPassword());
 
             if (DEBUG)
             {
@@ -1441,7 +1429,7 @@ public class UserAccountController
             }
 
             AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setPassword(changeReq.getCurrentPassword().toCharArray());
+            userSecurity.setPassword(changeReq.getCurrentPassword());
 
             if (DEBUG)
             {

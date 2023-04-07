@@ -25,7 +25,6 @@ package com.cws.esolutions.utility.securityutils.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import javax.sql.DataSource;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +39,6 @@ import com.cws.esolutions.utility.UtilityConstants;
 public class AuditRequest implements Serializable
 {
 	private int startRow = 0;
-    private DataSource dataSource = null;
     private AuditEntry auditEntry = null;
     private RequestHostInfo hostInfo = null;
 
@@ -49,19 +47,6 @@ public class AuditRequest implements Serializable
 
     private static final Logger DEBUGGER = LogManager.getLogger(UtilityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    public final void setDataSource(final DataSource value)
-    {
-        final String methodName = AuditRequest.CNAME + "#setBaseDN(final DataSource value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.dataSource = value;
-    }
 
     public final void setHostInfo(final RequestHostInfo value)
     {
@@ -100,19 +85,6 @@ public class AuditRequest implements Serializable
         }
 
         this.startRow = value;
-    }
-
-    public final DataSource getDataSource()
-    {
-        final String methodName = AuditRequest.CNAME + "#getDataSource()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.dataSource);
-        }
-
-        return this.dataSource;
     }
 
     public final RequestHostInfo getHostInfo()

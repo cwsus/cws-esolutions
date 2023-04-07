@@ -42,13 +42,13 @@ public final class AccountChangeData implements Serializable
     private boolean isReset = false;
     private String emailAddr = null;
     private String pagerNumber = null;
-    private String newPassword = null;
-    private String secAnswerOne = null;
-    private String secAnswerTwo = null;
+    private char[] newPassword = null;
+    private char[] secAnswerOne = null;
+    private char[] secAnswerTwo = null;
     private String secQuestionOne = null;
     private String secQuestionTwo = null;
-    private String currentPassword = null;
-    private String confirmPassword = null;
+    private char[] currentPassword = null;
+    private char[] confirmPassword = null;
     private ResetRequestType resetType = null;
 
     private static final long serialVersionUID = -7617490638200945132L;
@@ -122,9 +122,9 @@ public final class AccountChangeData implements Serializable
         this.username = value;
     }
 
-    public final void setCurrentPassword(final String value)
+    public final void setCurrentPassword(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setCurrentPassword(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setCurrentPassword(final char[] value)";
 
         if (DEBUG)
         {
@@ -135,9 +135,9 @@ public final class AccountChangeData implements Serializable
         this.currentPassword = value;
     }
 
-    public final void setNewPassword(final String value)
+    public final void setNewPassword(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setNewPassword(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setNewPassword(final char[] value)";
 
         if (DEBUG)
         {
@@ -148,9 +148,9 @@ public final class AccountChangeData implements Serializable
         this.newPassword = value;
     }
 
-    public final void setConfirmPassword(final String value)
+    public final void setConfirmPassword(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setConfirmPassword(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setConfirmPassword(final char[] value)";
 
         if (DEBUG)
         {
@@ -174,9 +174,9 @@ public final class AccountChangeData implements Serializable
         this.emailAddr = value;
     }
 
-    public final void setSecAnswerOne(final String value)
+    public final void setSecAnswerOne(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setSecAnswerOne(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setSecAnswerOne(final char[] value)";
 
         if (DEBUG)
         {
@@ -187,9 +187,9 @@ public final class AccountChangeData implements Serializable
         this.secAnswerOne = value;
     }
 
-    public final void setSecAnswerTwo(final String value)
+    public final void setSecAnswerTwo(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setSecAnswerTwo(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setSecAnswerTwo(final char[] value)";
 
         if (DEBUG)
         {
@@ -343,7 +343,7 @@ public final class AccountChangeData implements Serializable
         return this.username;
     }
 
-    public final String getCurrentPassword()
+    public final char[] getCurrentPassword()
     {
         final String methodName = AccountChangeData.CNAME + "#getCurrentPassword";
 
@@ -356,7 +356,7 @@ public final class AccountChangeData implements Serializable
         return this.currentPassword;
     }
 
-    public final String getNewPassword()
+    public final char[] getNewPassword()
     {
         final String methodName = AccountChangeData.CNAME + "#getNewPassword";
 
@@ -369,7 +369,7 @@ public final class AccountChangeData implements Serializable
         return this.newPassword;
     }
 
-    public final String getConfirmPassword()
+    public final char[] getConfirmPassword()
     {
         final String methodName = AccountChangeData.CNAME + "#getConfirmPassword";
 
@@ -395,7 +395,7 @@ public final class AccountChangeData implements Serializable
         return this.emailAddr;
     }
 
-    public final String getSecAnswerOne()
+    public final char[] getSecAnswerOne()
     {
         final String methodName = AccountChangeData.CNAME + "#getSecAnswerOne()";
 
@@ -408,7 +408,7 @@ public final class AccountChangeData implements Serializable
         return this.secAnswerOne;
     }
 
-    public final String getSecAnswerTwo()
+    public final char[] getSecAnswerTwo()
     {
         final String methodName = AccountChangeData.CNAME + "#getSecAnswerTwo()";
 

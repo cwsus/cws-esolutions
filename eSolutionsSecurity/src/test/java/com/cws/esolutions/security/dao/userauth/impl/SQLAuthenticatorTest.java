@@ -68,20 +68,6 @@ public class SQLAuthenticatorTest
         }
     }
 
-    @Test public void obtainSecurityData()
-    {
-        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator");
-
-        try
-        {
-        	Assertions.assertThat(authenticator.getSecurityAnswers(GUID)).isNotEmpty();
-        }
-        catch (final AuthenticatorException e)
-        {
-        	Assertions.fail(e.getMessage());
-        }
-    }
-
     @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();

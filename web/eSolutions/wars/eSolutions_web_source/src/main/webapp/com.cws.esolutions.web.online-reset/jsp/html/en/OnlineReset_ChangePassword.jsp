@@ -89,8 +89,8 @@
 
 	<h1><spring:message code="olr.change.password" /></h1>
 	<form:form id="submitPasswordChange" name="submitPasswordChange" action="${pageContext.request.contextPath}/ui/online-reset/forgot-password/change-password" method="post" autocomplete="off">
-	    <form:hidden path="guid" value="${resetGuid}" />
-	    <form:hidden path="username" value="${resetUsername}" />
+	    <form:hidden path="guid" value="${guid}" />
+	    <form:hidden path="username" value="${username}" />
 	    <form:hidden path="isReset" value="true" />
 
         <table>

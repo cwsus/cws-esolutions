@@ -38,16 +38,12 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AuthenticationData implements Serializable
 {
-	private String resetKey = null;
 	private String username = null;
     private String userSalt = null;
     private char[] password = null;
+    private String resetKey = null;
     private String sessionId = null;
     private char[] newPassword = null;
-    private char[] secAnswerOne = null;
-    private char[] secAnswerTwo = null;
-    private String secQuestionOne = null;
-    private String secQuestionTwo = null;
 
     private static final long serialVersionUID = 1920284352649895644L;
     private static final String CNAME = AuthenticationData.class.getName();
@@ -107,9 +103,9 @@ public class AuthenticationData implements Serializable
         this.newPassword = value;
     }
 
-    public final void setSecQuestionOne(final String value)
+    public final void setSessionId(final String value)
     {
-        final String methodName = AuthenticationData.CNAME + "#setSecQuestionOne(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setSessionId(final String value)";
 
         if (DEBUG)
         {
@@ -117,46 +113,7 @@ public class AuthenticationData implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.secQuestionOne = value;
-    }
-
-    public final void setSecQuestionTwo(final String value)
-    {
-        final String methodName = AuthenticationData.CNAME + "#setSecQuestionTwo(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secQuestionTwo = value;
-    }
-
-    public final void setSecAnswerOne(final char[] value)
-    {
-        final String methodName = AuthenticationData.CNAME + "#setSecAnswerOne(final char[] value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secAnswerOne = value;
-    }
-
-    public final void setSecAnswerTwo(final char[] value)
-    {
-        final String methodName = AuthenticationData.CNAME + "#setSecAnswerTwo(final char[] value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secAnswerTwo = value;
+        this.sessionId = value;
     }
 
     public final void setResetKey(final String value)
@@ -170,19 +127,6 @@ public class AuthenticationData implements Serializable
         }
 
         this.resetKey = value;
-    }
-
-    public final void setSessionId(final String value)
-    {
-        final String methodName = AuthenticationData.CNAME + "#setSessionId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sessionId = value;
     }
 
     public final String getUsername()
@@ -237,56 +181,17 @@ public class AuthenticationData implements Serializable
         return this.newPassword;
     }
 
-    public final String getSecQuestionOne()
+    public final String getSessionId()
     {
-        final String methodName = AuthenticationData.CNAME + "#getSecQuestionOne()";
+        final String methodName = AuthenticationData.CNAME + "#getSessionId()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secQuestionOne);
+            DEBUGGER.debug("Value: {}", this.sessionId);
         }
 
-        return this.secQuestionOne;
-    }
-
-    public final String getSecQuestionTwo()
-    {
-        final String methodName = AuthenticationData.CNAME + "#getSecQuestionTwo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secQuestionTwo);
-        }
-
-        return this.secQuestionTwo;
-    }
-
-    public final char[] getSecAnswerOne()
-    {
-        final String methodName = AuthenticationData.CNAME + "#getSecAnswerOne()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerOne);
-        }
-
-        return this.secAnswerOne;
-    }
-
-    public final char[] getSecAnswerTwo()
-    {
-        final String methodName = AuthenticationData.CNAME + "#getSecAnswerTwo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerTwo);
-        }
-
-        return this.secAnswerTwo;
+        return this.sessionId;
     }
 
     public final String getResetKey()
@@ -300,19 +205,6 @@ public class AuthenticationData implements Serializable
         }
 
         return this.resetKey;
-    }
-
-    public final String getSessionId()
-    {
-        final String methodName = AuthenticationData.CNAME + "#getSessionId()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sessionId);
-        }
-
-        return this.sessionId;
     }
 
     @Override

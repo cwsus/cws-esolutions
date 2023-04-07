@@ -94,26 +94,42 @@
 
             <table>
                 <tr>
-                    <td><label id="txtQuestionOne">${command.secQuestionOne}</label></td>
-                    <td><label id="txtAnswerOne"><spring:message code="olr.answer" /></label></td>
+                    <td><label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label></td>
+                    <td>
+                        <form:select path="secQuestionOne">
+                            <option><spring:message code="theme.option.select" /></option>
+                            <option><spring:message code="theme.option.spacer" /></option>
+                            <form:options items="${questionList}" />
+                        </form:select>
+                        <form:errors path="secQuestionOne" cssClass="error" />
+                    </td>
+                    <td><label id="txtAnswerOne"><spring:message code="user.account.update.security.answer" /></label></td>
+                    <td>
+                        <form:password path="secAnswerOne" />
+                        <form:errors path="secAnswerOne" cssClass="error" />
+                    </td>
                 </tr>
                 <tr>
-                    <form:password path="secAnswerOne" />
-                    <form:errors path="secAnswerOne" cssClass="error" />
-                </tr>
-                <tr>
-                    <td><label id="txtQuestionTwo">${command.secQuestionTwo}</label></td>
-                    <td><label id="txtAnswerTwo"><spring:message code="olr.answer" /></label></td>
-                </tr>
-                <tr>
-		            <form:password path="secAnswerTwo" />
-		            <form:errors path="secAnswerTwo" cssClass="error" />
+                    <td><label id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></label></td>
+                    <td>
+                        <form:select path="secQuestionTwo">
+                            <option><spring:message code="theme.option.select" /></option>
+                            <option><spring:message code="theme.option.spacer" /></option>
+                            <form:options items="${questionList}" />
+                        </form:select>
+                        <form:errors path="secQuestionTwo" cssClass="error" />
+                    </td>
+                    <td><label id="txtAnswerTwo"><spring:message code="user.account.update.security.answer" /></label></td>
+                    <td>
+                        <form:password path="secAnswerTwo" />
+                        <form:errors path="secAnswerTwo" cssClass="error" />
+                    </td>
                 </tr>
             </table>
             <br class="clear" /><br class="clear" />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/auth/logout');" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/user-account/default');" />
         </form:form>
     </div>
 </div>

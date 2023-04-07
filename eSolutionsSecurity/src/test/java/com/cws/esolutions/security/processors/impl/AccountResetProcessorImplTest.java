@@ -33,13 +33,13 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
-import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AccountResetProcessorImplTest
@@ -89,46 +89,24 @@ public class AccountResetProcessorImplTest
         }
     }
 
-    @Test public void obtainUserSecurityConfig()
-    {
-	    UserAccount account = new UserAccount();
-	    account.setUsername("khuntly");
-	    account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
-	
-	    AccountResetRequest request = new AccountResetRequest();
-	    request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
-	    request.setApplicationName("eSolutions");
-	    request.setHostInfo(hostInfo);
-	    request.setUserAccount(account);
-	
-	    try
-	    {
-	        AccountResetResponse response = processor.obtainUserSecurityConfig(request);
-
-	        Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
-	    }
-	    catch (final AccountResetException ax)
-	    {
-	        Assertions.fail(ax.getMessage());
-	    }
-    }
-
     @Test public void verifyUserSecurityConfig()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
         account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
 
-        AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setSecAnswerOne("L6jD1s8lPAQo7Wd3XPavWOD8YTDYypt1".toCharArray());
-        userSecurity.setSecAnswerTwo("UAv8DxJTHCidbLZKYvbft0AecaF9cB3k".toCharArray());
+        AccountChangeData changeData = new AccountChangeData();
+        changeData.setSecQuestionOne("What is your mother's maiden name ?");
+        changeData.setSecQuestionTwo("What is your favourite cartoon ?");
+        changeData.setSecAnswerOne("nsON5qYrIISL4ERvbZLAD6svT4vhaaLs".toCharArray());
+        changeData.setSecAnswerTwo("N9zj1IpL5MmpECQGdj4L0Oko80rSzoiT".toCharArray());
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
         request.setUserAccount(account);
-        request.setUserSecurity(userSecurity);
+        request.setChangeData(changeData);
 
         try
         {

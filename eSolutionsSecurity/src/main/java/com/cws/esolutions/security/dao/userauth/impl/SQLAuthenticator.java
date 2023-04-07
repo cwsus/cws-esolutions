@@ -28,6 +28,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
 import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.CallableStatement;
-import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
@@ -160,6 +161,135 @@ public class SQLAuthenticator implements Authenticator
     /**
      * 
      */
+    public synchronized boolean verifySecurityData(final String userGuid, final String userName, final HashMap<String, String> questionMap) throws AuthenticatorException
+    {
+        final String methodName = SQLAuthenticator.CNAME + "#verifySecurityData(final String userGuid, final String userName, final HashMap<String, String> questionMap) throws AuthenticatorException";
+        
+        if(DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userName);
+            DEBUGGER.debug("Value: {}", questionMap);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new AuthenticatorException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareStatement("{ CALL getSecurityData(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userGuid);
+            stmt.setString(2, userName);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            resultSet = stmt.executeQuery();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("resultSet: {}", resultSet);
+            }
+
+            if (Objects.isNull(resultSet))
+            {
+            	throw new AuthenticatorException("Failed to load security information from the authentication datastore.");
+            }
+
+            if (resultSet.next())
+            {
+            	resultSet.first();
+
+            	String foundQuestionOne = resultSet.getString(1);
+            	String foundQuestionTwo = resultSet.getString(2);
+            	String foundSecAnswerOne = resultSet.getString(3);
+            	String foundSecAnswerTwo = resultSet.getString(4);
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("foundQuestionOne: {}", foundQuestionOne);
+            		DEBUGGER.debug("foundQuestionTwo: {}", foundQuestionTwo);
+            		DEBUGGER.debug("foundSecAnswerOne: {}", foundSecAnswerOne);
+            		DEBUGGER.debug("foundSecAnswerTwo: {}", foundSecAnswerTwo);
+            	}
+
+            	String givenAnswerOne = questionMap.get(foundQuestionOne);
+            	String givenAnswerTwo = questionMap.get(foundQuestionTwo);
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("Value: {}", givenAnswerOne);
+            		DEBUGGER.debug("Value: {}", givenAnswerTwo);
+            	}
+
+            	if ((StringUtils.isNotBlank(givenAnswerOne)) && (StringUtils.isNotBlank(givenAnswerTwo)))
+            	{
+            		if ((StringUtils.equals(foundSecAnswerOne, givenAnswerOne)) && (StringUtils.equals(foundSecAnswerTwo, givenAnswerTwo)))
+            		{
+            			isComplete = true;
+            		}
+            	}
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new AuthenticatorException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (!(Objects.isNull(resultSet)))
+                {
+                    resultSet.close();
+                }
+            
+                if (!(Objects.isNull(stmt)))
+                {
+                    stmt.close();
+                }
+
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new AuthenticatorException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * 
+     */
     public synchronized void performLogoff(final String userGuid, final String userName, final String authToken) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#performLogoff(final String userGuid, final String userName, final String authToken) throws AuthenticatorException";
@@ -232,6 +362,7 @@ public class SQLAuthenticator implements Authenticator
             }
         }
     }
+
 
     /**
      * 
@@ -344,6 +475,7 @@ public class SQLAuthenticator implements Authenticator
         return isComplete;
     }
 
+
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#performSuccessfulLogin(String, String, int, Long)
      */
@@ -431,6 +563,7 @@ public class SQLAuthenticator implements Authenticator
 
         return isComplete;
     }
+
 
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#getOlrStatus(java.lang.String, java.lang.String)
@@ -540,221 +673,5 @@ public class SQLAuthenticator implements Authenticator
         }
 
         return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String)
-     */
-    public synchronized List<String> getSecurityQuestions(final String userGuid) throws AuthenticatorException
-    {
-        final String methodName = SQLAuthenticator.CNAME + "#getSecurityQuestions(final String userGuid) throws AuthenticatorException";
-        
-        if(DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userGuid);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        PreparedStatement stmt = null;
-        List<String> userSecurity = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new AuthenticatorException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = SQLAuthenticator.dataSource.getConnection();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            stmt = sqlConn.prepareStatement("{ CALL getSecurityQuestions(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userGuid); // common name
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                	resultSet.first();
-
-                    userSecurity = new ArrayList<String>(
-                        Arrays.asList(
-                        	resultSet.getString(1), // cwssec1
-                        	resultSet.getString(2))); // cwssecq2
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("userSecurity: {}", userSecurity);
-                    }
-                }
-            }
-            else
-            {
-            	throw new AuthenticatorException("Unable to locate security questions for the provided user account");
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new AuthenticatorException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (!(Objects.isNull(resultSet)))
-                {
-                    resultSet.close();
-                }
-            
-                if (!(Objects.isNull(stmt)))
-                {
-                    stmt.close();
-                }
-
-                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (final SQLException sqx)
-            {
-                throw new AuthenticatorException(sqx.getMessage(), sqx);
-            }
-        }
-
-        return userSecurity;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String)
-     */
-    public synchronized List<String> getSecurityAnswers(final String userGuid) throws AuthenticatorException
-    {
-        final String methodName = SQLAuthenticator.CNAME + "#getSecurityAnswers(final String userGuid) throws AuthenticatorException";
-
-        if(DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userGuid);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        PreparedStatement stmt = null;
-        List<String> responseData = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new AuthenticatorException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = SQLAuthenticator.dataSource.getConnection();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            stmt = sqlConn.prepareStatement("{ CALL getSecurityAnswers(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userGuid); // guid
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    responseData = new ArrayList<String>(
-                    		Arrays.asList(
-                    				resultSet.getString(1),
-                    				resultSet.getString(2)));
-                }
-                else
-                {
-                	throw new AuthenticatorException("No user security information was returned for the given user.");
-                }
-            }
-            else
-            {
-            	throw new SQLException("Failed to execute statement against database.");
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new AuthenticatorException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-            	if (!(Objects.isNull(resultSet)))
-            	{
-            		resultSet.close();
-            		resultSet = null;
-            	}
-
-                if (!(Objects.isNull(stmt)))
-                {
-                    stmt.close();
-                }
-
-                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (final SQLException sqx)
-            {
-                throw new AuthenticatorException(sqx.getMessage(), sqx);
-            }
-        }
-
-        return responseData;
     }
 }

@@ -47,6 +47,7 @@ public class AccountResetRequest implements Serializable
     private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
+    private AccountChangeData changeData = null;
     private AuthenticationData userSecurity = null;
 
     private static final long serialVersionUID = 1315217992273921012L;
@@ -159,6 +160,19 @@ public class AccountResetRequest implements Serializable
         this.count = value;
     }
 
+    public final void setChangeData(final AccountChangeData value)
+    {
+        final String methodName = AccountResetRequest.CNAME + "#setChangeData(final AccountChangeData value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.changeData = value;
+    }
+
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AccountResetRequest.CNAME + "#getHostInfo()";
@@ -261,6 +275,19 @@ public class AccountResetRequest implements Serializable
         }
 
         return this.resetRequestId;
+    }
+
+    public final AccountChangeData getChangeData()
+    {
+        final String methodName = AccountResetRequest.CNAME + "#getChangeData()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.changeData);
+        }
+
+        return this.changeData;
     }
 
     @Override

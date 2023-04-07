@@ -41,6 +41,7 @@ import com.cws.esolutions.web.validators.WebMessageValidator;
 @Component
 public class ApplicationServiceBean
 {
+	@Autowired private String webURL = null;
 	@Autowired private String homePage = null;
 	@Autowired private String dateFormat = null;
 	@Autowired private String olrRedirect = null;
@@ -523,6 +524,19 @@ public class ApplicationServiceBean
         this.messagePasswordLengthCheckFailed = value;
     }
 
+    public final void setWebURL(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setWebURL(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.webURL = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -976,6 +990,19 @@ public class ApplicationServiceBean
         }
 
         return Boolean.valueOf(this.isTestSystem);
+	}
+
+	public final String getWebURL()
+	{
+        final String methodName = ApplicationServiceBean.CNAME + "#getWebURL()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.webURL);
+        }
+
+        return this.webURL;
 	}
 
     @Override

@@ -526,74 +526,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#removeResetData(java.lang.String, java.lang.String)
-     */
-    public synchronized boolean removeResetData(final String commonName, final String resetId) throws SQLException
-    {
-        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#removeResetData(final String commonName, final String resetId) throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("commonName: {}", resetId);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        PreparedStatement stmt = null;
-
-        if (Objects.isNull(dataSource))
-        {
-        	throw new SQLException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Connection: {}", sqlConn);
-            }
-
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL removeResetData(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, commonName);
-            stmt.setString(2, resetId);
-
-            isComplete = (!(stmt.execute()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isComplete: {}", isComplete);
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            if (!(Objects.isNull(stmt)))
-            {
-                stmt.close();
-            }
-
-            if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return isComplete;
-    }
-
-    /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#obtainSecurityQuestionList()
      */
     public synchronized List<String> obtainSecurityQuestionList() throws SQLException
@@ -625,7 +557,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement("{ CALL retrSecurityQuestions() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL getSecurityQuestions() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {

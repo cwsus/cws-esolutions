@@ -33,15 +33,17 @@ import org.assertj.core.api.Assertions;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.enums.SecurityUserRole;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
+import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
-import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class AccountChangeProcessorImplTest
@@ -70,9 +72,9 @@ public final class AccountChangeProcessorImplTest
     {
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("34538095-df16-445d-8690-e0f09f2d91e6");
-    	account.setEmailAddr("kmhuntly@gmail.com");
-    	account.setAuthToken("e932b80430c4e3a6c8e84be88d2b2fe7cbe4596f98b86e116db8e4a83b40667306d3b69b9ac833d988fcb473cb45cb027fe293ea068e4012074d321a0aff6613");
+    	account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
+    	account.setEmailAddr("foo@gmail.com");
+    	account.setUserRole(SecurityUserRole.SITE_ADMIN);
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -105,13 +107,14 @@ public final class AccountChangeProcessorImplTest
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
     	account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
+    	account.setUserRole(SecurityUserRole.SITE_ADMIN);
 
-    	AuthenticationData authData = new AuthenticationData();
-    	authData.setUsername("khuntly");
-        authData.setSecQuestionOne("What is your mother's maiden name ?");
-        authData.setSecQuestionTwo("What is your favourite cartoon ?");
-        authData.setSecAnswerOne(secAnsOne.toCharArray());
-        authData.setSecAnswerTwo(secAnsTwo.toCharArray());
+    	AccountChangeData changeData = new AccountChangeData();
+    	changeData.setResetType(ResetRequestType.QUESTIONS);
+    	changeData.setSecAnswerOne(secAnsOne.toCharArray());
+    	changeData.setSecAnswerTwo(secAnsTwo.toCharArray());
+    	changeData.setSecQuestionOne("What is your mother's maiden name ?");
+    	changeData.setSecQuestionTwo("What is your favourite cartoon ?");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -120,7 +123,7 @@ public final class AccountChangeProcessorImplTest
         request.setIsReset(false);
         request.setUserAccount(account);
         request.setRequestor(account);
-        request.setUserSecurity(authData);
+        request.setChangeData(changeData);
 
         try
         {

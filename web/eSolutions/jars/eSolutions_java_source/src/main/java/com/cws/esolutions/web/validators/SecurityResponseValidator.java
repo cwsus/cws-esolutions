@@ -28,6 +28,9 @@ package com.cws.esolutions.web.validators;
  */
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+
+import java.util.Arrays;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -44,7 +47,6 @@ public class SecurityResponseValidator implements Validator
 {
     private String messageCurrentPasswordEmpty = null;
     private String messageSecurityAnswersMatch = null;
-    private String messageQuestionsAnswersMatch = null;
     private String messageSecurityQuestionsMatch = null;
     private String messageSecurityAnswerRequired = null;
     private String messageSecurityQuestionRequired = null;
@@ -119,19 +121,6 @@ public class SecurityResponseValidator implements Validator
         this.messageSecurityAnswersMatch = value;
     }
 
-    public final void setMessageQuestionsAnswersMatch(final String value)
-    {
-        final String methodName = SecurityResponseValidator.CNAME + "#setMessageQuestionsAnswersMatch(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageQuestionsAnswersMatch = value;
-    }
-
     public final boolean supports(final Class<?> value)
     {
         final String methodName = SecurityResponseValidator.CNAME + "#supports(final Class<?> value)";
@@ -175,25 +164,9 @@ public class SecurityResponseValidator implements Validator
         {
             errors.rejectValue("secQuestionOne", this.messageSecurityQuestionsMatch);
         }
-        else if (StringUtils.equals(request.getSecAnswerOne(), request.getSecAnswerTwo()))
+        else if (Arrays.equals(request.getSecAnswerOne(), request.getSecAnswerTwo()))
         {
             errors.rejectValue("secQuestionOne", this.messageSecurityAnswersMatch);
-        }
-        else if (StringUtils.equals(request.getSecQuestionOne(), request.getSecAnswerOne()))
-        {
-            errors.rejectValue("secQuestionOne", this.messageQuestionsAnswersMatch);
-        }
-        else if (StringUtils.equals(request.getSecQuestionTwo(), request.getSecAnswerTwo()))
-        {
-            errors.rejectValue("secQuestionOne", this.messageQuestionsAnswersMatch);
-        }
-        else if (StringUtils.equals(request.getSecQuestionOne(), request.getSecAnswerTwo()))
-        {
-            errors.rejectValue("secQuestionOne", this.messageQuestionsAnswersMatch);
-        }
-        else if (StringUtils.equals(request.getSecQuestionTwo(), request.getSecAnswerOne()))
-        {
-            errors.rejectValue("secQuestionOne", this.messageQuestionsAnswersMatch);
         }
     }
 }

@@ -84,17 +84,6 @@ public interface IAccountResetProcessor
     AccountResetResponse isOnlineResetAvailable(final AccountResetRequest request) throws AccountResetException;
 
     /**
-     * Obtains and returns the associated security information for the selected user account
-     *
-     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
-     * which contains the necessary information to complete the request
-     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
-     * response information regarding the request status
-     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
-     */
-    AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException;
-
-    /**
      * Verifies that the provided security information is accurate prior to performing a requested
      * password reset. This is performed during reset authentication.
      *

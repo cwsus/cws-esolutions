@@ -26,6 +26,7 @@ package com.cws.esolutions.security.dao.userauth.interfaces;
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.HashMap;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -59,6 +60,15 @@ public interface Authenticator
      * @throws AuthenticatorException
      */
     boolean performLogon(final String userGuid, final String userName, final String password) throws AuthenticatorException;
+
+    /**
+     * 
+     * @param userGuid
+     * @param userName
+     * @param questionMap
+     * @return
+     */
+    boolean verifySecurityData(final String userGuid, final String userName, final HashMap<String, String> questionMap) throws AuthenticatorException;
 
     /**
      * Allows an administrator to lock or unlock a user account as desired.
@@ -110,33 +120,4 @@ public interface Authenticator
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
     List<Boolean> getOlrStatus(final String guid, final String userId) throws AuthenticatorException;
-
-    /**
-     * Processes an agent logon request via an LDAP user datastore. If the
-     * information provided matches an existing record, the user is
-     * considered authenticated successfully and further processing
-     * is performed to determine if that user is required to modify
-     * their password or setup online reset questions. If yes, the
-     * necessary flags are sent back to the frontend for further
-     * handling.
-     *
-     * @param userId - the username to validate data against
-     * @param guid - the GUID to validate data against
-     * @return List - The security data housed for the given user
-     * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
-     */
-    List<String> getSecurityQuestions(final String guid) throws AuthenticatorException;
-
-    /**
-     * Processes authentication for the selected security question and user. If successful,
-     * a true response is returned back to the frontend signalling that further
-     * authentication processing, if required, can take place.
-     *
-     * @param userId - the username to validate data against
-     * @param guid - the GUID to validate data against
-     * @param values - the security information to validate for the given username
-     * @return boolean - <code>true</code> if verified, <code>false</code> otherwise
-     * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
-     */
-    List<String> getSecurityAnswers(final String guid) throws AuthenticatorException;
 }

@@ -127,7 +127,7 @@ public class SQLKeyManager implements KeyManager
 
                     stmt.close();
                     stmt = null;
-                    stmt = sqlConn.prepareStatement("{ CALL deleteUserKeys(?) }");
+                    stmt = sqlConn.prepareStatement("{ CALL removeUserKeys(?) }");
                     stmt.setString(1, guid);
 
                     if (DEBUG)
@@ -210,7 +210,7 @@ public class SQLKeyManager implements KeyManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL retrUserKeys(?) }");
+            stmt = sqlConn.prepareStatement("{ CALL getUserKeys(?) }");
             stmt.setString(1, guid);
 
             if (DEBUG)
@@ -334,7 +334,7 @@ public class SQLKeyManager implements KeyManager
             sqlConn.setAutoCommit(true);
 
             // remove the user keys from the store
-            stmt = sqlConn.prepareStatement("{ CALL deleteUserKeys(? }");
+            stmt = sqlConn.prepareStatement("{ CALL removeUserKeys(? }");
             stmt.setString(1, guid);
 
             if (DEBUG)

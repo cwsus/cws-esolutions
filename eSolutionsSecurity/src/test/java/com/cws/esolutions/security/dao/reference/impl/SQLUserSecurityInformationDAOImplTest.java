@@ -108,18 +108,6 @@ public class SQLUserSecurityInformationDAOImplTest
         }
     }
 
-    @Test public void removeResetData()
-    {
-        try
-        {
-        	Assertions.assertThat(dao.removeResetData(SQLUserSecurityInformationDAOImplTest.GUID, "qBED281bKoFnr8DEelsVPtmpFWfo3wxMhSEubAMrhRWSUkxBRng5tX2FtJHPDI9u")).isTrue();
-        }
-        catch (final SQLException sqx)
-        {
-        	Assertions.fail(sqx.getMessage());
-        }
-    }
-
     @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();

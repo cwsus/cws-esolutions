@@ -40,6 +40,7 @@ import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
@@ -154,7 +155,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setDataSource(null); // get ds here
                     auditRequest.setHostInfo(reqInfo);
     
                     if (DEBUG)
@@ -311,6 +311,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
         final AuthenticationData reqSecurity = request.getUserSecurity();
+        final boolean isReset = request.getChangeData().getIsReset();
 
         calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
 
@@ -320,6 +321,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", requestor);
             DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("AuthenticationData: {}", reqSecurity);
+            DEBUGGER.debug("boolean: {}", isReset);
         }
 
         // ok, first things first. if this is an administrative reset, make sure the requesting user
@@ -358,15 +361,22 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 if (StringUtils.isNotBlank(newSalt))
                 {
-                    // get rollback information in case something breaks...
-                    // we already have the existing expiry and password, all we really need to get here is the salt.
-                    String existingSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
+                    // good, move forward
+                    // put the new salt in the database
+                    boolean isComplete = userSec.addOrUpdateUserSalt(userAccount.getGuid(), newSalt, SaltType.LOGON.name());
 
-                    if (StringUtils.isNotBlank(existingSalt))
+                    if (DEBUG)
                     {
-                        // good, move forward
-                        // put the new salt in the database
-                        boolean isComplete = userSec.addOrUpdateUserSalt(userAccount.getGuid(), newSalt, SaltType.LOGON.name());
+                        DEBUGGER.debug("isComplete: {}", isComplete);
+                    }
+
+                    if (isComplete)
+                    {
+                        // make the modification in the user repository
+                        isComplete = userSec.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
+                                PasswordUtils.encryptText(reqSecurity.getNewPassword(), newSalt,
+                                		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+                                		sysConfig.getEncoding()), false);
 
                         if (DEBUG)
                         {
@@ -375,50 +385,15 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                         if (isComplete)
                         {
-                            // make the modification in the user repository
-                            isComplete = userSec.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
-                                    PasswordUtils.encryptText(reqSecurity.getNewPassword(), newSalt,
-                                    		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
-                                    		sysConfig.getEncoding()), false);
+                            userAccount.setStatus(LoginStatus.SUCCESS);
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("isComplete: {}", isComplete);
+                            	DEBUGGER.debug("userAccount: {}", userAccount);
                             }
 
-                            if (isComplete)
-                            {
-                                userAccount.setStatus(LoginStatus.SUCCESS);
-
-                                if (DEBUG)
-                                {
-                                	DEBUGGER.debug("userAccount: {}", userAccount);
-                                }
-
-                                response.setUserAccount(userAccount);
-                                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            }
-                            else
-                            {
-                                if (!(request.isReset()))
-                                {
-                                    // something failed. we're going to undo what we did in the user
-                                    // repository, because we couldnt update the salt value. if we don't
-                                    // undo it then the user will never be able to login without admin
-                                    // intervention
-                                    boolean isBackedOut = userSec.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
-                                    		PasswordUtils.encryptText(reqSecurity.getPassword(), existingSalt,
-                                            		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
-                                            		sysConfig.getEncoding()), false);
-
-                                    if (!(isBackedOut))
-                                    {
-                                        throw new AccountChangeException("Failed to modify the user account and unable to revert to existing state.");
-                                    }
-                                }
-
-                                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            }
+                            response.setUserAccount(userAccount);
+                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         }
                         else
                         {
@@ -427,7 +402,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     }
                     else
                     {
-                        throw new AccountChangeException("Unable to obtain existing salt value from datastore. Cannot continue.");
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
                     }
                 }
                 else
@@ -456,45 +431,48 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         }
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.CHANGEPASS);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(requestor.getSessionId());
-                    auditEntry.setUserGuid(requestor.getGuid());
-                    auditEntry.setUserName(requestor.getUsername());
-                    auditEntry.setUserRole(requestor.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
+        	if (!(isReset))
+        	{
+	            // audit
+	            if (secConfig.getPerformAudit())
+	            {
+	                // audit if a valid account. if not valid we cant audit much,
+	                // but we should try anyway. not sure how thats going to work
+	                try
+	                {
+	                    AuditEntry auditEntry = new AuditEntry();
+	                    auditEntry.setAuditType(AuditType.CHANGEPASS);
+	                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+	                    auditEntry.setSessionId(requestor.getSessionId());
+	                    auditEntry.setUserGuid(requestor.getGuid());
+	                    auditEntry.setUserName(requestor.getUsername());
+	                    auditEntry.setUserRole(requestor.getUserRole().toString());
+	                    auditEntry.setAuthorized(Boolean.TRUE);
+	                    auditEntry.setApplicationId(request.getApplicationId());
+	                    auditEntry.setApplicationName(request.getApplicationName());
     
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                    }
     
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+	                    AuditRequest auditRequest = new AuditRequest();
+	                    auditRequest.setAuditEntry(auditEntry);
+	                    auditRequest.setHostInfo(reqInfo);
     
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                    }
 
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+	                    auditor.auditRequest(auditRequest);
+	                }
+	                catch (final AuditServiceException asx)
+	                {
+	                	ERROR_RECORDER.error(asx.getMessage(), asx);
+	                }
+	            }
+        	}
         }
 
         return response;
@@ -520,13 +498,16 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
         final AuthenticationData reqSecurity = request.getUserSecurity();
+        final AccountChangeData changeData = request.getChangeData();
 
         if (DEBUG)
         {
             DEBUGGER.debug("Calendar: {}", calendar);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", requestor);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
+			DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+			DEBUGGER.debug("UserAccount: {}", requestor);
+			DEBUGGER.debug("UserAccount: {}", userAccount);
+			DEBUGGER.debug("AuthenticationData: {}", reqSecurity);
+			DEBUGGER.debug("AccountChangeData: {}", changeData);
         }
 
         // ok, first things first. if this is an administrative reset, make sure the requesting user
@@ -543,11 +524,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         try
         {
         	// make sure the two questions and answers arent the same
-            if ((StringUtils.equals(reqSecurity.getSecQuestionOne(), reqSecurity.getSecQuestionTwo())))
+            if ((StringUtils.equals(changeData.getSecQuestionOne(), changeData.getSecQuestionTwo())))
             {
                 throw new AccountChangeException("The security questions must be different.");
             }
-            else if ((Arrays.equals(reqSecurity.getSecAnswerOne(), reqSecurity.getSecAnswerTwo())))
+            else if ((Arrays.equals(changeData.getSecAnswerOne(), changeData.getSecAnswerTwo())))
             {
                 throw new AccountChangeException("The security answers must be different.");
             }
@@ -565,16 +546,16 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 boolean isComplete = userSec.modifyUserSecurity(userAccount.getGuid(), 
                         new ArrayList<String>(
                             Arrays.asList(
-                                reqSecurity.getSecQuestionOne(),
-                                reqSecurity.getSecQuestionTwo(),
-                                PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newSalt,
-                            			secConfig.getSecretKeyAlgorithm(),
-                            			secConfig.getIterations(), secConfig.getKeyLength(),
-                            			sysConfig.getEncoding()),
-                                PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newSalt,
-                            			secConfig.getSecretKeyAlgorithm(),
-                            			secConfig.getIterations(), secConfig.getKeyLength(),
-                            			sysConfig.getEncoding()))));
+                            		changeData.getSecQuestionOne(),
+                            		changeData.getSecQuestionTwo(),
+                            		PasswordUtils.encryptText(changeData.getSecAnswerOne(), newSalt,
+                            				secConfig.getSecretKeyAlgorithm(),
+                            				secConfig.getIterations(), secConfig.getKeyLength(),
+                            				sysConfig.getEncoding()),
+                            		PasswordUtils.encryptText(changeData.getSecAnswerTwo(), newSalt,
+                            				secConfig.getSecretKeyAlgorithm(),
+                            				secConfig.getIterations(), secConfig.getKeyLength(),
+                            				sysConfig.getEncoding()))));
 
                 if (DEBUG)
                 {
