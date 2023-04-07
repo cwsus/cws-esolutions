@@ -84,7 +84,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -298,7 +298,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -505,7 +505,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -668,7 +668,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -857,7 +857,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1045,7 +1045,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
 
             if (DEBUG)
             {

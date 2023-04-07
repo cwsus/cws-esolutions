@@ -25,20 +25,15 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.Date;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
-import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
-import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementResponse;
-import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProcessor;
-import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @see com.cws.esolutions.core.exception.CoreServicesException
  */
@@ -84,43 +79,6 @@ public class ApplicationEnablementProcessorImpl implements IApplicationEnablemen
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ApplicationEnablementException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setAuditType(AuditType.GET_SERVICE_STATUS);
-                auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                auditEntry.setSessionId(userAccount.getSessionId());
-                auditEntry.setUserGuid(userAccount.getGuid());
-                auditEntry.setUserName(userAccount.getUsername());
-                auditEntry.setUserRole(userAccount.getUserRole().toString());
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-                auditRequest.setHostInfo(reqInfo);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
         }
         
         return response;

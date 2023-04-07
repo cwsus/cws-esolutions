@@ -46,7 +46,6 @@ public class AccessControlServiceImpl implements IAccessControlService
     {
         final String methodName = AccessControlServiceImpl.CNAME + "#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException";
 
-        boolean isAuthorized = false;
         AccessControlServiceResponse response = new AccessControlServiceResponse();
 
         if (DEBUG)
@@ -62,9 +61,9 @@ public class AccessControlServiceImpl implements IAccessControlService
         	DEBUGGER.debug("UserAccount: {}", accountData);
         }
 
-        isAuthorized = StringUtils.equals(accountData.get(0), "SITE_ADMIN");
-        response.setIsUserAuthorized(isAuthorized);
-
+        // TODO
+        response.setIsUserAuthorized(StringUtils.equals(accountData.get(1), "SITE_ADMIN"));
+        
         return response;
     }
 }

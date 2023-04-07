@@ -222,6 +222,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 		            userAccount.setPagerNumber((String) userObject.get((14)));
 		            userAccount.setTelephoneNumber((String) userObject.get(15));
 		            userAccount.setAuthToken(authToken);
+		            userAccount.setSessionId(authSec.getSessionId());
 		
 		            if (DEBUG)
 		            {
@@ -276,10 +277,10 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	                AuditEntry auditEntry = new AuditEntry();
 	                auditEntry.setAuditType(AuditType.LOGON);
                     auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(authUser.getSessionId());
-                    auditEntry.setUserGuid(authUser.getGuid());
-                    auditEntry.setUserName(authUser.getUsername());
-                    auditEntry.setUserRole(authUser.getUserRole().toString());
+                    auditEntry.setSessionId(authSec.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());

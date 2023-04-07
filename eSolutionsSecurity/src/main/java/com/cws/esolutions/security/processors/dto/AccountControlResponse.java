@@ -44,7 +44,6 @@ public class AccountControlResponse implements Serializable
 	private int entryCount = 0;
     private String resetId = null;
     private UserAccount userAccount = null;
-    private List<String> questionList = null;
     private List<UserAccount> userList = null;
     private SecurityRequestStatus requestStatus = null;
 
@@ -119,19 +118,6 @@ public class AccountControlResponse implements Serializable
         this.resetId = value;
     }
 
-    public final void setQuestionList(final List<String> value)
-    {
-        final String methodName = AccountControlResponse.CNAME + "#setQuestionList(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.questionList = value;
-    }
-
     public final SecurityRequestStatus getRequestStatus()
     {
         final String methodName = AccountControlResponse.CNAME + "#getMgmtType()";
@@ -195,19 +181,6 @@ public class AccountControlResponse implements Serializable
         }
 
         return this.resetId;
-    }
-
-    public final List<String> getQuestionList()
-    {
-        final String methodName = AccountControlResponse.CNAME + "#getQuestionList()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.questionList);
-        }
-
-        return this.questionList;
     }
 
     @Override

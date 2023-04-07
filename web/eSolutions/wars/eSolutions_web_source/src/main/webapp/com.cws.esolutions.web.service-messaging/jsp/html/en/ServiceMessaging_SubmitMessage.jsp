@@ -86,43 +86,54 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
-        <h1><spring:message code="svc.messaging.list.messages" /></h1>
-        <ul>
-            <li><a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="spring:message code='svc.messaging.list' />"><spring:message code="svc.messaging.list" /></a></li>
-        </ul>
+        <h2><spring:message code="svc.messaging.create.banner" /></h2>
+        <form:form id="submitSystemMessage" name="" action="${pageContext.request.contextPath}/ui/service-messaging/submit-message" method="post">
+            <c:if test="${empty fn:trim(command.messageAuthor)}">
+                <form:hidden path="isNewMessage" value="true" />
+            </c:if>
+
+            <table id="serviceMessage">
+                <tr>
+                    <td><label id="txtSysMessageSubject"><spring:message code="svc.messaging.system.message.subject" /></label></td>
+                    <td>
+                        <form:input path="messageTitle" />
+                        <form:errors path="messageTitle" cssClass="error" />
+                    </td>
+                    <td><label id="txtSysMessageBody"><spring:message code="svc.messaging.system.message.body" /></label></td>
+                    <td>
+                        <form:input path="messageText" />
+                        <form:errors path="messageText" cssClass="error" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label id="txtIsMessageActive"><spring:message code="svc.messaging.system.message.activate" /></label></td>
+                    <td>
+                        <form:radiobutton path="isActive" value="true" /><spring:message code="svc.messaging.system.message.active" />
+                        <form:radiobutton path="isActive" value="false" /><spring:message code="svc.messaging.system.message.inactive" />
+                        <form:errors path="isActive" cssClass="error" />
+                    </td>
+                    <td><label id="txtIsAlertMessage"><spring:message code="svc.messaging.system.message.alert" /></label></td>
+                    <td>
+                        <form:checkbox path="isAlert" value="true" /><spring:message code="svc.messaging.system.message.alert" />
+                        <form:errors path="isAlert" cssClass="error" />
+                    </td>
+                </tr>
+            </table>
+            <br class="clear" />
+            <br class="clear" />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/service-messaging/default');" />
+        </form:form>
     </div>
 </div>
 
 <div id="container">
     <div class="wrapper">
         <div id="holder">
-            <h2><spring:message code="datacenter.mgmt.list.datacenters" /></h2>
-            <ul id="latestnews">
-                <li>
-                    <form:form id="submitSystemMessage" name="submitSystemMessage" action="${pageContext.request.contextPath}/ui/service-messaging/submit-message" method="post" autocomplete="off">
-                        <c:if test="${empty fn:trim(command.messageAuthor)}">
-                            <form:hidden path="isNewMessage" value="true" />
-                        </c:if>
-
-                        <label id="txtSysMessageSubject"><spring:message code="svc.messaging.system.message.subject" /></label>
-                        <form:input path="messageTitle" />
-                        <form:errors path="messageTitle" cssClass="error" />
-                        <label id="txtSysMessageBody"><spring:message code="svc.messaging.system.message.body" /></label>
-                        <form:textarea path="messageText" />
-                        <form:errors path="messageText" cssClass="error" />
-                        <label id="txtIsMessageActive"><spring:message code="svc.messaging.system.message.activate" /></label>
-                        <form:radiobutton path="isActive" value="true" /><spring:message code="svc.messaging.system.message.active" />
-                        <form:radiobutton path="isActive" value="false" /><spring:message code="svc.messaging.system.message.inactive" />
-                        <form:errors path="isActive" cssClass="error" />
-                        <label id="txtIsAlertMessage"><spring:message code="svc.messaging.system.message.alert" /></label>
-                        <form:checkbox path="isAlert" value="true" /><spring:message code="svc.messaging.system.message.alert" />
-                        <form:errors path="isAlert" cssClass="error" />
-                        <br /><br />
-                        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/service-messaging/default');" />
-                    </form:form>
-                </li>
+            <h1><spring:message code="svc.messaging.list.messages" /></h1>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="spring:message code='svc.messaging.list' />"><spring:message code="svc.messaging.list" /></a></li>
             </ul>
         </div>
         <br class="clear" />

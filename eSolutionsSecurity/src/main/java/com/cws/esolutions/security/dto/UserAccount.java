@@ -26,6 +26,7 @@ package com.cws.esolutions.security.dto;
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
+import java.util.List;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
@@ -58,6 +59,7 @@ public class UserAccount implements Serializable
     private Integer failedCount = null;
     private String telephoneNumber = null;
     private SecurityUserRole userRole = null;
+    private List<UserGroup> userGroups = null;
 
     private static final String CNAME = UserAccount.class.getName();
     private static final long serialVersionUID = -4373126337438707230L;
@@ -319,6 +321,22 @@ public class UserAccount implements Serializable
         }
 
         this.authToken = value;
+    }
+
+    /**
+     * @param value - The usergroups
+     */
+    public final void setUserGroups(final List<UserGroup >value)
+    {
+        final String methodName = UserAccount.CNAME + "#setAuthToken(final List<UserGroup value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userGroups = value;
     }
 
     /**
@@ -609,6 +627,23 @@ public class UserAccount implements Serializable
         }
 
         return this.sessionId;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public final List<UserGroup> getUserGroups()
+    {
+        final String methodName = UserAccount.CNAME + "#getUserGroups()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userGroups);
+        }
+
+        return this.userGroups;
     }
 
     /**

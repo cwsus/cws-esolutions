@@ -30,10 +30,14 @@ import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
+import javax.naming.Context;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
+import com.cws.esolutions.utility.UtilityConstants;
 import com.cws.esolutions.utility.securityutils.dao.audit.interfaces.IAuditDAO;
 /**
  * @see com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO
@@ -45,7 +49,7 @@ public class AuditDAOImpl implements IAuditDAO
     /**
      * @see com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO#auditRequestedOperation(java.util.List)
      */
-    public synchronized void auditRequestedOperation(final List<String> auditRequest, final DataSource dataSource) throws SQLException
+    public synchronized void auditRequestedOperation(final List<String> auditRequest) throws SQLException
     {
         final String methodName = AuditDAOImpl.CNAME + "#auditRequestedOperation(final List<String> auditRequest) throws SQLException";
 
@@ -58,13 +62,24 @@ public class AuditDAOImpl implements IAuditDAO
         Connection sqlConn = null;
         PreparedStatement stmt = null;
 
-        if (Objects.isNull(dataSource))
-        {
-        	throw new SQLException("A datasource connection could not be obtained.");
-        }
-
         try
         {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup(UtilityConstants.DS_CONTEXT);
+            DataSource dataSource = (DataSource) envContext.lookup(IAuditDAO.INIT_AUDITDS_MANAGER);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("Context: {}", initContext);
+            	DEBUGGER.debug("Context: {}", envContext);
+            	DEBUGGER.debug("DataSource: {}", dataSource);
+            }
+
+            if (Objects.isNull(dataSource))
+            {
+            	throw new SQLException("A datasource connection could not be obtained.");
+            }
+
             sqlConn = dataSource.getConnection();
 
             if (sqlConn.isClosed())
@@ -96,6 +111,10 @@ public class AuditDAOImpl implements IAuditDAO
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
+        catch (NamingException nx)
+        {
+        	throw new SQLException(nx.getMessage(), nx);
+		}
         finally
         {
             try

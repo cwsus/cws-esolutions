@@ -119,17 +119,15 @@
         </c:if>
 
         <h1><spring:message code="user.account.update.security" /></h1>
-        <form:form name="submitSecurityInformationChange" id="submitSecurityInformationChange" action="${pageContext.request.contextPath}/ui/user-account/security" method="post" autocomplete="off">
+        <form:form id="submitSecurityInformationChange" name="submitSecurityInformationChange" action="${pageContext.request.contextPath}/ui/user-account/security" method="post">
             <table>
                 <tr>
                     <td><label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label></td>
-                </tr>
-                <tr>
                     <td>
                         <form:select path="secQuestionOne">
                             <option><spring:message code="theme.option.select" /></option>
-        	                <option><spring:message code="theme.option.spacer" /></option>
-        	                <form:options items="${questionList}" />
+                            <option><spring:message code="theme.option.spacer" /></option>
+                            <form:options items="${questionList}" />
                         </form:select>
                         <form:errors path="secQuestionOne" cssClass="error" />
                     </td>
@@ -163,9 +161,7 @@
                     </td>
                 </tr>
             </table>
-
             <br class="clear" /><br class="clear" />
-
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
             <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/user-account/default');" />

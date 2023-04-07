@@ -47,7 +47,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
@@ -58,6 +57,7 @@ import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
+import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.impl.ApplicationManagementProcessorImpl;
@@ -629,45 +629,44 @@ public class ApplicationManagementController
 
             switch (appResponse.getRequestStatus())
             {
-			case EXCEPTION:
-				mView.setViewName(this.appConfig.getErrorResponsePage());
-
-				break;
-			case FAILURE:
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.setViewName(this.addApplicationRedirect);
-
-				break;
-			case SUCCESS:
-                List<Application> applicationList = appResponse.getApplicationList();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<Application>: {}", applicationList);
-                }
-
-                if ((applicationList != null) && (applicationList.size() != 0))
-                {
-                    mView.addObject("applicationList", applicationList);
-                    mView.setViewName(this.viewApplicationsPage);
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
-                    mView.setViewName(this.defaultPage);
-                }
-
-				break;
-			case UNAUTHORIZED:
-				mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-				break;
-			default:
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.setViewName(this.addApplicationRedirect);
-
-				break;
-            
+				case EXCEPTION:
+					mView.setViewName(this.appConfig.getErrorResponsePage());
+	
+					break;
+				case FAILURE:
+	                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+	                mView.setViewName(this.addApplicationRedirect);
+	
+					break;
+				case SUCCESS:
+	                List<Application> applicationList = appResponse.getApplicationList();
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("List<Application>: {}", applicationList);
+	                }
+	
+	                if ((applicationList != null) && (applicationList.size() != 0))
+	                {
+	                    mView.addObject(Constants.SEARCH_RESULTS, applicationList);
+	                    mView.setViewName(this.viewApplicationsPage);
+	                }
+	                else
+	                {
+	                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
+	                    mView.setViewName(this.defaultPage);
+	                }
+	
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+	
+					break;
+				default:
+	                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+	                mView.setViewName(this.addApplicationRedirect);
+	
+					break;
             }
         }
         catch (final ApplicationManagementException amx)
@@ -1231,8 +1230,9 @@ public class ApplicationManagementController
 				case SUCCESS:
                     mView.addObject("pages", (int) Math.ceil(appResponse.getEntryCount() * 1.0 / this.recordsPerPage));
                     mView.addObject("page", 1);
+                    mView.addObject(Constants.COMMAND, new Application());
                     mView.addObject(Constants.SEARCH_RESULTS, appResponse.getApplicationList());
-                    mView.setViewName(this.viewApplicationsPage);
+                    mView.setViewName(this.defaultPage);
 
 					break;
 				case UNAUTHORIZED:

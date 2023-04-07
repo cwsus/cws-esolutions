@@ -1052,12 +1052,12 @@ public class UserAccountController
     @RequestMapping(value = "/security", method = RequestMethod.POST)
     public final ModelAndView doSecurityChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
     {
-        final String methodName = UserAccountController.CNAME + "#doSecurityChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
+        final String methodName = UserAccountController.CNAME + "#doSecurityChange(@ModelAttribute(\"changeReq\") final AccountChangeData changeReq, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserChangeRequest: {}", changeReq);
+            DEBUGGER.debug("AccountChangeData: {}", changeReq);
         }
 
         ModelAndView mView = new ModelAndView();

@@ -42,6 +42,7 @@ public class AuthenticationData implements Serializable
 	private String username = null;
     private String userSalt = null;
     private char[] password = null;
+    private String sessionId = null;
     private char[] newPassword = null;
     private char[] secAnswerOne = null;
     private char[] secAnswerTwo = null;
@@ -171,6 +172,19 @@ public class AuthenticationData implements Serializable
         this.resetKey = value;
     }
 
+    public final void setSessionId(final String value)
+    {
+        final String methodName = AuthenticationData.CNAME + "#setSessionId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.sessionId = value;
+    }
+
     public final String getUsername()
     {
         final String methodName = AuthenticationData.CNAME + "#getUsername()";
@@ -286,6 +300,19 @@ public class AuthenticationData implements Serializable
         }
 
         return this.resetKey;
+    }
+
+    public final String getSessionId()
+    {
+        final String methodName = AuthenticationData.CNAME + "#getSessionId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.sessionId);
+        }
+
+        return this.sessionId;
     }
 
     @Override

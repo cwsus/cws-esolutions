@@ -31,7 +31,7 @@
 	    </property>
 	</bean>
 
-    <bean id="messageValidator" class="com.cws.esolutions.web.validators.EmailMessageValidator">
+    <bean id="messageValidator" class="com.cws.esolutions.web.validators.WebMessageValidator">
         <property name="messageSubjectRequired" value="theme.subject.required" />
         <property name="messageBodyRequired" value="theme.body.required" />
         <property name="messageFromRequired" value="theme.from.required" />

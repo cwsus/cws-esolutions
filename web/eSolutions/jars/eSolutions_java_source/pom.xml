@@ -33,6 +33,10 @@
         </dependency>
         <dependency>
             <groupId>com.cws</groupId>
+            <artifactId>eSolutionsUtility</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cws</groupId>
             <artifactId>eSolutionsSecurity</artifactId>
         </dependency>
         <!-- spring -->

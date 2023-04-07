@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.2.17</version>
+        <version>5.4.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -29,6 +29,7 @@
         <spring.version>5.3.26</spring.version>
         <eSolutionsCore.version>1.0-SNAPSHOT</eSolutionsCore.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
+        <eSolutionsUtility.version>1.0-SNAPSHOT</eSolutionsUtility.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -56,40 +57,25 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
-            <!-- esolutions -->
+            <!-- cws shared -->
             <dependency>
                 <groupId>com.cws</groupId>
                 <artifactId>eSolutionsCore</artifactId>
                 <version>${eSolutionsCore.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-daemon</groupId>
-                        <artifactId>commons-daemon</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>sshtools</groupId>
-                        <artifactId>j2ssh-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>sshtools</groupId>
-                        <artifactId>j2ssh-common</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.virtualbox</groupId>
-                        <artifactId>vboxjws</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.sourceforge.expectj</groupId>
-                        <artifactId>expectj</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.cws</groupId>
                 <artifactId>eSolutionsSecurity</artifactId>
                 <version>${eSolutionsSecurity.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.cws</groupId>
+                <artifactId>eSolutionsUtility</artifactId>
+                <version>${eSolutionsUtility.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
@@ -187,7 +173,7 @@
 	            <artifactId>javax.servlet-api</artifactId>
 			    <version>${javax.servlet.version}</version>
 			    <type>jar</type>
-			    <scope>provided</scope>
+			    <scope>compile</scope>
 			</dependency>
         </dependencies>
     </dependencyManagement>

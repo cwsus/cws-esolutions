@@ -41,6 +41,8 @@ import com.cws.esolutions.utility.UtilityConstants;
  */
 public interface IAuditDAO
 {
+	static final String INIT_AUDITDS_MANAGER = "jdbc/audit";
+
     static final Logger DEBUGGER = LogManager.getLogger(UtilityConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger AUDIT_RECORDER = LogManager.getLogger(UtilityConstants.AUDIT_LOGGER);
@@ -51,7 +53,7 @@ public interface IAuditDAO
      * @param auditRequest - A <code>List</code> of the audit data to insert
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
-    void auditRequestedOperation(final List<String> auditRequest, final DataSource dataSource) throws SQLException;
+    void auditRequestedOperation(final List<String> auditRequest) throws SQLException;
 
     /**
      * Inserts audit-related data into the audit datastore

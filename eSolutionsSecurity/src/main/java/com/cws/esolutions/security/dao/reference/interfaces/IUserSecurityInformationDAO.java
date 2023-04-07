@@ -26,7 +26,6 @@ package com.cws.esolutions.security.dao.reference.interfaces;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.HashMap;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.apache.logging.log4j.Logger;
@@ -75,7 +74,7 @@ public interface IUserSecurityInformationDAO
      * @return List - A list of all approved servers within the authorization datastore
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
-    HashMap<Integer, String> obtainSecurityQuestionList() throws SQLException;
+    List<String> obtainSecurityQuestionList() throws SQLException;
 
     /**
      * Returns the salt value associated with the given user account to process an

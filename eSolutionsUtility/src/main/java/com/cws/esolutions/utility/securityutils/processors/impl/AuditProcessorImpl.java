@@ -95,7 +95,7 @@ public class AuditProcessorImpl implements IAuditProcessor
             AUDIT_RECORDER.info("AUDIT: User: " + auditEntry.getUserName() + ", Requested Action: " + auditEntry.getAuditType() + ", Host: " + reqInfo);
 
             // .. and stuff in in the db
-            auditDAO.auditRequestedOperation(auditList, null);
+            auditDAO.auditRequestedOperation(auditList);
         }
         catch (final SQLException sqx)
         {

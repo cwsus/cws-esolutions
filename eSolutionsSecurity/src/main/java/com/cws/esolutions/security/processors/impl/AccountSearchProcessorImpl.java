@@ -160,46 +160,6 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
             throw new AccountSearchException(umx.getMessage(), umx);
         }
-        finally
-        {
-        	if (secConfig.getPerformAudit())
-        	{
-	            // audit
-	            try
-	            {
-	                AuditEntry auditEntry = new AuditEntry();
-	                auditEntry.setAuditType(AuditType.LOADSECURITY);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-	                }
-	
-	                AuditRequest auditRequest = new AuditRequest();
-	                auditRequest.setAuditEntry(auditEntry);
-	                auditRequest.setHostInfo(reqInfo);
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-	                }
-	
-	                auditor.auditRequest(auditRequest);
-	            }
-	            catch (final AuditServiceException asx)
-	            {
-	                ERROR_RECORDER.error(asx.getMessage(), asx);
-	            }
-        	}
-        }
 
         return response;
     }

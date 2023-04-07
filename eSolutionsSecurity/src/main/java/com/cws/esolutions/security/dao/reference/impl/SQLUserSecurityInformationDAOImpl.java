@@ -28,7 +28,6 @@ package com.cws.esolutions.security.dao.reference.impl;
 import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -597,7 +596,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#obtainSecurityQuestionList()
      */
-    public synchronized HashMap<Integer, String> obtainSecurityQuestionList() throws SQLException
+    public synchronized List<String> obtainSecurityQuestionList() throws SQLException
     {
         final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#obtainSecurityQuestionList() throws SQLException";
 
@@ -609,7 +608,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         Connection sqlConn = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
-        HashMap<Integer, String> questionMap = null;
+        List<String> questionList = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -652,21 +651,21 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
 
                 if (resultSet.next())
                 {
-                    questionMap = new HashMap<Integer, String>();
+                	questionList = new ArrayList<String>();
 
                     while (resultSet.next())
                     {
-                    	questionMap.put(resultSet.getInt(1), resultSet.getString(2));
+                    	questionList.add(resultSet.getString(1));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("questionMap: {}", questionMap);
+                            DEBUGGER.debug("List<String>: {}", questionList);
                         }
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Map<Integer, String>: {}", questionMap);
+                        DEBUGGER.debug("List<String>: {}", questionList);
                     }
                 }
                 else
@@ -697,7 +696,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             }
         }
 
-        return questionMap;
+        return questionList;
     }
 
     /**

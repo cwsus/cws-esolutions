@@ -26,7 +26,6 @@ package com.cws.esolutions.security.processors.dto;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.HashMap;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
@@ -45,10 +44,9 @@ public class AccountResetResponse implements Serializable
 	private int count = 0;
     private String resetId = null;
     private UserAccount userAccount = null;
-    private List<String> questionList = null;
+    private List<String> availableQuestions = null;
     private AuthenticationData userSecurity = null;
     private SecurityRequestStatus requestStatus = null;
-    private HashMap<Integer, String> availableQuestions = null;
 
     private static final long serialVersionUID = 5259716158255929392L;
     private static final String CNAME = AccountResetResponse.class.getName();
@@ -108,19 +106,6 @@ public class AccountResetResponse implements Serializable
         this.count = value;
     }
 
-    public final void setQuestionList(final List<String> value)
-    {
-        final String methodName = AccountResetResponse.CNAME + "#setQuestionList(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.questionList = value;
-    }
-
     public final void setUserSecurity(final AuthenticationData value)
     {
         final String methodName = AccountResetResponse.CNAME + "#setUserSecurity(final AuthenticationData value)";
@@ -134,9 +119,9 @@ public class AccountResetResponse implements Serializable
         this.userSecurity = value;
     }
 
-    public final void setAvailableQuestions(final HashMap<Integer, String> value)
+    public final void setAvailableQuestions(final List<String> value)
     {
-        final String methodName = AccountResetResponse.CNAME + "#setAvailableQuestions(final HashMap<Integer, String> value)";
+        final String methodName = AccountResetResponse.CNAME + "#setAvailableQuestions(final List<String> value)";
 
         if (DEBUG)
         {
@@ -186,19 +171,6 @@ public class AccountResetResponse implements Serializable
         return this.resetId;
     }
 
-    public final List<String> getQuestionList()
-    {
-        final String methodName = AccountResetResponse.CNAME + "#getQuestionList()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.questionList);
-        }
-
-        return this.questionList;
-    }
-
     public final AuthenticationData getUserSecurity()
     {
         final String methodName = AccountResetResponse.CNAME + "#getUserSecurity()";
@@ -225,7 +197,7 @@ public class AccountResetResponse implements Serializable
         return this.count;
     }
 
-    public final HashMap<Integer, String> getAvailableQuestions()
+    public final List<String> getAvailableQuestions()
     {
         final String methodName = AccountResetResponse.CNAME + "#getAvailableQuestions()";
 
