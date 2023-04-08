@@ -36,10 +36,10 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 
 public class FileSecurityProcessorImplTest
 {

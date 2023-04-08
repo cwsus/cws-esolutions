@@ -25,6 +25,7 @@ package com.cws.esolutions.utility.securityutils.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.List;
 import java.util.Date;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -48,7 +49,9 @@ public class AuditEntry implements Serializable
     private Boolean authorized = false;
     private AuditType auditType = null;
     private String applicationId = null;
+    private List<String> hostInfo = null;
     private String applicationName = null;
+    private List<String> accountInfo = null;
 
     private static final String CNAME = AuditEntry.class.getName();
     private static final long serialVersionUID = 6162424573063066481L;
@@ -173,6 +176,32 @@ public class AuditEntry implements Serializable
         this.authorized = value;
     }
 
+    public final void setHostInfo(final List<String> value)
+    {
+        final String methodName = AuditEntry.CNAME + "#setHostInfo(final List<String[]> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.hostInfo = value;
+    }
+
+    public final void setAccountInfo(final List<String> value)
+    {
+        final String methodName = AuditEntry.CNAME + "#setAccountInfo(final List<String[]> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.accountInfo = value;
+    }
+
     public final String getApplicationName()
     {
         final String methodName = AuditEntry.CNAME + "#getApplicationName()";
@@ -288,6 +317,32 @@ public class AuditEntry implements Serializable
         }
 
         return this.sessionId;
+    }
+
+    public final List<String> getHostInfo()
+    {
+        final String methodName = AuditEntry.CNAME + "#getHostInfo()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.hostInfo);
+        }
+
+        return this.hostInfo;
+    }
+
+    public final List<String> getAccountInfo()
+    {
+        final String methodName = AuditEntry.CNAME + "#getAccountInfo()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.accountInfo);
+        }
+
+        return this.accountInfo;
     }
 
     @Override

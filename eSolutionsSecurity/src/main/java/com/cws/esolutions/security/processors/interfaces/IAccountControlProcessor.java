@@ -160,4 +160,12 @@ public interface IAccountControlProcessor
      * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
      */
     AccountControlResponse listUserAccounts(final AccountControlRequest request) throws AccountControlException;
+
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws AccountControlException
+     */
+    AccountControlResponse getAuditEntries(final AccountControlRequest request) throws AccountControlException;
 }

@@ -37,12 +37,12 @@ import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

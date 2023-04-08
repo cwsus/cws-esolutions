@@ -109,14 +109,6 @@ public interface UserManager
      * all possible responses
      * @throws UserManagementException if an exception occurs during processing
      */
-    List<String[]> searchUsers(final String searchData) throws UserManagementException;
-
-    /**
-     * Same as above but unauthenticated
-     * @param searchData
-     * @return
-     * @throws UserManagementException
-     */
     List<String[]> findUsers(final String searchData) throws UserManagementException;
 
     /**

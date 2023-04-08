@@ -51,10 +51,10 @@ import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -157,6 +157,7 @@ public class LoginController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final String forwardedFor = hRequest.getHeader("X-Forwarded-For");
 
         if (DEBUG)
         {
@@ -164,6 +165,7 @@ public class LoginController
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
             DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("forwardedFor: {}", forwardedFor);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
@@ -278,6 +280,7 @@ public class LoginController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -285,6 +288,7 @@ public class LoginController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final String forwardedFor = hRequest.getHeader("X-Forwarded-For");
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAuthenticationProcessor authProcessor = (IAuthenticationProcessor) new AuthenticationProcessorImpl();
 
@@ -294,6 +298,7 @@ public class LoginController
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
             DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("forwardedFor: {}", forwardedFor);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<?> sessionEnumeration = hSession.getAttributeNames();

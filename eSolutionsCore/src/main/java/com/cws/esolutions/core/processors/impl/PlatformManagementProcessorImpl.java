@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
@@ -44,7 +45,6 @@ import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
@@ -126,9 +126,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -240,9 +250,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -333,9 +353,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -428,9 +458,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -519,9 +559,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -619,9 +669,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -712,9 +772,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -812,9 +882,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -905,9 +985,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -995,9 +1085,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -1088,9 +1188,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -1166,9 +1276,19 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {

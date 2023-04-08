@@ -49,8 +49,8 @@
 
                     %s
 
-                    Please note that your new password must be at least {4} characters long, and
-                    not more than {5} characters, and must be a mix of both upper- and lower-case
+                    Please note that your new password must be at least %s characters long, and
+                    not more than %s characters, and must be a mix of both upper- and lower-case
                     letters with at least one special character (e.g. *).
 
                     Please do not respond to this email as it is sent from an unmonitored mailbox.

@@ -36,13 +36,13 @@ import com.cws.esolutions.core.processors.dto.DNSRecord;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -19,8 +19,8 @@
 <%--
 /**
  * Project: eSolutions_web_source
- * Package: com.cws.esolutions.web.user-management\jsp\html\en
- * File: UserManagement_UserSearch.jsp
+ * Package: com.cws.esolutions.web.dnsservice\jsp\html\en
+ * File: DNSService_ServiceLookup.jsp
  *
  * @author cws-khuntly
  * @version 1.0
@@ -37,76 +37,47 @@
 <!--
     function validateForm(theForm)
     {
-        var i = 0;
-        var f = 0;
-        var entryFound = false;
-
-        for (f = 0; f < document.forms.length; f++)
+        if (theForm.searchTerms.value == '')
         {
-            // for each element in each form
-            for (i = 0; i < document.forms[f].length; i++)
-            {
-                // if it's not a hidden element, disabled or a button
-                if ((document.forms[f][i].type != "hidden") && (document.forms[f][i].disabled != true) && (document.forms[f][i].type != "button"))
-                {
-                    // clear it
-                    if (document.forms[f][i].value != '')
-                    {
-                        entryFound = true;
+            clearText(theForm);
 
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (entryFound)
-        {
-            theForm.submit();
-        }
-        else
-        {
-            document.getElementById('validationError').innerHTML = 'A search criterion must be provided.';
-            document.getElementById('txtUserName').style.color = '#FF0000';
+            document.getElementById('validationError').innerHTML = 'You must provide a hostname or IP address to perform a query against.';
+            document.getElementById('txtSearchTerms').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('username').focus();
+            document.getElementById('searchTerms').focus();
+
+            return;
         }
+
+        theForm.submit();
     }
 //-->
 </script>
 
-<div id="sidebar">
-    <h1><spring:message code="user.mgmt.header" /></h1>
-    <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/user-management/add-user" title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a></li>
-    </ul>
-</div>
+<div id="homecontent">
+    <div class="wrapper">
+        <div id="error"></div>
+        <div id="validationError" style="color: #FF0000"></div>
+    
+        <c:if test="${not empty fn:trim(messageResponse)}">
+            <p id="info">${messageResponse}</p>
+        </c:if>
+        <c:if test="${not empty fn:trim(errorResponse)}">
+            <p id="error">${errorResponse}</p>
+        </c:if>
+        <c:if test="${not empty fn:trim(responseMessage)}">
+            <p id="info"><spring:message code="${responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(errorMessage)}">
+            <p id="error"><spring:message code="${errorMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.responseMessage)}">
+            <p id="info"><spring:message code="${param.responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.errorMessage)}">
+            <p id="error"><spring:message code="${param.errorMessage}" /></p>
+        </c:if>
 
-<div id="main">
-    <h1><spring:message code="theme.search.header" /></h1>
-
-    <div id="error"></div>
-
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
-
-    <p>
         <form:form id="searchUserAccounts" name="searchUserAccounts" action="${pageContext.request.contextPath}/ui/user-management/search" method="post">
             <label id="txtSearchTerms"><spring:message code="user.mgmt.search.terms" /><br /></label>
             <form:input path="searchTerms" id="searchTerms" />
@@ -115,8 +86,10 @@
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('/esolutions/ui/user-management/default');" />
         </form:form>
+
+        <br class="clear" />
+        <br class="clear" />
 
         <c:if test="${not empty fn:trim(requestScope.searchResults)}">
             <h1><spring:message code="theme.search.results" /></h1>
@@ -157,7 +130,17 @@
                 </table>
             </c:if>
         </c:if>
-    </p>
+    </div>
 </div>
 
-<div id="rightbar">&nbsp;</div>
+<div id="container">
+    <div class="wrapper">
+        <div id="content">
+            <h1><spring:message code="user.mgmt.header" /></h1>
+            <ul>
+                <li><a href="${pageContext.request.contextPath}/ui/user-management/add-user" title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a></li>
+            </ul>
+        </div>
+        <br class="clear" />
+    </div>
+</div>

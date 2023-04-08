@@ -327,120 +327,9 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(java.lang.String)
      */
-    public synchronized List<String[]> searchUsers(final String searchData) throws UserManagementException
-    {
-        final String methodName = SQLUserManager.CNAME + "#searchUsers(final String searchData) throws UserManagementException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", searchData);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        PreparedStatement stmt = null;
-        List<String[]> results = null;
-
-        if (Objects.isNull(contactDataSource))
-        {
-        	throw new UserManagementException("A datasource connection could not be obtained.");
-        }
-
-        try
-        {
-            sqlConn = contactDataSource.getConnection();
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-        	stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, searchData);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    results = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] userData = new String[]
-                        {
-                        	resultSet.getString("cn"),
-                            resultSet.getString("uid")
-                        };
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Data: {}", (Object) userData);
-                        }
-
-                        results.add(userData);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List: {}", results);
-                    }
-                }
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            throw new UserManagementException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (!(Objects.isNull(resultSet)))
-                {
-                    resultSet.close();
-                }
-            
-                if (!(Objects.isNull(stmt)))
-                {
-                    stmt.close();
-                }
-
-                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (final SQLException sqx)
-            {
-                throw new UserManagementException(sqx.getMessage(), sqx);
-            }
-        }
-
-        return results;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(java.lang.String)
-     */
     public synchronized List<String[]> findUsers(final String searchData) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#searchUsers(final String searchData) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#findUsers(final String searchData) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -522,7 +411,7 @@ public class SQLUserManager implements UserManager
                     {
                         String[] userData = new String[]
                         {
-                            resultSet.getString("cn")
+                            resultSet.getString(1), resultSet.getString(2)
                         };
 
                         if (DEBUG)

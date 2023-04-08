@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
+import java.util.ArrayList;
+import java.util.Arrays;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.processors.impl
@@ -41,10 +43,10 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
@@ -68,6 +70,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
+        String userId = null;
+        String userGuid = null;
         UserAccount userAccount = null;
         AuthenticationResponse response = new AuthenticationResponse();
 
@@ -95,8 +99,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             	throw new AuthenticationException("Unable to locate an account for the given information. Cannot continue");
             }
 
-            String userId = userInfo.get(1);
-            String userGuid = userInfo.get(0);
+            userId = userInfo.get(1);
+            userGuid = userInfo.get(0);
 
             if (DEBUG)
             {
@@ -127,6 +131,11 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             boolean isAuthenticated = authenticator.performLogon(userGuid, userId, returnedPassword);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("isAuthenticated: {}", isAuthenticated);
+            }
 
             if (!(isAuthenticated))
             {
@@ -278,9 +287,9 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	                auditEntry.setAuditType(AuditType.LOGON);
                     auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                     auditEntry.setSessionId(authSec.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setUserGuid(userGuid);
+                    auditEntry.setUserName(userId);
+                    auditEntry.setUserRole(SecurityUserRole.NONE.name());
                     auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -290,9 +299,19 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
 	                }
 	
-	                AuditRequest auditRequest = new AuditRequest();
-	                auditRequest.setAuditEntry(auditEntry);
-	                auditRequest.setHostInfo(reqInfo);
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 	
 	                if (DEBUG)
 	                {
@@ -376,9 +395,19 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
 	                }
 	
-	                AuditRequest auditRequest = new AuditRequest();
-	                auditRequest.setAuditEntry(auditEntry);
-	                auditRequest.setHostInfo(reqInfo);
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 	
 	                if (DEBUG)
 	                {

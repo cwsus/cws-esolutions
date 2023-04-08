@@ -29,17 +29,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountSearchResponse;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.exception.AccountSearchException;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
@@ -191,7 +193,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
         try
         {
-            List<String[]> userList = userManager.searchUsers(request.getSearchTerms());
+            List<String[]> userList = userManager.findUsers(request.getSearchTerms());
 
 	        if (DEBUG)
 	        {
@@ -274,9 +276,19 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {

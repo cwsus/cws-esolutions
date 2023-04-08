@@ -98,7 +98,7 @@ public class AuditDAOImpl implements IAuditDAO
             stmt.setString(6, auditRequest.get(5)); // applname
             stmt.setString(7, auditRequest.get(6)); // user action
             stmt.setString(8, auditRequest.get(7)); // srcaddr
-            stmt.setString(9, auditRequest.get(8)); // srcaddr
+            stmt.setString(9, auditRequest.get(8)); // srchost
             
             if (DEBUG)
             {
@@ -139,7 +139,7 @@ public class AuditDAOImpl implements IAuditDAO
     /**
      * @see com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO#getAuditInterval(String, int)
      */
-    public synchronized List<Object> getAuditInterval(final String guid, final int startRow, final DataSource dataSource) throws SQLException
+    public synchronized List<Object> getAuditInterval(final String guid, final int startRow) throws SQLException
     {
         final String methodName = AuditDAOImpl.CNAME + "#getAuditInterval(final String guid, final int startRow) throws SQLException";
 
@@ -155,18 +155,24 @@ public class AuditDAOImpl implements IAuditDAO
         PreparedStatement stmt = null;
         List<Object> responseList = null;
 
-        if (Objects.isNull(dataSource))
-        {
-        	throw new SQLException("A datasource connection could not be obtained.");
-        }
-
         try
         {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup(UtilityConstants.DS_CONTEXT);
+            DataSource dataSource = (DataSource) envContext.lookup(IAuditDAO.INIT_AUDITDS_MANAGER);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("Context: {}", initContext);
+            	DEBUGGER.debug("Context: {}", envContext);
+            	DEBUGGER.debug("DataSource: {}", dataSource);
+            }
+
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(dataSource)) || (sqlConn.isClosed()))
             {
-                throw new SQLException("Unable to obtain audit datasource connection");
+            	throw new SQLException("A datasource connection could not be obtained.");
             }
 
             sqlConn.setAutoCommit(true);
@@ -230,7 +236,10 @@ public class AuditDAOImpl implements IAuditDAO
         catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
-        }
+        } 
+        catch (NamingException nx) {
+        	throw new SQLException(nx.getMessage(), nx);
+		}
         finally
         {
             try

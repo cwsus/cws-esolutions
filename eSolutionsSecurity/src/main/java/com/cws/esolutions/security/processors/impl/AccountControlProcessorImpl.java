@@ -44,6 +44,7 @@ import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
@@ -51,9 +52,8 @@ import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditResponse;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
@@ -98,7 +98,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -139,10 +139,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
-        
+
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -204,12 +214,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
             }
 
+            char[] newPassword = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getPasswordMinLength()).toCharArray();
             String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getIterations());
-            String newPassword = PasswordUtils.encryptText(userSecurity.getPassword(), newSalt,
+            String encNewPassword = PasswordUtils.encryptText(newPassword, newSalt,
                     secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
                     sysConfig.getEncoding());
 
-            if ((StringUtils.isBlank(newSalt) || (StringUtils.isBlank(newPassword))))
+            if ((StringUtils.isBlank(newSalt) || (StringUtils.isBlank(encNewPassword))))
             {
             	throw new AccountControlException("Failed to generate new user logon information.");
             }
@@ -218,7 +229,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 Arrays.asList(
                 		userGuid, // commonName
                 		userAccount.getUsername(), // uid
-                		newPassword,
+                		encNewPassword,
                 		userAccount.getUserRole().toString(), // cwsrole
                 		userAccount.getSurname(), // surname
                 		userAccount.getGivenName(), // gvenName
@@ -243,6 +254,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isUserCreated)
             {
+            	UserAccount resAccount = new UserAccount();
+            	resAccount.setGuid(userGuid);
+            	resAccount.setUsername(userAccount.getUsername());
+            	resAccount.setUserRole(userAccount.getUserRole());
+            	resAccount.setSurname(userAccount.getSurname());
+            	resAccount.setGivenName(userAccount.getGivenName());
+            	resAccount.setEmailAddr(userAccount.getEmailAddr());
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("UserAccount: {}", resAccount);
+            	}
+
+            	response.setUserAccount(resAccount);
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
             else
@@ -302,9 +327,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -354,7 +389,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -396,9 +431,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -470,9 +515,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -522,7 +577,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -564,9 +619,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -654,10 +719,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     {
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
-    
+
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -707,7 +782,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -749,9 +824,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -875,10 +960,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     {
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
-    
+
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -932,7 +1027,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -974,9 +1069,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -1040,6 +1145,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if (isComplete)
                 {
+                	response.setUserAccount(userAccount);
                     response.setResetId(resetId);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
@@ -1047,7 +1153,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
 
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
@@ -1106,9 +1212,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -1155,29 +1271,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountControlException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1219,9 +1316,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -1249,7 +1356,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if ((userData != null) && (userData.size() != 0))
             {
-                boolean isComplete = userManager.modifyUserLock((String) userData.get(0), true, userAccount.getFailedCount());
+                boolean isComplete = userManager.modifyUserLock((String) userData.get(1), true, userAccount.getFailedCount());
 
                 if (DEBUG)
                 {
@@ -1259,6 +1366,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 if (isComplete)
                 {
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                }
+                else
+                {
+                	response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
@@ -1279,18 +1390,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
-        }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountControlException(ax.getMessage(), ax);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -1317,9 +1416,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -1367,29 +1476,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountControlException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1431,9 +1521,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -1504,18 +1604,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountControlException(ax.getMessage(), ax);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
-        }
         finally
         {
             // audit
@@ -1541,9 +1629,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -1590,29 +1688,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-            String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-                    secConfig.getSecretKeyAlgorithm(),
-                    secConfig.getIterations(), secConfig.getKeyLength(),
-                    sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-                DEBUGGER.debug("authToken: {}", authToken);
-            }
-
-            boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-
-            if (!(isAuthenticated))
-            {
-                throw new AccountControlException("An invalid authentication token was presented.");
-            }
-
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1654,9 +1733,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -1735,18 +1824,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
-        catch (final AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountControlException(ax.getMessage(), ax);
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountControlException(sqx.getMessage(), sqx);
-        }
         finally
         {
             // audit
@@ -1772,9 +1849,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -1788,6 +1875,220 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
             }
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor#getAuditEntries(com.cws.esolutions.security.processors.dto.AuditRequest)
+     */
+    public AccountControlResponse getAuditEntries(final AccountControlRequest request) throws AccountControlException
+    {
+        final String methodName = AccountControlProcessorImpl.CNAME + "#getAuditEntries(final AccountControlRequest request) throws AccountControlException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AuditRequest: {}", request);
+        }
+
+        AccountControlResponse response = new AccountControlResponse();
+
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getUserAccount();
+        final UserAccount userAccount = request.getRequestor();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
+        if (!(secConfig.getPerformAudit()))
+        {
+        	throw new AccountControlException("Audit services are not enabled");
+        }
+
+        try
+        {
+            // this will require admin and service authorization
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
+
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setAuditType(AuditType.GETAUDITENTRIES);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (final AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            AuditEntry auditEntry = new AuditEntry();
+            auditEntry.setUserGuid(reqAccount.getGuid());
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("AuditEntry: {}", auditEntry);
+            }
+
+            AuditRequest auditRequest = new AuditRequest();
+            auditRequest.setAuditEntry(auditEntry);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("AuditEntry: {}", auditEntry);
+            }
+
+            AuditResponse auditResponse = auditor.getAuditEntries(auditRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuditResponse: {}", auditResponse);
+            }
+
+            switch (auditResponse.getRequestStatus())
+            {
+				case FAILURE:
+					response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+					break;
+				case SUCCESS:
+					response.setEntryCount(auditResponse.getEntryCount());
+					response.setAuditList(auditResponse.getAuditList());
+					response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+
+					break;
+				case UNAUTHORIZED:
+					response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+					break;
+				default:
+					response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+					break;
+            }
+        }
+        catch (final AuditServiceException asx)
+        {
+            ERROR_RECORDER.error(asx.getMessage(), asx);
+
+            throw new AccountControlException(asx.getMessage(), asx);
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new AccountControlException(acsx.getMessage(), acsx);
+		}
+        finally
+        {
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setAuditType(AuditType.SHOWAUDIT);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (final AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;

@@ -62,7 +62,7 @@ public class AccessControlServiceImpl implements IAccessControlService
         }
 
         // TODO
-        response.setIsUserAuthorized(StringUtils.equals(accountData.get(1), "SITE_ADMIN"));
+        response.setIsUserAuthorized(StringUtils.equals(accountData.get(0), "SITE_ADMIN"));
         
         return response;
     }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
+import java.util.ArrayList;
+import java.util.Arrays;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.processors.impl
@@ -26,6 +28,8 @@ package com.cws.esolutions.security.processors.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
+import java.util.List;
+
 import javax.crypto.Cipher;
 import java.io.IOException;
 import java.security.KeyPair;
@@ -46,12 +50,12 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
@@ -186,7 +190,19 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
 	                }
 	
-	                AuditRequest auditRequest = new AuditRequest();
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 	
 	                if (DEBUG)
 	                {
@@ -321,7 +337,19 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
 	                }
 	
-	                AuditRequest auditRequest = new AuditRequest();
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 	
 	                if (DEBUG)
 	                {
@@ -461,7 +489,19 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
 	                }
 	
-	                AuditRequest auditRequest = new AuditRequest();
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 	
 	                if (DEBUG)
 	                {
@@ -590,7 +630,19 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
 	                }
 	
-	                AuditRequest auditRequest = new AuditRequest();
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 	
 	                if (DEBUG)
 	                {

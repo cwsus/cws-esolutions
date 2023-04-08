@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
@@ -44,7 +45,6 @@ import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
@@ -126,9 +126,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -247,9 +257,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -340,9 +360,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -454,9 +484,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -546,9 +586,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -619,9 +669,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -710,9 +770,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -806,9 +876,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -899,9 +979,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -994,9 +1084,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -1087,9 +1187,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
         
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
                         AuditRequest auditRequest = new AuditRequest();
                         auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(reqInfo);
+                        auditRequest.setHostInfo(auditHostInfo);
         
                         if (DEBUG)
                         {
@@ -1172,9 +1282,19 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {

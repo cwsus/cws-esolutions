@@ -439,8 +439,6 @@ public class SessionAuthenticationFilter implements Filter
 	                            return;
 	                        }
 	            		}
-
-	            		System.out.println("end of first value instance of block");
 	            	}
 	            }
 	            else if (value instanceof UserAccount)

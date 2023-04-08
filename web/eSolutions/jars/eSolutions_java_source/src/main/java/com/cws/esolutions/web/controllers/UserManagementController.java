@@ -26,8 +26,9 @@ package com.cws.esolutions.web.controllers;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
@@ -50,13 +51,15 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
+import com.cws.esolutions.security.enums.SecurityUserRole;
+import com.cws.esolutions.web.helpers.UserManagementHelper;
 import com.cws.esolutions.web.validators.UserAccountValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountSearchResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.impl.AccountSearchProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountSearchException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
@@ -78,21 +81,31 @@ public class UserManagementController
     private String viewAuditPage = null;
     private String createUserPage = null;
     private String searchUsersPage = null;
+    private String addUserRedirect = null;
+    private String viewUserRedirect = null;
     private JavaMailSender mailSender = null;
+    private String messageSearchFailed = null;
     private String messageAddUserFailed = null;
     private String messageAddUserSuccess = null;
+    private Object messageNoAccountsFound = null;
     private UserAccountValidator validator = null;
     private String messageRoleChangeSuccess = null;
+    private String messageRoleChangeFailure = null;
     private ApplicationServiceBean appConfig = null;
     private String messageAccountLockSuccess = null;
+    private String messageAccountLockFailure = null;
+    private String messageAccountResetFailure = null;
     private SimpleMailMessage adminResetEmail = null;
     private String messageAccountResetSuccess = null;
+    private String messageNoAuditHistoryFound = null;
     private String messageAccountUnlockSuccess = null;
+    private String messageAccountUnlockFailure = null;
     private String messageAccountSuspendSuccess = null;
+    private String messageAccountSuspendFailure = null;
+    private String messageAccountUnsuspendFailure = null;
     private String messageAccountUnsuspendSuccess = null;
 
     private static final String CNAME = UserManagementController.class.getName();
-    private static final String ADD_USER_REDIRECT = "redirect:/ui/user-management/add-user";
 
     private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -109,6 +122,19 @@ public class UserManagementController
         }
 
         this.mailSender = value;
+    }
+
+    public final void setAddUserRedirect(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setAddUserRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addUserRedirect = value;
     }
 
     public final void setValidator(final UserAccountValidator value)
@@ -148,6 +174,19 @@ public class UserManagementController
         }
 
         this.viewUserPage = value;
+    }
+
+    public final void setViewUserRedirect(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setViewUserRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.viewUserRedirect = value;
     }
 
     public final void setViewAuditPage(final String value)
@@ -293,6 +332,58 @@ public class UserManagementController
         this.resetURL = value;
     }
 
+    public final void setMessageAccountResetFailure(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountResetFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountResetFailure = value;
+    }
+
+    public final void setMessageAccountLockFailure(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountLockFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountLockFailure = value;
+    }
+
+    public final void setMessageAccountUnlockFailure(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountUnlockFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountUnlockFailure = value;
+    }
+
+    public final void setMessageAccountSuspendFailure(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountSuspendFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountSuspendFailure = value;
+    }
+
     public final void setAdminResetEmail(final SimpleMailMessage value)
     {
         final String methodName = UserManagementController.CNAME + "#setAdminResetEmail(final SimpleMailMessage value)";
@@ -319,6 +410,19 @@ public class UserManagementController
         this.messageAddUserSuccess = value;
     }
 
+    public final void setMessageNoAccountsFound(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageNoAccountsFound(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoAccountsFound = value;
+    }
+
     public final void setMessageAddUserFailed(final String value)
     {
         final String methodName = UserManagementController.CNAME + "#setMessageAddUserFailed(final String value)";
@@ -330,6 +434,58 @@ public class UserManagementController
         }
 
         this.messageAddUserFailed = value;
+    }
+
+    public final void setMessageSearchFailed(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageSearchFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageSearchFailed = value;
+    }
+
+    public final void setMessageRoleChangeFailure(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageRoleChangeFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageRoleChangeFailure = value;
+    }
+
+    public final void setMessageAccountUnsuspendFailure(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountUnsuspendFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountUnsuspendFailure = value;
+    }
+
+    public final void setMessageNoAuditHistoryFound(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageNoAuditHistoryFound(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoAuditHistoryFound = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -461,7 +617,7 @@ public class UserManagementController
             }
         }
 
-    	// mView.addObject("roles", availableRoles);
+        mView.addObject("userRoles", SecurityUserRole.values());
     	mView.addObject(Constants.COMMAND, new UserAccount());
     	mView.setViewName(this.createUserPage);
 
@@ -574,27 +730,201 @@ public class UserManagementController
                 DEBUGGER.debug("AccountControlResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                if (response.getUserAccount() != null)
-                {
-                    // mView.addObject("userRoles", Role.values());
-                	mView.addObject("userAccount", response.getUserAccount());
-                	mView.setViewName(this.viewUserPage);
-                }
-                else
-                {
-                	mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
+				case FAILURE:
+                	mView.addObject(Constants.ERROR_RESPONSE, this.messageSearchFailed);
+                	mView.addObject(Constants.COMMAND, new UserAccount());
                 	mView.setViewName(this.searchUsersPage);
-                }
+
+					break;
+				case SUCCESS:
+	                if (response.getUserAccount() != null)
+	                {
+	                	mView.addObject("userRoles", SecurityUserRole.values());
+	                	mView.addObject("foundAccount", response.getUserAccount());
+	                	mView.setViewName(this.viewUserPage);
+	                }
+	                else
+	                {
+	                	mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
+	                	mView.addObject(Constants.COMMAND, new UserAccount());
+	                	mView.setViewName(this.searchUsersPage);
+	                }
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+                	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                	mView.addObject(Constants.COMMAND, new UserAccount());
+                	mView.setViewName(this.searchUsersPage);
+
+					break;
             }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+        }
+        catch (final AccountControlException acx)
+        {
+            ERROR_RECORDER.error(acx.getMessage(), acx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/audit/account/{userGuid}", method = RequestMethod.GET)
+    public final ModelAndView showAuditData(@PathVariable("userGuid") final String userGuid, final Model model)
+    {
+        final String methodName = UserManagementController.CNAME + "#showAuditData(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Model: {}", model);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
             {
-            	mView.setViewName(this.appConfig.getUnauthorizedPage());
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
-            else
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
             {
-            	mView.setViewName(this.appConfig.getErrorResponsePage());
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+        try
+        {
+            // ensure authenticated access
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
+            }
+
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(searchAccount);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setRequestor(userAccount);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.getAuditEntries(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+        	UserAccount returnedAccount = UserManagementHelper.rebuildAccount(reqInfo, userAccount, userGuid, new ArrayList<String>(
+        			Arrays.asList(
+        					this.appConfig.getApplicationId(),
+        					this.appConfig.getApplicationName())));
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("UserAccount: {}", returnedAccount);
+        	}
+
+            switch (response.getRequestStatus())
+            {
+                case FAILURE:
+                	mView.addObject("foundAccount", returnedAccount);
+                	mView.addObject(Constants.ERROR_RESPONSE, this.messageNoAuditHistoryFound);
+                	mView.setViewName(this.viewUserRedirect);
+
+                    break;
+                case SUCCESS:
+                	if (response.getEntryCount() == 0)
+                    {
+                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoAuditHistoryFound);
+                        mView.setViewName(this.viewUserPage);
+                	}
+                	else
+                	{
+                		mView.addObject("pages", response.getEntryCount());
+                		mView.addObject("auditList", response.getAuditList());
+                        mView.setViewName(this.viewAuditPage);
+                	}
+
+                	mView.addObject("foundAccount", returnedAccount);
+
+                	break;
+                case UNAUTHORIZED:
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+                    break;
+                default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+                    mView.addObject(Constants.COMMAND, new AccountSearchRequest());
+                    mView.setViewName(this.searchUsersPage);
+
+                    break;
             }
         }
         catch (final AccountControlException acx)
@@ -615,12 +945,13 @@ public class UserManagementController
     @RequestMapping(value = "/lock/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView lockUserAccount(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#lockUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
+        final String methodName = UserManagementController.CNAME + "#suspendUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Model: {}", model);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -684,18 +1015,18 @@ public class UserManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount account = new UserAccount();
-            account.setGuid(userGuid);
-            account.setFailedCount(3);
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+            searchAccount.setFailedCount(3);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", account);
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
             }
 
             AccountControlRequest request = new AccountControlRequest();
             request.setHostInfo(reqInfo);
-            request.setUserAccount(account);
+            request.setUserAccount(searchAccount);
             request.setApplicationName(this.appConfig.getApplicationName());
             request.setApplicationId(this.appConfig.getApplicationId());
             request.setRequestor(userAccount);
@@ -712,19 +1043,40 @@ public class UserManagementController
                 DEBUGGER.debug("AccountControlResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+        	UserAccount returnedAccount = UserManagementHelper.rebuildAccount(reqInfo, userAccount, userGuid, new ArrayList<String>(
+        			Arrays.asList(
+        					this.appConfig.getApplicationId(),
+        					this.appConfig.getApplicationName())));
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("UserAccount: {}", returnedAccount);
+        	}
+
+            switch (response.getRequestStatus())
             {
-            	mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountLockSuccess);
-            	mView.addObject("userAccount", response.getUserAccount());
-            	mView.setViewName(this.viewUserPage);
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-            	mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-            	mView.setViewName(this.appConfig.getErrorResponsePage());
+                case FAILURE:
+                	mView.addObject(Constants.ERROR_RESPONSE, this.messageAccountLockFailure);
+                    mView.addObject("foundAccount", returnedAccount);
+                    mView.setViewName(this.viewUserPage);
+
+                    break;
+                case SUCCESS:
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountLockSuccess);
+                    mView.addObject("foundAccount", returnedAccount);
+                    mView.setViewName(this.viewUserPage);
+
+                    break;
+                case UNAUTHORIZED:
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+                    break;
+                default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+                    mView.addObject("foundAccount", returnedAccount);
+                    mView.setViewName(this.viewUserPage);
+
+                    break;
             }
         }
         catch (final AccountControlException acx)
@@ -814,18 +1166,18 @@ public class UserManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount account = new UserAccount();
-            account.setGuid(userGuid);
-            account.setFailedCount(0);
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+            searchAccount.setFailedCount(0);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", account);
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
             }
 
             AccountControlRequest request = new AccountControlRequest();
             request.setHostInfo(reqInfo);
-            request.setUserAccount(account);
+            request.setUserAccount(searchAccount);
             request.setApplicationName(this.appConfig.getApplicationName());
             request.setApplicationId(this.appConfig.getApplicationId());
             request.setRequestor(userAccount);
@@ -842,19 +1194,40 @@ public class UserManagementController
                 DEBUGGER.debug("AccountControlResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            UserAccount returnedAccount = UserManagementHelper.rebuildAccount(reqInfo, userAccount, userGuid, new ArrayList<String>(
+                    Arrays.asList(
+                            this.appConfig.getApplicationId(),
+                            this.appConfig.getApplicationName())));
+
+            if (DEBUG)
             {
-            	mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnlockSuccess);
-            	mView.addObject("userAccount", response.getUserAccount());
-            	mView.setViewName(this.viewUserPage);
+                DEBUGGER.debug("UserAccount: {}", returnedAccount);
             }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+
+            switch (response.getRequestStatus())
             {
-            	mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-            	mView.setViewName(this.appConfig.getErrorResponsePage());
+				case FAILURE:
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.messageAccountUnlockFailure);
+	            	mView.addObject("foundAccount", returnedAccount);
+	            	mView.setViewName(this.viewUserPage);
+
+					break;
+				case SUCCESS:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageAccountUnlockSuccess);
+                    mView.addObject("foundAccount", returnedAccount);
+                    mView.setViewName(this.viewUserPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+	            	mView.addObject("foundAccount", returnedAccount);
+	            	mView.setViewName(this.viewUserPage);
+
+					break;
             }
         }
         catch (final AccountControlException acx)
@@ -944,18 +1317,18 @@ public class UserManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount account = new UserAccount();
-            account.setGuid(userGuid);
-            account.setSuspended(true);
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+            searchAccount.setSuspended(true);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", account);
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
             }
 
             AccountControlRequest request = new AccountControlRequest();
             request.setHostInfo(reqInfo);
-            request.setUserAccount(account);
+            request.setUserAccount(searchAccount);
             request.setApplicationName(this.appConfig.getApplicationName());
             request.setApplicationId(this.appConfig.getApplicationId());
             request.setRequestor(userAccount);
@@ -972,20 +1345,40 @@ public class UserManagementController
                 DEBUGGER.debug("AccountControlResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            UserAccount returnedAccount = UserManagementHelper.rebuildAccount(reqInfo, userAccount, userGuid, new ArrayList<String>(
+                    Arrays.asList(
+                            this.appConfig.getApplicationId(),
+                            this.appConfig.getApplicationName())));
+
+            if (DEBUG)
             {
-            	mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspendSuccess);
-                // mView.addObject("userRoles", Role.values());
-            	mView.addObject("userAccount", response.getUserAccount());
-            	mView.setViewName(this.viewUserPage);
+                DEBUGGER.debug("UserAccount: {}", returnedAccount);
             }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+
+            switch (response.getRequestStatus())
             {
-            	mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-            	mView.setViewName(this.appConfig.getErrorResponsePage());
+				case FAILURE:
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.messageAccountSuspendFailure);
+	            	mView.addObject("foundAccount", returnedAccount);
+	            	mView.setViewName(this.viewUserPage);
+
+					break;
+				case SUCCESS:
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspendSuccess);
+                    mView.addObject("foundAccount", returnedAccount);
+                    mView.setViewName(this.viewUserPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+	            	mView.addObject("foundAccount", returnedAccount);
+	            	mView.setViewName(this.viewUserPage);
+
+					break;
             }
         }
         catch (final AccountControlException acx)
@@ -1075,18 +1468,18 @@ public class UserManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount account = new UserAccount();
-            account.setGuid(userGuid);
-            account.setSuspended(false);
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+            searchAccount.setSuspended(false);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", account);
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
             }
 
             AccountControlRequest request = new AccountControlRequest();
             request.setHostInfo(reqInfo);
-            request.setUserAccount(account);
+            request.setUserAccount(searchAccount);
             request.setApplicationName(this.appConfig.getApplicationName());
             request.setApplicationId(this.appConfig.getApplicationId());
             request.setRequestor(userAccount);
@@ -1103,19 +1496,40 @@ public class UserManagementController
                 DEBUGGER.debug("AccountControlResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            UserAccount returnedAccount = UserManagementHelper.rebuildAccount(reqInfo, userAccount, userGuid, new ArrayList<String>(
+                    Arrays.asList(
+                            this.appConfig.getApplicationId(),
+                            this.appConfig.getApplicationName())));
+
+            if (DEBUG)
             {
-            	mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnsuspendSuccess);
-            	mView.addObject("userAccount", response.getUserAccount());
-            	mView.setViewName(this.viewUserPage);
+                DEBUGGER.debug("UserAccount: {}", returnedAccount);
             }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+
+            switch (response.getRequestStatus())
             {
-            	mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-            	mView.setViewName(this.appConfig.getErrorResponsePage());
+				case FAILURE:
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.messageAccountUnsuspendFailure);
+	            	mView.addObject("foundAccount", returnedAccount);
+	            	mView.setViewName(this.viewUserPage);
+
+					break;
+				case SUCCESS:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageAccountUnsuspendSuccess);
+                    mView.addObject("foundAccount", returnedAccount);
+                    mView.setViewName(this.viewUserPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+	            	mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+	            	mView.addObject("foundAccount", returnedAccount);
+	            	mView.setViewName(this.viewUserPage);
+
+					break;
             }
         }
         catch (final AccountControlException acx)
@@ -1234,95 +1648,115 @@ public class UserManagementController
                 DEBUGGER.debug("AccountControlResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            UserAccount returnedAccount = UserManagementHelper.rebuildAccount(reqInfo, userAccount, userGuid, new ArrayList<String>(
+                    Arrays.asList(
+                            this.appConfig.getApplicationId(),
+                            this.appConfig.getApplicationName())));
+
+            if (DEBUG)
             {
-                UserAccount account = response.getUserAccount();
+                DEBUGGER.debug("UserAccount: {}", returnedAccount);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", account);
-                }
+            switch (response.getRequestStatus())
+            {
+				case FAILURE:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageAccountResetFailure);
+                    mView.addObject("foundAccount", returnedAccount);
+                    mView.setViewName(this.viewUserPage);
 
-                AccountControlRequest resetReq = new AccountControlRequest();
-                resetReq.setHostInfo(reqInfo);
-                resetReq.setUserAccount(account);
-                resetReq.setApplicationName(this.appConfig.getApplicationName());
-                resetReq.setApplicationId(this.appConfig.getApplicationId());
-                resetReq.setRequestor(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountResetRequest: {}", resetReq);
-                }
-
-                AccountControlResponse resetRes = processor.modifyUserPassword(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountResetResponse: {}", resetRes);
-                }
-
-                if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    StringBuilder targetURL = new StringBuilder()
-                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
+					break;
+				case SUCCESS:
+					AccountControlRequest resetReq = new AccountControlRequest();
+                    resetReq.setHostInfo(reqInfo);
+                    resetReq.setUserAccount(returnedAccount);
+                    resetReq.setApplicationName(this.appConfig.getApplicationName());
+                    resetReq.setApplicationId(this.appConfig.getApplicationId());
+                    resetReq.setRequestor(userAccount);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("targetURL: {}", targetURL);
+                        DEBUGGER.debug("AccountResetRequest: {}", resetReq);
                     }
 
-                    try
+                    AccountControlResponse resetRes = processor.modifyUserPassword(request);
+
+                    if (DEBUG)
                     {
-                    	SimpleMailMessage emailMessage = new SimpleMailMessage();
-                    	emailMessage.setTo(this.adminResetEmail.getTo());
-                    	emailMessage.setSubject(this.adminResetEmail.getSubject());
-                    	emailMessage.setFrom(this.appConfig.getEmailAddress());
-                    	emailMessage.setText(String.format(this.adminResetEmail.getText(),
-                                account.getGivenName(),
-                                new Date(System.currentTimeMillis()),
-                                reqInfo.getHostName(),
-                                targetURL.toString(),
-                                8, 128));
-
-                    	if (DEBUG)
-                    	{
-                    		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
-                    	}
-
-                    	mailSender.send(emailMessage);
+                        DEBUGGER.debug("AccountResetResponse: {}", resetRes);
                     }
-                    catch (final MailException mx)
+
+                    switch (resetRes.getRequestStatus())
                     {
-                        ERROR_RECORDER.error(mx.getMessage(), mx);
+                        case FAILURE:
+                            mView.addObject(Constants.ERROR_RESPONSE, this.messageAccountResetFailure);
+                            mView.addObject("foundAccount", response.getUserAccount());
+                            mView.setViewName(this.viewUserPage);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                            break;
+                        case SUCCESS:
+                            StringBuilder targetURL = new StringBuilder()
+                                .append(hRequest.getScheme() + "://" + this.appConfig.getWebURL())
+                                .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("targetURL: {}", targetURL);
+                            }
+
+                            try
+                            {
+		                    	SimpleMailMessage emailMessage = this.adminResetEmail;
+		                    	emailMessage.setTo(returnedAccount.getEmailAddr());
+		                    	emailMessage.setText(String.format(
+		                    			this.adminResetEmail.getText(),
+		                    			returnedAccount.getDisplayName(),
+		                    			targetURL.toString(),
+		                    			this.appConfig.getPasswordMinLength(),
+		                    			this.appConfig.getPasswordMaxLength()));
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+                                }
+
+                                mailSender.send(emailMessage);
+                            }
+                            catch (final MailException mx)
+                            {
+                                ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageEmailSendFailed());
+                            }
+
+                            mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountResetSuccess);
+                            mView.addObject("foundAccount", returnedAccount);
+                            mView.setViewName(this.viewUserPage);
+
+                            break;
+                        case UNAUTHORIZED:
+                            mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+                            break;
+                        default:
+                            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+                            mView.addObject("foundAccount", returnedAccount);
+                            mView.setViewName(this.viewUserPage);
+
+                            break;
                     }
 
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountResetSuccess);
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                	mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    // some failure occurred
-                	mView.setViewName(this.appConfig.getErrorResponsePage());
-                }
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-            	mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-                // some failure occurred
-            	mView.setViewName(this.appConfig.getErrorResponsePage());
+                    break;
+                case UNAUTHORIZED:
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+                    break;
+                default:
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.addObject(Constants.COMMAND, new UserAccount());
+                    mView.setViewName(this.searchUsersPage);
+
+                    break;
             }
         }
         catch (final AccountControlException acx)
@@ -1413,17 +1847,17 @@ public class UserManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount account = new UserAccount();
-            account.setGuid(userGuid);
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", account);
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
             }
 
             AccountControlRequest request = new AccountControlRequest();
             request.setHostInfo(reqInfo);
-            request.setUserAccount(account);
+            request.setUserAccount(searchAccount);
             request.setApplicationId(this.appConfig.getApplicationId());
             request.setRequestor(userAccount);
             request.setApplicationId(this.appConfig.getApplicationId());
@@ -1441,19 +1875,40 @@ public class UserManagementController
                 DEBUGGER.debug("AccountControlResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            UserAccount returnedAccount = UserManagementHelper.rebuildAccount(reqInfo, userAccount, userGuid, new ArrayList<String>(
+                    Arrays.asList(
+                            this.appConfig.getApplicationId(),
+                            this.appConfig.getApplicationName())));
+
+            if (DEBUG)
             {
-            	mView.addObject("userAccount", response.getUserAccount());
-            	mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRoleChangeSuccess);
-            	mView.setViewName(this.viewUserPage);
+                DEBUGGER.debug("UserAccount: {}", returnedAccount);
             }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+
+            switch (response.getRequestStatus())
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-            	mView.setViewName(this.appConfig.getErrorResponsePage());
+				case FAILURE:
+	            	mView.addObject("foundAccount", returnedAccount);
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.messageRoleChangeFailure);
+	            	mView.setViewName(this.viewUserPage);
+
+					break;
+				case SUCCESS:
+                    mView.addObject("foundAccount", returnedAccount);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRoleChangeSuccess);
+                    mView.setViewName(this.viewUserPage);
+
+                    break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+	            	mView.addObject("foundAccount", response.getUserAccount());
+	            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+	            	mView.setViewName(this.viewUserPage);
+
+					break;
             }
         }
         catch (final AccountControlException acx)
@@ -1544,46 +1999,70 @@ public class UserManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            // search accounts
-            AccountSearchResponse response = searchProcessor.searchAccounts(request);
+            AccountSearchRequest searchRequest = new AccountSearchRequest();
+            searchRequest.setApplicationId(this.appConfig.getApplicationId());
+            searchRequest.setApplicationName(this.appConfig.getApplicationName());
+            searchRequest.setHostInfo(reqInfo);
+            searchRequest.setSearchTerms(request.getSearchTerms());
+            searchRequest.setUserAccount(userAccount);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountSearchResponse: {}", response);
+                DEBUGGER.debug("AccountSearchRequest: {}", searchRequest);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            // search accounts
+            AccountSearchResponse searchResponse = searchProcessor.searchAccounts(searchRequest);
+
+            if (DEBUG)
             {
-                if ((response.getUserList() != null) && (response.getUserList().size() != 0))
-                {
-                    List<UserAccount> userList = response.getUserList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<UserAccount> {}", userList);
-                    }
-
-                    mView.addObject("userList", userList);
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", 1);
-                    mView.addObject(Constants.COMMAND, new AccountSearchRequest());
-                    mView.addObject("searchResults", userList);
-                }
-                else
-                {
-                	mView.addObject(Constants.COMMAND, new UserAccount());
-                	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                }
-
-                mView.setViewName(this.searchUsersPage);
+                DEBUGGER.debug("AccountSearchResponse: {}", searchResponse);
             }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+
+            switch (searchResponse.getRequestStatus())
             {
-            	mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-            	mView.setViewName(this.appConfig.getErrorResponsePage());
+				case FAILURE:
+					mView.addObject(Constants.ERROR_RESPONSE, this.messageSearchFailed);
+					mView.addObject(Constants.COMMAND, new UserAccount());
+					mView.setViewName(this.searchUsersPage);
+
+					break;
+				case SUCCESS:
+	                if ((searchResponse.getUserList() != null) && (searchResponse.getUserList().size() != 0))
+	                {
+	                    List<UserAccount> userList = searchResponse.getUserList();
+
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("List<UserAccount> {}", userList);
+	                    }
+
+	                    mView.addObject("userList", userList);
+	                    mView.addObject("pages", (int) Math.ceil(searchResponse.getEntryCount() * 1.0 / this.recordsPerPage));
+	                    mView.addObject("page", 1);
+	                    mView.addObject(Constants.COMMAND, new AccountSearchRequest());
+	                    mView.addObject("searchResults", userList);
+	                }
+	                else
+	                {
+	                	mView.addObject(Constants.ERROR_RESPONSE, this.messageNoAccountsFound);
+	                	mView.addObject(Constants.COMMAND, new UserAccount());
+	                	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+	                }
+
+	                mView.setViewName(this.searchUsersPage);
+
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+					break;
+				default:
+					mView.addObject(Constants.ERROR_RESPONSE, this.messageNoAccountsFound);
+					mView.addObject(Constants.COMMAND, new UserAccount());
+					mView.setViewName(this.searchUsersPage);
+
+					break;
             }
         }
         catch (final AccountSearchException asx)
@@ -1686,14 +2165,14 @@ public class UserManagementController
 	            }
 	
 	            UserAccount newUser = new UserAccount();
-	            newUser.setGuid(user.getGuid());
 	            newUser.setSurname(user.getSurname());
-	            newUser.setFailedCount(user.getFailedCount());
-	            newUser.setSuspended(user.isSuspended());
 	            newUser.setDisplayName(user.getGivenName() + " " + user.getSurname());
 	            newUser.setEmailAddr(user.getEmailAddr());
 	            newUser.setGivenName(user.getGivenName());
 	            newUser.setUsername(user.getUsername());
+	            newUser.setUserRole(user.getUserRole());
+	            newUser.setPagerNumber(user.getPagerNumber());
+	            newUser.setTelephoneNumber(user.getTelephoneNumber());
 	
 	            if (DEBUG)
 	            {
@@ -1720,95 +2199,113 @@ public class UserManagementController
 	            {
 	                DEBUGGER.debug("AccountControlResponse: {}", response);
 	            }
-	
-	            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-	            {
-	                // account created
-	                AccountControlRequest resetReq = new AccountControlRequest();
-	                resetReq.setHostInfo(reqInfo);
-	                resetReq.setUserAccount(newUser);
-	                resetReq.setApplicationId(this.appConfig.getApplicationName());
-	                resetReq.setRequestor(userAccount);
-	                resetReq.setApplicationId(this.appConfig.getApplicationId());
-	                resetReq.setApplicationName(this.appConfig.getApplicationName());
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AccountControlRequest: {}", resetReq);
-	                }
-	
-	                AccountControlResponse resetRes = processor.modifyUserPassword(resetReq);
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("AccountControlResponse: {}", resetRes);
-	                }
-	
-	                if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-	                {
-	                    // good, send email
-	                    UserAccount responseAccount = resetRes.getUserAccount();
-	
-	                    if (DEBUG)
-	                    {
-	                        DEBUGGER.debug("UserAccount: {}", responseAccount);
-	                    }
 
-	                    StringBuilder targetURL = new StringBuilder()
-	                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-	                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-	                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
-	
-	                    if (DEBUG)
-	                    {
-	                        DEBUGGER.debug("targetURL: {}", targetURL);
-	                    }
-	                        
-	                    try
-	                    {
-	                    	SimpleMailMessage emailMessage = new SimpleMailMessage();
-	                    	emailMessage.setTo(this.adminResetEmail.getTo());
-	                    	emailMessage.setSubject(this.adminResetEmail.getSubject());
-	                    	emailMessage.setFrom(this.appConfig.getEmailAddress());
-	                    	emailMessage.setText(String.format(this.adminResetEmail.getText(),
-	                                newUser.getGivenName(),
-	                                new Date(System.currentTimeMillis()),
-	                                reqInfo.getHostName(),
-	                                targetURL.toString(),
-	                                8, 128));
-	
-	                    	if (DEBUG)
-	                    	{
-	                    		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
-	                    	}
-	
-	                    	mailSender.send(emailMessage);
-	                    }
-	                    catch (final MailException mx)
-	                    {
-	                        ERROR_RECORDER.error(mx.getMessage(), mx);
-	
-	                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-	                    }
-	
-	                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAddUserSuccess);
-	
-	                    mView.setViewName(UserManagementController.ADD_USER_REDIRECT);
-	                }
-	                else
-	                {
-	                    // some failure occurred
+	            switch (response.getRequestStatus())
+	            {
+					case FAILURE:
+						mView.addObject(Constants.COMMAND, new UserAccount());
 	                	mView.addObject(Constants.ERROR_RESPONSE, this.messageAddUserFailed);
-	                	mView.setViewName(this.appConfig.getErrorResponsePage());
-	                }
-	            }
-	            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-	            {
-	            	mView.setViewName(this.appConfig.getUnauthorizedPage());
-	            }
-	            else
-	            {
-	            	mView.setViewName(this.appConfig.getErrorResponsePage());
+	                	mView.setViewName(this.addUserRedirect);
+
+						break;
+					case SUCCESS:
+						UserAccount builtAccount = response.getUserAccount();
+
+						if (DEBUG)
+						{
+							DEBUGGER.debug("UserAccount: {}", builtAccount);
+						}
+
+		                // account created
+		                AccountControlRequest resetReq = new AccountControlRequest();
+		                resetReq.setHostInfo(reqInfo);
+		                resetReq.setUserAccount(builtAccount);
+		                resetReq.setApplicationId(this.appConfig.getApplicationName());
+		                resetReq.setRequestor(userAccount);
+		                resetReq.setApplicationId(this.appConfig.getApplicationId());
+		                resetReq.setApplicationName(this.appConfig.getApplicationName());
+		
+		                if (DEBUG)
+		                {
+		                    DEBUGGER.debug("AccountControlRequest: {}", resetReq);
+		                }
+		
+		                AccountControlResponse resetRes = processor.modifyUserPassword(resetReq);
+		
+		                if (DEBUG)
+		                {
+		                    DEBUGGER.debug("AccountControlResponse: {}", resetRes);
+		                }
+		
+		                if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+		                {
+		                    // good, send email
+		                    UserAccount responseAccount = resetRes.getUserAccount();
+		
+		                    if (DEBUG)
+		                    {
+		                        DEBUGGER.debug("UserAccount: {}", responseAccount);
+		                    }
+
+		                    StringBuilder targetURL = new StringBuilder()
+		                        .append(hRequest.getScheme() + "://" + this.appConfig.getWebURL())
+		                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
+		
+		                    if (DEBUG)
+		                    {
+		                        DEBUGGER.debug("targetURL: {}", targetURL);
+		                    }
+		                        
+		                    try
+		                    {
+		                    	SimpleMailMessage emailMessage = new SimpleMailMessage();
+		                    	emailMessage.setTo(responseAccount.getEmailAddr());
+		                    	emailMessage.setSubject(this.adminResetEmail.getSubject());
+		                    	emailMessage.setFrom(this.appConfig.getEmailAddress());
+		                    	emailMessage.setText(String.format(this.adminResetEmail.getText(),
+		                                newUser.getGivenName(),
+		                                targetURL.toString(),
+		                                this.appConfig.getPasswordMinLength(),
+		                                this.appConfig.getPasswordMaxLength()));
+
+		                    	if (DEBUG)
+		                    	{
+		                    		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+		                    	}
+
+		                    	mailSender.send(emailMessage);
+		                    }
+		                    catch (final MailException mx)
+		                    {
+		                        ERROR_RECORDER.error(mx.getMessage(), mx);
+		
+		                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+		                    }
+		
+		                    mView.addObject(Constants.RESPONSE_MESSAGE, String.format(this.messageAddUserSuccess, newUser.getUsername()));
+
+		                    mView.setViewName(this.addUserRedirect);
+		                }
+		                else
+		                {
+		                    // some failure occurred
+		                	mView.addObject(Constants.COMMAND, new UserAccount());
+		                	mView.addObject(Constants.ERROR_RESPONSE, this.messageAddUserFailed);
+		                	mView.setViewName(this.appConfig.getErrorResponsePage());
+		                }
+
+						break;
+					case UNAUTHORIZED:
+						mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+						break;
+					default:
+	                    // some failure occurred
+						mView.addObject(Constants.COMMAND, new UserAccount());
+	                	mView.addObject(Constants.ERROR_RESPONSE, this.messageAddUserFailed);
+	                	mView.setViewName(this.addUserRedirect);
+
+						break;
 	            }
 	        }
 	        catch (final AccountControlException acx)

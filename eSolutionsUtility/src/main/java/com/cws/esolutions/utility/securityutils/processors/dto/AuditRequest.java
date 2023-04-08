@@ -25,6 +25,7 @@ package com.cws.esolutions.utility.securityutils.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.List;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +41,7 @@ public class AuditRequest implements Serializable
 {
 	private int startRow = 0;
     private AuditEntry auditEntry = null;
-    private RequestHostInfo hostInfo = null;
+    private List<String> hostInfo = null;
 
     private static final String CNAME = AuditRequest.class.getName();
     private static final long serialVersionUID = -2653808130602070325L;
@@ -48,7 +49,7 @@ public class AuditRequest implements Serializable
     private static final Logger DEBUGGER = LogManager.getLogger(UtilityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setHostInfo(final RequestHostInfo value)
+    public final void setHostInfo(final List<String> value)
     {
         final String methodName = AuditRequest.CNAME + "#setReqInfo(final RequestHostInfo value)";
 
@@ -87,7 +88,7 @@ public class AuditRequest implements Serializable
         this.startRow = value;
     }
 
-    public final RequestHostInfo getHostInfo()
+    public final List<String> getHostInfo()
     {
         final String methodName = AuditRequest.CNAME + "#getReqInfo()";
 

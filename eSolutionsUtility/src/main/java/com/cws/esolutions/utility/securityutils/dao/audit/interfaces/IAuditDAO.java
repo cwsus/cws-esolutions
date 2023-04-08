@@ -26,7 +26,6 @@ package com.cws.esolutions.utility.securityutils.dao.audit.interfaces;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -64,5 +63,5 @@ public interface IAuditDAO
      * @return A <code>List</code> of the associated audit data for the account 
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
-    List<Object> getAuditInterval(final String username, final int startRow, final DataSource dataSource) throws SQLException;
+    List<Object> getAuditInterval(final String username, final int startRow) throws SQLException;
 }

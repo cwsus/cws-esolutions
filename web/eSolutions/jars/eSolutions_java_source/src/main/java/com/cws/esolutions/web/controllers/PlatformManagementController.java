@@ -45,7 +45,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.web.validators.PlatformValidator;
@@ -438,7 +438,7 @@ public class PlatformManagementController
 
 					break;
 				default:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
                     mView.addObject(Constants.COMMAND, new Platform());
                     mView.setViewName(this.defaultPage);
 
@@ -581,7 +581,7 @@ public class PlatformManagementController
 
 					break;
 				default:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
                     mView.setViewName(this.addPlatformRedirect);
 
 					break;
@@ -714,7 +714,7 @@ public class PlatformManagementController
 				case UNAUTHORIZED:
 					break;
 				default:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
                     mView.setViewName(this.defaultPage);
 
 					break;
@@ -864,7 +864,7 @@ public class PlatformManagementController
 
 					break;
 				default:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
                     mView.setViewName(this.defaultPage);
 
 					break;
@@ -1016,7 +1016,7 @@ public class PlatformManagementController
 
 					break;
 				default:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
                     mView.setViewName(this.defaultPage);
 
 					break;
@@ -1226,7 +1226,7 @@ public class PlatformManagementController
 
 					break;
 				default:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoPlatformFound);
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
                     mView.addObject(Constants.COMMAND, new Platform());
                     mView.setViewName(this.defaultPage);
 
@@ -1377,7 +1377,7 @@ public class PlatformManagementController
 					break;
 				default:
 					// we dont know what happened tbh
-					mView.addObject(Constants.ERROR_MESSAGE, this.messagePlatformAddFailure);
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
 					mView.setViewName(this.addPlatformPage);
 
 					break;
@@ -1527,7 +1527,8 @@ public class PlatformManagementController
 					break;
 				default:
 					// we dont know what happened tbh
-					mView.addObject(Constants.ERROR_MESSAGE, this.messagePlatformAddFailure);
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+					mView.addObject(Constants.COMMAND, new Platform());
 					mView.setViewName(this.addPlatformPage);
 
 					break;

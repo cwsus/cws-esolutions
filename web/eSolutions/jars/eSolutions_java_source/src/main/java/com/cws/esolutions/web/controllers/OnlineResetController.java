@@ -56,6 +56,7 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
@@ -71,7 +72,6 @@ import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -608,7 +608,6 @@ public class OnlineResetController
                 }
                 else
                 {
-                	System.out.println(resetRes.getUserAccount());
                 	mView.addObject("guid", resetRes.getUserAccount().getGuid());
                 	mView.addObject("username", resetRes.getUserAccount().getUsername());
                 	mView.addObject(Constants.COMMAND, new AccountChangeData());

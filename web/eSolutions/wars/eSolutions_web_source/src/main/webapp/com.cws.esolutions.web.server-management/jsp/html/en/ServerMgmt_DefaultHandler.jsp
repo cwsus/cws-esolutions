@@ -80,10 +80,10 @@
 
         <h1><spring:message code="server.mgmt.lookup.host" /></h1>
         <p>
-            <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/search" method="post">
+            <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/server-management/search" method="post">
                 <label id="txtAppName"><spring:message code="theme.search.terms" /></label>
-                <form:input path="name" />
-                <form:errors path="name" cssClass="error" />
+                <form:input path="operHostName" />
+                <form:errors path="operHostName" cssClass="error" />
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

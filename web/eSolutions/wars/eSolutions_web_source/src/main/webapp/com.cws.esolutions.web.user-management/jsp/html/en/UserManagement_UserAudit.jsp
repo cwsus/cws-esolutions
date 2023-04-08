@@ -33,86 +33,102 @@
  */
 --%>
 
-<div id="sidebar">
-    <h1><spring:message code="user.mgmt.header" /></h1>
-    <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.search.banner' />"><spring:message code="theme.search.banner" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/user-management/add-user" title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userAccount.guid}" title="<spring:message code='theme.previous.page' />"><spring:message code='theme.previous.page' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/user-management/services/account/${userAccount.guid}" title="<spring:message code='user.mgmt.user.services' />"><spring:message code='user.mgmt.user.services' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/user-management/lock/account/${userAccount.guid}" title="<spring:message code='user.mgmt.lock.account' />"><spring:message code='user.mgmt.lock.account' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/user-management/suspend/account/${userAccount.guid}" title="<spring:message code='user.mgmt.suspend.account' />"><spring:message code='user.mgmt.suspend.account' /></a></li>
-    </ul>
-</div>
-
-<div id="main">
-    <h1><spring:message code="user.mgmt.audit.trail" arguments="${userAccount.username}" /></h1>
-
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
-
-    <p>
-        <c:if test="${not empty auditEntries}">
-            <table id="viewAuditTrail">
-                <tr>
-                    <td><label><spring:message code="user.mgmt.audit.timestamp" /></label></td>
-                    <td><label><spring:message code="user.mgmt.audit.type" /></label></td>
-                    <td><label><spring:message code="user.mgmt.audit.application" /></label></td>
-                    <td><label><spring:message code="user.mgmt.audit.hostinfo" /></label></td>
-                </tr>
-                <c:forEach var="entry" items="${auditEntries}">
-                    <tr>
-                        <td>${entry.auditDate}</td>
-                        <td>${entry.auditType}</td>
-                        <td>${entry.applicationName}</td>
-                        <td>${entry.hostInfo.hostName} / ${entry.hostInfo.hostAddress}</td>
-                    </tr>
-                </c:forEach>
-            </table>
-
-            <c:if test="${pages gt 1}">
-                <br />
-                <hr />
-                <table>
-                    <tr>
-                        <c:forEach begin="1" end="${pages}" var="i">
-                            <c:set var="pageCount" value="${i}" />
-
-                            <c:choose>
-                                <c:when test="${page eq i}">
-                                    <td>${i}</td>
-                                    <c:if test="${pageCount gt 10 and i eq 10}">
-                                        <td><a href="${pageContext.request.contextPath}/user-management/audit/account/${userAccount.guid}/page/10" title="Next">Next</a></td>
-                                    </c:if>
-                                </c:when>
-                                <c:otherwise>
-                                    <td>
-                                        <a href="${pageContext.request.contextPath}/user-management/audit/account/${userAccount.guid}/page/${i}" title="{i}">${i}</a>
-                                    </td>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                    </tr>
-                </table>
-            </c:if>
+<div id="homecontent">
+    <div class="wrapper">
+        <div id="error"></div>
+        <div id="validationError" style="color: #FF0000"></div>
+    
+        <c:if test="${not empty fn:trim(messageResponse)}">
+            <p id="info">${messageResponse}</p>
         </c:if>
-    </p>
+        <c:if test="${not empty fn:trim(errorResponse)}">
+            <p id="error">${errorResponse}</p>
+        </c:if>
+        <c:if test="${not empty fn:trim(responseMessage)}">
+            <p id="info"><spring:message code="${responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(errorMessage)}">
+            <p id="error"><spring:message code="${errorMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.responseMessage)}">
+            <p id="info"><spring:message code="${param.responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.errorMessage)}">
+            <p id="error"><spring:message code="${param.errorMessage}" /></p>
+        </c:if>
+
+        <h1><spring:message code="user.mgmt.audit.trail" arguments="${foundUser.username}" /></h1>
+        <c:choose>
+            <c:when test="${not empty auditList}">
+	            <table>
+	                <thead>
+		                <tr>
+                            <th><label><spring:message code="user.mgmt.audit.timestamp" /></label></th>
+                            <th><label><spring:message code="user.mgmt.audit.role" /></label></th>
+                            <th><label><spring:message code="user.mgmt.audit.authorized" /></label></th>
+                            <th><label><spring:message code="user.mgmt.audit.type" /></label></th>
+                            <th><label><spring:message code="user.mgmt.audit.application" /></label></th>
+                            <th><label><spring:message code="user.mgmt.audit.hostinfo" /></label></th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                    <c:forEach var="entry" items="${auditList}">
+        	                <tr>
+                                <td>${entry.auditDate}</td>
+	                            <td>${entry.userRole}</td>
+	                            <td>${entry.authorized}</td>
+	                            <td>${entry.auditType}</td>
+	                            <td>${entry.applicationName}</td>
+	                            <td>${entry.hostInfo.get(1)}</td>
+                            </tr>
+   		                </c:forEach>
+	                </tbody>
+	            </table>
+                <br class="clear" />
+                <br class="clear" />
+	            <c:if test="${pages gt 1}">
+	                <br />
+	                <hr />
+	                <table>
+	                    <tr>
+	                        <c:forEach begin="1" end="${pages}" var="i">
+	                            <c:set var="pageCount" value="${i}" />
+	
+	                            <c:choose>
+	                                <c:when test="${page eq i}">
+	                                    <td>${i}</td>
+	                                    <c:if test="${pageCount gt 10 and i eq 10}">
+	                                        <td><a href="${pageContext.request.contextPath}/user-management/audit/account/${userAccount.guid}/page/10" title="Next">Next</a></td>
+	                                    </c:if>
+	                                </c:when>
+	                                <c:otherwise>
+	                                    <td>
+	                                        <a href="${pageContext.request.contextPath}/user-management/audit/account/${userAccount.guid}/page/${i}" title="{i}">${i}</a>
+	                                    </td>
+	                                </c:otherwise>
+	                            </c:choose>
+	                        </c:forEach>
+	                    </tr>
+	                </table>
+	            </c:if>
+	        </c:when>
+	        <c:otherwise>
+                <spring:message code="user.mgmt.no.audit.found" />
+            </c:otherwise>
+        </c:choose>
+    </div>
 </div>
 
-<div id="rightbar">&nbsp;</div>
+<div id="container">
+    <div class="wrapper">
+        <div id="content">
+		    <h1><spring:message code="user.mgmt.header" /></h1>
+		    <ul>
+		        <li><a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.search.banner' />"><spring:message code="theme.search.banner" /></a></li>
+		        <li><a href="${pageContext.request.contextPath}/ui/user-management/add-user" title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a></li>
+		        <li><a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userAccount.guid}" title="<spring:message code='theme.previous.page' />"><spring:message code='theme.previous.page' /></a></li>
+		    </ul>
+        </div>
+        <br class="clear" />
+    </div>
+</div>

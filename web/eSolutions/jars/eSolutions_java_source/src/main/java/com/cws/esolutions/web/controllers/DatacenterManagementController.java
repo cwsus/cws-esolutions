@@ -45,7 +45,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.web.validators.DatacenterValidator;
@@ -484,7 +484,9 @@ public class DatacenterManagementController
 
 					break;
 				default:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+                    mView.addObject(Constants.COMMAND, new Datacenter());
+                    mView.setViewName(this.addDatacenterPage);
 
 					break;
             }
@@ -639,7 +641,7 @@ public class DatacenterManagementController
 
 					break;
 				default:
-                    model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
                     model.addAttribute(Constants.COMMAND, new Datacenter());
                     mView.setViewName(this.addDatacenterPage);
 
@@ -790,7 +792,9 @@ public class DatacenterManagementController
 
 						break;
 					default:
-						mView.setViewName(this.appConfig.getErrorResponsePage());
+						mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
+                        mView.addObject(Constants.COMMAND, new Datacenter());
+                        mView.setViewName(this.addDatacenterPage);
 
 						break;
                 }

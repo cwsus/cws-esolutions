@@ -53,6 +53,8 @@
         	<ref bean="isTestSystem" />
         </property>
         <property name="fileEncoding" value="UTF-8" />
+        <property name="passwordMinLength" value="8" />
+        <property name="passwordMaxLength" value="128" />
         <property name="applicationName" value="eSolutions" /> <!-- application name -->
         <property name="applicationId" value="6236B840-88B0-4230-BCBC-8EC33EE837D9" />
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->

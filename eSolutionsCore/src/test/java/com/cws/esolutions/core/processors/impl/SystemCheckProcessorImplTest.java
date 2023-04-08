@@ -33,8 +33,8 @@ import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;

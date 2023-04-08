@@ -28,13 +28,18 @@
         <property name="validator">
             <ref bean="accountValidator" />
         </property>
+        <property name="mailSender">
+            <ref bean="appMailSender" />
+        </property>
         <property name="recordsPerPage" value="20" />
         <property name="adminResetEmail" ref="adminResetEmail" />
         <property name="resetURL" value="/ui/olr/forgot-password/" />
+        <property name="addUserRedirect" value="redirect:/ui/user-management/add-user" />
+        <property name="viewUserRedirect" value="redirect:/ui/user-management/view/user/" />
         <property name="viewUserPage" value=".user-management/jsp/html/en/UserManagement_ViewUser" />
         <property name="viewAuditPage" value=".user-management/jsp/html/en/UserManagement_UserAudit" />
         <property name="createUserPage" value=".user-management/jsp/html/en/UserManagement_CreateUser" />
-        <property name="searchUsersPage" value=".user-management/jsp/html/en/UserManagement_UserSearch" />
+        <property name="searchUsersPage" value=".user-management/jsp/html/en/UserManagement_DefaultHandler" />
         <property name="messageAddUserSuccess" value="user.mgmt.add.user.success" />
         <property name="messageAddUserFailed" value="user.mgmt.add.user.failed" />
         <property name="messageRoleChangeSuccess" value="user.mgmt.role.change.success" />
@@ -43,5 +48,9 @@
         <property name="messageAccountUnlockSuccess" value="user.mgmt.account.unlock.success" />
         <property name="messageAccountUnsuspendSuccess" value="user.mgmt.account.unsuspend.success" />
         <property name="messageAccountSuspendSuccess" value="user.mgmt.account.suspend.success" />
+        <property name="messageNoAccountsFound" value="user.mgmt.no.accounts" />
+        <property name="messageAccountResetFailure" value="user.mgmt.reset.failed" />
+        <property name="messageRoleChangeFailure" value="user.mgmt.rolechange.failed" />
+        <property name="messageNoAuditHistoryFound" value="user.mgmt.no.audit.found" />
     </bean>
 </beans>

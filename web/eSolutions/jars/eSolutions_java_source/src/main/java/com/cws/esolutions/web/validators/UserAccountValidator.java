@@ -162,11 +162,10 @@ public class UserAccountValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "role", this.messageUserRoleRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userRole", this.messageUserRoleRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "surname", this.messageUserSurnameRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", this.messageUsernameRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddr", this.messageEmailAddrRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "givenName", this.messageGivenNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "suspended", this.messageSuspensionFlagRequired);
     }
 }

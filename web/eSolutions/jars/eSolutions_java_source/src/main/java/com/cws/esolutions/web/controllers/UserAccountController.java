@@ -50,7 +50,7 @@ import com.cws.esolutions.web.validators.PasswordValidator;
 import com.cws.esolutions.web.validators.TelephoneValidator;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.validators.SecurityResponseValidator;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
@@ -63,7 +63,6 @@ import com.cws.esolutions.security.processors.impl.AccountChangeProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 /**
  * @author cws-khuntly
@@ -373,7 +372,6 @@ public class UserAccountController
         }
 
         ModelAndView mView = new ModelAndView();
-        AccountChangeData changeReq = new AccountChangeData();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -422,38 +420,8 @@ public class UserAccountController
             }
         }
 
-        if (Objects.isNull(userAccount))
-        {
-        	if (!(Objects.isNull(hSession)))
-        	{
-        		hSession.invalidate();
-        	}
-
-        	ModelAndView redirectView = new ModelAndView();
-        	redirectView.setView(new RedirectView(this.appConfig.getLogonRedirect()));
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("ModelAndView: {}", redirectView);
-        	}
-
-            return redirectView;
-        }
-
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-        {
-           mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-        }
-
-        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
-
         mView.addObject(Constants.USER_ACCOUNT, userAccount);
-        mView.addObject(Constants.COMMAND, changeReq);
+        mView.addObject(Constants.COMMAND, new AccountChangeData());
         mView.setViewName(this.changePasswordPage);
 
         if (DEBUG)

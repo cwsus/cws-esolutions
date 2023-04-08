@@ -45,7 +45,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.enums.CoreServicesStatus;

@@ -47,6 +47,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
@@ -57,7 +58,6 @@ import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.impl.ApplicationManagementProcessorImpl;
@@ -515,7 +515,7 @@ public class ApplicationManagementController
 
 					break;
 				default:
-	            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
 	            	mView.addObject(Constants.COMMAND, new Application());
 	            	mView.setViewName(this.defaultPage);
 
@@ -663,7 +663,7 @@ public class ApplicationManagementController
 	
 					break;
 				default:
-	                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
 	                mView.setViewName(this.addApplicationRedirect);
 	
 					break;
@@ -961,6 +961,7 @@ public class ApplicationManagementController
 
 					break;
 				default:
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
 					mView.setViewName(this.addPlatformRedirect);
 					mView.addObject(Constants.COMMAND, new Application());
 
@@ -1103,6 +1104,7 @@ public class ApplicationManagementController
 
 					break;
 				default:
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
 					mView.setViewName(this.defaultPage);
 
 					break;
@@ -1240,7 +1242,7 @@ public class ApplicationManagementController
 
 					break;
 				default:
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+					mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
                     mView.addObject(Constants.COMMAND, new Application());
                     mView.setViewName(this.defaultPage);
 

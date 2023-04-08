@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.utility.securityutils.processors.dto;
+package com.cws.esolutions.security.processors.dto;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.audit.dto

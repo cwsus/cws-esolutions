@@ -33,6 +33,7 @@ import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
 import com.cws.esolutions.utility.securityutils.dao.audit.impl.AuditDAOImpl;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditResponse;
 import com.cws.esolutions.utility.securityutils.dao.audit.interfaces.IAuditDAO;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
@@ -60,4 +61,12 @@ public interface IAuditProcessor
      * @throws AuditServiceException {@link com.cws.esolutions.security.processors.exception.AuditServiceException} if an exception occurs during processing
      */
     void auditRequest(final AuditRequest request) throws AuditServiceException;
+
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws AuditServiceException
+     */
+    AuditResponse getAuditEntries(final AuditRequest request) throws AuditServiceException;
 }

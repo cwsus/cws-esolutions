@@ -55,10 +55,12 @@ public class ApplicationServiceBean
 	@Autowired private String applicationName = null;
 	@Autowired private String unavailablePage = null;
 	@Autowired private String messageOlrSetup = null;
+	@Autowired private String passwordMinLength = "8";
 	@Autowired private String unauthorizedPage = null;
 	@Autowired private String contactAdminsPage = null;
 	@Autowired private String errorResponsePage = null;
 	@Autowired private String searchRequestPage = null;
+	@Autowired private String passwordMaxLength = "128";
 	@Autowired private String themeMessageSource = null;
 	@Autowired private String requestCompletePage = null;
 	@Autowired private String messageAccountLocked = null;
@@ -537,6 +539,32 @@ public class ApplicationServiceBean
         this.webURL = value;
     }
 
+    public final void setPasswordMinLength(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setPasswordMinLength(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.passwordMinLength = value;
+    }
+
+    public final void setPasswordMaxLength(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setPasswordMaxLength(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.passwordMaxLength = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -1004,6 +1032,32 @@ public class ApplicationServiceBean
 
         return this.webURL;
 	}
+
+    public final String getPasswordMinLength()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getPasswordMinLength()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.passwordMinLength);
+        }
+
+        return this.passwordMinLength;
+    }
+
+    public final String getPasswordMaxLength()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getPasswordMaxLength()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.passwordMaxLength);
+        }
+
+        return this.passwordMaxLength;
+    }
 
     @Override
     public final String toString()

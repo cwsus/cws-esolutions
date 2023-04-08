@@ -28,10 +28,10 @@ package com.cws.esolutions.core.processors.impl;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementResponse;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.exception.ApplicationEnablementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProcessor;
 /**

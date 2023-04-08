@@ -40,11 +40,11 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.CertificateRequest;
 import com.cws.esolutions.security.processors.dto.CertificateResponse;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.exception.CertificateRequestException;
 import com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor;
 import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementException;
@@ -188,9 +188,19 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		                DEBUGGER.debug("AuditEntry: {}", auditEntry);
 		            }
 		
-		            AuditRequest auditRequest = new AuditRequest();
-		            auditRequest.setAuditEntry(auditEntry);
-		            auditRequest.setHostInfo(reqInfo);
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 		
 		            if (DEBUG)
 		            {
@@ -379,9 +389,19 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		                DEBUGGER.debug("AuditEntry: {}", auditEntry);
 		            }
 		
-		            AuditRequest auditRequest = new AuditRequest();
-		            auditRequest.setAuditEntry(auditEntry);
-		            auditRequest.setHostInfo(reqInfo);
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 		
 		            if (DEBUG)
 		            {
@@ -525,9 +545,19 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		                DEBUGGER.debug("AuditEntry: {}", auditEntry);
 		            }
 		
-		            AuditRequest auditRequest = new AuditRequest();
-		            auditRequest.setAuditEntry(auditEntry);
-		            auditRequest.setHostInfo(reqInfo);
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
 		
 		            if (DEBUG)
 		            {

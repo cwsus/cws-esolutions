@@ -34,6 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -45,6 +46,7 @@ public class AccountControlResponse implements Serializable
     private String resetId = null;
     private UserAccount userAccount = null;
     private List<UserAccount> userList = null;
+    private List<AuditEntry> auditList = null;
     private SecurityRequestStatus requestStatus = null;
 
     private static final long serialVersionUID = 2909205394410802509L;
@@ -118,6 +120,19 @@ public class AccountControlResponse implements Serializable
         this.resetId = value;
     }
 
+    public final void setAuditList(final List<AuditEntry> value)
+    {
+        final String methodName = AccountControlResponse.CNAME + "#setAuditList(final List<AuditEntry> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.auditList = value;
+    }
+
     public final SecurityRequestStatus getRequestStatus()
     {
         final String methodName = AccountControlResponse.CNAME + "#getMgmtType()";
@@ -181,6 +196,19 @@ public class AccountControlResponse implements Serializable
         }
 
         return this.resetId;
+    }
+
+    public final List<AuditEntry> getAuditList()
+    {
+        final String methodName = AccountControlResponse.CNAME + "#getAuditList()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.auditList);
+        }
+
+        return this.auditList;
     }
 
     @Override

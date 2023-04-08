@@ -119,18 +119,6 @@ public class SQLUserManagerTest
         }
     }
 
-    @Test public void searchUsers()
-    {
-        try
-        {
-            Assertions.assertThat(manager.searchUsers("junit-test")).isNotEmpty();
-        }
-        catch (final UserManagementException umx)
-        {
-            Assertions.fail(umx.getMessage());
-        }
-    }
-
     @Test public void loadUserAccount()
     {
         try

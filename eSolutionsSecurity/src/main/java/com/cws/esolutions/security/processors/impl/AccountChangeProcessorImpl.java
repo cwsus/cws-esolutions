@@ -26,6 +26,7 @@ package com.cws.esolutions.security.processors.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Calendar;
@@ -43,13 +44,13 @@ import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
-import com.cws.esolutions.utility.securityutils.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
@@ -152,10 +153,20 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     {
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
-    
+
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -270,9 +281,19 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -456,9 +477,19 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 	                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
 	                    }
     
-	                    AuditRequest auditRequest = new AuditRequest();
-	                    auditRequest.setAuditEntry(auditEntry);
-	                    auditRequest.setHostInfo(reqInfo);
+	                    List<String> auditHostInfo = new ArrayList<String>(
+	                    		Arrays.asList(
+	                    				reqInfo.getHostAddress(),
+	                    				reqInfo.getHostName()));
+
+	                    if (DEBUG)
+	                    {
+	                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+	                    }
+
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(auditHostInfo);
     
 	                    if (DEBUG)
 	                    {
@@ -629,9 +660,19 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
@@ -761,9 +802,19 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
     
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
                     AuditRequest auditRequest = new AuditRequest();
                     auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(reqInfo);
+                    auditRequest.setHostInfo(auditHostInfo);
     
                     if (DEBUG)
                     {
