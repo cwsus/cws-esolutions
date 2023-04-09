@@ -945,7 +945,7 @@ public class UserManagementController
     @RequestMapping(value = "/lock/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView lockUserAccount(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#suspendUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
+        final String methodName = UserManagementController.CNAME + "#lockUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {

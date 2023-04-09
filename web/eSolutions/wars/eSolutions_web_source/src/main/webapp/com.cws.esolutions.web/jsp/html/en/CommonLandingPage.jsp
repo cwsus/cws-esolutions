@@ -61,32 +61,7 @@
 <div id="container">
 	<div class="wrapper">
 		<div id="content">
-			<h2><spring:message code="svc.messaging.list.messages" /></h2>
-			<p>
-		        <c:choose>
-		            <c:when test="${not empty messageList}">
-		                <c:forEach var="message" items="${messageList}">
-		                    <div id="svcmessage">
-		                        <h3>${message.messageTitle}</h3>
-		                        <div class="feature">
-		                            ${message.messageText}
-		                        </div>
-	
-		                        <p class="post-footer align-right">
-		                            <spring:message code="svc.messaging.system.message.author" />: <a href="mailto:${message.messageAuthor.emailAddr}?subject=${message.messageId}" title="<spring:message code='svc.messaging.system.message.author' />">${message.messageAuthor.username}</a><br />
-		                            <spring:message code="svc.messaging.system.message.submit.date" /><span class="date"><fmt:formatDate value="${message.submitDate}" pattern="${dateFormat}" /></span><br />
-		                            <c:if test="${not empty fn:trim(message.expiryDate)}">
-		                                <spring:message code="svc.messaging.system.message.expiry.date" /><span class="date"><fmt:formatDate value="${message.expiryDate}" pattern="${dateFormat}" /></span>
-		                            </c:if>
-		                        </p>
-		                    </div>
-		                </c:forEach>
-		            </c:when>
-		            <c:otherwise>
-		                <spring:message code="svc.messaging.no.system.messages" />
-		            </c:otherwise>
-		        </c:choose>
-			</p>
+		    <br class="clear" />
 		</div>
 		<br class="clear" />
 	</div>

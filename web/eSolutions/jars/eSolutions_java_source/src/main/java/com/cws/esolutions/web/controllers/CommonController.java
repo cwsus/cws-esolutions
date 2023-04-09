@@ -50,11 +50,6 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.WebMessageValidator;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
-import com.cws.esolutions.core.processors.dto.ServiceMessagingRequest;
-import com.cws.esolutions.core.processors.dto.ServiceMessagingResponse;
-import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
-import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -143,7 +138,6 @@ public class CommonController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServiceMessagingProcessor processor = (IServiceMessagingProcessor) new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -186,33 +180,6 @@ public class CommonController
                 DEBUGGER.debug("Request Parameter: {}; Value: {}", element, value);
             }
         }
-
-        try
-        {
-            ServiceMessagingResponse response = processor.showAlertMessages(new ServiceMessagingRequest());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ServiceMessagingResponse: {}", response);
-            }
-
-            switch (response.getRequestStatus())
-            {
-				case EXCEPTION:
-					break;
-				case FAILURE:
-					break;
-				case SUCCESS:
-					mView.addObject("alertMessages", response.getSvcMessages());
-
-					break;
-				case UNAUTHORIZED:
-					break;
-				default:
-					break;
-            }
-        }
-        catch (final MessagingServiceException msx) {}
 
         mView.setViewName(this.homePage);
 

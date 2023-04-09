@@ -132,8 +132,6 @@
                                 <spring:message code='theme.navbar.platform-mgmt' /></a></li>
                             <li><a href="${pageContext.request.contextPath}/ui/server-management/default" title="<spring:message code='theme.navbar.server-mgmt' />">
                                 <spring:message code='theme.navbar.server-mgmt' /></a></li>
-							<li><a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="<spring:message code='theme.navbar.messaging' />">
-                                <spring:message code='theme.navbar.messaging' /></a></li>
 	                        <c:if test="${sessionScope.userAccount.userRole eq SecurityUserRole.USER_ADMIN or sessionScope.userAccount.userRole eq SecurityUserRole.ADMIN or sessionScope.userAccount.userRole eq SecurityUserRole.SITE_ADMIN}">
 		                        <li class="last">
 	                            	<a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">

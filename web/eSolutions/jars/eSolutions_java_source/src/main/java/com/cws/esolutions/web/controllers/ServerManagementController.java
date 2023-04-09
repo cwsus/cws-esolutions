@@ -727,10 +727,6 @@ public class ServerManagementController
 
             switch(response.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
 					mView.addObject(Constants.ERROR_MESSAGE, this.messageNoServersFound);
 					mView.addObject(Constants.COMMAND, new Server());
@@ -973,36 +969,32 @@ public class ServerManagementController
 
             switch (dcResponse.getRequestStatus())
             {
-			case EXCEPTION:
-				mView.setViewName(this.appConfig.getErrorResponsePage());
-
-				break;
-			case FAILURE:
-				mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-				mView.setViewName(this.addServerPage);
-
-				break;
-			case SUCCESS:
-                List<Datacenter> datacenters = dcResponse.getDatacenterList();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<Datacenter>: {}", datacenters);
-                }
-
-                mView.addObject("datacenters", datacenters);
-
-				break;
-			case UNAUTHORIZED:
-				mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-				break;
-			default:
-                // redirect to add datacenter
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(this.addDatacenterRedirect);
-
-				break;
+				case FAILURE:
+					mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+					mView.setViewName(this.addServerPage);
+	
+					break;
+				case SUCCESS:
+	                List<Datacenter> datacenters = dcResponse.getDatacenterList();
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("List<Datacenter>: {}", datacenters);
+	                }
+	
+	                mView.addObject("datacenters", datacenters);
+	
+					break;
+				case UNAUTHORIZED:
+					mView.setViewName(this.appConfig.getUnauthorizedPage());
+	
+					break;
+				default:
+	                // redirect to add datacenter
+	                mView = new ModelAndView(new RedirectView());
+	                mView.setViewName(this.addDatacenterRedirect);
+	
+					break;
             }
         }
         catch (final DatacenterManagementException dmx)
@@ -1147,10 +1139,6 @@ public class ServerManagementController
 
             switch (dcResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
 					mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 					mView.addObject(Constants.COMMAND, new Server());
@@ -1218,11 +1206,6 @@ public class ServerManagementController
 
 		                    switch (dmgrResponse.getRequestStatus())
 		                    {
-								case EXCEPTION:
-									mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-									mView.setViewName(this.addServerPage);
-	
-									break;
 								case FAILURE:
 			                        // no dmgr information found for the request
 			                        mView.addObject(Constants.ERROR_RESPONSE, this.messageNoDmgrsFound);

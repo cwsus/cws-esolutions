@@ -446,10 +446,6 @@ public class DatacenterManagementController
 
             switch (mgmtResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                     mView.addObject(Constants.COMMAND, new Datacenter());
@@ -609,10 +605,6 @@ public class DatacenterManagementController
 
             switch (mgmtResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
 					mView.setViewName(this.appConfig.getErrorResponsePage());
 
@@ -771,10 +763,6 @@ public class DatacenterManagementController
 
                 switch (mgmtResponse.getRequestStatus())
                 {
-					case EXCEPTION:
-						mView.setViewName(this.appConfig.getErrorResponsePage());
-
-						break;
 					case FAILURE:
                         mView.addObject(Constants.ERROR_RESPONSE, this.messageDatacenterAddFailure);
                         mView.addObject(Constants.COMMAND, new Datacenter());

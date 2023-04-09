@@ -491,10 +491,6 @@ public class ApplicationManagementController
 
             switch (appResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
 	            	mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
 	            	mView.addObject(Constants.COMMAND, new Application());
@@ -629,10 +625,6 @@ public class ApplicationManagementController
 
             switch (appResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-	
-					break;
 				case FAILURE:
 	                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
 	                mView.setViewName(this.addApplicationRedirect);
@@ -914,10 +906,6 @@ public class ApplicationManagementController
 
             switch (platformResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
 					mView.setViewName(this.addPlatformRedirect);
 					mView.addObject(Constants.COMMAND, new Application());
@@ -1086,10 +1074,6 @@ public class ApplicationManagementController
 
             switch (appRes.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
 					mView.setViewName(this.defaultPage);
 
@@ -1219,10 +1203,6 @@ public class ApplicationManagementController
 
             switch (appResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                     mView.addObject(Constants.COMMAND, new Application());

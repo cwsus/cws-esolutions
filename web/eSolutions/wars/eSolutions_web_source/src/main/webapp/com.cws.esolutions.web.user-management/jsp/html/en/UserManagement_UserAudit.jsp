@@ -57,7 +57,7 @@
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
-        <h1><spring:message code="user.mgmt.audit.trail" arguments="${foundUser.username}" /></h1>
+        <h1><spring:message code="user.mgmt.audit.trail" arguments="${foundAccount.username}" /></h1>
         <c:choose>
             <c:when test="${not empty auditList}">
 	            <table>
@@ -98,12 +98,12 @@
 	                                <c:when test="${page eq i}">
 	                                    <td>${i}</td>
 	                                    <c:if test="${pageCount gt 10 and i eq 10}">
-	                                        <td><a href="${pageContext.request.contextPath}/user-management/audit/account/${userAccount.guid}/page/10" title="Next">Next</a></td>
+	                                        <td><a href="${pageContext.request.contextPath}/user-management/audit/account/${foundAccount.guid}/page/10" title="Next">Next</a></td>
 	                                    </c:if>
 	                                </c:when>
 	                                <c:otherwise>
 	                                    <td>
-	                                        <a href="${pageContext.request.contextPath}/user-management/audit/account/${userAccount.guid}/page/${i}" title="{i}">${i}</a>
+	                                        <a href="${pageContext.request.contextPath}/user-management/audit/account/${foundAccount.guid}/page/${i}" title="{i}">${i}</a>
 	                                    </td>
 	                                </c:otherwise>
 	                            </c:choose>
@@ -126,7 +126,7 @@
 		    <ul>
 		        <li><a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.search.banner' />"><spring:message code="theme.search.banner" /></a></li>
 		        <li><a href="${pageContext.request.contextPath}/ui/user-management/add-user" title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a></li>
-		        <li><a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userAccount.guid}" title="<spring:message code='theme.previous.page' />"><spring:message code='theme.previous.page' /></a></li>
+		        <li><a href="${pageContext.request.contextPath}/ui/user-management/view/account/${foundAccount.guid}" title="<spring:message code='theme.previous.page' />"><spring:message code='theme.previous.page' /></a></li>
 		    </ul>
         </div>
         <br class="clear" />

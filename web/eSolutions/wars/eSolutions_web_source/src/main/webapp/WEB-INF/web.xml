@@ -65,12 +65,6 @@
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
-    <filter id="ResponseTimeFilter">
-        <description>Response Timing Filter</description>
-        <display-name>ResponseTimeFilter</display-name>
-        <filter-name>ResponseTimeFilter</filter-name>
-        <filter-class>com.cws.esolutions.core.filters.ResponseTimeFilter</filter-class>
-    </filter>
     <filter id="SessionFixationFilter">
         <description>Session Fixation Filter</description>
         <display-name>SessionFixationFilter</display-name>
@@ -110,6 +104,12 @@
             <param-name>filter-config</param-name>
             <param-value>eSolutionsCore/filters/ApplicationEnablementFilter</param-value>
         </init-param>
+    </filter>
+    <filter id="ResponseTimeFilter">
+        <description>Response Timing Filter</description>
+        <display-name>ResponseTimeFilter</display-name>
+        <filter-name>ResponseTimeFilter</filter-name>
+        <filter-class>com.cws.esolutions.core.filters.ResponseTimeFilter</filter-class>
     </filter>
     <filter id="SpringEncodingFilter">
         <description>Spring Encoding Filter</description>

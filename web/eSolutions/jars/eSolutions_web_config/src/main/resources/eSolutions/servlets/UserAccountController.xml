@@ -55,5 +55,9 @@
         <property name="messageKeyGenerationSuccess" value="user.account.update.keys.success" />
         <property name="messageContactChangeSuccess" value="user.account.update.contact.success" />
         <property name="messageKeyGenerationFailure" value="user.account.update.keys.failure" />
+        <property name="messageContactChangeFailure" value="user.account.update.contact.failure" />
+        <property name="messageEmailChangeFailure" value="user.account.email.change.failure" />
+        <property name="messageSecurityChangeFailure" value="user.account.update.security.failure" />
+        <property name="messagePasswordChangeFailure" value="user.account.password.change.failure" />
     </bean>
 </beans>

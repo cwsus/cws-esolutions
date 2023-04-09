@@ -48,9 +48,9 @@
                 <value>caspersbox.com</value>
             </list>
         </property>
+        <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="recordsPerPage" value="20" />
         <property name="addDatacenterRedirect" value="redirect:/ui/datacenter-management/add-datacenter" />
-        <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="addServerPage" value=".server-management/jsp/html/en/ServerMgmt_AddServer" />
         <property name="viewServerPage" value=".server-management/jsp/html/en/ServerMgmt_ViewServer" />
         <property name="defaultPage" value=".server-management/jsp/html/en/ServerMgmt_DefaultHandler" />

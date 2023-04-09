@@ -32,7 +32,6 @@
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 --%>
-<%@page import="com.cws.esolutions.security.enums.SecurityUserRole" %>
 
 <script>
 <!--
@@ -50,7 +49,7 @@
     {
         var newRole = selectable.options[selectable.selectedIndex].text;
 
-        window.location.href = '${pageContext.request.contextPath}/ui/user-management/change-role/account/${userAccount.guid}/role/' + newRole;
+        window.location.href = '${pageContext.request.contextPath}/ui/user-management/change-role/account/${foundAccount.guid}/role/' + newRole;
     }
     //-->
 </script>
@@ -93,7 +92,7 @@
             </tr>
             <tr>
                 <td><label><spring:message code="user.mgmt.user.role" /></label></td>
-                <td id="userRoleInput" style="display: block;">${userAccount.userRole}</td>
+                <td id="userRoleInput" style="display: block;">${foundAccount.userRole}</td>
                 <c:if test="${sessionScope.userAccount.userRole eq 'USER_ADMIN' or sessionScope.userAccount.userRole eq 'SITE_ADMIN' or sessionScope.userAccount.userRole eq 'ADMIN'}">
                     <td id="userRoleModify" style="display: none;">
                         <select name="selectRole" id="selectRole">

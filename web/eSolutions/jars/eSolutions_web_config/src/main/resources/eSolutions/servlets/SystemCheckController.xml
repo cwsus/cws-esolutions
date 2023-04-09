@@ -22,7 +22,7 @@
         <property name="validator">
             <ref bean="checkValidator" />
         </property>
-        <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
+        <property name="serviceId" value="3F0D3FB5-56C9-4A90-B177-4E1593088DBF" />
         <property name="remoteDatePage" value=".system-check/jsp/html/en/SystemCheck_RemoteDate" />
         <property name="testTelnetPage" value=".system-check/jsp/html/en/SystemCheck_TelnetTest" />
         <property name="netstatPage" value=".system-check/jsp/html/en/SystemCheck_Netstat" />

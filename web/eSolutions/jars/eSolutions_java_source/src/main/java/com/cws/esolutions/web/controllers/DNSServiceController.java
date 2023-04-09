@@ -377,10 +377,6 @@ public class DNSServiceController
                     mView.setViewName(this.appConfig.getErrorResponsePage());
 
                     break;
-                case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    break;
                 case UNAUTHORIZED:
                     mView.setViewName(this.appConfig.getUnauthorizedPage());
 

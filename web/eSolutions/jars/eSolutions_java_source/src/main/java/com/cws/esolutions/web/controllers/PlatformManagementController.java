@@ -413,10 +413,6 @@ public class PlatformManagementController
 
             switch (svcResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                     mView.addObject(Constants.COMMAND, new Platform());
@@ -552,10 +548,6 @@ public class PlatformManagementController
 
             switch (svcResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                     mView.setViewName(this.addPlatformRedirect);
@@ -696,10 +688,6 @@ public class PlatformManagementController
 
             switch (svcResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getErrorResponsePage());
                     mView.setViewName(this.defaultPage);
@@ -838,10 +826,6 @@ public class PlatformManagementController
 
             switch (svcResponse.getRequestStatus())
             {
-				case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                     mView.setViewName(this.defaultPage);
@@ -989,10 +973,6 @@ public class PlatformManagementController
 
             switch (svcResponse.getRequestStatus())
             {
-				case EXCEPTION:
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                     mView.setViewName(this.defaultPage);
@@ -1202,10 +1182,6 @@ public class PlatformManagementController
 
             switch (svcResponse.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                     mView.addObject(Constants.COMMAND, new Platform());
@@ -1357,10 +1333,6 @@ public class PlatformManagementController
 
             switch (response.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
 					mView.addObject(Constants.ERROR_MESSAGE, this.messagePlatformAddFailure);
 					mView.setViewName(this.addPlatformPage);
@@ -1507,10 +1479,6 @@ public class PlatformManagementController
 
             switch (response.getRequestStatus())
             {
-				case EXCEPTION:
-					mView.setViewName(this.appConfig.getErrorResponsePage());
-
-					break;
 				case FAILURE:
 					mView.addObject(Constants.ERROR_MESSAGE, this.messagePlatformAddFailure);
 					mView.setViewName(this.addPlatformPage);

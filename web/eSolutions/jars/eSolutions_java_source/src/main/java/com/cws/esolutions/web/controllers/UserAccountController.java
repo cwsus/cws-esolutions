@@ -49,7 +49,6 @@ import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.PasswordValidator;
 import com.cws.esolutions.web.validators.TelephoneValidator;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.validators.SecurityResponseValidator;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
@@ -81,14 +80,18 @@ public class UserAccountController
     private TelephoneValidator telValidator = null;
     private ApplicationServiceBean appConfig = null;
     private String messageEmailChangeSuccess = null;
+    private String messageEmailChangeFailure = null;
     private String messageKeyGenerationSuccess = null;
     private String messageContactChangeSuccess = null;
     private String messageKeyGenerationFailure = null;
+    private String messageContactChangeFailure = null;
     private String messagePasswordChangeSuccess = null;
     private String messageSecurityChangeSuccess = null;
     private PasswordValidator passwordValidator = null;
+    private String messageSecurityChangeFailure = null;
+    private String messagePasswordChangeFailure = null;
     private SecurityResponseValidator securityValidator = null;
-
+    
     private static final String CNAME = UserAccountController.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
@@ -288,6 +291,58 @@ public class UserAccountController
         }
 
         this.messageKeyGenerationFailure = value;
+    }
+
+    public final void setMessageContactChangeFailure(final String value)
+    {
+        final String methodName = CNAME + "#setMessageContactChangeFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageContactChangeFailure = value;
+    }
+
+    public final void setMessageEmailChangeFailure(final String value)
+    {
+        final String methodName = CNAME + "#setMessageEmailChangeFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageEmailChangeFailure = value;
+    }
+
+    public final void setMessageSecurityChangeFailure(final String value)
+    {
+        final String methodName = CNAME + "#setMessageSecurityChangeFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageSecurityChangeFailure = value;
+    }
+
+    public final void setMessagePasswordChangeFailure(final String value)
+    {
+        final String methodName = CNAME + "#setMessagePasswordChangeFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messagePasswordChangeFailure = value;
     }
 
     @RequestMapping(value = "default", method = RequestMethod.GET)
@@ -952,52 +1007,57 @@ public class UserAccountController
                 DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                // yay
-                if (changeReq.isReset())
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Invalidating existing session object...");
-                    }
+            	case FAILURE:
+            		mView.addObject("errorResponse", this.messagePasswordChangeFailure);
+            		mView.setViewName(this.myAccountPage);
 
-                    hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
-                    hRequest.getSession().invalidate();
+            		break;
+            	case SUCCESS:
+            		if (changeReq.isReset())
+            		{
+            			if (DEBUG)
+            			{
+            				DEBUGGER.debug("Invalidating existing session object...");
+            			}
 
-                    // redirect to logon page
-                    mView = new ModelAndView(new RedirectView());
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messagePasswordChangeSuccess);
-                    mView.setViewName(this.appConfig.getLogonRedirect());
+            			hRequest.getSession().removeAttribute("userAccount");
+            			hRequest.getSession().invalidate();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ModelAndView: {}", mView);
-                    }
+            			mView = new ModelAndView(new RedirectView());
+            			mView.addObject("responseMessage", this.messagePasswordChangeSuccess);
+            			mView.setViewName(this.appConfig.getLogonRedirect());
 
-                    return mView;
-                }
+            			if (DEBUG)
+            			{
+            				DEBUGGER.debug("ModelAndView: {}", mView);
+            			}
 
-                UserAccount resAccount = response.getUserAccount();
+            			return mView;
+            		}
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", resAccount);
-                }
+            		UserAccount resAccount = response.getUserAccount();
 
-                hSession.removeAttribute(Constants.USER_ACCOUNT);
-                hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
+            		if (DEBUG)
+            		{
+            			DEBUGGER.debug("UserAccount: {}", resAccount);
+            		}
 
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messagePasswordChangeSuccess);
-                mView.setViewName(this.myAccountPage);
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+            		hSession.removeAttribute("userAccount");
+            		hSession.setAttribute("userAccount", resAccount);
+
+            		mView.addObject("responseMessage", this.messagePasswordChangeSuccess);
+            		mView.setViewName(this.myAccountPage);
+
+            		break;
+            	case UNAUTHORIZED:
+            		mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+            		break;
+            	default:
+            		mView.addObject("errorResponse", this.appConfig.getMessageRequestProcessingFailure());
+            		mView.setViewName(this.myAccountPage);
             }
         }
         catch (final AccountChangeException acx)
@@ -1124,18 +1184,25 @@ public class UserAccountController
                 DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageSecurityChangeSuccess);
-                mView.setViewName(this.myAccountPage);
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+            	case FAILURE:
+            		mView.addObject("errorResponse", this.messageSecurityChangeFailure);
+            		mView.setViewName(this.myAccountPage);
+
+            		break;
+            	case SUCCESS:
+            		mView.addObject("responseMessage", this.messageSecurityChangeSuccess);
+            		mView.setViewName(this.myAccountPage);
+
+            		break;
+            	case UNAUTHORIZED:
+            		mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+            		break;
+            	default:
+            		mView.addObject("errorResponse", this.appConfig.getMessageRequestProcessingFailure());
+            		mView.setViewName(this.myAccountPage);
             }
         }
         catch (final AccountChangeException acx)
@@ -1276,22 +1343,28 @@ public class UserAccountController
                 DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                // yay
-                hSession.removeAttribute(Constants.USER_ACCOUNT);
-                hSession.setAttribute(Constants.USER_ACCOUNT, response.getUserAccount());
+            	case FAILURE:
+            		mView.addObject("errorResponse", this.messageEmailChangeFailure);
+            		mView.setViewName(this.myAccountPage);
 
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageEmailChangeSuccess);
-                mView.setViewName(this.myAccountPage);
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+            		break;
+            	case SUCCESS:
+            		hSession.removeAttribute("userAccount");
+            		hSession.setAttribute("userAccount", response.getUserAccount());
+
+            		mView.addObject("responseMessage", this.messageEmailChangeSuccess);
+            		mView.setViewName(this.myAccountPage);
+
+            		break;
+            	case UNAUTHORIZED:
+            		mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+            		break;
+            	default:
+            		mView.addObject("errorResponse", this.appConfig.getMessageRequestProcessingFailure());
+            		mView.setViewName(this.myAccountPage);
             }
         }
         catch (final AccountChangeException acx)
@@ -1433,22 +1506,28 @@ public class UserAccountController
                 DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                // yay
-                hSession.removeAttribute(Constants.USER_ACCOUNT);
-                hSession.setAttribute(Constants.USER_ACCOUNT, response.getUserAccount());
+            	case FAILURE:
+            		mView.addObject("errorResponse", this.messageContactChangeFailure);
+            		mView.setViewName(this.myAccountPage);
 
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageContactChangeSuccess);
-                mView.setViewName(this.myAccountPage);
-            }
-            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            else
-            {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+            		break;
+            	case SUCCESS:
+            		hSession.removeAttribute("userAccount");
+            		hSession.setAttribute("userAccount", response.getUserAccount());
+
+            		mView.addObject("responseMessage", this.messageContactChangeSuccess);
+            		mView.setViewName(this.myAccountPage);
+
+            		break;
+            	case UNAUTHORIZED:
+            		mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+            		break;
+            	default:
+            		mView.addObject("errorResponse", this.appConfig.getMessageRequestProcessingFailure());
+            		mView.setViewName(this.myAccountPage);
             }
         }
         catch (final AccountChangeException acx)

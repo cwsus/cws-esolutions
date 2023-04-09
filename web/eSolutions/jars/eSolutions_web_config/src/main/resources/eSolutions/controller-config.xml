@@ -18,7 +18,6 @@
     <import resource="classpath:eSolutions/servlets/LoginController.xml" />
     <import resource="classpath:eSolutions/servlets/OnlineResetController.xml" />
     <import resource="classpath:eSolutions/servlets/PlatformManagementController.xml" />
-    <import resource="classpath:eSolutions/servlets/ServiceMessagingController.xml" />
     <import resource="classpath:eSolutions/servlets/SystemCheckController.xml" />    
     <import resource="classpath:eSolutions/servlets/ServerManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/UserAccountController.xml" />
