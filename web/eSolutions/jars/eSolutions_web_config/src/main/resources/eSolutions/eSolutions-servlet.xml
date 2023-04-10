@@ -23,7 +23,7 @@
     <!-- load the datasources -->
     <jee:jndi-lookup expected-type="javax.mail.Session" id="mailSession" jndi-name="java:comp/env/mail/MailSession" />
     <jee:jndi-lookup expected-type="java.lang.String" id="isTestSystem" jndi-name="java:comp/env/isTestSystem" />
-    <!--<jee:jndi-lookup expected-type="java.lang.String" id="webURL" jndi-name="java:comp/env/webURL" />-->
+    <jee:jndi-lookup expected-type="java.lang.String" id="webURL" jndi-name="java:comp/env/webURL" />
 
 	<!-- email -->
 	<bean id="appMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
@@ -53,11 +53,9 @@
         <property name="isTestSystem">
         	<ref bean="isTestSystem" />
         </property>
-        <!--
         <property name="webURL">
             <ref bean="webURL" />
         </property>
-        -->
         <property name="webURL" value="esolutions.caspersbox.com" />
         <property name="fileEncoding" value="UTF-8" />
         <property name="passwordMinLength" value="8" />
