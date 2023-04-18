@@ -6,7 +6,7 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.4.2</version>
+    <version>5.5.9</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
@@ -22,9 +22,10 @@
         <maven-javadoc-plugin>3.5.0</maven-javadoc-plugin>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <!-- components -->
+        <!-- test -->
         <junit.version>5.9.2</junit.version>
         <assertj.version>3.24.2</assertj.version>
+        <!-- apache -->
         <commons-codec.version>1.15</commons-codec.version>
         <commons-collections.version>4.4</commons-collections.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -37,8 +38,7 @@
         <commons-net.version>3.9.0</commons-net.version>
         <commons-digester.version>3.2</commons-digester.version>
         <log4j.version>2.20.0</log4j.version>
-        <mail.version>1.6.2</mail.version>
-        <activation.version>1.1.1</activation.version>
+        <jakarta.mail.version>2.0.1</jakarta.mail.version>
         <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
         <org.glassfish.jaxb.version>4.0.2</org.glassfish.jaxb.version>
         <mysql.version>8.0.31</mysql.version>
@@ -114,8 +114,12 @@
             <version>${commons-email.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>javax.mail</groupId>
-                    <artifactId>mail</artifactId>
+                    <groupId>com.sun.mail</groupId>
+                    <artifactId>jakarta.mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.mail</groupId>
+                    <artifactId>javax.mail</artifactId>
                 </exclusion>
             </exclusions>
             <type>jar</type>
@@ -209,7 +213,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- JAXB -->
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
@@ -224,18 +227,18 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>${activation.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         <!-- provided dependencies -->
         <dependency>
             <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>${mail.version}</version>
+            <artifactId>jakarta.mail</artifactId>
+            <version>${jakarta.mail.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>${jakarta.mail.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
@@ -265,7 +268,6 @@
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
-                        <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
                     </configuration>
@@ -375,22 +377,27 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
+                <version>${maven-ear-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
