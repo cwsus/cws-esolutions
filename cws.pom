@@ -6,7 +6,7 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.5.10</version>
+    <version>5.5.29</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
@@ -281,6 +281,7 @@
                         <description>${project.description}</description>
                         <displayName>${project.artifactId}</displayName>
                         <generateModuleId>true</generateModuleId>
+                        <generateApplicationXml>false</generateApplicationXml>
                         <initializeInOrder>true</initializeInOrder>
                         <archive>
                             <manifestEntries>
@@ -302,35 +303,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${maven-jar-plugin.version}</version>
-                    <configuration>
-                        <archive>
-                            <manifestEntries>
-                                <Project-Name>${project.name}</Project-Name>
-                                <Subproject-Name>${project.name}</Subproject-Name>
-                                <Specification-Title>${project.name}</Specification-Title>
-                                <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                                <Specification-Version>${project.version}</Specification-Version>
-                                <Implementation-Title>${project.name}</Implementation-Title>
-                                <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                                <Implementation-Version>${project.version}</Implementation-Version>
-                                <Build-Date>${maven.build.timestamp}</Build-Date>
-                                <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>${maven-source-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                     <configuration>
                         <archive>
                             <manifestEntries>
@@ -388,11 +360,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven-jar-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
