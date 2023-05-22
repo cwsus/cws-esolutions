@@ -6,7 +6,7 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.2.28</version>
+    <version>5.2.31</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
@@ -33,15 +33,15 @@
         <commons-net.version>3.9.0</commons-net.version>
         <commons-digester.version>3.2</commons-digester.version>
         <log4j.version>2.20.0</log4j.version>
-        <mail.version>1.6.2</mail.version>
+        <mail.version>2.0.1</mail.version>
         <activation.version>1.1.1</activation.version>
-        <javax.xml.bind.version>2.3.1</javax.xml.bind.version>
-        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
+        <org.glassfish.jaxb.version>4.0.2</org.glassfish.jaxb.version>
         <mysql.version>8.0.31</mysql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release />
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <licenses>
@@ -105,7 +105,7 @@
         </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
+            <artifactId>jakarta.mail</artifactId>
             <version>${mail.version}</version>
             <type>jar</type>
             <scope>provided</scope>
@@ -213,16 +213,16 @@
         </dependency>
         <!-- JAXB -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jakarta.xml.bind.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.1</version>
+            <version>${org.glassfish.jaxb.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -246,7 +246,6 @@
         <finalName>${project.name}-${project.version}</finalName>
         <directory>${basedir}/target</directory>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-        <scriptSourceDirectory>${basedir}/src/main/scripts</scriptSourceDirectory>
         <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
         <outputDirectory>${project.build.directory}/classes</outputDirectory>
         <testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
